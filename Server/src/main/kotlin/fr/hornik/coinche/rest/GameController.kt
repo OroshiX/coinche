@@ -1,30 +1,28 @@
 package fr.hornik.coinche.rest
 
 import fr.hornik.coinche.model.*
+import fr.hornik.coinche.model.values.*
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class GameController {
-    @RequestMapping("/home")
+    @GetMapping("/home")
     fun home(): String {
         return "TOTO"
     }
 
-    @RequestMapping("/getTable", method = [RequestMethod.GET], produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getTable(@RequestParam(required = true) gameId: String): Table {
         // TODO with real values
         return Table(
                 id = gameId,
                 nicknames = Nicknames("Sacha", "Jessica", "Yustina", "Armand"),
-                bids = listOf(Bid("SPADES", 80)),
-                cards = listOf(Card(8, "CLUB")),
-                nextPlayer = "EAST",
-                played = listOf(CardPlayed(Card(9, "DIAMOND"), null, "NORTH")),
-                state = "PLAYING"
+                bids = listOf(Bid("SPADES", 80, CoincheValues.NONE)),
+                cards = listOf(Card(CardValue.EIGHT, CardColor.CLUB)),
+                nextPlayer = PlayerPosition.EAST,
+                played = listOf(CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.NORTH)),
+                state = TableState.PLAYING
         )
     }
 }

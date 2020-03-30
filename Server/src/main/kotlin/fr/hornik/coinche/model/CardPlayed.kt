@@ -1,3 +1,6 @@
 package fr.hornik.coinche.model
 
-data class CardPlayed(val card: Card, val belote: String?, val position: String)
+import fr.hornik.coinche.model.values.BeloteValue
+import fr.hornik.coinche.model.values.PlayerPosition
+
+data class CardPlayed(val card: Card, val belote: BeloteValue, val position: PlayerPosition)

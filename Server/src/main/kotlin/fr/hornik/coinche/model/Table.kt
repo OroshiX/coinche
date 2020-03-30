@@ -1,3 +1,6 @@
 package fr.hornik.coinche.model
 
-data class Table(val id: String, val nicknames: Nicknames, val cards: List<Card>, val played: List<CardPlayed>, val state: String, val nextPlayer: String, val bids: List<Bid>)
+import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.model.values.TableState
+
+data class Table(val id: String, val nicknames: Nicknames, val cards: List<Card>, val played: List<CardPlayed>, val state: TableState, val nextPlayer: PlayerPosition, val bids: List<Bid>)

@@ -1,3 +1,6 @@
 package fr.hornik.coinche.model
 
-data class Card(val value: Int, val color: String)
+import fr.hornik.coinche.model.values.CardColor
+import fr.hornik.coinche.model.values.CardValue
+
+data class Card(val value: CardValue, val color: CardColor)
