@@ -35,9 +35,8 @@ class FireAuthService with ChangeNotifier {
 
   Future<MyAuthUser> signInWithCredentials(
       BuildContext context, String email, String password) async {
-    var auth = await _auth.login(email, password);
+    var user = await _auth.login(email, password);
     notifyListeners();
-    AuthUser user = auth;
     return MyAuthUser(
         uid: user.uid,
         displayName: user.displayName,
@@ -53,7 +52,6 @@ class FireAuthService with ChangeNotifier {
         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
     FirebaseUser firebaseUser =
         (await FirebaseAuth.instance.signInWithCredential(credential)).user;
-
     notifyListeners();
     return MyAuthUser(
         uid: firebaseUser.uid,

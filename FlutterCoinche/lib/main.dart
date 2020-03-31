@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/screen/all_games_screen.dart';
 import 'package:FlutterCoinche/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
+      routes: {
+        LoginScreen.routeName: (context) => LoginScreen(),
+        AllGamesScreen.routeName: (context) => AllGamesScreen(),
+      },
       home: LoginScreen(),
     );
   }
