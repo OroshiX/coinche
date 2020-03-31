@@ -175,12 +175,12 @@ export class CardImageService {
   }
 
   getCardMap() {
-    this.processMap();
+    this.processCardMap();
     return this.cardMap;
   }
 
   getCardMapSmall() {
-    this.processMap();
+    this.processCardMap();
     return this.cardMapSmall;
   }
 

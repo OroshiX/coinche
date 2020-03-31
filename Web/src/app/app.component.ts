@@ -2,15 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CardImageService } from './services/card-image.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
-/*const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat `;
-const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat `;
-
-const WIDTH_XS = 30;
-const WIDTH_SMALL = 60;
-const WIDTH_LARGE = 120;
-const PX = 'px';
-const ZERO = 0;*/
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,6 +9,9 @@ const ZERO = 0;*/
 })
 export class AppComponent implements OnInit {
   map = new Map<number, string[]>();
+  cardMap = new Map<string, string>();
+  c2: any;
+  cA: any;
 
   constructor(private service: CardImageService, private breakpointObserver: BreakpointObserver) {
     const layoutChanges = this.breakpointObserver.observe([
@@ -35,9 +29,24 @@ export class AppComponent implements OnInit {
   }
 
   private updateMyLayoutForOrientationChange() {
-    this.map = this.breakpointObserver.isMatched('(max-width: 959px)') ?
-      this.service.getMapSmall() : this.service.getMap();
+    if (this.breakpointObserver.isMatched('(max-width: 959px)')) {
+      this.map = this.service.getMapSmall();
+      this.cardMap = this.service.getCardMapSmall();
+    } else {
+      this.map = this.service.getMap();
+      this.cardMap = this.service.getCardMap();
+    }
+    this.c2 = this.map.get(0)[0];
+    console.log(this.cardMap);
+    this.cA = this.cardMap.get('c11');
+    console.log(this.cA);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
+  onClick(events: any) {
+    console.log(events);
+  }
+
 }
