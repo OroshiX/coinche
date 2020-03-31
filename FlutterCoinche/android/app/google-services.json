@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "398750488162",
+    "firebase_url": "https://coinche-47d27.firebaseio.com",
+    "project_id": "coinche-47d27",
+    "storage_bucket": "coinche-47d27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398750488162:android:565a593433b54a3d40233b",
+        "android_client_info": {
+          "package_name": "fr.hornik.FlutterCoinche"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "398750488162-44shm4o1piv40sm6pgipfj1vt3ac7rc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2-7nr7W5GZ7d3GwDsggl_S3G4pEVn0-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "398750488162-44shm4o1piv40sm6pgipfj1vt3ac7rc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "398750488162-pajljh165uvero90uige4jpsgf8q6lt9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fr.hornik.FlutterCoinche"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>398750488162-pajljh165uvero90uige4jpsgf8q6lt9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.398750488162-pajljh165uvero90uige4jpsgf8q6lt9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDlbf4TOzhP5ncuO-guH6h0YdkcN6RcSBw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>398750488162</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>fr.hornik.FlutterCoinche</string>
+	<key>PROJECT_ID</key>
+	<string>coinche-47d27</string>
+	<key>STORAGE_BUCKET</key>
+	<string>coinche-47d27.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:398750488162:ios:84f5d1f5a388909440233b</string>
+	<key>DATABASE_URL</key>
+	<string>https://coinche-47d27.firebaseio.com</string>
+</dict>
+</plist>
