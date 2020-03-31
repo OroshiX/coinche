@@ -1,0 +1,19 @@
+<div *ngFor="let el of [0,1,2,3]">
+  <div class="card" [class.mat-elevation-z8]="isActive" *ngFor="let cardSmall of map.get(el); index as i" [ngStyle]="{'background': cardSmall}">
+  </div>
+</div>
+<div>
+  <!--<button class="card" [ngStyle]="{'background': cA}" (click)="onClick($event)" value="cA">
+  </button>-->
+  <button class="card" [class.mat-elevation-z8]="isActive" [ngStyle]="isActive ? {'background': cA} : {'background': backCard}" (click)="isActive = !isActive" value="cA">
+  </button>
+</div>
+<br/>
+<div>
+  <button class="card" [ngStyle]="{'background': c2, 'filter': 'blur(3px)', 'border-color': 'red', 'border-width': '3px'}" (click)="onClick($event)" value="c2">
+  </button>
+</div>
+<div>
+  <button class="card" [ngStyle]="{'background': backCard, 'border-color': 'red'}" (click)="onClick($event)" value="c2">
+  </button>
+</div>
