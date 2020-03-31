@@ -1,15 +1,4 @@
 
-<div *ngFor="let el of [0,1,2,3]">
-  <div class="card" *ngFor="let cardSmall of map.get(el); index as i" [ngStyle]="{'background': cardSmall}">
-  </div>
-</div>
-<div>
-  <button class="card" [ngStyle]="{'background': cA}" (click)="onClick($event)" value="cA">
-  </button>
-</div>
-<div>
-  <button class="card" disabled="true" [ngStyle]="{'background': c2, 'border-color': 'red'}" (click)="onClick($event)" value="c2">
-  </button>
-</div>
+<app-side-nav></app-side-nav>
 
 

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat `;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat `;
+const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
+const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
 
 @Injectable({
   providedIn: 'root'
@@ -172,6 +174,14 @@ export class CardImageService {
       }
 
     });
+  }
+
+  getBackCard() {
+    return backCardImg;
+  }
+
+  getBackCardSmall() {
+    return backCardImgSmall;
   }
 
   getCardMap() {

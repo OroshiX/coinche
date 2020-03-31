@@ -1,0 +1,29 @@
+@mixin width-height-card ($width-value, $height-value) {
+  width: $width-value;
+  height: $height-value;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 1px;
+  display: inline-block;
+}
+
+@media(max-width: 959px) {
+  .card {
+    @include width-height-card(60px, 87px);
+  }
+
+  .cards {
+    min-height: 105px;
+  }
+}
+
+@media(min-width: 960px) {
+  .card {
+    @include width-height-card(120px, 174px);
+  }
+
+  .cards {
+    min-height: 210px;
+  }
+}
+
