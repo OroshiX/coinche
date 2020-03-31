@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:fb_auth/fb_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +34,20 @@ class FireAuthService with ChangeNotifier {
     return _auth.sendEmailVerification();
   }
 
+  _sendTokenIdToServer(IdTokenResult tokenId) {
+    print("sending tokenId to server: $tokenId");
+    print("Send: ${tokenId.token}");
+    ServerCommunication.sendToken(tokenId);
+    // TODO("send to server")
+  }
+
   Future<MyAuthUser> signInWithCredentials(
       BuildContext context, String email, String password) async {
-    var user = await _auth.login(email, password);
+    var user = (await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password))
+        .user;
+    var idToken = await user.getIdToken();
+    _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: user.uid,
@@ -52,6 +64,8 @@ class FireAuthService with ChangeNotifier {
         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
     FirebaseUser firebaseUser =
         (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+    var idToken = await firebaseUser.getIdToken();
+    _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: firebaseUser.uid,
@@ -73,6 +87,8 @@ class FireAuthService with ChangeNotifier {
         .createUserWithEmailAndPassword(email: email, password: password);
 
     FirebaseUser user = auth.user;
+    var idToken = await user.getIdToken();
+    _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: user.uid,
