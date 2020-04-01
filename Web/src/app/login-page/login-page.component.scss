@@ -1,10 +1,21 @@
+div.login-page {
+  height: 100%;
+  width: 100%;
+}
 .qoinche-card {
-  max-width: 400px;
-  margin-left: 10%;
-  margin-top: 10%;
+  max-width: 380px;
+  margin: 10% 10% 20% 10%;
 }
 
 .qoinche-header-image {
   background-image: url("../../assets/images/playing-cards-av.jpg");
   background-size: cover;
+}
+.mat-form-field {
+  padding-left: 10%;
+  max-width: 240px;
+  min-width: 80%;
+}
+.button-submit {
+  margin-left: 70%;
 }

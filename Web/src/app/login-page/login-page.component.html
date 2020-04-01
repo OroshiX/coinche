@@ -1,31 +1,54 @@
-<mat-card class="qoinche-card">
-  <mat-card-header>
-    <div mat-card-avatar class="qoinche-header-image"></div>
-    <mat-card-title>
-      Login page
-    </mat-card-title>
-    <mat-card-subtitle>Enter your user id and password</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form [formGroup]="loginForm">
-      <div>
-        <mat-form-field>
-          <mat-label>
-            User id
-          </mat-label>
-          <input matInput formControlName="userId" required>
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" required>
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-                  [attr.aria-pressed]="hide">
-            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-    </form>
-  </mat-card-content>
-</mat-card>
+<div class="login-page">
+  <mat-card class="qoinche-card">
+    <mat-card-header>
+      <div mat-card-avatar class="qoinche-header-image"></div>
+      <mat-card-title>
+        Login page
+      </mat-card-title>
+      <mat-card-subtitle>Enter your user id and password</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form (ngSubmit)="submit()" [formGroup]="loginForm" >
+        <div>
+          <mat-form-field>
+            <mat-label>
+              User id
+            </mat-label>
+            <input matInput formControlName="userId" required [errorStateMatcher]="matcher">
+            <mat-error *ngIf="userId.hasError('minlength') && !userId.hasError('required')">
+              Minimum UserId length is <strong>6</strong> characters
+            </mat-error>
+            <mat-error *ngIf="userId.hasError('required')">
+              User id is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <br/>
+        <div>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'" formControlName="currentPassword"
+                   required autocomplete="login-user" [errorStateMatcher]="matcher">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+              <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="currentPassword.hasError('pattern') && !currentPassword.hasError('required')">
+              Password must include at least
+              <strong>1 uppercase</strong>,
+              <strong>1 lowercase</strong>,
+              <strong>1 special char</strong> and
+              total length <strong>between 10 and 20</strong> characters
+            </mat-error>
+            <mat-error *ngIf="currentPassword.hasError('required')">
+              Password is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <br/>
+        <button class="button-submit" mat-raised-button color="primary" type="submit">Submit</button>
+        <br/>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
