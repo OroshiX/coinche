@@ -2,6 +2,7 @@ import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:fb_auth/fb_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FireAuthService with ChangeNotifier {
