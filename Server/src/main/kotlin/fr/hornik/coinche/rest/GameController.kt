@@ -18,10 +18,11 @@ class GameController {
         return Table(
                 id = gameId,
                 nicknames = Nicknames("Sacha", "Jessica", "Yustina", "Armand"),
-                bids = listOf(Bid("SPADES", 80, CoincheValues.NONE)),
+                bids = listOf(Bid(CardColor.SPADE, 80, CoincheValues.NONE)),
                 cards = listOf(Card(CardValue.EIGHT, CardColor.CLUB)),
                 nextPlayer = PlayerPosition.EAST,
-                played = listOf(CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.NORTH)),
+                played = listOf(
+                        CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.NORTH)),
                 state = TableState.PLAYING
         )
     }
