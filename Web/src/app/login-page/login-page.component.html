@@ -5,7 +5,7 @@
       <mat-card-title>
         Login page
       </mat-card-title>
-      <mat-card-subtitle>Enter your user id and password</mat-card-subtitle>
+      <mat-card-subtitle>Enter your email and password</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form (ngSubmit)="submit()" [formGroup]="loginForm" >
@@ -14,12 +14,12 @@
             <mat-label>
               User id
             </mat-label>
-            <input matInput formControlName="userId" required [errorStateMatcher]="matcher">
-            <mat-error *ngIf="userId.hasError('minlength') && !userId.hasError('required')">
-              Minimum UserId length is <strong>6</strong> characters
+            <input matInput formControlName="emailAddress" required [errorStateMatcher]="matcher" type="'email'">
+            <mat-error *ngIf="emailAddress.hasError('email') && !emailAddress.hasError('required')">
+              Email format error
             </mat-error>
-            <mat-error *ngIf="userId.hasError('required')">
-              User id is <strong>required</strong>
+            <mat-error *ngIf="emailAddress.hasError('required')">
+              Email is <strong>required</strong>
             </mat-error>
           </mat-form-field>
         </div>
@@ -37,8 +37,9 @@
               Password must include at least
               <strong>1 uppercase</strong>,
               <strong>1 lowercase</strong>,
+              <strong>1 digit</strong>,
               <strong>1 special char</strong> and
-              total length <strong>between 10 and 20</strong> characters
+              total length is <strong>between 10 and 20</strong> characters
             </mat-error>
             <mat-error *ngIf="currentPassword.hasError('required')">
               Password is <strong>required</strong>

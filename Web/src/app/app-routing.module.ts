@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { CanActivateGame } from './services/can-activate-game';
 
 
 const routes: Routes = [
@@ -10,7 +11,8 @@ const routes: Routes = [
   },
   {
     path: 'play',
-    loadChildren: () => import('./game/game.module').then(m => m.GameModule)
+    loadChildren: () => import('./game/game.module').then(m => m.GameModule),
+    canActivate: [CanActivateGame]
   },
   {
     path: '**',

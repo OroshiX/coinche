@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LoginPageService } from '../services/login-page.service';
 import { LoginErrorStateMatcher, PWD_PATTERN } from '../utils/login-error-state-matcher';
 
 @Component({
@@ -15,21 +16,21 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   hide = true;
   sub: Subscription;
 
-  get userId(): FormControl {
-    return this.loginForm.get('userId') as FormControl;
+  get emailAddress(): FormControl {
+    return this.loginForm.get('emailAddress') as FormControl;
   }
 
   get currentPassword(): FormControl {
     return this.loginForm.get('currentPassword') as FormControl;
   }
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private loginService: LoginPageService) {
   }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-        userId: this.formBuilder.control('',
-          [Validators.required, Validators.minLength(6)]),
+        emailAddress: this.formBuilder.control('',
+          [Validators.required, Validators.email]),
         currentPassword: this.formBuilder.control('',
           [Validators.required, Validators.pattern(PWD_PATTERN)])
       }
@@ -44,7 +45,9 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
   submit() {
     if (this.loginForm.valid) {
-      this.router.navigateByUrl('play').then(res => console.log(res));
+      this.loginService.updateUserToken(this.loginForm.value);
+      this.router.navigateByUrl('play')
+        .then(res => console.log(res));
       console.log('navigate');
     }
   }

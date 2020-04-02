@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { CanActivateGame } from './services/can-activate-game';
 import { SideNavComponent } from './side-nav/side-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -40,7 +41,7 @@ import { LoginPageComponent } from './login-page/login-page.component';
     MatInputModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [CanActivateGame],
   bootstrap: [AppComponent]
 })
 export class AppModule {
