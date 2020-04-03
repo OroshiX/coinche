@@ -4,6 +4,7 @@ import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.*
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
 
 @RestController(value = "/game")
 class GameController {
@@ -13,7 +14,8 @@ class GameController {
     }
 
     @GetMapping("/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getTable(@RequestParam(required = true) gameId: String): Table {
+    fun getTable(@RequestParam(required = true) gameId: String, httpServletRequest: HttpServletRequest): Table {
+        print(httpServletRequest.remoteAddr)
         // TODO with real values
         return Table(
                 id = gameId,
