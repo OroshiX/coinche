@@ -18,12 +18,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { LoginPageComponent } from './login-page/login-page.component';
+import { AlertComponent } from './shared/alert/alert.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SideNavComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,

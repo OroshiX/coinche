@@ -1,14 +1,35 @@
-div.login-page {
-  height: 100%;
-  width: 100%;
+@mixin card-width ($width-value, $marginTop) {
+  width: $width-value;
+  margin: $marginTop auto;
 }
-.qoinche-card {
-  max-width: 380px;
-  margin: 10% 10% 20% 10%;
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.qoinche-header-image {
-  background-image: url("../../assets/images/playing-cards-av.jpg");
+div.login-page {
+  height: 100vh;
+  display: flex;
+  width: 600px;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+@media(max-width: 959px) {
+  .coinche-card {
+    @include card-width(380px, 50px)
+  }
+}
+
+@media(min-width: 960px) {
+  .coinche-card {
+    @include card-width(500px, 50px)
+  }
+}
+
+.coinche-header-image {
+  background-image: url("src/assets/images/playing-cards-av.jpeg");
   background-size: cover;
 }
 .mat-form-field {
@@ -16,6 +37,12 @@ div.login-page {
   max-width: 240px;
   min-width: 80%;
 }
+.mat-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
 .button-submit {
-  margin-left: 70%;
+  margin-bottom: 20px;
+  margin-right: 20px;
 }

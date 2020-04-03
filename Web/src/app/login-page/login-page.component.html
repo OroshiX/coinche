@@ -1,18 +1,22 @@
+
 <div class="login-page">
-  <mat-card class="qoinche-card">
-    <mat-card-header>
-      <div mat-card-avatar class="qoinche-header-image"></div>
-      <mat-card-title>
-        Login page
-      </mat-card-title>
-      <mat-card-subtitle>Enter your email and password</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <form (ngSubmit)="submit()" [formGroup]="loginForm" >
+<!--
+  <app-alert class="alert"></app-alert>
+-->
+  <mat-card class="coinche-card">
+    <form (ngSubmit)="submit()" [formGroup]="loginForm">
+      <mat-card-header>
+        <div mat-card-avatar class="coinche-header-image"></div>
+        <mat-card-title>
+          Login page
+        </mat-card-title>
+        <mat-card-subtitle>Enter your email and password</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
         <div>
           <mat-form-field>
             <mat-label>
-              User id
+              Email
             </mat-label>
             <input matInput formControlName="emailAddress" required [errorStateMatcher]="matcher" type="'email'">
             <mat-error *ngIf="emailAddress.hasError('email') && !emailAddress.hasError('required')">
@@ -46,10 +50,11 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <br/>
+
+      </mat-card-content>
+      <mat-card-footer>
         <button class="button-submit" mat-raised-button color="primary" type="submit">Submit</button>
-        <br/>
-      </form>
-    </mat-card-content>
+      </mat-card-footer>
+    </form>
   </mat-card>
 </div>
