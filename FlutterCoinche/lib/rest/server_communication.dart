@@ -1,9 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
+import '../.env.dart';
 class ServerCommunication {
   static sendToken(IdTokenResult idTokenResult) async {
-    var url = 'http://192.168.1.11:8080/loginToken';
+    final String _baseUrl = environment["baseUrl"];
+
+//    var url = 'http://192.168.1.11:8080/loginToken';
+    var url = '$_baseUrl/loginToken';
+    print("connecting to Server $url");
 
     var response = await http.post(url, body: idTokenResult.token);
     if (response.statusCode == 200) {
