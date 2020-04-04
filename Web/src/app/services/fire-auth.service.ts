@@ -1,10 +1,11 @@
-import { Injectable, NgZone } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { Router } from '@angular/router';
-import { auth } from 'firebase';
-import { BehaviorSubject } from 'rxjs';
-import { User } from '../models/user';
-import { ApiLoginService } from './api-login.service';
+import {Injectable, NgZone} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
+import {Router} from '@angular/router';
+import * as firebase from 'firebase';
+import {auth} from 'firebase';
+import {BehaviorSubject} from 'rxjs';
+import {User} from '../models/user';
+import {ApiLoginService} from './api-login.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,9 @@ export class FireAuthService {
     public afAuth: AngularFireAuth,
     private apiService: ApiLoginService
   ) {
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.authState.subscribe((user: firebase.User | null) => {
       console.log(user);
-      if (user !== undefined) {
+      if (user !== null) {
         this.updateUser(user);
         console.log(this.getUserToken());
       }
@@ -34,15 +35,18 @@ export class FireAuthService {
       .then((res) => {
         console.log(res);
         console.log(res.user);
-        console.log(res.credential.providerId);
-        // @ts-ignore
-        const idToken = res.credential.idToken;
-        this.updateUserToken(res.user, idToken);
-        console.log(this.userToken.value);
-        // post to server
-        this.apiService.loginToServer(idToken).subscribe(ret => console.log(ret));
-        this.ngZone.run(() => {
-          this.router.navigate(['play']);
+        this.afAuth.currentUser.then((e) => {
+          console.log(e);
+          e.getIdToken().then(
+            value => {
+              console.log(value);
+              this.updateUserToken(res.user, value);
+              this.apiService.loginToServer(value).subscribe(ret => console.log(ret));
+              this.ngZone.run(() => {
+                this.router.navigate(['play']);
+              });
+            }
+          );
         });
       }).catch((error) => {
         window.alert(error);
@@ -84,8 +88,8 @@ export class FireAuthService {
     this.userToken.next(usr);
   }
 
-  updateUser(user: any) {
-     this.userToken.next(new User({uid: user.uid, email: user.email, displayName: user.displayName}));
+  updateUser(user: firebase.User) {
+    this.userToken.next(new User({uid: user.uid, email: user.email, displayName: user.displayName}));
   }
 
 }
