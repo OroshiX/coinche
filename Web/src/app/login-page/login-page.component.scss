@@ -18,13 +18,13 @@ div.login-page {
 
 @media(max-width: 959px) {
   .coinche-card {
-    @include card-width(380px, 50px)
+    @include card-width(380px, 150px)
   }
 }
 
 @media(min-width: 960px) {
   .coinche-card {
-    @include card-width(500px, 50px)
+    @include card-width(500px, 150px)
   }
 }
 

@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin card-width ($width-value, $marginTop) {
+  width: $width-value;
+  margin: $marginTop auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.login-page {
+  height: 100vh;
+  display: flex;
+  width: 600px;
+  justify-content: center;
+  align-items: flex-start;
+}
+@media(max-width: 959px) {
+  .coinche-card {
+    @include card-width(280px, 50px)
+  }
+}
+
+@media(min-width: 960px) {
+  .coinche-card {
+    @include card-width(500px, 50px)
+  }
+}
+.coinche-header-image {
+  background-image: url("src/assets/images/google.png");
+  background-size: cover;
+  margin-left: 10px;
+}
+.items {
+  flex: auto;
+}
