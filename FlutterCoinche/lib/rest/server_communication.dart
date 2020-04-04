@@ -1,7 +1,7 @@
+import 'package:FlutterCoinche/.env.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
-import '../.env.dart';
 class ServerCommunication {
   static sendToken(IdTokenResult idTokenResult) async {
     final String _baseUrl = environment["baseUrl"];

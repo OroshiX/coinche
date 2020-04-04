@@ -9,7 +9,6 @@ import org.apache.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.io.FileInputStream
 import javax.servlet.http.HttpServletResponse
 
 
@@ -25,11 +24,10 @@ class LoginController {
 
     @PostMapping("/loginToken")
     fun loginToken(@RequestBody idToken: String) {
-        val serviceAccount =
-                FileInputStream("D:\\Documents\\Dev\\keystores\\coinche-47d27-firebase-adminsdk-s7ea6-6b8671839a.json")
-
+        // /!\ Don't forget to set the env variable of GOOGLE_APPLICATION_CREDENTIALS
+        // to the location of the firebase admin private key
         val options = FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setCredentials(GoogleCredentials.getApplicationDefault())
                 .setDatabaseUrl("https://coinche-47d27.firebaseio.com")
                 .build()
 
