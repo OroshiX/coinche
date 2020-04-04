@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { CanActivateGame } from './services/can-activate-game';
 
@@ -7,7 +8,7 @@ import { CanActivateGame } from './services/can-activate-game';
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginPageComponent
+    component: LoginGoogleComponent
   },
   {
     path: 'play',
@@ -16,7 +17,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: LoginPageComponent
+    component: LoginGoogleComponent
   }
 ];
 

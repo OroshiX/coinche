@@ -1,4 +1,6 @@
 import { NgModule } from '@angular/core';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -6,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -19,13 +22,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { AlertComponent } from './shared/alert/alert.component';
+import { LoginGoogleComponent } from './login-google/login-google.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SideNavComponent,
     LoginPageComponent,
-    AlertComponent
+    AlertComponent,
+    LoginGoogleComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +47,8 @@ import { AlertComponent } from './shared/alert/alert.component';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
+    AngularFireAuthModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig)
   ],
   providers: [CanActivateGame],
   bootstrap: [AppComponent]
