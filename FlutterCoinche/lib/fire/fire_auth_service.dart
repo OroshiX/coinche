@@ -1,8 +1,8 @@
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:fb_auth/fb_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FireAuthService with ChangeNotifier {
@@ -39,7 +39,11 @@ class FireAuthService with ChangeNotifier {
     print("sending tokenId to server: $tokenId");
     print("Send: ${tokenId.token}");
     ServerCommunication.sendToken(tokenId);
-    // TODO("send to server")
+   }
+
+  void _logoutFromServer() {
+    // TODO
+    ServerCommunication.logout();
   }
 
   Future<MyAuthUser> signInWithCredentials(
@@ -78,6 +82,7 @@ class FireAuthService with ChangeNotifier {
 
   Future<void> signOut(BuildContext context) {
     var logout = _auth.logout();
+    _logoutFromServer();
     notifyListeners();
     return logout;
   }
