@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { FireAuthService } from './fire-auth.service';
+import { FireAuthService } from '../fire-auth.service';
 
 @Injectable()
 export class CanActivateGame implements CanActivate {

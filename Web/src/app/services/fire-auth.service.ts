@@ -4,22 +4,27 @@ import { Router } from '@angular/router';
 import { auth } from 'firebase';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user';
+import { ApiLoginService } from './api-login.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireAuthService {
-  user: User;
-  private userToken: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private userToken: BehaviorSubject<User> = new BehaviorSubject<User>(null);
   userToken$ = this.userToken.asObservable();
 
   constructor(
     public router: Router,
     public ngZone: NgZone,
     public afAuth: AngularFireAuth,
+    private apiService: ApiLoginService
   ) {
     this.afAuth.authState.subscribe(user => {
-      this.user = user;
+      console.log(user);
+      if (user !== undefined) {
+        this.updateUser(user);
+        console.log(this.getUserToken());
+      }
     });
   }
 
@@ -27,6 +32,15 @@ export class FireAuthService {
   oAuthProvider(provider) {
     return this.afAuth.signInWithPopup(provider)
       .then((res) => {
+        console.log(res);
+        console.log(res.user);
+        console.log(res.credential.providerId);
+        // @ts-ignore
+        const idToken = res.credential.idToken;
+        this.updateUserToken(res.user, idToken);
+        console.log(this.userToken.value);
+        // post to server
+        this.apiService.loginToServer(idToken).subscribe(ret => console.log(ret));
         this.ngZone.run(() => {
           this.router.navigate(['play']);
         });
@@ -39,10 +53,8 @@ export class FireAuthService {
   signinWithGoogle() {
     return this.oAuthProvider(new auth.GoogleAuthProvider())
       .then(res => {
-        this.updateUserTokenStatus(true);
-        console.log('Successfully logged in!');
+        console.log('firebase google signin');
       }).catch(error => {
-        this.updateUserTokenStatus(false);
         console.log(error);
       });
   }
@@ -55,12 +67,25 @@ export class FireAuthService {
   }
 
   getUserTokenStatus(): boolean {
+    return this.userToken !== undefined;
+  }
+
+  getUserToken(): User {
     return this.userToken.value;
   }
 
-  updateUserTokenStatus(status: boolean) {
-    this.userToken.next(status);
+  getUserTokenId(): any {
+    return this.userToken.value.idToken;
   }
 
+  updateUserToken(user: any, idToken: any) {
+    const usr: User = new User({uid: user.uid, email: user.email, displayName: user.displayName});
+    usr.idToken = idToken;
+    this.userToken.next(usr);
+  }
+
+  updateUser(user: any) {
+     this.userToken.next(new User({uid: user.uid, email: user.email, displayName: user.displayName}));
+  }
 
 }
