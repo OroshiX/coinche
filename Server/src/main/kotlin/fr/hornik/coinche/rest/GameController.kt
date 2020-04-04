@@ -6,8 +6,8 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
-@CrossOrigin(origins = ["*"])
-@RestController(value = "/game")
+@RestController
+@RequestMapping("/game")
 class GameController {
     @GetMapping("/home")
     fun home(): String {
