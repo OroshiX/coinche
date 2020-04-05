@@ -15,7 +15,9 @@ export class LoginGoogleComponent implements OnInit {
   }
 
   signIn() {
-    this.fireAuthService.signinWithGoogle().then(res => console.log('Sign in with google', res));
+    this.fireAuthService.signinWithGoogle()
+      .then((res) =>
+        console.log('Sign in with google - user: ', res.user.displayName));
   }
 
 }
