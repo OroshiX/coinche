@@ -13,10 +13,10 @@ class CalculusTest {
     fun initBids() {
         bids = listOf(
                 SimpleBid(CardColor.HEART, 80, PlayerPosition.NORTH),
-                Pass,
+                Pass(PlayerPosition.EAST),
                 Capot(CardColor.SPADE, PlayerPosition.NORTH, true),
                 General(CardColor.DIAMOND, PlayerPosition.SOUTH, false),
-                Coinche(SimpleBid(CardColor.CLUB, 90, PlayerPosition.WEST), true, PlayerPosition.NORTH))
+                Coinche(SimpleBid(CardColor.CLUB, 90, PlayerPosition.WEST), PlayerPosition.NORTH, surcoinche = true))
     }
 
     @Test

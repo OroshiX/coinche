@@ -41,7 +41,7 @@ fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
             print("Capot a ${myBid.color}${if (myBid.belote) " belote" else ""}, player who took: ${myBid.position}")
         }
         is Pass      -> {
-            print("pass")
+            print("pass of ${myBid.position}")
         }
     }
     TODO()
