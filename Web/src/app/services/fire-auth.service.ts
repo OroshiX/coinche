@@ -23,31 +23,25 @@ export class FireAuthService {
     this.afAuth.authState.subscribe((user: firebase.User | null) => {
       if (user !== null) {
         this.updateUser(user);
-        console.log(this.getUserToken());
       }
     });
   }
 
   // Firebase SignInWithPopup
-  oAuthProvider(provider) {
-    return this.afAuth.signInWithPopup(provider)
-      .then((res) => {
-        this.afAuth.currentUser.then((e) => {
-          console.log(e);
-          e.getIdToken().then(
-            idToken => {
-              console.log(idToken);
-              this.updateUserToken(res.user, idToken);
-              this.apiService.loginToServer(idToken).subscribe(ret => console.log(ret));
-              this.ngZone.run(() => {
-                this.router.navigate(['play']);
-              });
-            }
-          );
-        });
-      }).catch((error) => {
-        window.alert(error);
+  async oAuthProvider(provider) {
+    try {
+      const response = await this.afAuth.signInWithPopup(provider);
+      const currentUser = await this.afAuth.currentUser;
+      const idToken = await currentUser.getIdToken();
+      this.updateUserToken(response.user, idToken);
+      this.apiService.loginToServer(idToken).subscribe(ret=> console.log(ret));
+      this.ngZone.run(() => {
+        this.router.navigate(['play']);
       });
+      return response;
+    } catch (error) {
+      window.alert(error);
+    }
   }
 
   // Firebase Google Sign-in
@@ -63,8 +57,8 @@ export class FireAuthService {
 
   // Firebase Logout
   signOut() {
-    return this.afAuth.signOut().then((_) => {
-      this.router.navigate(['login']).then(__ => console.log('redirectTo Login page'));
+    return this.afAuth.signOut().then(() => {
+      this.router.navigate(['login']).then(() => console.log('redirectTo Login page'));
     });
   }
 
