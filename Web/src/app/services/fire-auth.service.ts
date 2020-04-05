@@ -1,10 +1,11 @@
-import { Injectable, NgZone } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
+import {Injectable, NgZone} from '@angular/core';
+import {AngularFireAuth} from '@angular/fire/auth';
 import * as firebase from 'firebase';
-import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { CurrentUser } from '../models/user';
-import { ApiLoginService } from './api-login.service';
+import {Router} from '@angular/router';
+import {BehaviorSubject} from 'rxjs';
+import {CurrentUser} from '../models/user';
+import {ApiLoginService} from './api-login.service';
+import {HttpResponse} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,10 @@ export class FireAuthService {
       const currentUser = await this.afAuth.currentUser;
       const idToken = await currentUser.getIdToken();
       this.updateUserToken(response.user, idToken);
-      this.apiService.loginToServer(idToken).subscribe(ret=> console.log(ret));
+      this.apiService.loginToServer(idToken).subscribe((ret: HttpResponse<void>) => {
+        console.log(ret);
+        console.log(ret.status);
+      });
       this.ngZone.run(() => {
         this.router.navigate(['play']);
       });
