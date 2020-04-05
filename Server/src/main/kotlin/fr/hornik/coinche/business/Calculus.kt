@@ -1,9 +1,6 @@
 package fr.hornik.coinche.business
 
-import fr.hornik.coinche.model.Bid
-import fr.hornik.coinche.model.Card
-import fr.hornik.coinche.model.CardPlayed
-import fr.hornik.coinche.model.Score
+import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.PlayerPosition
 
 fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>, bid: Bid): PlayerPosition {
@@ -30,5 +27,19 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>, plisEW: List<List<CardPla
 }
 
 fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
+    when (myBid) {
+        is SimpleBid -> {
+            print("Color : ${myBid.color}, points: ${myBid.points}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+        }
+        is General   -> {
+            print("Color : ${myBid.color}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+        }
+        is Capot     -> {
+            print("Color : ${myBid.color}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+        }
+        is Pass      -> {
+            print("pass")
+        }
+    }
     TODO()
 }

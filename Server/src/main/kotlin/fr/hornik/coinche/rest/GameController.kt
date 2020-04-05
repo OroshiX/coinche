@@ -21,7 +21,7 @@ class GameController {
         return Table(
                 id = gameId,
                 nicknames = Nicknames("Sacha", "Jessica", "Yustina", "Armand"),
-                bids = listOf(Bid(CardColor.SPADE, 80, CoincheValues.NONE)),
+                bids = listOf(SimpleBid(CardColor.SPADE, 80, CoincheValues.NONE, PlayerPosition.WEST)),
                 cards = listOf(Card(CardValue.EIGHT, CardColor.CLUB)),
                 nextPlayer = PlayerPosition.EAST,
                 played = listOf(
