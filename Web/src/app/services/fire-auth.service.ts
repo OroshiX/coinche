@@ -35,7 +35,7 @@ export class FireAuthService {
       const currentUser = await this.afAuth.currentUser;
       const idToken = await currentUser.getIdToken();
       this.updateUserToken(response.user, idToken);
-      this.apiService.loginToServer(idToken).subscribe((ret: HttpResponse<void>) => {
+      this.apiService.loginToServer(idToken).subscribe((ret: HttpResponse<any>) => {
         console.log(ret);
         console.log(ret.status);
       });
