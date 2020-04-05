@@ -1,4 +1,4 @@
-export class User {
+export class CurrentUser {
   uid: any;
   email: string;
   displayName: string;
@@ -6,7 +6,7 @@ export class User {
   photoURL: string;
   emailVerified: boolean;
 
-  constructor(obj: Partial<User>) {
+  constructor(obj: Partial<CurrentUser>) {
     Object.assign(this, obj);
   }
 }

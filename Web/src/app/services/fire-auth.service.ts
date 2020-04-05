@@ -1,18 +1,17 @@
-import {Injectable, NgZone} from '@angular/core';
-import {AngularFireAuth} from '@angular/fire/auth';
-import {Router} from '@angular/router';
+import { Injectable, NgZone } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase';
-import {auth} from 'firebase';
-import {BehaviorSubject} from 'rxjs';
-import {User} from '../models/user';
-import {ApiLoginService} from './api-login.service';
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { CurrentUser } from '../models/user';
+import { ApiLoginService } from './api-login.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FireAuthService {
-  private userToken: BehaviorSubject<User> = new BehaviorSubject<User>(null);
-  userToken$ = this.userToken.asObservable();
+  private userToken: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(null);
+  // userToken$ = this.userToken.asObservable();
 
   constructor(
     public router: Router,
@@ -21,7 +20,6 @@ export class FireAuthService {
     private apiService: ApiLoginService
   ) {
     this.afAuth.authState.subscribe((user: firebase.User | null) => {
-      console.log(user);
       if (user !== null) {
         this.updateUser(user);
         console.log(this.getUserToken());
@@ -55,8 +53,9 @@ export class FireAuthService {
 
   // Firebase Google Sign-in
   signinWithGoogle() {
-    return this.oAuthProvider(new auth.GoogleAuthProvider())
-      .then(res => {
+    const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    return this.oAuthProvider(googleAuthProvider)
+      .then(_ => {
         console.log('firebase google signin');
       }).catch(error => {
         console.log(error);
@@ -65,8 +64,8 @@ export class FireAuthService {
 
   // Firebase Logout
   signOut() {
-    return this.afAuth.signOut().then(() => {
-      this.router.navigate(['login']);
+    return this.afAuth.signOut().then((_) => {
+      this.router.navigate(['login']).then(__ => console.log('redirectTo Login page'));
     });
   }
 
@@ -74,7 +73,7 @@ export class FireAuthService {
     return this.userToken !== undefined;
   }
 
-  getUserToken(): User {
+  getUserToken(): CurrentUser {
     return this.userToken.value;
   }
 
@@ -83,13 +82,14 @@ export class FireAuthService {
   }
 
   updateUserToken(user: any, idToken: any) {
-    const usr: User = new User({uid: user.uid, email: user.email, displayName: user.displayName});
+    console.log(firebase.auth.AuthCredential.toString());
+    const usr: CurrentUser = new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName});
     usr.idToken = idToken;
     this.userToken.next(usr);
   }
 
   updateUser(user: firebase.User) {
-    this.userToken.next(new User({uid: user.uid, email: user.email, displayName: user.displayName}));
+    this.userToken.next(new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName}));
   }
 
 }
