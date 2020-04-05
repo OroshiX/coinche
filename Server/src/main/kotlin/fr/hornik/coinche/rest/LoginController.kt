@@ -1,8 +1,10 @@
 package fr.hornik.coinche.rest
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.exception.DeprecatedException
+import fr.hornik.coinche.exception.LoginFailedException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -30,9 +32,14 @@ class LoginController(@Autowired
         val firebaseApp = fire.firebaseApp
 //        val database = FirebaseDatabase.getInstance(firebaseApp)
         val auth = FirebaseAuth.getInstance(firebaseApp)
-
-        val decodedToken = auth.verifyIdToken(idToken)
-        val uid = decodedToken.uid
-        println("uid: $uid")
+        try {
+            val decodedToken = auth.verifyIdToken(idToken)
+            val uid = decodedToken.uid
+            println("uid: $uid")
+        } catch (e: FirebaseAuthException) {
+            e.printStackTrace()
+            // return 401 unauthorized
+            throw LoginFailedException(e.message)
+        }
     }
 }

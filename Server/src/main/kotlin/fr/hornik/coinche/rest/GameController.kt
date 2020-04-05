@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/games")
 class GameController {
     @GetMapping("/home")
     fun home(): String {
