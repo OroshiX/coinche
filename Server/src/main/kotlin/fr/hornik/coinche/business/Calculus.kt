@@ -28,14 +28,17 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>, plisEW: List<List<CardPla
 
 fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
     when (myBid) {
+        is Coinche   -> {
+            print("Je ${if (myBid.surcoinche) "sur" else ""}coinche sur l'annonce ${myBid.annonce}")
+        }
         is SimpleBid -> {
-            print("Color : ${myBid.color}, points: ${myBid.points}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+            print("Color : ${myBid.color}, points: ${myBid.points}, player who took: ${myBid.position}")
         }
         is General   -> {
-            print("Color : ${myBid.color}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+            print("Generale a : ${myBid.color}${if (myBid.belote) " belote" else ""}, player who took: ${myBid.position}")
         }
         is Capot     -> {
-            print("Color : ${myBid.color}, coinche : ${myBid.coinche}, player who took: ${myBid.position}")
+            print("Capot a ${myBid.color}${if (myBid.belote) " belote" else ""}, player who took: ${myBid.position}")
         }
         is Pass      -> {
             print("pass")
