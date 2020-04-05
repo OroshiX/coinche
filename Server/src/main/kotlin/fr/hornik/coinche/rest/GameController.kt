@@ -14,8 +14,8 @@ class GameController {
         return "TOTO"
     }
 
-    @GetMapping("/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getTable(@RequestParam(required = true) gameId: String, httpServletRequest: HttpServletRequest): Table {
+    @GetMapping("/{gameId}/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getTable(@PathVariable("gameId") gameId: String, httpServletRequest: HttpServletRequest): Table {
         print(httpServletRequest.remoteAddr)
         // TODO with real values
         return Table(
@@ -30,17 +30,17 @@ class GameController {
         )
     }
 
-    @PostMapping("/playCard")
-    fun playCard(@RequestParam gameId: String, @RequestBody card: Card) {
+    @PostMapping("/{gameId}/playCard")
+    fun playCard(@PathVariable gameId: String, @RequestBody card: Card) {
     }
 
-    @PostMapping("/announceBid")
-    fun announceBid(@RequestBody bid: Bid) {
+    @PostMapping("/{gameId}/announceBid")
+    fun announceBid(@PathVariable gameId: String, @RequestBody bid: Bid) {
 
     }
 
-    @GetMapping("/showLastTrick", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun showLastTrick(@RequestParam gameId: String): List<CardPlayed> {
+    @GetMapping("/{gameId}/showLastTrick", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun showLastTrick(@PathVariable gameId: String): List<CardPlayed> {
         // TODO real values
         return listOf(CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.NORTH),
                       CardPlayed(Card(CardValue.EIGHT, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.EAST),
@@ -48,14 +48,14 @@ class GameController {
                       CardPlayed(Card(CardValue.KING, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.WEST))
     }
 
-    @GetMapping("/getScore", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getScore(@RequestParam(required = true) gameId: String): Score {
+    @GetMapping("/{gameId}/getScore", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getScore(@PathVariable gameId: String): Score {
         // TODO
         return Score(80, 160)
     }
 
-    @GetMapping("/showAllTricks", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun showAllTricks(@RequestParam(required = true) gameId: String): List<List<CardPlayed>> {
+    @GetMapping("/{gameId}/showAllTricks", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun showAllTricks(@PathVariable gameId: String): List<List<CardPlayed>> {
         // TODO
         // If not finished, not allowed
         return listOf(
