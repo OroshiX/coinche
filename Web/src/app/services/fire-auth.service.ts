@@ -11,6 +11,7 @@ import { ApiLoginService } from './api-login.service';
 })
 export class FireAuthService {
   private userToken: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(null);
+
   // userToken$ = this.userToken.asObservable();
 
   constructor(
@@ -31,15 +32,13 @@ export class FireAuthService {
   oAuthProvider(provider) {
     return this.afAuth.signInWithPopup(provider)
       .then((res) => {
-        console.log(res);
-        console.log(res.user);
         this.afAuth.currentUser.then((e) => {
           console.log(e);
           e.getIdToken().then(
-            value => {
-              console.log(value);
-              this.updateUserToken(res.user, value);
-              this.apiService.loginToServer(value).subscribe(ret => console.log(ret));
+            idToken => {
+              console.log(idToken);
+              this.updateUserToken(res.user, idToken);
+              this.apiService.loginToServer(idToken).subscribe(ret => console.log(ret));
               this.ngZone.run(() => {
                 this.router.navigate(['play']);
               });
