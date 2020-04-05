@@ -24,7 +24,7 @@ class LoginController(@Autowired
     }
 
     @PostMapping("/loginToken")
-    fun loginToken(@RequestBody idToken: String) {
+    fun loginToken(@RequestBody idToken: String, response: HttpServletResponse) {
         val firebaseApp = fire.firebaseApp
 //        val database = FirebaseDatabase.getInstance(firebaseApp)
         val auth = FirebaseAuth.getInstance(firebaseApp)
@@ -32,5 +32,6 @@ class LoginController(@Autowired
         val decodedToken = auth.verifyIdToken(idToken)
         val uid = decodedToken.uid
         println("uid: $uid")
+        response.status = HttpStatus.SC_NO_CONTENT
     }
 }
