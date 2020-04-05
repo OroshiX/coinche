@@ -38,9 +38,9 @@ export class FireAuthService {
       this.apiService.loginToServer(idToken).subscribe((ret: HttpResponse<any>) => {
         console.log(ret);
         console.log(ret.status);
-      });
-      this.ngZone.run(() => {
-        this.router.navigate(['play']);
+        this.ngZone.run(() => {
+          this.router.navigate(['play']);
+        });
       });
       return response;
     } catch (error) {
@@ -51,12 +51,12 @@ export class FireAuthService {
   // Firebase Google Sign-in
   signinWithGoogle() {
     const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
-    return this.oAuthProvider(googleAuthProvider)
-      .then(_ => {
+    return this.oAuthProvider(googleAuthProvider);
+      /*.then(_ => {
         console.log('firebase google signin');
       }).catch(error => {
         console.log(error);
-      });
+      });*/
   }
 
   // Firebase Logout
@@ -79,7 +79,6 @@ export class FireAuthService {
   }
 
   updateUserToken(user: any, idToken: any) {
-    console.log(firebase.auth.AuthCredential.toString());
     const usr: CurrentUser = new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName});
     usr.idToken = idToken;
     this.userToken.next(usr);
