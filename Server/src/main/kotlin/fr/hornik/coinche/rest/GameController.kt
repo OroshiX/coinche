@@ -1,6 +1,8 @@
 package fr.hornik.coinche.rest
 
+import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.model.*
+import fr.hornik.coinche.model.SimpleBid
 import fr.hornik.coinche.model.values.*
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
