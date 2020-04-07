@@ -58,7 +58,7 @@ export const httpInterceptorProviders = [
     AngularFireModule.initializeApp(environment.firebaseConfig),
     HttpClientModule,
   ],
-  providers: [CanActivateGame],
+  providers: [CanActivateGame, httpInterceptorProviders],
   /*providers: [CanActivateGame, httpInterceptorProviders],*/
   bootstrap: [AppComponent]
 })

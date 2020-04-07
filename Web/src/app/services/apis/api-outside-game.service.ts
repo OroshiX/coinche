@@ -14,8 +14,8 @@ export class ApiOutsideGameService {
   }
 
   allGames(): Observable<GameI[]> {
-    console.log(API_BACKEND + ALL_GAMES);
-    return this.httpClient.get<GameI[]>(API_BACKEND + ALL_GAMES);
+    console.log(API_BACKEND + 'lobby/' + ALL_GAMES);
+    return this.httpClient.get<GameI[]>(API_BACKEND + 'lobby/' + ALL_GAMES);
   }
 
   createGame(): Observable<HttpResponse<any>> {

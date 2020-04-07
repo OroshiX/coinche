@@ -1,11 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AgGridAngular } from 'ag-grid-angular';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { ApiLogInOutService } from '../../services/apis/api-log-in-out.service';
-import { ApiOutsideGameService } from '../../services/apis/api-outside-game.service';
-import { GameI } from '../../shared/models/game-interface';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {AgGridAngular} from 'ag-grid-angular';
+import {tap} from 'rxjs/operators';
+import {ApiOutsideGameService} from '../../services/apis/api-outside-game.service';
+import {GameI} from '../../shared/models/game-interface';
 
 
 @Component({
