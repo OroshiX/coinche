@@ -21,7 +21,8 @@ fun dealCards(trickNS: List<List<CardPlayed>>, tricksEW: List<List<CardPlayed>>,
                        PlayerPosition.WEST to 3)
     val deck = mutableListOf<Card>()
 
-    for (trick in tricksEW) {            //Les 2 paquets sont comptés donc renversés, EW posé dessus
+    //Les 2 paquets sont comptés donc renversés, EW posé dessus
+    for (trick in tricksEW) {
         for (i in 0 until 4) {
             deck.add(trick[3 - i].card)
         }
@@ -31,24 +32,25 @@ fun dealCards(trickNS: List<List<CardPlayed>>, tricksEW: List<List<CardPlayed>>,
             deck.add(trick[3 - i].card)
         }
     }
+    // 1 sens trigo -1 sens horaire
+    val sens = 1
 
-    val sens = 1        // 1 sens trigo -1 sens horaire
-    val ce = mutableListOf<Card>()
-    val code = mutableListOf<Card>()
-    val nest = mutableListOf<Card>()
-    val pasbeau = mutableListOf<Card>()
-    val fourHands = mutableListOf(ce, code, nest,
-                                  pasbeau)        // Liste des 4 futures mains
-    var pos =
-            mapPos[dealerPosition]!! - sens                    // Premier à qui l'on donne
+    // Liste des 4 futures mains
+    val fourHands = List(4) { mutableListOf<Card>() }
+
+    // Premier à qui l'on donne
+    val pos = mapPos.getValue(dealerPosition) - sens
     val (a, b, c) = spread
     val lpread = mutableListOf(a, b, c)
-    var curCard =
-            cut    // La carte n°cut sera la première carte donnée (0 sinon), cela correspond à cut cartes dessous
+    // La carte n°cut sera la première carte donnée (0 sinon), cela correspond à cut cartes dessous
+    var curCard = cut
 
-    for (i in 0 until 3) {                                    // 3 tours de donne
-        for (j in 0 until 4) {                                // 4 joueurs
-            for (k in 0 until lpread[i]) {                        // on donne lpread[i] cartes à la fois
+    for (i in 0 until 3) {
+        // 3 tours de donne
+        for (j in 0 until 4) {
+            // 4 joueurs
+            for (k in 0 until lpread[i]) {
+                // on donne lpread[i] cartes à la fois
                 fourHands[(pos + j * sens + 8) % 4].add(deck[curCard % 32])
                 curCard++
             }
@@ -71,38 +73,38 @@ fun firstDealOfCards(dealerPosition: PlayerPosition,
                        PlayerPosition.WEST to 3)
 
     val deckInit = mutableListOf(
-            Card(CardValue.ACE, CardColor.HEART, null),
-            Card(CardValue.TEN, CardColor.HEART, null),
-            Card(CardValue.KING, CardColor.HEART, null),
-            Card(CardValue.QUEEN, CardColor.HEART, null),
-            Card(CardValue.JACK, CardColor.HEART, null),
-            Card(CardValue.NINE, CardColor.HEART, null),
-            Card(CardValue.EIGHT, CardColor.HEART, null),
-            Card(CardValue.SEVEN, CardColor.HEART, null),
-            Card(CardValue.ACE, CardColor.DIAMOND, null),
-            Card(CardValue.TEN, CardColor.DIAMOND, null),
-            Card(CardValue.KING, CardColor.DIAMOND, null),
-            Card(CardValue.QUEEN, CardColor.DIAMOND, null),
-            Card(CardValue.JACK, CardColor.DIAMOND, null),
-            Card(CardValue.NINE, CardColor.DIAMOND, null),
-            Card(CardValue.EIGHT, CardColor.DIAMOND, null),
-            Card(CardValue.SEVEN, CardColor.DIAMOND, null),
-            Card(CardValue.ACE, CardColor.CLUB, null),
-            Card(CardValue.TEN, CardColor.CLUB, null),
-            Card(CardValue.KING, CardColor.CLUB, null),
-            Card(CardValue.QUEEN, CardColor.CLUB, null),
-            Card(CardValue.JACK, CardColor.CLUB, null),
-            Card(CardValue.NINE, CardColor.CLUB, null),
-            Card(CardValue.EIGHT, CardColor.CLUB, null),
-            Card(CardValue.SEVEN, CardColor.CLUB, null),
-            Card(CardValue.ACE, CardColor.SPADE, null),
-            Card(CardValue.TEN, CardColor.SPADE, null),
-            Card(CardValue.KING, CardColor.SPADE, null),
-            Card(CardValue.QUEEN, CardColor.SPADE, null),
-            Card(CardValue.JACK, CardColor.SPADE, null),
-            Card(CardValue.NINE, CardColor.SPADE, null),
-            Card(CardValue.EIGHT, CardColor.SPADE, null),
-            Card(CardValue.SEVEN, CardColor.SPADE, null))
+            Card(CardValue.ACE, CardColor.HEART),
+            Card(CardValue.TEN, CardColor.HEART),
+            Card(CardValue.KING, CardColor.HEART),
+            Card(CardValue.QUEEN, CardColor.HEART),
+            Card(CardValue.JACK, CardColor.HEART),
+            Card(CardValue.NINE, CardColor.HEART),
+            Card(CardValue.EIGHT, CardColor.HEART),
+            Card(CardValue.SEVEN, CardColor.HEART),
+            Card(CardValue.ACE, CardColor.DIAMOND),
+            Card(CardValue.TEN, CardColor.DIAMOND),
+            Card(CardValue.KING, CardColor.DIAMOND),
+            Card(CardValue.QUEEN, CardColor.DIAMOND),
+            Card(CardValue.JACK, CardColor.DIAMOND),
+            Card(CardValue.NINE, CardColor.DIAMOND),
+            Card(CardValue.EIGHT, CardColor.DIAMOND),
+            Card(CardValue.SEVEN, CardColor.DIAMOND),
+            Card(CardValue.ACE, CardColor.CLUB),
+            Card(CardValue.TEN, CardColor.CLUB),
+            Card(CardValue.KING, CardColor.CLUB),
+            Card(CardValue.QUEEN, CardColor.CLUB),
+            Card(CardValue.JACK, CardColor.CLUB),
+            Card(CardValue.NINE, CardColor.CLUB),
+            Card(CardValue.EIGHT, CardColor.CLUB),
+            Card(CardValue.SEVEN, CardColor.CLUB),
+            Card(CardValue.ACE, CardColor.SPADE),
+            Card(CardValue.TEN, CardColor.SPADE),
+            Card(CardValue.KING, CardColor.SPADE),
+            Card(CardValue.QUEEN, CardColor.SPADE),
+            Card(CardValue.JACK, CardColor.SPADE),
+            Card(CardValue.NINE, CardColor.SPADE),
+            Card(CardValue.EIGHT, CardColor.SPADE),
+            Card(CardValue.SEVEN, CardColor.SPADE))
 
     val deck = mutableListOf<Card>()
     val rnd = mutableListOf<Int>()
@@ -114,22 +116,23 @@ fun firstDealOfCards(dealerPosition: PlayerPosition,
         rnd.remove(31 - i)
     }
 
-    val sens = -1        // -1 sens trigo +1 sens horaire
-    val ce = mutableListOf<Card>()
-    val code = mutableListOf<Card>()
-    val nest = mutableListOf<Card>()
-    val pasbeau = mutableListOf<Card>()
-    val fourHands = mutableListOf<MutableList<Card>>(ce, code, nest,
-                                                     pasbeau)        // Liste des 4 futures mains
-    var pos =
-            mapPos[dealerPosition]!! + sens                    // Premier à qui l'on donne
+    // -1 sens trigo +1 sens horaire
+    val sens = -1
+    // Liste des 4 futures mains
+    val fourHands = List(4) { mutableListOf<Card>() }
+
+    // Premier à qui l'on donne
+    val pos = mapPos.getValue(dealerPosition) + sens
     val (a, b, c) = spread
-    val lpread = mutableListOf<Int>(a, b, c)
+    val lpread = mutableListOf(a, b, c)
     var curCard = 0
 
-    for (i in 0 until 3) {                                    // 3 tours de donne
-        for (j in 0 until 4) {                                // 4 joueurs
-            for (k in 0 until lpread[i]) {                        // on donne lpread[i] cartes à la fois
+    for (i in 0 until 3) {
+        // 3 tours de donne
+        for (j in 0 until 4) {
+            // 4 joueurs
+            for (k in 0 until lpread[i]) {
+                // on donne lpread[i] cartes à la fois
                 fourHands[(pos + j * sens + 4) % 4].add(deck[curCard])
                 curCard++
             }
