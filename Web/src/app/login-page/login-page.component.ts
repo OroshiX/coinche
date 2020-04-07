@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoginPageService } from '../services/login-page.service';
-import { LoginErrorStateMatcher, PWD_PATTERN } from '../utils/login-error-state-matcher';
+import { LoginErrorStateMatcher, PWD_PATTERN } from '../shared/utils/login-error-state-matcher';
 
 @Component({
   selector: 'app-login-page',
