@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Game } from '../../shared/models/game';
+import { GameI } from '../../shared/models/game-interface';
 import { ALL_GAMES, API_BACKEND, CREATE_GAME, httpOptions, JOIN_GAME } from './api-constant';
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,9 @@ export class ApiOutsideGameService {
   constructor(private httpClient: HttpClient) {
   }
 
-  allGames(): Observable<Array<Game>> {
-    return this.httpClient.get<Array<Game>>(API_BACKEND + ALL_GAMES);
+  allGames(): Observable<GameI[]> {
+    console.log(API_BACKEND + ALL_GAMES);
+    return this.httpClient.get<GameI[]>(API_BACKEND + ALL_GAMES);
   }
 
   createGame(): Observable<HttpResponse<any>> {

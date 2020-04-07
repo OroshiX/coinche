@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { API_BACKEND_GAMES, GET_TABLE } from './api-constant';
 
 @Injectable({
   providedIn: 'root'
@@ -8,25 +10,9 @@ export class ApiInGameService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getTable(gameId: string) {
-
+  getTable(gameId: string): Observable<any> {
+    const url = API_BACKEND_GAMES + gameId + '/' + GET_TABLE;
+    console.log(url);
+    return this.httpClient.get(url);
   }
-  /*
-   allGames(): Observable<Array<Game>> {
-    return this.httpClient.get<Array<Game>>(API_BACKEND + ALL_GAMES);
-  }
-
-  createGame(): Observable<HttpResponse<any>> {
-    return this.httpClient.post<HttpResponse<any>>(API_BACKEND + CREATE_GAME, '',
-      {headers: httpOptions, observe: 'response'});
-  }
-
-  joinGame(gameId: string, nickname: string): Observable<HttpResponse<any>> {
-    const parameters = new HttpParams();
-    parameters.append('gameId', gameId);
-    parameters.append('nickname', nickname);
-    return this.httpClient.post<HttpResponse<any>>(API_BACKEND + JOIN_GAME, '',
-      {headers: httpOptions, params: parameters, observe: 'response'});
-  }
-   */
 }

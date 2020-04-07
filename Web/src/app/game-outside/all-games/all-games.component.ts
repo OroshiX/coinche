@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ApiLogInOutService } from '../../services/apis/api-log-in-out.service';
+import { ApiOutsideGameService } from '../../services/apis/api-outside-game.service';
+import { GameI } from '../../shared/models/game-interface';
+
 
 @Component({
   selector: 'app-all-games',
@@ -12,33 +17,35 @@ export class AllGamesComponent implements OnInit {
   @ViewChild('agGrid') agGrid: AgGridAngular;
 
   title = 'All Games';
-  rowData$: any;
+  rowData: GameI[];
 
   columnDefs = [
-    {headerName: 'Make', field: 'make', width: 150, sortable: true, filter: true, checkboxSelection: true},
-    {headerName: 'Model', field: 'model', width: 125, sortable: true, filter: true},
-    {headerName: 'Price', field: 'price', width: 125, sortable: true, filter: true}
+    {headerName: 'GameId', field: 'id', width: 150, sort: 'asc', filter: true, checkboxSelection: true},
+    {headerName: '#Players', field: 'nbJoined', width: 125, sortable: true, filter: true},
+    {headerName: 'Creator', field: 'nicknameCreator', width: 125, sortable: true, filter: true}
   ];
 
-  rowData = [
-    {make: 'Toyota', model: 'Celica', price: 35000},
-    {make: 'Ford', model: 'Mondeo', price: 32000},
-    {make: 'Porsche', model: 'Boxter', price: 72000}
-  ];
-
-  constructor(private http: HttpClient) {
+  constructor(private apiService: ApiOutsideGameService) {
   }
 
   ngOnInit(): void {
-    // this.rowData$ = this.http.get<any>('https://api.myjson.com/bins/15psn9');
-    // this.rowData$ = this.apiService.
+    this.apiService.allGames()
+      .pipe(tap(res => console.log(res)))
+      .subscribe((res: GameI[]) => {
+        this.rowData = res;
+      });
   }
 
   getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
-    const selectedDataStringPresentation = selectedData.map(node => node.make + ' ' + node.model).join(', ');
-    alert(`Selected nodes: ${selectedDataStringPresentation}`);
+    const selectedDataStringPresentation = selectedData
+      .map((node: GameI) => node.id + ' ' + node.nbJoined + ' ' + node.nicknameCreator).join(', ');
+    alert(`Selected row: ${selectedDataStringPresentation}`);
 
   }
+
+  isRowSelectable(rowNode: any): boolean {
+    return rowNode.data ? rowNode.data.nbJoined < 4 : false;
+  };
 }
