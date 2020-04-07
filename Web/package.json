@@ -22,6 +22,8 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "ag-grid-angular": "^23.0.3",
+    "ag-grid-community": "^23.0.2",
     "core-js": "^3.6.4",
     "firebase": "^7.13.1",
     "firebase-tools": "^7.16.2",

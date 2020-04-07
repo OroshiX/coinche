@@ -1,11 +1,16 @@
 <div class="login-page">
   <mat-card class="coinche-card">
-    <div class="item"><strong>Sign in with Google</strong></div>
-    <div class="item">
-      <button mat-card-avatar class="coinche-header-image"
-              mat-raised-button
-              (click)="signIn()"
-      ></button>
-    </div>
+    <ng-container *ngIf="(isConnected$ | async)===false; else connected">
+      <div class="item"><strong>Sign in with Google</strong></div>
+      <div class="item">
+        <button mat-card-avatar class="coinche-header-image"
+                mat-raised-button
+                (click)="signIn()">
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #connected>
+      <div class="item"><strong>You are already connected !</strong></div>
+    </ng-template>
   </mat-card>
 </div>

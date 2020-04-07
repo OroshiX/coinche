@@ -1,7 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FireAuthService } from '../fire-auth.service';
+import { FireAuthService } from '../authentication/fire-auth.service';
 
 @Injectable({
   providedIn: 'root'
