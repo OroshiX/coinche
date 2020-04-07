@@ -14,7 +14,28 @@ import fr.hornik.coinche.model.values.PlayerPosition
 //              JsonSubTypes.Type(Capot::class, name = "Capot"),
 //              JsonSubTypes.Type(General::class, name = "General"),
 //              JsonSubTypes.Type(Pass::class, name = "Pass"))
-sealed class Bid
+sealed class Bid {
+    fun curColor():CardColor {
+        return when (this) {
+            is Capot -> this.color
+            is General -> this.color
+            is SimpleBid -> this.color
+            else -> CardColor.HEART
+            // TODO treat error case ( last else)
+        }
+    }
+    fun position():PlayerPosition{
+        return when (this) {
+            is Coinche -> this.annonce.position()
+            is Capot -> this.position
+            is General -> this.position
+            is SimpleBid -> this.position
+            else -> PlayerPosition.NORTH
+            // TODO treat error case ( last else)
+        }
+    }
+
+}
 
 @JsonTypeName("Annonce")
 sealed class Annonce : Bid()
