@@ -7,6 +7,7 @@ import fr.hornik.coinche.model.Player
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.model.values.TableState
+import fr.hornik.coinche.serialization.JsonSerialize
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -18,7 +19,7 @@ class DataManagement(@Autowired fire: FireApp) {
     private final val db: Firestore = FirestoreClient.getFirestore(fire.firebaseApp)
 
     init {
-//        getAllGamesFromFirebase()
+        getAllGamesFromFirebase()
     }
 
     companion object {
@@ -45,7 +46,8 @@ class DataManagement(@Autowired fire: FireApp) {
      * Saves the table to firebase
      */
     fun saveNewGame(setOfGames: SetOfGames): String {
-        val addedDocRef = db.collection(COLLECTION_SETS).add(setOfGames)
+        val jsonSet = JsonSerialize.toJson(setOfGames)
+        val addedDocRef = db.collection(COLLECTION_SETS).add(mapOf("gson" to jsonSet))
         return addedDocRef.get().id
     }
 
@@ -74,7 +76,8 @@ class DataManagement(@Autowired fire: FireApp) {
     fun getGame(setId: String): SetOfGames? = sets.firstOrNull { it.id == setId }
 
     fun updateGame(table: SetOfGames) {
-        db.collection(COLLECTION_SETS).document(table.id).set(table)
+        val jsonTable = JsonSerialize.toJson(table)
+        db.collection(COLLECTION_SETS).document(table.id).set(mapOf("gson" to jsonTable))
     }
 
     private final fun getAllGamesFromFirebase() {
@@ -82,8 +85,10 @@ class DataManagement(@Autowired fire: FireApp) {
         for (docRef in listDocuments) {
             val documentSnapshot = docRef.get().get()
             if (documentSnapshot.exists()) {
-                documentSnapshot.toObject(SetOfGames::class.java)
-                        ?.let { sets.add(it.copy(id = documentSnapshot.id)) }
+                val data: String = documentSnapshot.data?.getValue("gson") as String? ?: ""
+                JsonSerialize.fromJson<SetOfGames>(data).let {
+                    sets.add(it.copy(id = documentSnapshot.id))
+                }
             }
         }
     }

@@ -40,7 +40,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
 
     @PostMapping("/joinGame", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun joinGame(@RequestParam(required = true, name = "gameId") gameId: String,
-                 @RequestParam nickname: String?, model: Model): Pair<String, PlayerPosition> {
+                 @RequestParam nickname: String?, model: Model): Map<String, PlayerPosition> {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
         val set = dataManagement.getGame(gameId)
                 ?: throw GameNotExistingException(gameId)
@@ -48,7 +48,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
             user.nickname = it
         }
         val player = dataManagement.joinGame(set, user)
-        return "position" to player.position
+        return mapOf("position" to player.position)
     }
 
     @PostMapping("/setNickname")

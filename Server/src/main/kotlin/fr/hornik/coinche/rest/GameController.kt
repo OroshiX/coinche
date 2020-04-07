@@ -1,16 +1,22 @@
 package fr.hornik.coinche.rest
 
+import fr.hornik.coinche.DataManagement
 import fr.hornik.coinche.dto.Table
+import fr.hornik.coinche.exception.GameNotExistingException
+import fr.hornik.coinche.exception.NotInGameException
 import fr.hornik.coinche.model.*
-import fr.hornik.coinche.model.SimpleBid
-import fr.hornik.coinche.model.values.*
+import fr.hornik.coinche.model.values.BeloteValue
+import fr.hornik.coinche.model.values.CardColor
+import fr.hornik.coinche.model.values.CardValue
+import fr.hornik.coinche.model.values.PlayerPosition
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/games")
-class GameController {
+class GameController(@Autowired val data: DataManagement, @Autowired val user: User) {
     @GetMapping("/home")
     fun home(): String {
         return "TOTO"
@@ -19,16 +25,19 @@ class GameController {
     @GetMapping("/{gameId}/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getTable(@PathVariable("gameId") gameId: String, httpServletRequest: HttpServletRequest): Table {
         print(httpServletRequest.remoteAddr)
-        // TODO with real values
+        val set = data.getGame(gameId) ?: throw GameNotExistingException(gameId)
+        if (!set.players.map { it.uid }.contains(user.uid)) {
+            throw NotInGameException(gameId)
+        }
+
         return Table(
                 id = gameId,
-                nicknames = Nicknames("Sacha", "Jessica", "Yustina", "Armand"),
-                bids = listOf(SimpleBid(CardColor.SPADE, 80, PlayerPosition.WEST)),
-                cards = listOf(Card(CardValue.EIGHT, CardColor.CLUB)),
-                nextPlayer = PlayerPosition.EAST,
-                played = listOf(
-                        CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.NORTH)),
-                state = TableState.PLAYING
+                state = set.state,
+                played = set.onTable,
+                nextPlayer = set.whoseTurn,
+                cards = set.players.first { player -> player.uid == user.uid }.cardsInHand,
+                bids = set.bids,
+                nicknames = Nicknames(set.players)
         )
     }
 
