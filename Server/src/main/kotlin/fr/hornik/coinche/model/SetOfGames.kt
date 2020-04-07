@@ -22,7 +22,7 @@ data class SetOfGames(var currentBid: Bid = Pass(),
     }
 
     fun isFull(): Boolean {
-        return players.size < 4
+        return players.size >= 4
     }
 
     private fun getNextPlayerToAddPosition(): PlayerPosition {
