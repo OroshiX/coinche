@@ -5,7 +5,11 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type",
+        include = JsonTypeInfo.As.PROPERTY
+)
 //@JsonSubTypes(JsonSubTypes.Type(SimpleBid::class, name = "SimpleBid"),
 //              JsonSubTypes.Type(Capot::class, name = "Capot"),
 //              JsonSubTypes.Type(General::class, name = "General"),

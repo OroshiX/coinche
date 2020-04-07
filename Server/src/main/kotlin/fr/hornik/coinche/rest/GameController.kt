@@ -17,9 +17,15 @@ import javax.servlet.http.HttpServletRequest
 @RestController
 @RequestMapping("/games")
 class GameController(@Autowired val data: DataManagement, @Autowired val user: User) {
-    @GetMapping("/home")
-    fun home(): String {
-        return "TOTO"
+    @GetMapping("/home", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun home(): List<Bid> {
+        return listOf(
+                SimpleBid(CardColor.HEART, 80, PlayerPosition.NORTH),
+                Pass(PlayerPosition.EAST),
+                SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH),
+                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH), PlayerPosition.WEST),
+                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH), PlayerPosition.NORTH, surcoinche = true)
+        )
     }
 
     @GetMapping("/{gameId}/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
