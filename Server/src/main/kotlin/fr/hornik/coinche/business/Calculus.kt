@@ -9,7 +9,6 @@ import fr.hornik.coinche.model.values.PlayerPosition
 /**
  * Only called if it is my turn to play
  */
-
 fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
                         cardsOnTable: List<CardPlayed>): List<Card> {
     val trump = bid.curColor()
@@ -27,22 +26,18 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
         }
     }
 
-    val map = mapOf(CardValue.JACK to 7,
-                    CardValue.NINE to 6,
-                    CardValue.ACE to 5,
-                    CardValue.TEN to 4,
-                    CardValue.KING to 3,
-                    CardValue.QUEEN to 2,
-                    CardValue.EIGHT to 1,
-                    CardValue.SEVEN to 0)
+    val dominanceAtout =
+            CardValue.values().associate { it to it.dominanceAtout }
 
     // Si je n'ai pas la couleur jouée ou atout demandé alors atout autorisé
     if (validCards.isEmpty()) {
         // seuil atout
         var threshold = -1
         for (cardP in cardsOnTable) {
-            if (cardP.card.color == trump && map[cardP.card.value]!! > threshold) {
-                threshold = map[cardP.card.value]!!// update du seuil
+            if (cardP.card.color == trump && dominanceAtout.getValue(
+                        cardP.card.value) > threshold) {
+                // update du seuil
+                threshold = dominanceAtout.getValue(cardP.card.value)
             }
         }
         val upperTrump = mutableListOf<Card>()
@@ -50,7 +45,7 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
         for (card in myCardsInHand) {
             if (card.color == trump) {
                 // les atouts
-                if (map[card.value]!! > threshold) {
+                if (dominanceAtout.getValue(card.value) > threshold) {
                     // les atouts au dessus seuil
                     upperTrump.add(card)
                 } else {
@@ -81,7 +76,7 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
                         ?: error("!!!!!!!!")) + 1
         val playerPosition = calculateWinnerTrick(cardsOnTable, bid)
         var master = false
-        if ((mapPos[playerPosition]!! + myPos) % 2 == 0) {
+        if ((mapPos.getValue(playerPosition) + myPos) % 2 == 0) {
             master = true    // partenaire maître
         }
 
@@ -127,10 +122,9 @@ fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
     return myBid !is Coinche                                // si que des pass tout ok sauf (sur)coinche
 }
 
-// *** Fonction Gagnant ***
-// ************************
-// ************************
-
+/**
+ *  Fonction Gagnant
+ */
 fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
                          bid: Bid): PlayerPosition {
     // Pour 1 à 4 cartes sur la table
@@ -154,26 +148,10 @@ fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
         i++
     }
     // Mapping dominance atout
-    val mapAtout =
-            mapOf(CardValue.JACK to 7,
-                  CardValue.NINE to 6,
-                  CardValue.ACE to 5,
-                  CardValue.TEN to 4,
-                  CardValue.KING to 3,
-                  CardValue.QUEEN to 2,
-                  CardValue.EIGHT to 1,
-                  CardValue.SEVEN to 0)
+    val mapAtout = CardValue.values().associate { it to it.dominanceAtout }
 
     // Mapping dominance couleur
-    val mapColor =
-            mapOf(CardValue.ACE to 7,
-                  CardValue.TEN to 6,
-                  CardValue.KING to 5,
-                  CardValue.QUEEN to 4,
-                  CardValue.JACK to 3,
-                  CardValue.NINE to 2,
-                  CardValue.EIGHT to 1,
-                  CardValue.SEVEN to 0)
+    val mapColor = CardValue.values().associate { it to it.dominanceCouleur }
     var domColor = curColor
     var mapper = mapColor
 
@@ -184,7 +162,8 @@ fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
     for (j in strongest + 1 until nbCartes) {
         // Si couleur dominante et plus forte on update
         if (cardsPlayed[j].card.color == domColor) {
-            if (mapper[cardsPlayed[j].card.value]!! > mapper[cardsPlayed[strongest].card.value]!!)
+            if (mapper.getValue(cardsPlayed[j].card.value) > mapper.getValue(
+                        cardsPlayed[strongest].card.value))
                 strongest = j
         }
     }
@@ -194,24 +173,12 @@ fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
 fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                        plisEW: List<List<CardPlayed>>, dixDer: PlayerPosition,
                        bid: Bid): Score {
-    val mapAtout = mapOf(
-            CardValue.JACK to 20,            // Mapping points atout
-            CardValue.NINE to 14,
-            CardValue.ACE to 11,
-            CardValue.TEN to 10,
-            CardValue.KING to 4,
-            CardValue.QUEEN to 3,
-            CardValue.EIGHT to 0,
-            CardValue.SEVEN to 0)
-    val mapColor = mapOf(
-            CardValue.ACE to 11,            // Mapping points couleur
-            CardValue.TEN to 10,
-            CardValue.KING to 4,
-            CardValue.QUEEN to 3,
-            CardValue.JACK to 2,
-            CardValue.NINE to 0,
-            CardValue.EIGHT to 0,
-            CardValue.SEVEN to 0)
+
+    val mapAtout = CardValue.values()
+            .associate { cardValue -> cardValue to cardValue.atoutPoints }
+
+    val mapColor = CardValue.values()
+            .associate { cardValue -> cardValue to cardValue.colorPoints }
 
     val trump = bid.curColor()
 
@@ -280,6 +247,6 @@ fun sumIfGeneraleOrCapot(sumBefore: Int,
 
 }
 
-// *** Fonction cartes Valides ***
-// *******************************
-// *******************************
+/**
+ * Fonction cartes Valides
+ */
