@@ -55,8 +55,8 @@ export class FireAuthService {
 
   // Firebase Logout
   signOut() {
-    this.resetCurrentUser();
     return this.afAuth.signOut().then(() => {
+      this.resetCurrentUser();
       this.router.navigate(['login']).then(() => console.log('redirectTo Login page'));
     });
   }

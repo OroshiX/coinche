@@ -12,6 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Clone the request and replace the original headers with
     // cloned headers, updated with the authorization.
+    console.log('in interception');
     const authReq = req.clone({
       withCredentials: true,
       headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')

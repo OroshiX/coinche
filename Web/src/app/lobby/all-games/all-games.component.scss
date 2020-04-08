@@ -3,3 +3,16 @@
   justify-content: center;
   align-items: center;
 }
+.wrapper-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.button-select {
+  flex: fit-content;
+}
+.game-id {
+  flex: fit-content;
+  margin-right: 15px;
+}

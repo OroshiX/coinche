@@ -23,11 +23,13 @@ import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { CanActivateGame } from './services/can-activates/can-activate-game';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
+import { LoggingInterceptor } from './services/http-interceptors/logging-interceptor';
 import { AlertComponent } from './shared/alert/alert.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+  {provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true},
 ];
 
 @NgModule({
