@@ -11,10 +11,6 @@ export class CanActivateGame implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot):
     Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const bool = this.loginService.getUserTokenStatus();
-    if (this.loginService.getUserTokenStatus() === false) {
-      alert('Sorry, You are not authorized to play. Please sign in !');
-    }
-    return bool;
+    return this.loginService.getUserTokenStatus();
   }
 }

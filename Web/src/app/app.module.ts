@@ -59,7 +59,6 @@ export const httpInterceptorProviders = [
     HttpClientModule,
   ],
   providers: [CanActivateGame, httpInterceptorProviders],
-  /*providers: [CanActivateGame, httpInterceptorProviders],*/
   bootstrap: [AppComponent]
 })
 export class AppModule {

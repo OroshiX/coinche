@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {AgGridAngular} from 'ag-grid-angular';
 import {tap} from 'rxjs/operators';
-import {ApiOutsideGameService} from '../../services/apis/api-outside-game.service';
+import {ApiLobbyService} from '../../services/apis/api-lobby.service';
 import {GameI} from '../../shared/models/game-interface';
 
 
@@ -22,7 +22,7 @@ export class AllGamesComponent implements OnInit {
     {headerName: 'Creator', field: 'nicknameCreator', width: 125, sortable: true, filter: true}
   ];
 
-  constructor(private apiService: ApiOutsideGameService) {
+  constructor(private apiService: ApiLobbyService) {
   }
 
   ngOnInit(): void {

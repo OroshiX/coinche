@@ -11,13 +11,17 @@ const routes: Routes = [
   },
   {
     path: 'play',
-    loadChildren: () => import('./game-inside/game/game.module').then(m => m.GameModule),
+    loadChildren: () => import('./games/game/game.module').then(m => m.GameModule),
     canActivate: [CanActivateGame]
   },
   {
     path: 'all-games',
-    loadChildren: () => import('./game-outside/all-games/all-games.module').then(m => m.AllGamesModule),
+    loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
     canActivate: [CanActivateGame]
+  },
+  { path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
   {
     path: '**',

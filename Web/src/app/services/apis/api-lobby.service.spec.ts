@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ApiOutsideGameService } from './api-outside-game.service';
+import { ApiLobbyService } from './api-lobby.service';
 
 describe('ApiInitGameService', () => {
-  let service: ApiOutsideGameService;
+  let service: ApiLobbyService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ApiOutsideGameService);
+    service = TestBed.inject(ApiLobbyService);
   });
 
   it('should be created', () => {

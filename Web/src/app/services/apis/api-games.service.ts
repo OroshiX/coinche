@@ -6,7 +6,7 @@ import { API_BACKEND_GAMES, GET_TABLE } from './api-constant';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiInGameService {
+export class ApiGamesService {
 
   constructor(private httpClient: HttpClient) { }
 

@@ -1,25 +1,27 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import { GameI } from '../../shared/models/game-interface';
-import { ALL_GAMES, API_BACKEND, CREATE_GAME, httpOptions, JOIN_GAME } from './api-constant';
+import { ALL_GAMES, API_BACKEND, API_BACKEND_LOBBY, CREATE_GAME, JOIN_GAME } from './api-constant';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiOutsideGameService {
+export class ApiLobbyService {
 
   constructor(private httpClient: HttpClient) {
   }
 
   allGames(): Observable<GameI[]> {
     console.log(API_BACKEND + 'lobby/' + ALL_GAMES);
-    return this.httpClient.get<GameI[]>(API_BACKEND + 'lobby/' + ALL_GAMES);
+    return this.httpClient.get<GameI[]>(API_BACKEND_LOBBY + ALL_GAMES)
+      .pipe(shareReplay<GameI[]>(1));
   }
 
   createGame(): Observable<HttpResponse<any>> {
-    return this.httpClient.post<string>(API_BACKEND + CREATE_GAME, '',
+    return this.httpClient.post<string>(API_BACKEND_LOBBY + CREATE_GAME, '',
       {observe: 'response'});
   }
 
@@ -27,7 +29,7 @@ export class ApiOutsideGameService {
     const parameters = new HttpParams();
     parameters.append('gameId', gameId);
     parameters.append('nickname', nickname);
-    return this.httpClient.post<string>(API_BACKEND + JOIN_GAME, '',
+    return this.httpClient.post<string>(API_BACKEND_LOBBY + JOIN_GAME, '',
       {params: parameters, observe: 'response'});
   }
 }

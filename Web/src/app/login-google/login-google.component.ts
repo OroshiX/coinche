@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
 
 @Component({
@@ -19,8 +19,11 @@ export class LoginGoogleComponent implements OnInit {
 
   signIn() {
     this.fireAuthService.signinWithGoogle()
-      .then((res) =>
-        console.log('Sign in with google - user: ', res?.user?.displayName));
+      .then((res) => {
+          console.log(res.credential.toJSON());
+          console.log('Sign in with google - user: ', res?.user?.displayName);
+        }
+      );
   }
 
 }
