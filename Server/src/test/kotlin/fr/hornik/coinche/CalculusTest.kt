@@ -12,8 +12,28 @@ import org.junit.jupiter.api.Test
 class CalculusTest {
     private lateinit var bids: List<Bid>
 
+    enum class dbgLevel(val value: Int) {
+        NONE(0), DEBUG(1), FUNCTION(2), SCORE(4), HTML(8), HTMLFUNC(10), MISC(16);
+
+        infix fun and(traceLevel: CalculusTest.dbgLevel): Any {
+            return traceLevel.value and this.value
+
+        }
+        infix fun or(traceLevel: CalculusTest.dbgLevel): Any {
+            return traceLevel.value or this.value
+
+        }
+        fun toInt():Int {
+            return this.value
+        }
+    }
+
+    var TraceLevel: dbgLevel = dbgLevel.FUNCTION
+
     @BeforeEach
     fun initBids() {
+        DBGprintln(dbgLevel.FUNCTION,"Enter initBids")
+
         bids = listOf(
                 SimpleBid(CardColor.HEART, 80, PlayerPosition.NORTH),
                 Pass(PlayerPosition.EAST),
@@ -29,13 +49,15 @@ class CalculusTest {
     @Test
     fun testBid() {
         //testUnit()
-        var EW:MutableList<MutableList<CardPlayed>> = mutableListOf()
-        var NS:MutableList<MutableList<CardPlayed>> = mutableListOf()
-        var aPair = Pair(EW,NS)
+        DBGprintln(dbgLevel.FUNCTION,"Enter testBid")
 
-        for (i in 1..10) {
-            println("<h2> Partie N $i</h2>\n\n")
-            aPair = testPartie(pliNS = NS,pliEW = EW)
+        var EW: MutableList<MutableList<CardPlayed>> = mutableListOf()
+        var NS: MutableList<MutableList<CardPlayed>> = mutableListOf()
+        var aPair = Pair(EW, NS)
+
+        for (i in 1..2000) {
+            DBGprintln(dbgLevel.HTML, "<h2> Partie N $i</h2>\n\n")
+            aPair = testPartie(pliNS = NS, pliEW = EW)
             EW = aPair.first
             NS = aPair.second
 
@@ -44,14 +66,26 @@ class CalculusTest {
     }
 
     fun testUnit() {
+        DBGprintln(dbgLevel.FUNCTION,"Enter testUnit")
 
         for (bid in bids) {
-            println(bid)
+            DBGprintln(dbgLevel.MISC, bid)
         }
     }
 
-    fun testPartie(pliNS: MutableList<MutableList<CardPlayed>>, pliEW:MutableList<MutableList<CardPlayed>>):Pair<MutableList<MutableList<CardPlayed>>, MutableList<MutableList<CardPlayed>>>{
-        println("<table><tr><td>\n")
+    fun DBGprintln(wantedLevel: dbgLevel, Str: Any) {
+
+        if ((wantedLevel and TraceLevel) != 0) {
+            println("$wantedLevel : $Str")
+        }
+
+
+    }
+
+    fun testPartie(pliNS: MutableList<MutableList<CardPlayed>>, pliEW: MutableList<MutableList<CardPlayed>>): Pair<MutableList<MutableList<CardPlayed>>, MutableList<MutableList<CardPlayed>>> {
+        DBGprintln(dbgLevel.FUNCTION,"Enter testPartie")
+
+        DBGprintln(dbgLevel.HTML, "<table><tr><td>\n")
         val mapPos = mapOf(PlayerPosition.NORTH to 0,
                 PlayerPosition.WEST to 1,
                 PlayerPosition.SOUTH to 2,
@@ -65,37 +99,39 @@ class CalculusTest {
         var firstD = lRand.random()
         var taker = lRand.random()
         val aBid = SimpleBid(colorRand.random(), ptsRand.random(), taker)
-        var temp1:List<List<Card>>
+        var temp1: List<List<Card>>
 
-        if ((pliNS.size == 0) && (pliEW.size == 0 )) {
+        if ((pliNS.size == 0) && (pliEW.size == 0)) {
             temp1 = firstDealOfCards(firstD, spreadRand.random())
         } else {
-            temp1 = dealCards(pliNS,pliEW,10,spreadRand.random(),firstD)
+            temp1 = dealCards(pliNS, pliEW, 10, spreadRand.random(), firstD)
         }
         var fourHands = listOf<MutableList<Card>>(temp1[0].toMutableList(), temp1[1].toMutableList(), temp1[2].toMutableList(), temp1[3].toMutableList())
 
         var indexPlayer = (mapPos[firstD]!! + 1) % 4
-        val PlisNS:MutableList<MutableList<CardPlayed>> = mutableListOf()
-        val PlisEW:MutableList<MutableList<CardPlayed>> = mutableListOf()
+        val PlisNS: MutableList<MutableList<CardPlayed>> = mutableListOf()
+        val PlisEW: MutableList<MutableList<CardPlayed>> = mutableListOf()
         var dixDer = PlayerPosition.NORTH
-        println("<pre>Contrat : $aBid ")
+        DBGprintln(dbgLevel.HTML, "<pre>Contrat : $aBid ")
 
 
         for (tour in 1..8) {
             if ((tour % 2) == 1) {
-                println("</pre><tr><td><pre>\n <b>Tour $tour</b>")
+                DBGprintln(dbgLevel.HTML, "</pre><tr><td><pre>\n <b>Tour $tour</b>")
             } else {
-                println("</pre><td><pre>\n<b>Tour $tour</b>")
+                DBGprintln(dbgLevel.HTML, "</pre><td><pre>\n<b>Tour $tour</b>")
             }
             val listCardP = mutableListOf<CardPlayed>()
             for (i in 0..3) {
                 fourHands[tHand[indexPlayer]].sortWith(Comparator { o1, o2 -> o1.color.compareTo(o2.color) })
-                printHand(fourHands[tHand[indexPlayer]], "Player ${lRand[tHand[indexPlayer]]}")
+                if ((dbgLevel.HTML and TraceLevel) != 0)
+                    printHand(fourHands[tHand[indexPlayer]], "Player ${lRand[tHand[indexPlayer]]}")
                 val c = allValidCardsToPlay(fourHands[indexPlayer], aBid, listCardP)
-                println("")
+                DBGprintln(dbgLevel.HTML, "")
 
-                printHand(c,  "valid cards for ${lRand[indexPlayer]}")
-                println("<font color=#FF0000 bgcolor=0x00FFFF> ${lRand[indexPlayer]} plays  ${c[0].value}  of ${c[0].color} </font>")
+                if ((dbgLevel.HTML and TraceLevel) != 0)
+                    printHand(c, "valid cards for ${lRand[indexPlayer]}")
+                DBGprintln(dbgLevel.HTML, "<font color=#FF0000 bgcolor=0x00FFFF> ${lRand[indexPlayer]} plays  ${c[0].value}  of ${c[0].color} </font>")
                 listCardP.add(CardPlayed(c[0], BeloteValue.NONE, lRand[indexPlayer]))
                 fourHands[tHand[indexPlayer]].remove(c[0])
                 indexPlayer = (indexPlayer + 1) % 4
@@ -110,22 +146,25 @@ class CalculusTest {
                 PlisEW.add(listCardP)
             }
         }
-        println("</pre></tr><tr><td>")
-        println("\n\nScore = ${calculateScoreGame(PlisNS, PlisEW, dixDer, aBid)}")
-        println("</table>")
-        println("<pre>")
-        println("\n\nDisplay Structure of tricks\n")
-        var i =0
+        DBGprintln(dbgLevel.HTML, "</pre></tr><tr><td>")
+        DBGprintln(dbgLevel.SCORE, "\n\nScore = ${calculateScoreTricks(PlisNS, PlisEW, dixDer, aBid)}")
+        DBGprintln(dbgLevel.HTML, "</table>")
+        DBGprintln(dbgLevel.HTML, "<pre>")
+        DBGprintln(dbgLevel.HTML, "\n\nDisplay Structure of tricks\n")
+        var i = 0
         for (li in PlisEW) {
-            i=i+1
-            printHand(li.map {it -> it.card},"EastWest Pli $i")
+            i = i + 1
+            if ((dbgLevel.HTML and TraceLevel) != 0)
+                printHand(li.map { it -> it.card }, "EastWest Pli $i")
         }
         for (li in PlisNS) {
-            i=i+1
-            printHand(li.map {it -> it.card},"North South Pli $i")
+            i = i + 1
+            if ((dbgLevel.HTML and TraceLevel) != 0)
+
+                printHand(li.map { it -> it.card }, "North South Pli $i")
         }
-        println("</pre><br><br><br>")
-        return(Pair(PlisEW,PlisNS))
+        DBGprintln(dbgLevel.HTML, "</pre><br><br><br>")
+        return (Pair(PlisEW, PlisNS))
 
     }
 }
