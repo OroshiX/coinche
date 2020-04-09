@@ -11,9 +11,8 @@ const CURRENT_USER = 'currentUser';
 })
 export class SessionStorageService {
 
-  constructor() {
-  }
-  private userToken: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(null);
+  private userToken: BehaviorSubject<CurrentUser> =
+    new BehaviorSubject<CurrentUser>(JSON.parse(sessionStorage.getItem(CURRENT_USER)));
 
   userToken$ = this.userToken.asObservable();
 
@@ -29,8 +28,12 @@ export class SessionStorageService {
     return JSON.parse(sessionStorage.getItem(CURRENT_USER));
   }
 
-  static clearCurrentUserSession():void  {
+  static clearCurrentUserSession(): void {
     sessionStorage.clear();
+  }
+
+
+  constructor() {
   }
 
   saveCurrentUser(currentUser: CurrentUser) {

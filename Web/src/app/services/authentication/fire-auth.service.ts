@@ -3,7 +3,6 @@ import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
-import { tap } from 'rxjs/operators';
 import { CurrentUser } from '../../shared/models/user';
 import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
 import { ApiLogInOutService } from '../apis/api-log-in-out.service';
@@ -20,10 +19,6 @@ export class FireAuthService {
     private apiService: ApiLogInOutService,
     private sessionService: SessionStorageService
   ) {
-    /*this.afAuth.authState.subscribe((user: firebase.User | null) => {
-      console.log(user);
-      this.updateUser(user);
-    });*/
   }
 
   // Firebase SignInWithPopup
@@ -34,7 +29,6 @@ export class FireAuthService {
       const idToken = await currentUser.getIdToken();
 
       this.apiService.loginToServer(idToken)
-        .pipe(tap(res => console.log(res)))
         .subscribe((ret: HttpResponse<any>) => {
           console.log(ret.status);
           if (ret.status === 204) {
@@ -72,23 +66,5 @@ export class FireAuthService {
     }
     this.sessionService.saveCurrentUser(usr);
   }
-
-  /* getUserTokenStatus(): boolean {
-     return (isNotNullAndNotUndefined(this.getUserToken()))
-       && this.getUserToken().idToken !== null && this.getUserToken().idToken !== '';
-   }*/
-
-  /*isConnectedObs(): Observable<boolean>{
-    return this.sessionService.isConnectedObs();
-  }
-
-  private getUserToken(): CurrentUser {
-    return this.sessionService.getCurrentUser();
-  }
-
-  resetCurrentUser(): void {
-    this.sessionService.resetCurrentUser();
-  }
-  }*/
 
 }

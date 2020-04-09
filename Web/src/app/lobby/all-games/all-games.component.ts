@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AgGridAngular } from 'ag-grid-angular';
-import { tap } from 'rxjs/operators';
 import { ApiLobbyService } from '../../services/apis/api-lobby.service';
 import { Game } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
@@ -53,7 +52,7 @@ export class AllGamesComponent implements OnInit {
     dialogRef.afterClosed().subscribe(data => {
       console.log('The dialog was closed');
       this.newGame = data;
-      this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res))
+      this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res));
     });
   }
 
@@ -61,10 +60,8 @@ export class AllGamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.apiService.allGames()
-      .pipe(tap(res => console.log(res)))
       .subscribe((res: GameI[]) => {
         this.rowData = res;
-        console.log(this.isRowSelected);
       });
   }
 
@@ -74,7 +71,6 @@ export class AllGamesComponent implements OnInit {
     this.selectedDataStringPresentation = selectedData
       .map((node: GameI) => node.id).join(', ');
     this.isRowSelected = selectedData.some((node: GameI) => (node !== null && node?.id !== null));
-    console.log(this.isRowSelected);
   }
 
   isRowSelectable(rowNode: any): boolean {
