@@ -2,6 +2,7 @@ package fr.hornik.coinche.rest
 
 import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.dto.Table
+import fr.hornik.coinche.exception.EmptyNameException
 import fr.hornik.coinche.exception.NotAuthorizedOperation
 import fr.hornik.coinche.exception.NotInGameException
 import fr.hornik.coinche.model.*
@@ -28,6 +29,11 @@ class GameController(@Autowired val data: DataManagement,
                 Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH),
                         PlayerPosition.NORTH, surcoinche = true)
         )
+    }
+
+    @GetMapping("/triggerRefresh")
+    fun triggerRefresh() {
+        data.refresh()
     }
 
     @GetMapping("/{gameId}/getTable",
@@ -86,6 +92,18 @@ class GameController(@Autowired val data: DataManagement,
                     "Game has not started yet")
             TableState.ENDED        -> return game.plisCampNS + game.plisCampEW
         }
+    }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/{gameId}/setNickName")
+    fun setNickNameGame(@RequestParam(required = true) nickname: String,
+                        @PathVariable(required = true) gameId: String) {
+        val set = data.getGameOrThrow(gameId)
+        if (!set.players.map { it.uid }.contains(user.uid)) {
+            throw NotInGameException(gameId)
+        }
+        if(nickname.isBlank()) throw EmptyNameException()
+        user.nickname = nickname
+        data.changeNickname(set, user)
     }
 
 }

@@ -51,7 +51,7 @@ data class SetOfGames(var currentBid: Bid = Pass(),
                 nextPlayer = whoseTurn,
                 bids = bids,
                 currentBid = currentBid,
-                cards = me.cardsInHand
+                onTable = me.cardsInHand
         )
     }
 

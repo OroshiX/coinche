@@ -20,7 +20,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
     }
 
     fun allMyGames(uid: String): List<Game> {
-        fun SetOfGames.containsMe() = players.map { it.uid }.contains(uid)
+        fun SetOfGames.containsMe() =
+                players.asSequence().map { it.uid }.contains(uid)
         return sets.filter {
             !it.isFull() || it.containsMe()
         }.map {
@@ -42,14 +43,19 @@ class DataManagement(@Autowired private val fire: FireApp) {
     /**
      * Precondition: the game is not full
      */
-    fun joinGame(set: SetOfGames, user: User): Player {
+    fun joinGame(set: SetOfGames,
+                 user: User, nickname: String?): Player {
         // Always called when it is not full
-        val username = fire.getOrSetUsername(user)
-        val player = set.addPlayer(user.uid, username)
+        nickname?.let {
+            if (it.isNotBlank())
+                fire.setNewUsername(user.apply { this.nickname = it })
+        }
+        val player = set.addPlayer(user.uid, user.nickname)
         if (set.isFull()) {
             // Time to distribute
             distribute(set)
         }
+        fire.saveGame(set)
         return player
     }
 
@@ -76,7 +82,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         set.players.first { it.position == PlayerPosition.WEST }.cardsInHand =
                 hands[3].toMutableList()
         set.state = TableState.BIDDING
-        fire.saveGame(set)
+//        fire.saveGame(set)
     }
 
     private fun scoreAndCleanupAfterGame(set: SetOfGames) {
@@ -92,6 +98,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
             // Continue playing another game
             distribute(set)
         }
+        fire.saveGame(set)
     }
 
     private fun getGame(setId: String): SetOfGames? =
@@ -109,5 +116,15 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (!isValidBid(game.bids, bid)) throw InvalidBidException(bid)
         game.bids.add(bid)
         fire.saveGame(game)
+    }
+
+    fun changeNickname(set: SetOfGames, user: User) {
+        set.players.first { it.uid == user.uid }.nickname = user.nickname
+        fire.saveGame(set)
+    }
+
+    fun refresh() {
+        sets.clear()
+        sets.addAll(fire.getAllGames())
     }
 }

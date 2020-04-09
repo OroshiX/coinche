@@ -7,7 +7,7 @@ import fr.hornik.coinche.serialization.JsonSerialize
 
 data class Table(val id: String,
                  val nicknames: Nicknames,
-                 val cards: List<Card>,
+                 val onTable: List<Card>,
                  val played: List<CardPlayed>,
                  var state: TableState,
                  val nextPlayer: PlayerPosition,
@@ -21,7 +21,7 @@ data class Table(val id: String,
         return mapOf(
                 "id" to id,
                 "nicknames" to nicknames.toFirebase(),
-                "cards" to cards,
+                "onTable" to onTable,
                 "played" to played,
                 "state" to state.value,
                 "nextPlayer" to nextPlayer.value,

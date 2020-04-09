@@ -37,11 +37,6 @@ class FireApp {
         db = FirestoreClient.getFirestore(firebaseApp)
     }
 
-    fun saveUser(user: UserDto) {
-        db.collection(COLLECTION_PLAYERS).document(user.uid)
-                .set(user)
-    }
-
     /**
      * Saves the new game to firebase
      */
@@ -100,6 +95,29 @@ class FireApp {
         return username
     }
 
+    fun setNewUsername(user: User) {
+        val doc = db.collection(COLLECTION_PLAYERS).document(user.uid)
+        doc.set(UserDto(user))
+    }
+
+    fun saveUser(userDto: UserDto): UserDto {
+        // check if the user exists in firestore. If it exists, then get their nickname.
+        val documentUser =
+                db.collection(COLLECTION_PLAYERS).document(userDto.uid)
+        val userDoc = documentUser.get().get()
+        if (userDoc.exists()) {
+            userDoc.toObject(UserDto::class.java)?.let {
+                if (it.nickname.isNotBlank()) {
+                    return userDto.copy(nickname = it.nickname)
+                } else {
+                    documentUser.set(userDto)
+                }
+            } ?: documentUser.set(userDto)
+        } else {
+            documentUser.set(userDto)
+        }
+        return userDto
+    }
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
         val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
