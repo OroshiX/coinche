@@ -1,5 +1,6 @@
 package fr.hornik.coinche.model.values
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonValue
 
@@ -15,5 +16,22 @@ enum class CardValue(@JsonValue val value: Int,
     TEN(10, 10, 10, 4, 6),
     NINE(9, 14, 0, 6, 2),
     EIGHT(8, 0, 0, 1, 1),
-    SEVEN(7, 0, 0, 0, 0)
+    SEVEN(7, 0, 0, 0, 0);
+
+    companion object {
+        private fun forCode(code: Int): CardValue {
+            for (cardValue in values()) {
+                if (cardValue.value == code) {
+                    return cardValue
+                }
+            }
+            throw IllegalArgumentException()
+        }
+
+        @JsonCreator
+        @JvmStatic
+        private fun creator(name: String): CardValue {
+            return forCode(name.toInt())
+        }
+    }
 }

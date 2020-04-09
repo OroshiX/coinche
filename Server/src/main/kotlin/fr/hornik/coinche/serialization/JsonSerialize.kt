@@ -5,7 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import java.text.SimpleDateFormat
 
 object JsonSerialize {
-    val mapper = ObjectMapper().setDateFormat(
+    val mapper: ObjectMapper = ObjectMapper().setDateFormat(
             SimpleDateFormat("yyyyMMdd'T'HH:mm:ss"))
 
     fun <T> toJson(item: T): String =
