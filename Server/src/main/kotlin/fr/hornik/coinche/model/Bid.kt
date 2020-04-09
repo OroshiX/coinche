@@ -1,24 +1,32 @@
 package fr.hornik.coinche.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.annotation.JsonTypeName
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.serialization.JsonSerialize
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = "type",
         include = JsonTypeInfo.As.PROPERTY
 )
-//@JsonSubTypes(JsonSubTypes.Type(SimpleBid::class, name = "SimpleBid"),
-//              JsonSubTypes.Type(Capot::class, name = "Capot"),
-//              JsonSubTypes.Type(General::class, name = "General"),
-//              JsonSubTypes.Type(Pass::class, name = "Pass"))
+@JsonSubTypes(
+        JsonSubTypes.Type(SimpleBid::class, name = "SimpleBid"),
+        JsonSubTypes.Type(Capot::class, name = "Capot"),
+        JsonSubTypes.Type(General::class, name = "General"),
+        JsonSubTypes.Type(Pass::class, name = "Pass"),
+        JsonSubTypes.Type(Coinche::class, name = "Coinche")
+)
 sealed class Bid(val position: PlayerPosition = PlayerPosition.NORTH) {
     fun curColor(): CardColor {
         return when (this) {
-            is Annonce -> this.color
-            else       -> CardColor.HEART
+            is SimpleBid -> this.color
+            is Capot     -> this.color
+            is General   -> this.color
+            else         -> CardColor.HEART
             // TODO treat error case ( last else)
         }
     }
@@ -29,42 +37,45 @@ sealed class Bid(val position: PlayerPosition = PlayerPosition.NORTH) {
             else       -> this.position
         }
     }
+
+    companion object {
+        @JsonCreator
+        @JvmStatic
+        private fun creator(name: String): Bid? {
+            return Bid::class.sealedSubclasses.firstOrNull { it.simpleName == name }?.objectInstance
+        }
+    }
+
+    fun toFirebase(): String = JsonSerialize.toJson(this)
 }
 
-@JsonTypeName("Annonce")
-sealed class Annonce(position: PlayerPosition, val color: CardColor) :
-        Bid(position)
-
-@JsonTypeName("SimpleBid")
-class SimpleBid(color: CardColor = CardColor.HEART, val points: Int = 0,
+class SimpleBid(val color: CardColor = CardColor.HEART, val points: Int = 0,
                 position: PlayerPosition = PlayerPosition.NORTH) :
-        Annonce(position, color) {
+        Bid(position) {
     override fun toString(): String {
         return "$points $color by $position"
     }
 }
 
-@JsonTypeName("General")
-class General(color: CardColor = CardColor.HEART,
+class General(val color: CardColor = CardColor.HEART,
               position: PlayerPosition = PlayerPosition.NORTH,
-              val belote: Boolean = false) : Annonce(position, color) {
+              val belote: Boolean = false) : Bid(position) {
     override fun toString(): String {
         return "General${if (belote) " belote" else ""} of $position at $color"
     }
 }
 
-@JsonTypeName("Capot")
-class Capot(color: CardColor = CardColor.HEART,
+class Capot(val color: CardColor = CardColor.HEART,
             position: PlayerPosition = PlayerPosition.NORTH,
             val belote: Boolean = false) :
-        Annonce(position, color) {
+        Bid(position) {
     override fun toString(): String {
         return "Capot${if (belote) " belote" else ""} of $position at $color"
     }
 }
 
 @JsonTypeName("Coinche")
-class Coinche(val annonce: Annonce = SimpleBid(),
+class Coinche(val annonce: Bid = SimpleBid(),
               position: PlayerPosition = PlayerPosition.NORTH,
               val surcoinche: Boolean = false) :
         Bid(position) {

@@ -1,13 +1,14 @@
 package fr.hornik.coinche
 
+import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.model.SetOfGames
+import fr.hornik.coinche.model.User
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class DataTest() {
+class DataTest {
 
     lateinit var dataManagement: DataManagement
     lateinit var set: SetOfGames
@@ -25,7 +26,7 @@ class DataTest() {
 //        given(fireApp.saveNewGame(set)).willReturn("toto")
 //        given(fireApp.getAllGames()).willReturn(listOf())
 //        given(fireApp.getOrSetUsername(User())).willReturn("Tutu")
-        dataManagement.createGame(set)
-        print(dataManagement.getGameOrThrow("1"))
+        dataManagement.createGame(set, User())
+        print(dataManagement.getGameOrThrow(set.id))
     }
 }

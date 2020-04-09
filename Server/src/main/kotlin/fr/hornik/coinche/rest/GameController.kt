@@ -1,6 +1,6 @@
 package fr.hornik.coinche.rest
 
-import fr.hornik.coinche.DataManagement
+import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.exception.NotAuthorizedOperation
 import fr.hornik.coinche.exception.NotInGameException
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/games")
@@ -33,23 +32,12 @@ class GameController(@Autowired val data: DataManagement,
 
     @GetMapping("/{gameId}/getTable",
                 produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getTable(@PathVariable("gameId") gameId: String,
-                 httpServletRequest: HttpServletRequest): Table {
-        print(httpServletRequest.remoteAddr)
+    fun getTable(@PathVariable("gameId") gameId: String): Table {
         val set = data.getGameOrThrow(gameId)
         if (!set.players.map { it.uid }.contains(user.uid)) {
             throw NotInGameException(gameId)
         }
-
-        return Table(
-                id = gameId,
-                state = set.state,
-                played = set.onTable,
-                nextPlayer = set.whoseTurn,
-                cards = set.players.first { player -> player.uid == user.uid }.cardsInHand,
-                bids = set.bids,
-                nicknames = Nicknames(set.players)
-        )
+        return set.toTable(user.uid)
     }
 
     @PostMapping("/{gameId}/playCard")

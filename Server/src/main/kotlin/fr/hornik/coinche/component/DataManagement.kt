@@ -1,7 +1,6 @@
-package fr.hornik.coinche
+package fr.hornik.coinche.component
 
 import fr.hornik.coinche.business.*
-import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.exception.GameNotExistingException
 import fr.hornik.coinche.exception.InvalidBidException
 import fr.hornik.coinche.exception.NotYourTurnException
@@ -10,7 +9,6 @@ import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
@@ -19,11 +17,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     init {
         sets.addAll(fire.getAllGames())
-    }
-
-    companion object {
-        const val COLLECTION_SETS = "sets"
-        const val COLLECTION_PLAYERS = "players"
     }
 
     fun allMyGames(uid: String): List<Game> {
@@ -40,11 +33,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
      * Create a new table with the info given, and save it to firebase,
      * and return a new table object
      */
-    fun createGame(setOfGames: SetOfGames): SetOfGames {
-        val id = fire.saveNewGame(setOfGames)
-        val tableAdded = setOfGames.copy(id = id, lastModified = Date())
-        sets.add(tableAdded)
-        return tableAdded
+    fun createGame(setOfGames: SetOfGames, user: User): SetOfGames {
+        fire.saveGame(setOfGames, true)
+        sets.add(setOfGames)
+        return setOfGames
     }
 
     /**
@@ -84,7 +76,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         set.players.first { it.position == PlayerPosition.WEST }.cardsInHand =
                 hands[3].toMutableList()
         set.state = TableState.BIDDING
-        fire.updateGame(set)
+        fire.saveGame(set)
     }
 
     private fun scoreAndCleanupAfterGame(set: SetOfGames) {
@@ -116,6 +108,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (game.whoseTurn != me.position) throw NotYourTurnException()
         if (!isValidBid(game.bids, bid)) throw InvalidBidException(bid)
         game.bids.add(bid)
-        fire.updateGame(game)
+        fire.saveGame(game)
     }
 }

@@ -3,7 +3,6 @@ package fr.hornik.coinche.rest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.cloud.FirestoreClient
-import fr.hornik.coinche.DataManagement
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.exception.DeprecatedException
@@ -20,9 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @Component
-class LoginController(@Autowired fire: FireApp, @Autowired
+class LoginController(@Autowired val fire: FireApp, @Autowired
 private val user: User) {
-    private final val db = FirestoreClient.getFirestore(fire.firebaseApp)
     private final val auth = FirebaseAuth.getInstance(fire.firebaseApp)
 
     @Deprecated("Use /loginToken instead",
@@ -43,8 +41,7 @@ private val user: User) {
             val uid = decodedToken.uid
             println("uid: $uid")
             user.uid = uid
-            db.collection(DataManagement.COLLECTION_PLAYERS).document(uid)
-                    .set(UserDto(user))
+            fire.saveUser(UserDto(user))
             model.addAttribute(User.ATTRIBUTE_NAME, user)
         } catch (e: FirebaseAuthException) {
             e.printStackTrace()

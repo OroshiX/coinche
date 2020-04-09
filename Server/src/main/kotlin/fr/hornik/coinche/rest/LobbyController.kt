@@ -1,6 +1,6 @@
 package fr.hornik.coinche.rest
 
-import fr.hornik.coinche.DataManagement
+import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.exception.GameFullException
 import fr.hornik.coinche.exception.NotAuthenticatedException
 import fr.hornik.coinche.model.Game
@@ -21,9 +21,10 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
      * Create a game and return its id
      */
     @PostMapping("/createGame", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun createGame(model: Model): String {
+    fun createGame(): String {
         if (user.uid.isEmpty()) throw NotAuthenticatedException()
-        val newGame = dataManagement.createGame(SetOfGames(user))
+        val newGame = SetOfGames(user)
+        dataManagement.createGame(newGame, user)
         return newGame.id
     }
 

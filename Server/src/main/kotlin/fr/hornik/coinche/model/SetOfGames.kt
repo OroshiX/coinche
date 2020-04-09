@@ -1,5 +1,6 @@
 package fr.hornik.coinche.model
 
+import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import java.util.*
@@ -24,6 +25,32 @@ data class SetOfGames(var currentBid: Bid = Pass(),
 
     fun isFull(): Boolean {
         return players.size >= 4
+    }
+
+    fun toTable(uidUser: String): Table {
+        val me = players.first { it.uid == uidUser }
+        return Table(
+                id = id,
+                score = score,
+                winnerLastTrick = whoWonLastTrick,
+                lastTrick = whoWonLastTrick?.let {
+                    if (state == TableState.PLAYING) {
+                        return@let when (it) {
+                            PlayerPosition.NORTH, PlayerPosition.SOUTH -> plisCampNS.last()
+                            PlayerPosition.WEST, PlayerPosition.EAST   -> plisCampEW.last()
+                        }
+                    }
+                    return@let listOf<CardPlayed>()
+                } ?: listOf(),
+                myPosition = me.position,
+                nicknames = Nicknames(players),
+                state = state,
+                played = onTable,
+                nextPlayer = whoseTurn,
+                bids = bids,
+                currentBid = currentBid,
+                cards = me.cardsInHand
+        )
     }
 
     /**

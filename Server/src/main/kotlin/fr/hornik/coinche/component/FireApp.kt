@@ -5,7 +5,7 @@ import com.google.cloud.firestore.Firestore
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
-import fr.hornik.coinche.DataManagement
+import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
@@ -16,7 +16,13 @@ import java.util.*
 @Service
 class FireApp {
     final val firebaseApp: FirebaseApp
-    final val db: Firestore
+    private final val db: Firestore
+
+    companion object {
+        const val COLLECTION_SETS = "sets"
+        const val COLLECTION_PLAYERS_SETS = "playersSets"
+        const val COLLECTION_PLAYERS = "players"
+    }
 
     init {
         // /!\ Don't forget to set the env variable of GOOGLE_APPLICATION_CREDENTIALS
@@ -31,27 +37,54 @@ class FireApp {
         db = FirestoreClient.getFirestore(firebaseApp)
     }
 
+    fun saveUser(user: UserDto) {
+        db.collection(COLLECTION_PLAYERS).document(user.uid)
+                .set(user)
+    }
+
     /**
-     * Saves the table to firebase
+     * Saves the new game to firebase
      */
-    fun saveNewGame(setOfGames: SetOfGames): String {
-        val jsonSet = JsonSerialize.toJson(setOfGames)
+    private fun saveNewGame(setOfGames: SetOfGames): String {
+        val jsonSet =
+                JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
         val addedDocRef =
-                db.collection(DataManagement.COLLECTION_SETS)
-                        .add(mapOf("gson" to jsonSet))
+                db.collection(COLLECTION_SETS).add(mapOf("gson" to jsonSet))
         return addedDocRef.get().id
     }
 
-    fun updateGame(table: SetOfGames) {
+    fun saveGame(setOfGames: SetOfGames, new: Boolean = false) {
+        // save the game in sets
+        if (new) {
+            val id = saveNewGame(setOfGames)
+            setOfGames.id = id
+        } else {
+            updateGame(setOfGames)
+        }
+
+        // save the tables for players in playersSets
+        for (uid in setOfGames.players.map { it.uid }) {
+            saveTable(setOfGames.toTable(uid), uid)
+        }
+    }
+
+    private fun saveTable(table: Table, userUID: String): String {
+        db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
+                .collection(COLLECTION_PLAYERS).document(userUID)
+                .set(table.toFirebase())
+        return userUID
+    }
+
+    private fun updateGame(table: SetOfGames) {
         val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
-        db.collection(DataManagement.COLLECTION_SETS).document(table.id)
+        db.collection(
+                COLLECTION_SETS).document(table.id)
                 .set(mapOf("gson" to jsonTable))
     }
 
     fun getOrSetUsername(user: User): String {
         var username: String = user.nickname
-        val doc = db.collection(DataManagement.COLLECTION_PLAYERS)
-                .document(user.uid)
+        val doc = db.collection(COLLECTION_PLAYERS).document(user.uid)
         val playerDoc = doc.get().get()
         if (playerDoc.exists()) {
             if (username.isBlank()) {
@@ -69,8 +102,7 @@ class FireApp {
 
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
-        val listDocuments =
-                db.collection(DataManagement.COLLECTION_SETS).listDocuments()
+        val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
         for (docRef in listDocuments) {
             val documentSnapshot = docRef.get().get()
             if (documentSnapshot.exists()) {

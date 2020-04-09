@@ -6,4 +6,8 @@ data class Score(var northSouth: Int = 0, var eastWest: Int = 0) {
         eastWest += scoreGame.eastWest
     }
 
+    fun toFirebase(): Map<String, Int> {
+        return mapOf("northSouth" to northSouth,
+                     "eastWest" to eastWest)
+    }
 }
