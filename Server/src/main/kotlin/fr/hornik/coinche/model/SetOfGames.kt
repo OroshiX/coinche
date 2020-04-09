@@ -7,7 +7,8 @@ import java.util.*
 data class SetOfGames(var currentBid: Bid = Pass(),
                       var id: String = "",
                       var score: Score = Score(0, 0),
-                      val plisCampNS: List<List<CardPlayed>> = mutableListOf(),
+                      var whoWonLastTrick: PlayerPosition? = null,
+                      val plisCampNS: MutableList<List<CardPlayed>> = mutableListOf(),
                       val plisCampEW: MutableList<List<CardPlayed>> = mutableListOf(),
                       val bids: MutableList<Bid> = mutableListOf(),
                       var whoseTurn: PlayerPosition = PlayerPosition.NORTH,
@@ -23,6 +24,24 @@ data class SetOfGames(var currentBid: Bid = Pass(),
 
     fun isFull(): Boolean {
         return players.size >= 4
+    }
+
+    /**
+     * Return true if succeeded in winning the trick, else false
+     */
+    fun winTrick(who: PlayerPosition): Boolean {
+        if (state != TableState.PLAYING) return false
+        if (onTable.size != 4) return false
+
+        when (who) {
+            PlayerPosition.NORTH, PlayerPosition.SOUTH ->
+                plisCampNS.add(onTable.toList())
+            PlayerPosition.EAST, PlayerPosition.WEST   ->
+                plisCampEW.add(onTable.toList())
+        }
+        whoWonLastTrick = who
+        onTable.clear()
+        return true
     }
 
     private fun getNextPlayerToAddPosition(): PlayerPosition {

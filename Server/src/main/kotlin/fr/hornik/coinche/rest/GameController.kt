@@ -2,36 +2,41 @@ package fr.hornik.coinche.rest
 
 import fr.hornik.coinche.DataManagement
 import fr.hornik.coinche.dto.Table
-import fr.hornik.coinche.exception.GameNotExistingException
+import fr.hornik.coinche.exception.NotAuthorizedOperation
 import fr.hornik.coinche.exception.NotInGameException
 import fr.hornik.coinche.model.*
-import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.CardColor
-import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/games")
-class GameController(@Autowired val data: DataManagement, @Autowired val user: User) {
+class GameController(@Autowired val data: DataManagement,
+                     @Autowired val user: User) {
     @GetMapping("/home", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun home(): List<Bid> {
         return listOf(
                 SimpleBid(CardColor.HEART, 80, PlayerPosition.NORTH),
                 Pass(PlayerPosition.EAST),
                 SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH),
-                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH), PlayerPosition.WEST),
-                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH), PlayerPosition.NORTH, surcoinche = true)
+                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH),
+                        PlayerPosition.WEST),
+                Coinche(SimpleBid(CardColor.SPADE, 100, PlayerPosition.SOUTH),
+                        PlayerPosition.NORTH, surcoinche = true)
         )
     }
 
-    @GetMapping("/{gameId}/getTable", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun getTable(@PathVariable("gameId") gameId: String, httpServletRequest: HttpServletRequest): Table {
+    @GetMapping("/{gameId}/getTable",
+                produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getTable(@PathVariable("gameId") gameId: String,
+                 httpServletRequest: HttpServletRequest): Table {
         print(httpServletRequest.remoteAddr)
-        val set = data.getGame(gameId) ?: throw GameNotExistingException(gameId)
+        val set = data.getGameOrThrow(gameId)
         if (!set.players.map { it.uid }.contains(user.uid)) {
             throw NotInGameException(gameId)
         }
@@ -52,38 +57,47 @@ class GameController(@Autowired val data: DataManagement, @Autowired val user: U
     }
 
     @PostMapping("/{gameId}/announceBid")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun announceBid(@PathVariable gameId: String, @RequestBody bid: Bid) {
-
+        data.announceBid(gameId, bid, user)
     }
 
-    @GetMapping("/{gameId}/showLastTrick", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/{gameId}/showLastTrick",
+                produces = [MediaType.APPLICATION_JSON_VALUE])
     fun showLastTrick(@PathVariable gameId: String): List<CardPlayed> {
-        // TODO real values
-        return listOf(CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.NORTH),
-                      CardPlayed(Card(CardValue.EIGHT, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.EAST),
-                      CardPlayed(Card(CardValue.SEVEN, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.SOUTH),
-                      CardPlayed(Card(CardValue.KING, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.WEST))
+        val game = data.getGameOrThrow(gameId)
+        game.whoWonLastTrick?.let {
+            return when (it) {
+                PlayerPosition.NORTH,
+                PlayerPosition.SOUTH -> game.plisCampNS.last()
+                PlayerPosition.EAST,
+                PlayerPosition.WEST  -> game.plisCampEW.last()
+            }
+        } ?: throw IllegalStateException(
+                "Nobody won a trick, you can't see the last trick")
     }
 
-    @GetMapping("/{gameId}/getScore", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/{gameId}/getScore",
+                produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getScore(@PathVariable gameId: String): Score {
-        // TODO
-        return Score(80, 160)
+        val game = data.getGameOrThrow(gameId)
+        return game.score
     }
 
-    @GetMapping("/{gameId}/showAllTricks", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/{gameId}/showAllTricks",
+                produces = [MediaType.APPLICATION_JSON_VALUE])
     fun showAllTricks(@PathVariable gameId: String): List<List<CardPlayed>> {
-        // TODO
+        val game = data.getGameOrThrow(gameId)
         // If not finished, not allowed
-        return listOf(
-                listOf(CardPlayed(Card(CardValue.NINE, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.NORTH),
-                       CardPlayed(Card(CardValue.EIGHT, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.EAST),
-                       CardPlayed(Card(CardValue.SEVEN, CardColor.DIAMOND), BeloteValue.NONE, PlayerPosition.SOUTH),
-                       CardPlayed(Card(CardValue.KING, CardColor.DIAMOND), BeloteValue.BELOTE, PlayerPosition.WEST)),
-                listOf(CardPlayed(Card(CardValue.NINE, CardColor.CLUB), BeloteValue.NONE, PlayerPosition.NORTH),
-                       CardPlayed(Card(CardValue.EIGHT, CardColor.CLUB), BeloteValue.NONE, PlayerPosition.EAST),
-                       CardPlayed(Card(CardValue.SEVEN, CardColor.CLUB), BeloteValue.NONE, PlayerPosition.SOUTH),
-                       CardPlayed(Card(CardValue.KING, CardColor.CLUB), BeloteValue.NONE, PlayerPosition.WEST)))
+        when (game.state) {
+            TableState.PLAYING      -> throw NotAuthorizedOperation(
+                    "Show all tricks is not allowed during a game")
+            TableState.JOINING,
+            TableState.BIDDING,
+            TableState.DISTRIBUTING -> throw IllegalStateException(
+                    "Game has not started yet")
+            TableState.ENDED        -> return game.plisCampNS + game.plisCampEW
+        }
     }
 
 }

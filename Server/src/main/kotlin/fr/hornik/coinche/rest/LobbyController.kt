@@ -1,7 +1,6 @@
 package fr.hornik.coinche.rest
 
 import fr.hornik.coinche.DataManagement
-import fr.hornik.coinche.exception.GameNotExistingException
 import fr.hornik.coinche.exception.NotAuthenticatedException
 import fr.hornik.coinche.model.Game
 import fr.hornik.coinche.model.SetOfGames
@@ -40,10 +39,10 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
 
     @PostMapping("/joinGame", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun joinGame(@RequestParam(required = true, name = "gameId") gameId: String,
-                 @RequestParam nickname: String?, model: Model): Map<String, PlayerPosition> {
+                 @RequestParam nickname: String?,
+                 model: Model): Map<String, PlayerPosition> {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
-        val set = dataManagement.getGame(gameId)
-                ?: throw GameNotExistingException(gameId)
+        val set = dataManagement.getGameOrThrow(gameId)
         nickname?.let {
             user.nickname = it
         }
@@ -52,7 +51,8 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
     }
 
     @PostMapping("/setNickname")
-    fun setNickname(@RequestParam(required = true) nickname: String, model: Model) {
+    fun setNickname(@RequestParam(required = true) nickname: String,
+                    model: Model) {
         val user = model.getAttribute(User.ATTRIBUTE_NAME) as User?
                 ?: throw NotAuthenticatedException()
         user.nickname = nickname

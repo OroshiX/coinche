@@ -42,7 +42,7 @@ private val user: User) {
             println("uid: $uid")
             user.uid = uid
             db.collection(DataManagement.COLLECTION_PLAYERS).document(uid)
-                    .set(mapOf("uid" to user.uid, "nickname" to user.nickname))
+                    .set(user)
             model.addAttribute(User.ATTRIBUTE_NAME, user)
         } catch (e: FirebaseAuthException) {
             e.printStackTrace()

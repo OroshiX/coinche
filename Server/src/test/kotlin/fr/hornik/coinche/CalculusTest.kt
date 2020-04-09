@@ -91,14 +91,13 @@ class CalculusTest {
                 PlayerPosition.SOUTH to 2,
                 PlayerPosition.EAST to 3)
 
-        val colorRand = listOf<CardColor>(CardColor.HEART, CardColor.CLUB, CardColor.DIAMOND, CardColor.SPADE)
-        val spreadRand = listOf<Triple<Int, Int, Int>>(Triple(3, 2, 3), Triple(2, 3, 3), Triple(3, 3, 2))
-        val lRand = mutableListOf<PlayerPosition>(PlayerPosition.NORTH, PlayerPosition.WEST, PlayerPosition.SOUTH, PlayerPosition.EAST)
-        val tHand = listOf(0, 1, 2, 3)
-        val ptsRand = listOf<Int>(80, 90, 100, 110, 120, 130, 140, 150, 160)
+        val spreadRand = listOf(Triple(3, 2, 3), Triple(2, 3, 3), Triple(3, 3, 2))
+        val lRand = PlayerPosition.values()
+        val tHand = (0..3).toList()
+        val ptsRand = listOf(80, 90, 100, 110, 120, 130, 140, 150, 160)
         var firstD = lRand.random()
         var taker = lRand.random()
-        val aBid = SimpleBid(colorRand.random(), ptsRand.random(), taker)
+        val aBid = SimpleBid(CardColor.values().random(), ptsRand.random(), taker)
         var temp1: List<List<Card>>
 
         if ((pliNS.size == 0) && (pliEW.size == 0)) {

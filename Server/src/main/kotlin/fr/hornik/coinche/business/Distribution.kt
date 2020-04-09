@@ -6,6 +6,8 @@ import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
 
+val allSpreads = listOf(Triple(3, 2, 3), Triple(2, 3, 3), Triple(3, 3, 2))
+
 /**
  * @param cut: we cut the deck in 2 parts at this position
  * @param spread : first we give X cards, then Y, then Z (X,Y,Z)
