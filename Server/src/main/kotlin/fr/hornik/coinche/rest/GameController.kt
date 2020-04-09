@@ -48,6 +48,7 @@ class GameController(@Autowired val data: DataManagement,
 
     @PostMapping("/{gameId}/playCard")
     fun playCard(@PathVariable gameId: String, @RequestBody card: Card) {
+
     }
 
     @PostMapping("/{gameId}/announceBid")
@@ -86,6 +87,7 @@ class GameController(@Autowired val data: DataManagement,
         when (game.state) {
             TableState.PLAYING      -> throw NotAuthorizedOperation(
                     "Show all tricks is not allowed during a game")
+            TableState.BETWEEN_GAMES,
             TableState.JOINING,
             TableState.BIDDING,
             TableState.DISTRIBUTING -> throw IllegalStateException(

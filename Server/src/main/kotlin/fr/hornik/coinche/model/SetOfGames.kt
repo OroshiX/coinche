@@ -8,6 +8,7 @@ import java.util.*
 
 data class SetOfGames(var currentBid: Bid = Pass(),
                       var id: String = "",
+                      var name: String = "",
                       var score: Score = Score(0, 0),
                       var whoWonLastTrick: PlayerPosition? = null,
                       val plisCampNS: MutableList<List<CardPlayed>> = mutableListOf(),
@@ -20,7 +21,7 @@ data class SetOfGames(var currentBid: Bid = Pass(),
                       val players: MutableList<Player> = mutableListOf(),
                       var lastModified: Date = Date()) {
 
-    constructor(user: User) : this() {
+    constructor(user: User, name: String) : this(name = name) {
         players.add(Player(user.uid, PlayerPosition.NORTH, user.nickname))
     }
 
@@ -47,11 +48,11 @@ data class SetOfGames(var currentBid: Bid = Pass(),
                 myPosition = me.position,
                 nicknames = Nicknames(players),
                 state = state,
-                played = onTable,
+                onTable = onTable,
                 nextPlayer = whoseTurn,
                 bids = bids,
                 currentBid = currentBid,
-                onTable = me.cardsInHand
+                cards = me.cardsInHand
         )
     }
 

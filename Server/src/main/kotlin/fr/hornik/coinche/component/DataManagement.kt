@@ -1,10 +1,14 @@
 package fr.hornik.coinche.component
 
 import fr.hornik.coinche.business.*
+import fr.hornik.coinche.dto.Game
 import fr.hornik.coinche.exception.GameNotExistingException
 import fr.hornik.coinche.exception.InvalidBidException
 import fr.hornik.coinche.exception.NotYourTurnException
-import fr.hornik.coinche.model.*
+import fr.hornik.coinche.model.Bid
+import fr.hornik.coinche.model.Player
+import fr.hornik.coinche.model.SetOfGames
+import fr.hornik.coinche.model.User
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,7 +29,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
         return sets.filter {
             !it.isFull() || it.containsMe()
         }.map {
-            Game(it.id, it.players.size, it.players.first().nickname,
+            Game(it.id,
+                 it.players.size,
+                 it.name,
+                 it.players.first().nickname,
                  it.containsMe())
         }
     }
