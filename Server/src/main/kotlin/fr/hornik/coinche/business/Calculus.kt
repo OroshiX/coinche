@@ -32,7 +32,7 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
         var threshold = -1
         for (cardP in cardsOnTable) {
             if (cardP.card.color == trump && dominanceAtout.getValue(
-                            cardP.card.value) > threshold) {
+                        cardP.card.value) > threshold) {
                 // update du seuil
                 threshold = dominanceAtout.getValue(cardP.card.value)
             }
@@ -94,7 +94,7 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
 fun isValidCard(myCardsInHand: List<Card>, bid: Bid,
                 cardsOnTable: List<CardPlayed>, theCardToCheck: Card): Boolean {
     val validCards = allValidCardsToPlay(myCardsInHand, bid,
-            cardsOnTable)    // A mettre en argument si on veut eviter de tout recalucler
+                                         cardsOnTable)    // A mettre en argument si on veut eviter de tout recalucler
     return validCards.contains(theCardToCheck)
 }
 
@@ -103,20 +103,36 @@ fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
     while (counter > 0) {
         val lastBid = bids[counter - 1]
         when {
-            myBid is Pass -> return true                        // Pass tjs ok
-            lastBid is Pass -> counter--                        // si last = pass on regarde celle d'avant
-            lastBid is Coinche && lastBid.surcoinche -> return false        // si surcoinche alors rien
-            lastBid is Coinche -> return myBid is Coinche && myBid.surcoinche    // si coinche alors que surcoinche
-            myBid is Coinche -> return !myBid.surcoinche                // valeur normale, si je coinche c'est bon
-            lastBid is General -> return myBid is General && myBid.belote && !lastBid.belote
-            lastBid is Capot -> return myBid is General || myBid is Capot && myBid.belote && !lastBid.belote
-            myBid is General || myBid is Capot -> return true            // si pas gen ou capot alors je peux
+            myBid is Pass                              -> return true                        // Pass tjs ok
+            lastBid is Pass                            -> counter--                        // si last = pass on regarde celle d'avant
+            lastBid is Coinche && lastBid.surcoinche   -> return false        // si surcoinche alors rien
+            lastBid is Coinche                         -> return myBid is Coinche && myBid.surcoinche    // si coinche alors que surcoinche
+            myBid is Coinche                           -> return !myBid.surcoinche                // valeur normale, si je coinche c'est bon
+            lastBid is General                         -> return myBid is General && myBid.belote && !lastBid.belote
+            lastBid is Capot                           -> return myBid is General || myBid is Capot && myBid.belote && !lastBid.belote
+            myBid is General || myBid is Capot         -> return true            // si pas gen ou capot alors je peux
             myBid is SimpleBid && lastBid is SimpleBid -> return myBid.points > lastBid.points                // si mon enchère plus haute que la sienne
-            else -> return false
+            else                                       -> return false
 
         }
     }
     return myBid !is Coinche                                // si que des pass tout ok sauf (sur)coinche
+}
+
+/**
+ * Can we continue bidding or not?
+ * @return true if we should start playing, else false (continue bidding)
+ */
+fun isLastBid(bids: List<Bid>): Boolean {
+    TODO("Sacha")
+}
+
+/**
+ * What is the current bid, considering all the bids?
+ * @return the bid that we all agreed on and we should play
+ */
+fun getCurrentBid(allBids: List<Bid>) : Bid {
+    TODO("Sacha")
 }
 
 /**
@@ -160,7 +176,7 @@ fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
         // Si couleur dominante et plus forte on update
         if (cardsPlayed[j].card.color == domColor) {
             if (mapper.getValue(cardsPlayed[j].card.value) > mapper.getValue(
-                            cardsPlayed[strongest].card.value))
+                        cardsPlayed[strongest].card.value))
                 strongest = j
         }
     }
@@ -169,7 +185,8 @@ fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
 
 fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                        plisEW: List<List<CardPlayed>>, dixDer: PlayerPosition,
-                       bid: Bid, scoreRule: PrefsScore = PrefsScore.POINTSANNOUNCED): Score {
+                       bid: Bid,
+                       scoreRule: PrefsScore = PrefsScore.POINTSANNOUNCED): Score {
     val score = calculateScoreTricks(plisNS, plisEW, dixDer, bid)
     println("DEBUG : score reel NS ${score.northSouth}, EW ${score.eastWest}")
     var threshold = 0
@@ -179,26 +196,26 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
             threshold = bid.points
             posTaker = bid.position
         }
-        is Capot -> {
+        is Capot     -> {
             threshold = 250
             posTaker = bid.position
             if (bid.belote) threshold += 20
         }
 
-        is General -> {
+        is General   -> {
             threshold = 500
             posTaker = bid.position
             if (bid.belote) threshold += 20
         }
-        is Coinche -> {
+        is Coinche   -> {
             posTaker = bid.annonce.position
             when (bid.annonce) {
                 is SimpleBid -> threshold = bid.annonce.points
-                is General -> {
+                is General   -> {
                     threshold = 500
                     if (bid.annonce.belote) threshold += 20
                 }
-                is Capot -> {
+                is Capot     -> {
                     threshold = 250
                     if (bid.annonce.belote) threshold += 20
                 }
@@ -229,7 +246,7 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                 } else pointsEW = multiplier * threshold
             }
         }
-        (scoreRule == PrefsScore.POINTSMARKED) -> {
+        (scoreRule == PrefsScore.POINTSMARKED)    -> {
             // NS a pris
             if (posTaker == PlayerPosition.NORTH || posTaker == PlayerPosition.SOUTH) {
                 if (score.northSouth < threshold) {
@@ -237,7 +254,8 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                     pointsEW = multiplier * (threshold + 160)
                 } else {
                     // NS gagne il marque ses points arrondis a la dizaine la plus proche (135->140) + la valeur du contrat, EW marque ses points
-                    pointsNS = multiplier * (threshold + (score.northSouth + 5) / 10 * 10)
+                    pointsNS =
+                            multiplier * (threshold + (score.northSouth + 5) / 10 * 10)
                     pointsEW = score.eastWest
                 }
             }
@@ -248,7 +266,8 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                     pointsNS = multiplier * (threshold + 160)
                 } else {
                     // EW gagne il marque ses points arrondis a la dizaine la plus proche (135->140) + la valeur du contrat, NS marque ses points
-                    pointsEW = multiplier * (threshold + (score.eastWest + 5) / 10 * 10)
+                    pointsEW =
+                            multiplier * (threshold + (score.eastWest + 5) / 10 * 10)
                     pointsNS = score.northSouth
                 }
             }
@@ -276,7 +295,7 @@ fun calculateScoreTricks(plisNS: List<List<CardPlayed>>,
 
     when (dixDer) {
         PlayerPosition.NORTH, PlayerPosition.SOUTH -> sumNS += 10
-        else -> sumEW += 10
+        else                                       -> sumEW += 10
     }
 
     val posTaker = bid.positionAnnouncer() // Quelle est la position du preneur
@@ -287,7 +306,7 @@ fun calculateScoreTricks(plisNS: List<List<CardPlayed>>,
     // On rajoute la valeur de la belote au preneur
     when (posTaker) {
         PlayerPosition.NORTH, PlayerPosition.SOUTH -> sumNS += beloteNS
-        else -> sumEW += beloteEW
+        else                                       -> sumEW += beloteEW
     }
     return Score(sumNS, sumEW)
 }
