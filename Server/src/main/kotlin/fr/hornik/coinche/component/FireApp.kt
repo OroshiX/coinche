@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
 import fr.hornik.coinche.DataManagement
+import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.serialization.JsonSerialize
@@ -60,7 +61,7 @@ class FireApp {
                 }
             } else {
                 // If the user just gave a nickname, put it in firebase
-                doc.set(user)
+                doc.set(UserDto(user))
             }
         }
         return username

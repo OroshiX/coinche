@@ -11,7 +11,9 @@ import kotlin.jvm.internal.Reflection
 import kotlin.reflect.KClass
 
 object JsonSerialize {
-    val gson: Gson = GsonBuilder().registerTypeAdapterFactory(
+    val gson: Gson = GsonBuilder()
+            .setDateFormat("yyyyMMdd'T'HH:mm:ss")
+            .registerTypeAdapterFactory(
             object : TypeAdapterFactory {
                 override fun <T : Any> create(gson: Gson, type: TypeToken<T>): TypeAdapter<T> {
                     val kClass = Reflection.getOrCreateKotlinClass(type.rawType)

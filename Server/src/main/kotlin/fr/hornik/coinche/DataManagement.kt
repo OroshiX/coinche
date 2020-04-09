@@ -5,10 +5,7 @@ import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.exception.GameNotExistingException
 import fr.hornik.coinche.exception.InvalidBidException
 import fr.hornik.coinche.exception.NotYourTurnException
-import fr.hornik.coinche.model.Bid
-import fr.hornik.coinche.model.Player
-import fr.hornik.coinche.model.SetOfGames
-import fr.hornik.coinche.model.User
+import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,8 +26,14 @@ class DataManagement(@Autowired private val fire: FireApp) {
         const val COLLECTION_PLAYERS = "players"
     }
 
-    fun allMyGames(uid: String): List<SetOfGames> = sets.filter { setOfGames ->
-        !setOfGames.isFull() || setOfGames.players.map { it.uid }.contains(uid)
+    fun allMyGames(uid: String): List<Game> {
+        fun SetOfGames.containsMe() = players.map { it.uid }.contains(uid)
+        return sets.filter {
+            !it.isFull() || it.containsMe()
+        }.map {
+            Game(it.id, it.players.size, it.players.first().nickname,
+                 it.containsMe())
+        }
     }
 
     /**

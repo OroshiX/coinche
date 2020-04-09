@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.cloud.FirestoreClient
 import fr.hornik.coinche.DataManagement
 import fr.hornik.coinche.component.FireApp
+import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.exception.DeprecatedException
 import fr.hornik.coinche.exception.LoginFailedException
 import fr.hornik.coinche.model.User
@@ -29,7 +30,8 @@ private val user: User) {
                             "org.springframework.web.bind.annotation.RequestBody"))
     @PostMapping("/login")
     fun login(username: String, password: String) {
-        throw DeprecatedException("/login is deprecated, use /loginToken instead")
+        throw DeprecatedException(
+                "/login is deprecated, use /loginToken instead")
     }
 
     @PostMapping("/loginToken")
@@ -42,7 +44,7 @@ private val user: User) {
             println("uid: $uid")
             user.uid = uid
             db.collection(DataManagement.COLLECTION_PLAYERS).document(uid)
-                    .set(user)
+                    .set(UserDto(user))
             model.addAttribute(User.ATTRIBUTE_NAME, user)
         } catch (e: FirebaseAuthException) {
             e.printStackTrace()

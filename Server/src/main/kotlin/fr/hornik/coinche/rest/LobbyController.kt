@@ -1,6 +1,7 @@
 package fr.hornik.coinche.rest
 
 import fr.hornik.coinche.DataManagement
+import fr.hornik.coinche.exception.GameFullException
 import fr.hornik.coinche.exception.NotAuthenticatedException
 import fr.hornik.coinche.model.Game
 import fr.hornik.coinche.model.SetOfGames
@@ -30,11 +31,6 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
     fun allGames(): List<Game> {
         if (user.uid.isEmpty()) throw NotAuthenticatedException()
         return dataManagement.allMyGames(user.uid)
-                .map { setOfGames ->
-                    Game(setOfGames.id,
-                         setOfGames.players.size,
-                         setOfGames.players.first().nickname)
-                }
     }
 
     @PostMapping("/joinGame", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -43,6 +39,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
                  model: Model): Map<String, PlayerPosition> {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
         val set = dataManagement.getGameOrThrow(gameId)
+        if (set.isFull()) throw GameFullException(gameId)
         nickname?.let {
             user.nickname = it
         }

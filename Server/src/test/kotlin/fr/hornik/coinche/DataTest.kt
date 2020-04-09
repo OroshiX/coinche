@@ -7,15 +7,14 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class DataTest(@Mock val fireApp: FireApp) {
+class DataTest() {
 
     lateinit var dataManagement: DataManagement
     lateinit var set: SetOfGames
 
     @BeforeEach
     fun initState() {
-
-        dataManagement = DataManagement(fireApp)
+        dataManagement = DataManagement(FireApp())
         set = SetOfGames(id = "1")
         MockitoAnnotations.initMocks(this)
     }
