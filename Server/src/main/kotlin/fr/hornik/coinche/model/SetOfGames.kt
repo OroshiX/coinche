@@ -1,5 +1,6 @@
 package fr.hornik.coinche.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
@@ -23,6 +24,7 @@ data class SetOfGames(var currentBid: Bid = Pass(),
         players.add(Player(user.uid, PlayerPosition.NORTH, user.nickname))
     }
 
+    @JsonIgnore
     fun isFull(): Boolean {
         return players.size >= 4
     }
