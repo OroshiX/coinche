@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
 
 @Component({
@@ -8,13 +7,15 @@ import { FireAuthService } from '../services/authentication/fire-auth.service';
   styleUrls: ['./login-google.component.scss']
 })
 export class LoginGoogleComponent implements OnInit {
-  isConnected$: Observable<boolean>;
+  isConnected: boolean;
 
   constructor(private fireAuthService: FireAuthService) {
   }
 
   ngOnInit(): void {
-    this.isConnected$ = this.fireAuthService.isConnected();
+    this.fireAuthService.isConnected().subscribe(isConnected => {
+      this.isConnected = isConnected;
+    });
   }
 
   signIn() {

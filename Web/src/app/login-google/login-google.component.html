@@ -1,6 +1,6 @@
 <div class="login-page">
   <mat-card class="coinche-card">
-    <ng-container *ngIf="(isConnected$ | async)===false; else connected">
+    <ng-container *ngIf="isConnected===false; else connected">
       <div class="item"><strong>Sign in with Google</strong></div>
       <div class="item">
         <button mat-card-avatar class="coinche-header-image"

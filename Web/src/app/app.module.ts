@@ -6,6 +6,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -59,6 +60,7 @@ export const httpInterceptorProviders = [
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     HttpClientModule,
+    MatDialogModule
   ],
   providers: [CanActivateGame, httpInterceptorProviders],
   bootstrap: [AppComponent]

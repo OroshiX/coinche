@@ -23,9 +23,12 @@ export class ApiLobbyService {
         catchError(this.errorHandler.handleError));
   }
 
-  createGame(): Observable<HttpResponse<any>> {
-    return this.httpClient.post<string>(API_BACKEND_LOBBY + CREATE_GAME, '',
-      {observe: 'response'});
+  createGame(game: GameI): Observable<HttpResponse<any>> {
+    return this.httpClient.post<string>(API_BACKEND_LOBBY + CREATE_GAME, game,
+      {observe: 'response'})
+      .pipe(
+        catchError(this.errorHandler.handleError)
+      );
   }
 
   joinGame(gameId: string, nickname: string): Observable<HttpResponse<any>> {
@@ -33,6 +36,9 @@ export class ApiLobbyService {
     parameters.append('gameId', gameId);
     parameters.append('nickname', nickname);
     return this.httpClient.post<string>(API_BACKEND_LOBBY + JOIN_GAME, '',
-      {params: parameters, observe: 'response'});
+      {params: parameters, observe: 'response'})
+      .pipe(
+        catchError(this.errorHandler.handleError)
+      );
   }
 }

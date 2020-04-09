@@ -20,14 +20,17 @@ export class LoggingInterceptor implements HttpInterceptor {
     // extend server response observable with logging
     return next.handle(req)
       .pipe(
-        tap(event => stat = event instanceof HttpResponse ?
-          (event.status).toString() : event instanceof HttpRequest ? event.headers.get('Cookie') : ''
+        tap(event => {
+          stat = event instanceof HttpResponse ?
+              (event.status).toString() : event instanceof HttpRequest ? event.headers.get('Cookie') : '';
+          console.log(stat);
+          }
         ),
         tap(
           // Succeeds when there is a response; ignore other events
           event => ok = event instanceof HttpResponse ? 'succeeded' : '',
           // Operation failed; error is an HttpErrorResponse
-          error => ok = 'failed'
+          () => ok = 'failed'
         ),
         // Log when response observable either completes or errors
         finalize(() => {

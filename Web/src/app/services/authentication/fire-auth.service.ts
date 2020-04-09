@@ -23,9 +23,10 @@ export class FireAuthService {
     public afAuth: AngularFireAuth,
     private apiService: ApiLogInOutService
   ) {
-    this.afAuth.authState.subscribe((user: firebase.User | null) => {
+    /*this.afAuth.authState.subscribe((user: firebase.User | null) => {
+      console.log(user);
       this.updateUser(user);
-    });
+    });*/
   }
 
   // Firebase SignInWithPopup
@@ -63,18 +64,18 @@ export class FireAuthService {
 
   getUserTokenStatus(): boolean {
     return (isNotNullAndNotUndefined(this.getUserToken()))
-      && this.getUserToken()?.idToken !== '';
+      && this.getUserToken().idToken !== null && this.getUserToken().idToken !== '';
   }
 
   isConnected(): Observable<boolean> {
     return this.userToken$.pipe(
       map((currentUser: CurrentUser | null) =>
-        isNotNullAndNotUndefined(currentUser) && currentUser.idToken !== '' ? true : false
+        isNotNullAndNotUndefined(currentUser) && isNotNullAndNotUndefined(currentUser.idToken)
       ));
   }
 
-  getUserToken(): CurrentUser {
-    return isNotNullAndNotUndefined(this.userToken) ? this.userToken?.value : null;
+  private getUserToken(): CurrentUser {
+    return isNotNullAndNotUndefined(this.userToken) ? this.userToken.value : null;
   }
 
   getUserTokenId(): any {
@@ -82,7 +83,7 @@ export class FireAuthService {
   }
 
   resetCurrentUser(): void {
-    this.updateUserToken(null, '');
+    this.updateUserToken(null, null);
   }
 
   updateUserToken(user: any, idToken: any) {
@@ -94,12 +95,12 @@ export class FireAuthService {
     this.userToken.next(usr);
   }
 
-  updateUser(user: firebase.User) {
+  /*updateUser(user: firebase.User) {
     if (isNotNullAndNotUndefined(user)) {
       this.userToken.next(new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName}));
     } else {
       this.userToken.next(null);
     }
-  }
+  }*/
 
 }
