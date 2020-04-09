@@ -2,13 +2,9 @@ package fr.hornik.coinche.component
 
 import fr.hornik.coinche.business.*
 import fr.hornik.coinche.dto.Game
-import fr.hornik.coinche.exception.GameNotExistingException
-import fr.hornik.coinche.exception.InvalidBidException
-import fr.hornik.coinche.exception.NotYourTurnException
-import fr.hornik.coinche.model.Bid
-import fr.hornik.coinche.model.Player
-import fr.hornik.coinche.model.SetOfGames
-import fr.hornik.coinche.model.User
+import fr.hornik.coinche.exception.*
+import fr.hornik.coinche.model.*
+import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
@@ -114,15 +110,22 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun getGameOrThrow(setId: String): SetOfGames =
             getGame(setId) ?: throw GameNotExistingException(setId)
 
-    fun announceBid(gameId: String, bid: Bid, user: User) {
-        val game = getGameOrThrow(gameId)
-        if (game.state != TableState.BIDDING) throw IllegalStateException(
-                "We are not in a bidding phase")
+    fun announceBid(game: SetOfGames, bid: Bid, user: User) {
+        if (game.state != TableState.BIDDING) throw NotValidStateException(
+                game.state, TableState.BIDDING)
         val me = game.players.first { player -> player.uid == user.uid }
         if (game.whoseTurn != me.position) throw NotYourTurnException()
         if (!isValidBid(game.bids, bid)) throw InvalidBidException(bid)
         game.bids.add(bid)
-        fire.saveGame(game)
+        if(isLastBid(game.bids)) {
+            // change status to playing
+            game.state = TableState.PLAYING
+            game.whoseTurn = game.currentFirstPlayer
+            game.currentBid = getCurrentBid(game.bids)
+        } else {
+            // Next player
+            game.whoseTurn += 1
+        }
     }
 
     fun changeNickname(set: SetOfGames, user: User) {
@@ -133,5 +136,21 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun refresh() {
         sets.clear()
         sets.addAll(fire.getAllGames())
+    }
+
+    fun playCard(game: SetOfGames, card: Card, user: User,
+                 beloteValue: BeloteValue = BeloteValue.NONE) {
+        if (!isValidCard(
+                    myCardsInHand = game.players.first { it.uid == user.uid }.cardsInHand,
+                    bid = game.currentBid,
+                    cardsOnTable = game.onTable,
+                    theCardToCheck = card)) {
+            throw NotAuthorizedOperation("The card $card is not valid")
+        }
+        game.onTable.add(CardPlayed(card, beloteValue,
+                                    game.players.first { it.uid == user.uid }.position))
+        // TODO check if on table is full
+        // TODO Save to firebase
+        // TODO clear table at a good time
     }
 }
