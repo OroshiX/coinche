@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
+import { SessionStorageService } from '../services/session-storage/session-storage.service';
 
 @Component({
   selector: 'app-login-google',
@@ -9,11 +10,11 @@ import { FireAuthService } from '../services/authentication/fire-auth.service';
 export class LoginGoogleComponent implements OnInit {
   isConnected: boolean;
 
-  constructor(private fireAuthService: FireAuthService) {
+  constructor(private sessionService: SessionStorageService, private fireAuthService: FireAuthService) {
   }
 
   ngOnInit(): void {
-    this.fireAuthService.isConnected().subscribe(isConnected => {
+    this.sessionService.isConnectedObs().subscribe(isConnected => {
       this.isConnected = isConnected;
     });
   }

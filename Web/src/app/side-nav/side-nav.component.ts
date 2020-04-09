@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ApiLogInOutService } from '../services/apis/api-log-in-out.service';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
+import { SessionStorageService } from '../services/session-storage/session-storage.service';
 import { CurrentUser } from '../shared/models/user';
 import { isNotNullAndNotUndefined } from '../shared/utils/helper';
 
@@ -26,11 +27,12 @@ export class SideNavComponent implements OnInit, OnDestroy {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private apiService: ApiLogInOutService,
-    private authDervice: FireAuthService) {
+    private authService: FireAuthService,
+    private sessionService: SessionStorageService) {
   }
 
   ngOnInit(): void {
-    this.authDervice.userToken$
+    this.sessionService.getCurrentUserObs()
       .subscribe((userToken: CurrentUser | null) => {
         this.currentUserName = isNotNullAndNotUndefined(userToken) ? userToken.displayName : '';
         this.isDisabled = !isNotNullAndNotUndefined(userToken);
@@ -39,7 +41,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
   logout() {
     console.log('call logout');
-    this.authDervice.signOut().then(() => alert('You are disconnected from Firebase !'));
+    this.authService.signOut().then(() => alert('You are disconnected from Firebase !'));
     /*this.apiService.logoutToServer()
       .subscribe(ret => {
         console.log('logout', ret);

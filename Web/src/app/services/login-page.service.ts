@@ -1,22 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { UserToken } from '../shared/models/current-user';
+import { CurrentUser } from '../shared/models/user';
+import { SessionStorageService } from './session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginPageService {
-  private userToken: BehaviorSubject<UserToken> = new BehaviorSubject<UserToken>(null);
-  userToken$ = this.userToken.asObservable();
 
-  constructor() {
+  constructor(private sessionUser: SessionStorageService) {
   }
 
-  getUserToken() {
-    return this.userToken.value;
-  }
-
-  updateUserToken(userToken: UserToken) {
-    this.userToken.next(userToken);
+  updateUserToken(usr: CurrentUser) {
+    this.sessionUser.saveCurrentUser(usr);
   }
 }

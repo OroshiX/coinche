@@ -15,15 +15,12 @@ export class LoggingInterceptor implements HttpInterceptor {
     let ok: string;
     let stat: string;
 
-    // console.log(req.headers); // JSESSIONID=
-
     // extend server response observable with logging
     return next.handle(req)
       .pipe(
         tap(event => {
-          stat = event instanceof HttpResponse ?
-              (event.status).toString() : event instanceof HttpRequest ? event.headers.get('Cookie') : '';
-          console.log(stat);
+            stat = event instanceof HttpResponse ? (event.status).toString() : '';
+            console.log(stat);
           }
         ),
         tap(

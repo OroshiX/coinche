@@ -1,14 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
-import { FireAuthService } from '../authentication/fire-auth.service';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiErrorHandlerService {
 
-  constructor(private authService: FireAuthService) { }
+  constructor(private sessionService: SessionStorageService) { }
 
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -21,7 +21,7 @@ export class ApiErrorHandlerService {
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error.error}`);
       if (error.status === 401) {
-        this.authService.resetCurrentUser();
+        this.sessionService.resetCurrentUser();
       }
     }
     // return an observable with a user-facing error message

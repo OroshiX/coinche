@@ -19,10 +19,6 @@ const routes: Routes = [
     loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
     canActivate: [CanActivateGame]
   },
-  { path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
   {
     path: '**',
     component: LoginGoogleComponent
