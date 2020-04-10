@@ -1,5 +1,6 @@
 package fr.hornik.coinche.rest
 
+import fr.hornik.coinche.business.inGame
 import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.dto.Table
@@ -40,7 +41,7 @@ class GameController(@Autowired val data: DataManagement,
                 produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getTable(@PathVariable("gameId") gameId: String): Table {
         val set = data.getGameOrThrow(gameId)
-        if (!inGame(set)) throw NotInGameException(gameId)
+        if (!inGame(set, user)) throw NotInGameException(gameId)
         return set.toTable(user.uid)
     }
 
@@ -48,7 +49,7 @@ class GameController(@Autowired val data: DataManagement,
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun playCard(@PathVariable gameId: String, @RequestBody card: Card) {
         val game = data.getGameOrThrow(gameId)
-        if (!inGame(game)) throw NotInGameException(gameId)
+        if (!inGame(game, user)) throw NotInGameException(gameId)
         if (game.state != TableState.PLAYING) throw NotValidStateException(
                 game.state, TableState.PLAYING)
         if (game.players.first { it.uid == user.uid }.position != game.whoseTurn) throw NotYourTurnException()
@@ -109,14 +110,10 @@ class GameController(@Autowired val data: DataManagement,
                         @PathVariable(required = true) gameId: String) {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
         val set = data.getGameOrThrow(gameId)
-        if (!inGame(set)) throw NotInGameException(gameId)
+        if (!inGame(set, user)) throw NotInGameException(gameId)
         if (nickname.isBlank()) throw EmptyNameException()
         user.nickname = nickname
         data.changeNickname(set, user)
         fire.saveGame(set)
-    }
-
-    private fun inGame(game: SetOfGames): Boolean {
-        return game.players.any { it.uid == user.uid }
     }
 }
