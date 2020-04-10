@@ -21,6 +21,7 @@ export class AllGamesComponent implements OnInit {
 
   title = 'All Games';
   rowData: GameI[];
+  // rowData$: Observable<GameI[]>;
   selectedDataStringPresentation: string;
   isRowSelected: boolean;
 
@@ -53,6 +54,9 @@ export class AllGamesComponent implements OnInit {
       console.log('The dialog was closed');
       this.newGame = data;
       this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res));
+      location.reload();
+      /*this.rowData$ = this.apiService.createGame(this.newGame)
+        .pipe(concatMap(() => this.apiService.allGames()));*/
     });
   }
 
@@ -63,6 +67,7 @@ export class AllGamesComponent implements OnInit {
       .subscribe((res: GameI[]) => {
         this.rowData = res;
       });
+    // this.rowData$ = this.apiService.allGames();
   }
 
   getSelectedRows() {
