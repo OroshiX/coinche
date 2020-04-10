@@ -23,7 +23,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
      */
     @PostMapping("/createGame", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createGame(@RequestBody name: String): String {
-        if (user.uid.isEmpty()) throw NotAuthenticatedException()
+        if (user.uid.isBlank()) throw NotAuthenticatedException()
         val newGame = SetOfGames(user, name)
         dataManagement.createGame(newGame, user)
         return newGame.id
@@ -31,7 +31,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
 
     @GetMapping("/allGames", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun allGames(): List<Game> {
-        if (user.uid.isEmpty()) throw NotAuthenticatedException()
+        if (user.uid.isBlank()) throw NotAuthenticatedException()
         return dataManagement.allMyGames(user.uid)
     }
 
@@ -47,7 +47,8 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/setNickname")
-    fun setNickname(@RequestParam(required = true) nickname: String) {
+    fun setNickname(@RequestBody(required = true) nickname: String) {
+        if(user.uid.isBlank()) throw NotAuthenticatedException()
         user.nickname = nickname
         fire.setNewUsername(user)
         // Only for the games to come

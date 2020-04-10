@@ -105,8 +105,9 @@ class GameController(@Autowired val data: DataManagement,
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/{gameId}/setNickName")
-    fun setNickNameGame(@RequestParam(required = true) nickname: String,
+    fun setNickNameGame(@RequestBody(required = true) nickname: String,
                         @PathVariable(required = true) gameId: String) {
+        if (user.uid.isBlank()) throw NotAuthenticatedException()
         val set = data.getGameOrThrow(gameId)
         if (!inGame(set)) throw NotInGameException(gameId)
         if (nickname.isBlank()) throw EmptyNameException()

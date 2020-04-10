@@ -129,7 +129,7 @@ fun isLastBid(bids: List<Bid>): Boolean {
 
 /**
  * What is the current bid, considering all the bids?
- * @return the bid that we all agreed on and we should play
+ * @return the bid that we all agreed on, and that we should play
  */
 fun getCurrentBid(allBids: List<Bid>) : Bid {
     TODO("Sacha")
