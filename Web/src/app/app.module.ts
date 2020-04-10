@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -60,7 +61,8 @@ export const httpInterceptorProviders = [
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     HttpClientModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule,
   ],
   providers: [CanActivateGame, httpInterceptorProviders],
   bootstrap: [AppComponent]

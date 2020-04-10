@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AgGridModule } from 'ag-grid-angular';
 import { AllGamesRoutingModule } from './all-games-routing.module';
 import { AllGamesComponent } from './all-games.component';
@@ -26,7 +27,8 @@ import { CreateGameDialogComponent } from './create-game-dialog/create-game-dial
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatTooltipModule
   ],
   providers : [
     {provide: MatDialogConfig, useValue: []},

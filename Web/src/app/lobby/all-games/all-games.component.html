@@ -3,10 +3,20 @@
     <mat-card-title>
       {{title}}
       <mat-card-subtitle>
-        Select a game and then click "Join" or
+        Select a game and then
+        <button
+          [disabled]="!isRowSelected"
+          matTooltipPosition="above"
+          matTooltip="Join a selected game"
+          mat-raised-button color="accent"
+          (click)="joinGame()">join
+        </button>
+        or
         <button
           [disabled]="isRowSelected"
-          class="create-button" mat-button color="accent"
+          matTooltipPosition="above"
+          matTooltip="Create a new game"
+          mat-raised-button color="accent"
           (click)="createNewGame()">create a new one
         </button>
       </mat-card-subtitle>
@@ -14,19 +24,9 @@
 
   </mat-card-header>
   <mat-card-content>
-    <div class="wrapper-button">
-      <ng-container *ngIf="isRowSelected">
-        <span class="game-id">Selected game <strong>{{selectedDataStringPresentation}}</strong></span>
-      </ng-container>
-      <button
-        [disabled]="!isRowSelected"
-        class="button-select" mat-raised-button color="primary"
-        (click)="joinGame()">Join
-      </button>
-    </div>
     <ag-grid-angular
       #agGrid
-      style="min-width: 400px; height: 500px;"
+      style="min-width: 410px; height: 600px;"
       class="ag-theme-alpine"
       [rowData]="rowData"
       [columnDefs]="columnDefs"

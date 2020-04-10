@@ -31,7 +31,7 @@ export class AllGamesComponent implements OnInit {
   columnDefs = [
     {headerName: 'GameId', field: 'id', width: 150, sort: 'asc', filter: true, checkboxSelection: true},
     {headerName: '#Players', field: 'nbJoined', width: 110, sortable: true, filter: true},
-    {headerName: 'Creator', field: 'nicknameCreator', width: 140, sortable: true, filter: true}
+    {headerName: 'Creator', field: 'nicknameCreator', width: 150, sortable: true, filter: true}
   ];
 
   constructor(
