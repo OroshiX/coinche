@@ -42,62 +42,62 @@ class DataManagement(@Autowired private val fire: FireApp) {
     /**
      * Precondition: the game is not full
      */
-    fun joinGame(set: SetOfGames,
+    fun joinGame(setOfGames: SetOfGames,
                  user: User, nickname: String?): Player {
         // Always called when it is not full
         nickname?.let {
             if (it.isNotBlank())
                 fire.setNewUsername(user.apply { this.nickname = it })
         }
-        val player = set.addPlayer(user.uid, user.nickname)
-        if (set.isFull()) {
+        val player = setOfGames.addPlayer(user.uid, user.nickname)
+        if (setOfGames.isFull()) {
             // Time to distribute
-            distribute(set)
+            distribute(setOfGames)
         }
-        fire.saveGame(set)
+        fire.saveGame(setOfGames)
         return player
     }
 
-    private fun distribute(set: SetOfGames) {
-        set.state = TableState.DISTRIBUTING
+    private fun distribute(setOfGames: SetOfGames) {
+        setOfGames.state = TableState.DISTRIBUTING
         // Random first player
-        set.currentFirstPlayer = PlayerPosition.values().random()
-        set.whoseTurn = set.currentFirstPlayer
-        val dealer = set.currentFirstPlayer - 1
+        setOfGames.currentFirstPlayer = PlayerPosition.values().random()
+        setOfGames.whoseTurn = setOfGames.currentFirstPlayer
+        val dealer = setOfGames.currentFirstPlayer - 1
 
         // Distribute
         val hands =
-                if (set.plisCampEW.isEmpty() && set.plisCampNS.isEmpty())
+                if (setOfGames.plisCampEW.isEmpty() && setOfGames.plisCampNS.isEmpty())
                     firstDealOfCards(dealer, allSpreads.random())
                 else
-                    dealCards(set.plisCampNS, set.plisCampEW, 10,
+                    dealCards(setOfGames.plisCampNS, setOfGames.plisCampEW, 10,
                               allSpreads.random(), dealer)
-        set.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
+        setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
-        set.players.first { it.position == PlayerPosition.EAST }.cardsInHand =
+        setOfGames.players.first { it.position == PlayerPosition.EAST }.cardsInHand =
                 hands[1].toMutableList()
-        set.players.first { it.position == PlayerPosition.SOUTH }.cardsInHand =
+        setOfGames.players.first { it.position == PlayerPosition.SOUTH }.cardsInHand =
                 hands[2].toMutableList()
-        set.players.first { it.position == PlayerPosition.WEST }.cardsInHand =
+        setOfGames.players.first { it.position == PlayerPosition.WEST }.cardsInHand =
                 hands[3].toMutableList()
-        set.state = TableState.BIDDING
+        setOfGames.state = TableState.BIDDING
 //        fire.saveGame(set)
     }
 
-    private fun scoreAndCleanupAfterGame(set: SetOfGames) {
-        set.state = TableState.ENDED
-        set.score += calculateScoreGame(set.plisCampNS, set.plisCampEW,
-                                        set.whoWonLastTrick!!, set.currentBid)
-        set.bids.clear()
-        set.players.onEach { it.cardsInHand.clear() }
-        set.whoWonLastTrick = null
-        set.currentFirstPlayer = set.currentFirstPlayer + 1
+    private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
+        setOfGames.state = TableState.ENDED
+        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS, setOfGames.plisCampEW,
+                                        setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
+        setOfGames.bids.clear()
+        setOfGames.players.onEach { it.cardsInHand.clear() }
+        setOfGames.whoWonLastTrick = null
+        setOfGames.currentFirstPlayer = setOfGames.currentFirstPlayer + 1
 //        set.onTable.clear()
-        if (set.score.northSouth < 1000 && set.score.eastWest < 1000) {
+        if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
             // Continue playing another game
-            distribute(set)
+            distribute(setOfGames)
         }
-        fire.saveGame(set)
+        fire.saveGame(setOfGames)
     }
 
     private fun getGame(setId: String): SetOfGames? =
@@ -106,27 +106,27 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun getGameOrThrow(setId: String): SetOfGames =
             getGame(setId) ?: throw GameNotExistingException(setId)
 
-    fun announceBid(game: SetOfGames, bid: Bid, user: User) {
-        if (game.state != TableState.BIDDING) throw NotValidStateException(
-                game.state, TableState.BIDDING)
-        val me = game.players.first { player -> player.uid == user.uid }
-        if (game.whoseTurn != me.position) throw NotYourTurnException()
-        if (!isValidBid(game.bids, bid)) throw InvalidBidException(bid)
-        game.bids.add(bid)
-        if (isLastBid(game.bids)) {
+    fun announceBid(setOfGames: SetOfGames, bid: Bid, user: User) {
+        if (setOfGames.state != TableState.BIDDING) throw NotValidStateException(
+                setOfGames.state, TableState.BIDDING)
+        val me = setOfGames.players.first { player -> player.uid == user.uid }
+        if (setOfGames.whoseTurn != me.position) throw NotYourTurnException()
+        if (!isValidBid(setOfGames.bids, bid)) throw InvalidBidException(bid)
+        setOfGames.bids.add(bid)
+        if (isLastBid(setOfGames.bids)) {
             // change status to playing
-            game.state = TableState.PLAYING
-            game.whoseTurn = game.currentFirstPlayer
-            game.currentBid = getCurrentBid(game.bids)
+            setOfGames.state = TableState.PLAYING
+            setOfGames.whoseTurn = setOfGames.currentFirstPlayer
+            setOfGames.currentBid = getCurrentBid(setOfGames.bids)
         } else {
             // Next player
-            game.whoseTurn += 1
+            setOfGames.whoseTurn += 1
         }
     }
 
-    fun changeNickname(set: SetOfGames, user: User) {
-        set.players.first { it.uid == user.uid }.nickname = user.nickname
-        fire.saveGame(set)
+    fun changeNickname(setOfGames: SetOfGames, user: User) {
+        setOfGames.players.first { it.uid == user.uid }.nickname = user.nickname
+        fire.saveGame(setOfGames)
     }
 
     fun refresh() {
@@ -134,19 +134,42 @@ class DataManagement(@Autowired private val fire: FireApp) {
         sets.addAll(fire.getAllGames())
     }
 
-    fun playCard(game: SetOfGames, card: Card, user: User,
+    fun playCard(setOfGames: SetOfGames, card: Card, user: User,
                  beloteValue: BeloteValue = BeloteValue.NONE) {
         if (!isValidCard(
-                    myCardsInHand = game.players.first { it.uid == user.uid }.cardsInHand,
-                    bid = game.currentBid,
-                    cardsOnTable = game.onTable,
+                    myCardsInHand = setOfGames.players.first { it.uid == user.uid }.cardsInHand,
+                    bid = setOfGames.currentBid,
+                    cardsOnTable = setOfGames.onTable,
                     theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
-        game.onTable.add(CardPlayed(card, beloteValue,
-                                    game.players.first { it.uid == user.uid }.position))
-        // TODO check if on table is full
-        // TODO Save to firebase
-        // TODO clear table at a good time
+
+        // check if on table is full
+
+        if (setOfGames.onTable.size == 4) {
+            // the cards on the table are from last trick, we can clear them
+            setOfGames.onTable.clear()
+        }
+
+        setOfGames.onTable.add(CardPlayed(card, beloteValue,
+                                    setOfGames.players.first { it.uid == user.uid }.position))
+        setOfGames.players.first{it.uid == user.uid}.cardsInHand.remove(card)
+
+
+        // Evaluation of who win the trick
+        if (setOfGames.onTable.size == 4 ) {
+            val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids))
+            setOfGames.winTrick(winner)
+            if (setOfGames.players.size == 0) {
+                // We could calculate the score - no cards remain in hands
+                // but probably we wont call scoreAndCleanupAfterGame from here ????
+                // if we do, we will have to remove the save in firebase which is already don e in the function.
+            }
+
+        }
+        // Save to firebase
+
+        fire.saveGame(setOfGames, true)
+
     }
 }
