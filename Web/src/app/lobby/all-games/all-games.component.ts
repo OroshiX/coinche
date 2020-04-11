@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ApiLobbyService } from '../../services/apis/api-lobby.service';
+import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { Game } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
 import { CreateGameDialogComponent } from './create-game-dialog/create-game-dialog.component';
@@ -10,6 +11,14 @@ export interface DialogData {
   name: '';
   nicknameCreator: ''
 }
+export const TABLE_WIDTH_SMALL = '410px';
+export const TABLE_WIDTH_LARGE = '550px';
+export const FIELD1_WIDTH_SMALL = 150;
+export const FIELD1_WIDTH_LARGE = 220;
+export const FIELD2_WIDTH_SMALL = 110;
+export const FIELD2_WIDTH_LARGE = 150;
+export const FIELD3_WIDTH_SMALL = 150;
+export const FIELD3_WIDTH_LARGE = 180;
 
 @Component({
   selector: 'app-all-games',
@@ -24,20 +33,33 @@ export class AllGamesComponent implements OnInit {
   // rowData$: Observable<GameI[]>;
   selectedDataStringPresentation: string;
   isRowSelected: boolean;
+  isSmallScreen: boolean;
+  tableWidthSmall = TABLE_WIDTH_SMALL;
+  tableWidthLarge = TABLE_WIDTH_LARGE;
+  field1Width: number;
+  field2Width: number;
+  field3Width: number;
 
   // dialog data
   newGame: Game = new Game({});
 
-  columnDefs = [
-    {headerName: 'Game name', field: 'name', width: 150, sort: 'asc', sortable: true, filter: true, checkboxSelection: true},
-    {headerName: '#Players', field: 'nbJoined', width: 110, sortable: true, filter: true},
-    {headerName: 'Creator', field: 'nicknameCreator', width: 150, sortable: true, filter: true}
-  ];
+  columnDefs: any;
 
   constructor(
     private apiService: ApiLobbyService,
+    private breakpointService: BreakpointService,
     private dialog: MatDialog
   ) {
+    this.breakpointService.layoutChanges$()
+      .subscribe(() => {
+        this.updateLayoutForScreenChange();
+        console.log(this.isSmallScreen)
+        console.log(this.field1Width);
+        console.log(this.field2Width);
+        console.log(this.tableWidthSmall);
+        console.log(this.tableWidthLarge);
+        }
+      );
   }
 
   // ----- dialog begin ------
@@ -86,11 +108,23 @@ export class AllGamesComponent implements OnInit {
 
   joinGame() {
     console.log('join game');
-     /*this.apiService.joinGame(this.selectedDataStringPresentation, 'Istiti')
-       .subscribe(res => console.log(res));*/
+    /*this.apiService.joinGame(this.selectedDataStringPresentation, 'Istiti')
+      .subscribe(res => console.log(res));*/
   }
 
   createNewGame() {
     this.openDialog();
+  }
+
+  private updateLayoutForScreenChange() {
+    this.isSmallScreen = this.breakpointService.isSmallScreen();
+    this.field1Width = this.isSmallScreen ? FIELD1_WIDTH_SMALL : FIELD1_WIDTH_LARGE;
+    this.field2Width = this.isSmallScreen ? FIELD2_WIDTH_SMALL : FIELD2_WIDTH_LARGE;
+    this.field3Width = this.isSmallScreen ? FIELD3_WIDTH_SMALL : FIELD3_WIDTH_LARGE;
+    this.columnDefs =[
+      {headerName: 'Game name', field: 'name', width: this.field1Width, sort: 'asc', sortable: true, filter: true, checkboxSelection: true},
+      {headerName: '#Players', field: 'nbJoined', width: this.field2Width, sortable: true, filter: true},
+      {headerName: 'Creator', field: 'nicknameCreator', width: this.field3Width, sortable: true, filter: true}
+    ];
   }
 }

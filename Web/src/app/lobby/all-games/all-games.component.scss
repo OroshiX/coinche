@@ -3,6 +3,22 @@
   justify-content: center;
   align-items: center;
 }
+@mixin margin-button ($margin) {
+  margin-left: $margin;
+  margin-right: $margin;
+}
+@media(max-width: 959px) {
+  .button-header {
+    @include margin-button(2px);
+  }
+}
+
+@media(min-width: 960px) {
+  .button-header {
+    @include margin-button(20px);
+  }
+}
+
 .wrapper-button {
   display: flex;
   justify-content: flex-end;
@@ -16,4 +32,5 @@
   flex: fit-content;
   margin-right: 15px;
 }
+
 

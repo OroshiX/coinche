@@ -1,5 +1,5 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { CardImageService } from '../services/card-image.service';
 
 @Component({
@@ -16,23 +16,15 @@ export class PlayInitComponent implements OnInit {
   backCard: any;
   isActive = true;
 
-  constructor(private service: CardImageService, private breakpointObserver: BreakpointObserver) {
-    const layoutChanges = this.breakpointObserver.observe([
-      '(orientation: portrait)',
-      '(orientation: landscape)',
-      Breakpoints.Medium,
-      Breakpoints.Small
-    ]);
-
-    layoutChanges.subscribe(_ => {
-      this.updateMyLayoutForOrientationChange();
-    });
-
-
+  constructor(private service: CardImageService, private breakpointService: BreakpointService) {
+    this.breakpointService.layoutChanges$()
+      .subscribe(_ => {
+        this.updateMyLayoutForScreenChange();
+      });
   }
 
-  private updateMyLayoutForOrientationChange() {
-    if (this.breakpointObserver.isMatched('(max-width: 959px)')) {
+  private updateMyLayoutForScreenChange() {
+    if (this.breakpointService.isSmallScreen()) {
       this.map = this.service.getMapSmall();
       this.cardMap = this.service.getCardMapSmall();
       this.backCard = this.service.getBackCardSmall();
