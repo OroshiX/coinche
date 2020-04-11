@@ -1,4 +1,6 @@
+import 'package:FlutterCoinche/screen/argument/game_arguments.dart';
 import 'package:FlutterCoinche/screen/game_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -6,6 +8,8 @@ class LobbyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GameArguments args = ModalRoute.of(context).settings.arguments;
+    var game = args.game;
     return Scaffold(
       appBar: AppBar(
         title: Text("Lobby"),
@@ -17,9 +21,27 @@ class LobbyScreen extends StatelessWidget {
               child: Text("Play"))
         ],
       ),
-      body: Container(
-        child: Text("Lobby"),
-      ),
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: Firestore.instance
+              .collection('playersSets')
+              .document(game.id)
+              .collection('players')
+              .document('uid')
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            }
+            if (!snapshot.hasData) {
+              return Center(
+                child: Text("No data"),
+              );
+            }
+            return Container(
+              child: Text("Lobby of game ${snapshot.data.data}"),
+            );
+          }),
     );
   }
 }

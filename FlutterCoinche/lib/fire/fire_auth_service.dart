@@ -1,5 +1,4 @@
 import 'package:FlutterCoinche/rest/server_communication.dart';
-import 'package:fb_auth/fb_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ class FireAuthService with ChangeNotifier {
     return _fireAuthService;
   }
 
-  static final _auth = FBAuth();
+  static final _auth = FirebaseAuth.instance;
   static final _fireAuthService = FireAuthService._();
 
   Future<MyAuthUser> getUser() async {
@@ -28,28 +27,33 @@ class FireAuthService with ChangeNotifier {
   }
 
   Future<dynamic> resetPassword(String email) {
-    return _auth.forgotPassword(email);
+    return _auth.sendPasswordResetEmail(email: email);
   }
 
-  Future sendEmailVerification(BuildContext context) {
-    return _auth.sendEmailVerification();
+  Future sendEmailVerification(BuildContext context, String email) {
+    return _auth.sendSignInWithEmailLink(
+        email: email,
+        url: "<Url with domain from your firebase project>",
+        handleCodeInApp: false,
+        iOSBundleID: 'fr.hornik.FlutterCoinche',
+        androidPackageName: 'fr.hornik.FlutterCoinche',
+        androidInstallIfNotAvailable: true,
+        androidMinimumVersion: "1");
   }
 
   Future<bool> _sendTokenIdToServer(IdTokenResult tokenId) {
-    print("sending tokenId to server: $tokenId");
     print("Send: ${tokenId.token}");
     return ServerCommunication.sendToken(tokenId);
   }
 
-  void _logoutFromServer() {
-    // TODO
-    ServerCommunication.logout();
+  Future<bool> _logoutFromServer() {
+    return ServerCommunication.logout();
   }
 
   Future<MyAuthUser> signInWithCredentials(
       BuildContext context, String email, String password) async {
-    var user = (await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password))
+    var user = (await _auth.signInWithEmailAndPassword(
+            email: email, password: password))
         .user;
     var idToken = await user.getIdToken();
     await _sendTokenIdToServer(idToken);
@@ -68,7 +72,7 @@ class FireAuthService with ChangeNotifier {
     AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
     FirebaseUser firebaseUser =
-        (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+        (await _auth.signInWithCredential(credential)).user;
     var idToken = await firebaseUser.getIdToken();
     await _sendTokenIdToServer(idToken);
     notifyListeners();
@@ -80,17 +84,17 @@ class FireAuthService with ChangeNotifier {
         isAnonymous: firebaseUser.isAnonymous);
   }
 
-  Future<void> signOut(BuildContext context) {
-    var logout = _auth.logout();
-    _logoutFromServer();
+  Future<bool> signOut(BuildContext context) async {
+    await _auth.signOut();
+    var success = await _logoutFromServer();
     notifyListeners();
-    return logout;
+    return success;
   }
 
   Future<MyAuthUser> signUp(BuildContext context,
       {String email, String password}) async {
-    var auth = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+    var auth = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
 
     FirebaseUser user = auth.user;
     var idToken = await user.getIdToken();

@@ -19,11 +19,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fb_auth: ^0.0.2+1
+  fb_auth: ^1.1.1
   google_sign_in: ^4.0.7 #for mobile google signin
-  firebase_auth: ^0.14.0+5 #user auth
+  firebase_auth: ^0.15.5+2 #user auth
   firebase_analytics: ^5.0.2
   firebase_storage: ^3.1.0 # for firebase storage
+  cloud_firestore: ^0.13.4+2 # Firestore
   firebase_core: ^0.4.0
   flutter_signin_button: ^1.0.0 # for sign in buttons
   flushbar: ^1.10.0

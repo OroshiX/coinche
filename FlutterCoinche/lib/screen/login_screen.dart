@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .then((MyAuthUser user) {
       if (!user.isEmailVerified) {
         // send a confirmation email
-        userRepository.sendEmailVerification(context).then((value) {
+        userRepository.sendEmailVerification(context, email).then((value) {
           _showSuccess(
               "An email was sent to this address: $email. Please check it, and come back after");
         }).catchError((error) => _showError(error));
