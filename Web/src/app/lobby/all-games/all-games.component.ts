@@ -95,7 +95,6 @@ export class AllGamesComponent implements OnInit {
     const selectedData = selectedNodes.map(node => node.data);
     this.selectedDataStringPresentation = selectedData
       .map((node: GameI) => node.id).join(', ');
-    console.log(this.selectedDataStringPresentation);
     this.isRowSelected = selectedData.some((node: GameI) => (node !== null && node?.id !== null));
   }
 
@@ -105,8 +104,9 @@ export class AllGamesComponent implements OnInit {
 
   joinGame() {
     console.log('join game');
-    /*this.apiService.joinGame(this.selectedDataStringPresentation, 'Istiti')
-      .subscribe(res => console.log(res));*/
+    this.apiService.joinGame(this.selectedDataStringPresentation, '')
+      .subscribe(res => console.log(res),
+        error => console.log('must uncheck!!!'));
   }
 
   createNewGame() {

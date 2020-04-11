@@ -25,6 +25,9 @@ export class ApiErrorHandlerService {
         this.sessionService.resetCurrentUser();
         this.router.navigateByUrl('login').then(() => console.log('navigate to login page'));
       }
+      if (error.status === 412) {
+        alert('You have already joined the selected game! Please choose another one')
+      }
     }
     // return an observable with a user-facing error message
     return throwError(
