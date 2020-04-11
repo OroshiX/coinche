@@ -25,11 +25,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         return sets.filter {
             !it.isFull() || it.containsMe()
         }.map {
-            Game(it.id,
-                 it.players.size,
-                 it.name,
-                 it.players.first().nickname,
-                 it.containsMe())
+            Game(it, it.containsMe())
         }
     }
 
@@ -117,7 +113,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (game.whoseTurn != me.position) throw NotYourTurnException()
         if (!isValidBid(game.bids, bid)) throw InvalidBidException(bid)
         game.bids.add(bid)
-        if(isLastBid(game.bids)) {
+        if (isLastBid(game.bids)) {
             // change status to playing
             game.state = TableState.PLAYING
             game.whoseTurn = game.currentFirstPlayer
