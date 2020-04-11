@@ -32,21 +32,20 @@ export class ApiLobbyService {
       );
   }
 
-  joinGame(gameId: string, nickname: string): Observable<HttpResponse<any>> {
-    const parameters = new HttpParams();
-    parameters.append('gameId', gameId);
-    parameters.append('nickname', nickname);
-    return this.httpClient.post<string>(API_BACKEND_LOBBY + JOIN_GAME, '',
-      {params: parameters, observe: 'response'})
+  joinGame(gameId: string, nickname: string | ''): Observable<any> {
+    console.log(gameId);
+    const parameters = new HttpParams().set('gameId', gameId).set('nickname', nickname);
+
+    console.log(parameters);
+    return this.httpClient.post<any>(API_BACKEND_LOBBY + JOIN_GAME, '',
+      {params: parameters})
       .pipe(
         catchError(this.errorHandler.handleError)
       );
   }
 
   setNickname(nickname: string): Observable<HttpResponse<any>> {
-    /*const parameters = new HttpParams();
-    parameters.set('nickname', nickname);*/
-    return this.httpClient.post<string>(API_BACKEND_LOBBY + SET_NICKNAME, {myNickname: nickname},
+    return this.httpClient.post<string>(API_BACKEND_LOBBY + SET_NICKNAME, nickname,
       {observe: 'response'})
       .pipe(
         catchError(this.errorHandler.handleError)
