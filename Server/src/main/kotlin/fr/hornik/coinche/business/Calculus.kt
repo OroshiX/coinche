@@ -124,7 +124,19 @@ fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
  * @return true if we should start playing, else false (continue bidding)
  */
 fun isLastBid(bids: List<Bid>): Boolean {
-    TODO("Sacha")
+    val bidsLength = bids.size
+    var nbLastPass = 0
+    when {
+        bids.isEmpty() -> return false                // pas d'encheres on continue
+        bids[bidsLength - 1] is Coinche && bids[bidsLength -1].surcoinche -> return true      // si derniere enchere est surcoinche on joue
+        bidsLength < 3 -> return false                  // Moins de 3 encheres on continue
+        else -> {
+            for (i in 0 until 3) {
+                if (bids[bidsLength -1 - i] is Pass) nbLastPass ++     // On compte les pass parmi les 3 dernieres encheres
+            }
+            return nbLastPass                                           // Si 3 pass parmi ceux la on joue sinon non
+        }
+    }
 }
 
 /**
@@ -132,7 +144,12 @@ fun isLastBid(bids: List<Bid>): Boolean {
  * @return the bid that we all agreed on, and that we should play
  */
 fun getCurrentBid(allBids: List<Bid>) : Bid {
-    TODO("Sacha")
+    var bidsLength = allBids.size
+    // Cette boucle possible car soit on sarrete avant datteindre le out of bounds (annonce coinche sucrcoinche -> listsize = 3) soit listesize >= 4
+    for (j in 1..4) {
+        if (allBids[bidsLength-j] !is Pass) return allBids[bidsLength-j]
+    }
+    return allBids[0] // on ne passe par ici que si il n'y a eu que des pass dans ce cas on renvoie pass (on passe au tour suivant)
 }
 
 /**
