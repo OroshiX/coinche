@@ -54,8 +54,6 @@ export class AllGamesComponent implements OnInit {
       console.log('The dialog was closed');
       this.newGame.name = data.name;
       this.newGame.nicknameCreator = data.nicknameCreator;
-      console.log(data);
-      console.log(this.newGame);
       this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res));
       // location.reload();
       /*this.rowData$ = this.apiService.createGame(this.newGame)
