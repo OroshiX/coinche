@@ -7,7 +7,7 @@ import { GameI } from '../../shared/models/game-interface';
 import { CreateGameDialogComponent } from './create-game-dialog/create-game-dialog.component';
 
 export interface DialogData {
-  gameId: '';
+  name: '';
   nicknameCreator: ''
 }
 
@@ -29,7 +29,7 @@ export class AllGamesComponent implements OnInit {
   newGame: Game = new Game({});
 
   columnDefs = [
-    {headerName: 'GameId', field: 'id', width: 150, sort: 'asc', filter: true, checkboxSelection: true},
+    {headerName: 'Game name', field: 'name', width: 150, sort: 'asc', sortable: true, filter: true, checkboxSelection: true},
     {headerName: '#Players', field: 'nbJoined', width: 110, sortable: true, filter: true},
     {headerName: 'Creator', field: 'nicknameCreator', width: 150, sortable: true, filter: true}
   ];
@@ -50,11 +50,14 @@ export class AllGamesComponent implements OnInit {
 
     const dialogRef = this.dialog.open(CreateGameDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(data => {
+    dialogRef.afterClosed().subscribe((data: DialogData) => {
       console.log('The dialog was closed');
-      this.newGame = data;
+      this.newGame.name = data.name;
+      this.newGame.nicknameCreator = data.nicknameCreator;
+      console.log(data);
+      console.log(this.newGame);
       this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res));
-      location.reload();
+      // location.reload();
       /*this.rowData$ = this.apiService.createGame(this.newGame)
         .pipe(concatMap(() => this.apiService.allGames()));*/
     });
@@ -75,6 +78,7 @@ export class AllGamesComponent implements OnInit {
     const selectedData = selectedNodes.map(node => node.data);
     this.selectedDataStringPresentation = selectedData
       .map((node: GameI) => node.id).join(', ');
+    console.log(this.selectedDataStringPresentation);
     this.isRowSelected = selectedData.some((node: GameI) => (node !== null && node?.id !== null));
   }
 
@@ -83,7 +87,9 @@ export class AllGamesComponent implements OnInit {
   };
 
   joinGame() {
-    return true;
+    console.log('join game');
+     /*this.apiService.joinGame(this.selectedDataStringPresentation, 'Istiti')
+       .subscribe(res => console.log(res));*/
   }
 
   createNewGame() {

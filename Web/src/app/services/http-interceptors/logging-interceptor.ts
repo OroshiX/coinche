@@ -7,7 +7,8 @@ import { MessagesService } from './messages.service';
 @Injectable()
 export class LoggingInterceptor implements HttpInterceptor {
 
-  constructor(private messenger: MessagesService) {
+  constructor(
+    private messenger: MessagesService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -35,6 +36,8 @@ export class LoggingInterceptor implements HttpInterceptor {
           const msg = `${req.method} "${req.urlWithParams}" ${stat}
              ${ok} in ${elapsed} ms.`;
           this.messenger.addMsg(msg);
+          // this.sessionService.resetCurrentUser();
+          // this.router.navigateByUrl('login');
         })
       );
   }

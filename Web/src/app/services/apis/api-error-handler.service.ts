@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 
@@ -8,7 +9,7 @@ import { SessionStorageService } from '../session-storage/session-storage.servic
 })
 export class ApiErrorHandlerService {
 
-  constructor(private sessionService: SessionStorageService) { }
+  constructor(private sessionService: SessionStorageService, private router: Router) { }
 
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -22,6 +23,7 @@ export class ApiErrorHandlerService {
         `body was: ${error.error.error}`);
       if (error.status === 401) {
         this.sessionService.resetCurrentUser();
+        this.router.navigateByUrl('login').then(() => console.log('navigate to login page'));
       }
     }
     // return an observable with a user-facing error message

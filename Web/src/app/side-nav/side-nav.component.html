@@ -7,9 +7,11 @@
     <mat-nav-list>
       <button mat-list-item [routerLink]="['/login']" routerLinkActive="active-link">Login</button>
       <button mat-list-item [routerLink]="['/play']" routerLinkActive="active-link"
-         [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">Play</button>
+              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">Play
+      </button>
       <button mat-list-item [routerLink]="['/all-games']" routerLinkActive="active-link"
-         [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">All Games</button>
+              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">All Games
+      </button>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -26,18 +28,22 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span class="title">Coinche Card Game</span>
-      <button
-        matTooltip="Create a nickname"
-        matTooltipPosition="below"
-        mat-raised-button color="primary"
-        class="current-user">{{currentUserName}}</button>
       <ng-container *ngIf="currentUserName !==''">
+        <button
+          matTooltip="Create a nickname"
+          matTooltipPosition="below"
+          mat-raised-button color="primary"
+          (click)="setNickname()"
+          class="current-user">{{currentUserName}}
+        </button>
         <button
           mat-raised-button
           color="primary"
           matTooltip="Logout"
           (click)="logout()"
-          mat-icon-button><mat-icon>logout</mat-icon></button>
+          mat-icon-button>
+          <mat-icon>logout</mat-icon>
+        </button>
       </ng-container>
     </mat-toolbar>
     <router-outlet></router-outlet>

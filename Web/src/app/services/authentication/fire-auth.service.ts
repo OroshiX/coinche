@@ -26,7 +26,7 @@ export class FireAuthService {
     try {
       const response = await this.afAuth.signInWithPopup(provider);
       const currentUser = await this.afAuth.currentUser;
-      const idToken = await currentUser.getIdToken();
+      const idToken = await currentUser.getIdToken(true);
 
       this.apiService.loginToServer(idToken)
         .subscribe((ret: HttpResponse<any>) => {

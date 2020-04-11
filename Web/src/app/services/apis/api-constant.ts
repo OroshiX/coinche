@@ -9,6 +9,7 @@ export const LOGOUT = 'logout';
 export const ALL_GAMES = 'allGames';
 export const CREATE_GAME = 'createGame';
 export const JOIN_GAME = 'joinGame';
+export const SET_NICKNAME= 'setNickname';
 
 // in game
 export const GAMES = 'games';

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogData } from '../all-games.component';
 
@@ -18,7 +18,7 @@ export class CreateGameDialogComponent implements OnInit{
 
   ngOnInit(): void {
         this.form = this.fb.group({
-          gameId: this.fb.control(''),
+          name: this.fb.control('', Validators.required),
           nicknameCreator: this.fb.control('')
         })
     }

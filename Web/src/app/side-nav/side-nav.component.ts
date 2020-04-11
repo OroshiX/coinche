@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { ApiLobbyService } from '../services/apis/api-lobby.service';
 import { ApiLogInOutService } from '../services/apis/api-log-in-out.service';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
 import { SessionStorageService } from '../services/session-storage/session-storage.service';
@@ -27,6 +28,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private apiService: ApiLogInOutService,
+    private apiLobbyService: ApiLobbyService,
     private authService: FireAuthService,
     private sessionService: SessionStorageService) {
   }
@@ -37,6 +39,12 @@ export class SideNavComponent implements OnInit, OnDestroy {
         this.currentUserName = isNotNullAndNotUndefined(userToken) ? userToken.displayName : '';
         this.isDisabled = !isNotNullAndNotUndefined(userToken);
       });
+  }
+
+  setNickname() {
+    if (this.currentUserName !== '') {
+      this.apiLobbyService.setNickname('Istiti').subscribe(res => console.log(res));
+    }
   }
 
   logout() {
