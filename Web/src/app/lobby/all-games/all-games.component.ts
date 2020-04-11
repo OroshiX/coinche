@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AgGridAngular } from 'ag-grid-angular';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { ApiLobbyService } from '../../services/apis/api-lobby.service';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { Game } from '../../shared/models/game';
@@ -31,8 +33,7 @@ export class AllGamesComponent implements OnInit {
   @ViewChild('agGrid') agGrid: AgGridAngular;
 
   title = 'All Games';
-  rowData: GameI[];
-  // rowData$: Observable<GameI[]>;
+  rowData$: Observable<GameI[]>;
   selectedDataStringPresentation: string;
   isRowSelected: boolean;
   isSmallScreen: boolean;
@@ -54,7 +55,7 @@ export class AllGamesComponent implements OnInit {
   ) {
     this.breakpointService.layoutChanges$()
       .subscribe(() => {
-        this.updateLayoutForScreenChange();
+          this.updateLayoutForScreenChange();
         }
       );
   }
@@ -69,44 +70,35 @@ export class AllGamesComponent implements OnInit {
 
     const dialogRef = this.dialog.open(CreateGameDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((data: DialogData) => {
-      console.log('The dialog was closed');
-      this.newGame.name = data.name;
-      this.newGame.nicknameCreator = data.nicknameCreator;
-      this.apiService.createGame(this.newGame).subscribe(res => console.log('new gameId', res));
-      // location.reload();
-      /*this.rowData$ = this.apiService.createGame(this.newGame)
-        .pipe(concatMap(() => this.apiService.allGames()));*/
-    });
+    dialogRef.afterClosed()
+      .pipe(switchMap(data => this.processCreateGame(data)))
+      .subscribe(res => {
+        console.log(res);
+        this.rowData$ = this.apiService.allGames();
+      });
   }
 
   // ----- dialog end ------
 
   ngOnInit(): void {
-    this.apiService.allGames()
-      .subscribe((res: GameI[]) => {
-        this.rowData = res;
-      });
-    // this.rowData$ = this.apiService.allGames();
+    this.rowData$ = this.apiService.allGames();
   }
 
   getSelectedRows() {
     const selectedNodes = this.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
-    this.selectedDataStringPresentation = selectedData
-      .map((node: GameI) => node.id).join(', ');
+    this.selectedDataStringPresentation = selectedData.map((node: GameI) => node.id).join(', ');
     this.isRowSelected = selectedData.some((node: GameI) => (node !== null && node?.id !== null));
   }
 
   isRowSelectable(rowNode: any): boolean {
     return rowNode.data ? rowNode.data.nbJoined < 4 : false;
-  };
+  }
 
   joinGame() {
     console.log('join game');
     this.apiService.joinGame(this.selectedDataStringPresentation, '')
-      .subscribe(res => console.log(res),
-        error => console.log('must uncheck!!!'));
+      .subscribe(() => this.rowData$ = this.apiService.allGames());
   }
 
   createNewGame() {
@@ -118,10 +110,17 @@ export class AllGamesComponent implements OnInit {
     this.field1Width = this.isSmallScreen ? FIELD1_WIDTH_SMALL : FIELD1_WIDTH_LARGE;
     this.field2Width = this.isSmallScreen ? FIELD2_WIDTH_SMALL : FIELD2_WIDTH_LARGE;
     this.field3Width = this.isSmallScreen ? FIELD3_WIDTH_SMALL : FIELD3_WIDTH_LARGE;
-    this.columnDefs =[
+    this.columnDefs = [
       {headerName: 'Game name', field: 'name', width: this.field1Width, sort: 'asc', sortable: true, filter: true, checkboxSelection: true},
       {headerName: '#Players', field: 'nbJoined', width: this.field2Width, sortable: true, filter: true},
       {headerName: 'Creator', field: 'nicknameCreator', width: this.field3Width, sortable: true, filter: true}
     ];
+  }
+
+  private processCreateGame(data: Game) {
+    console.log('The dialog was closed');
+    this.newGame.name = data.name;
+    this.newGame.nicknameCreator = data.nicknameCreator;
+    return this.apiService.createGame(this.newGame);
   }
 }

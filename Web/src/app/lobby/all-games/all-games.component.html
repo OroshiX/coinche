@@ -30,7 +30,7 @@
       #agGrid
       [ngStyle]="{'width': isSmallScreen ? tableWidthSmall: tableWidthLarge, 'height': '600px'}"
       class="ag-theme-alpine"
-      [rowData]="rowData"
+      [rowData]="rowData$ | async"
       [columnDefs]="columnDefs"
       [isRowSelectable]="isRowSelectable"
       rowSelection="single"
