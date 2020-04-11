@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 class CalculusTest {
     private lateinit var bids: List<Bid>
-
+ 
     enum class dbgLevel(val value: Int) {
         NONE(0), DEBUG(1), FUNCTION(2), SCORE(4), HTML(8), HTMLFUNC(10), MISC(16);
 
