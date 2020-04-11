@@ -35,11 +35,11 @@ class FireAuthService with ChangeNotifier {
     return _auth.sendEmailVerification();
   }
 
-  _sendTokenIdToServer(IdTokenResult tokenId) {
+  Future<bool> _sendTokenIdToServer(IdTokenResult tokenId) {
     print("sending tokenId to server: $tokenId");
     print("Send: ${tokenId.token}");
-    ServerCommunication.sendToken(tokenId);
-   }
+    return ServerCommunication.sendToken(tokenId);
+  }
 
   void _logoutFromServer() {
     // TODO
@@ -52,7 +52,7 @@ class FireAuthService with ChangeNotifier {
             .signInWithEmailAndPassword(email: email, password: password))
         .user;
     var idToken = await user.getIdToken();
-    _sendTokenIdToServer(idToken);
+    await _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: user.uid,
@@ -70,7 +70,7 @@ class FireAuthService with ChangeNotifier {
     FirebaseUser firebaseUser =
         (await FirebaseAuth.instance.signInWithCredential(credential)).user;
     var idToken = await firebaseUser.getIdToken();
-    _sendTokenIdToServer(idToken);
+    await _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: firebaseUser.uid,
@@ -94,7 +94,7 @@ class FireAuthService with ChangeNotifier {
 
     FirebaseUser user = auth.user;
     var idToken = await user.getIdToken();
-    _sendTokenIdToServer(idToken);
+    await _sendTokenIdToServer(idToken);
     notifyListeners();
     return MyAuthUser(
         uid: user.uid,
