@@ -11,9 +11,6 @@ import { CurrentUser } from '../shared/models/user';
 import { isNotNullAndNotUndefined } from '../shared/utils/helper';
 import { CreateNicknameDialogComponent } from './create-nickname-dialog/create-nickname-dialog.component';
 
-export interface DialogData {
-  nickname: ''
-}
 export const DIALOG_WIDTH = '300px';
 
 @Component({
@@ -52,11 +49,11 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
     const dialogRef = this.dialog.open(CreateNicknameDialogComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe((data: DialogData) => {
+    dialogRef.afterClosed().subscribe((data: string) => {
       console.log('The dialog was closed');
-      this.nickname = data.nickname;
-      this.apiLobbyService.setNickname(this.nickname)
-        .subscribe(res => console.log('nickname', res));
+      console.log(data);
+      this.apiLobbyService.setNickname(data)
+        .subscribe(res => console.log('nickname succeed'));
     });
   }
 

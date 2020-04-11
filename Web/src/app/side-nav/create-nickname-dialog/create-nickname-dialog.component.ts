@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../side-nav.component';
 
 
 @Component({
@@ -13,7 +12,7 @@ export class CreateNicknameDialogComponent implements OnInit{
   public nicknameControl: FormControl;
 
   constructor(public dialogRef: MatDialogRef<CreateNicknameDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData,
+              @Inject(MAT_DIALOG_DATA) public data: string,
               private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -25,6 +24,7 @@ export class CreateNicknameDialogComponent implements OnInit{
   }
 
   save(): void {
+    console.log(this.nicknameControl.value);
     this.dialogRef.close(this.nicknameControl.value);
   }
 

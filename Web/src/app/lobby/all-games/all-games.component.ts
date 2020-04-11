@@ -55,11 +55,6 @@ export class AllGamesComponent implements OnInit {
     this.breakpointService.layoutChanges$()
       .subscribe(() => {
         this.updateLayoutForScreenChange();
-        console.log(this.isSmallScreen);
-        console.log(this.field1Width);
-        console.log(this.field2Width);
-        console.log(this.tableWidthSmall);
-        console.log(this.tableWidthLarge);
         }
       );
   }
