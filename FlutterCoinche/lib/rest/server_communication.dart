@@ -45,4 +45,18 @@ class ServerCommunication {
     }
     return false;
   }
+
+  static Future<Game> createGame(String gameName) async {
+    var url = "$_baseUrl/lobby/createGame";
+    print("connect to $url");
+    var r = await Requests.post(url,
+        body: gameName,
+        timeoutSeconds: 60,
+        bodyEncoding: RequestBodyEncoding.PlainText);
+    if (r.hasError) {
+      throw "Error creating game: ${r.content()}";
+    }
+    var game = Game.fromJson(jsonDecode(r.content()));
+    return game;
+  }
 }

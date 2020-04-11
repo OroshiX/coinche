@@ -10,6 +10,16 @@ class AllGamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ServerCommunication.createGame("My awesome Game")
+              .then((value) => print("We got game = ${value.toJson()}"));
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         title: Text("All games"),
         actions: <Widget>[
