@@ -25,8 +25,6 @@ export class ApiLobbyService {
   }
 
   createGame(game: Game): Observable<any> {
-    console.log(game);
-    console.log(game.name);
     return this.httpClient.post<string>(API_BACKEND_LOBBY + CREATE_GAME, game.name,
       {observe: 'response'})
       .pipe(
