@@ -17,7 +17,7 @@ class CalculusTest {
 
         infix fun and(traceLevel: CalculusTest.dbgLevel): Any {
             return traceLevel.value and this.value
-
+ 
         }
         infix fun or(traceLevel: CalculusTest.dbgLevel): Any {
             return traceLevel.value or this.value
