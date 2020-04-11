@@ -98,7 +98,10 @@ export class AllGamesComponent implements OnInit {
   joinGame() {
     console.log('join game');
     this.apiService.joinGame(this.selectedDataStringPresentation, '')
-      .subscribe(() => this.rowData$ = this.apiService.allGames());
+      .subscribe(() => {
+        this.rowData$ = this.apiService.allGames();
+        this.isRowSelected = false;
+      });
   }
 
   createNewGame() {
