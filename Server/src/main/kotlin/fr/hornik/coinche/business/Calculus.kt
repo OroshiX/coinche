@@ -129,14 +129,19 @@ fun isLastBid(bids: List<Bid>): Boolean {
     // pas d'encheres on continue
     if (bids.isEmpty()) return false
     val lastBid = bids[bidsLength - 1]
-    when {
-        lastBid is Coinche && lastBid.surcoinche -> return true      // si derniere enchere est surcoinche on joue
-        bidsLength < 4 -> return false                  // Moins de 4 encheres on continue moins de 4 permet de traiter le cas de 4 pass au 1er tour
-        else -> {
+    return when {
+        // si dernière enchère est surcoinche on joue
+        lastBid is Coinche && lastBid.surcoinche -> true
+        // Moins de 4 enchères on continue moins de 4 permet
+        // de traiter le cas de 4 pass au 1er tour
+        bidsLength < 4                           -> false
+        else                                     -> {
             for (i in 0 until 3) {
-                if (bids[bidsLength -1 - i] is Pass) nbLastPass ++     // On compte les pass parmi les 3 dernieres encheres
+                // On compte les pass parmi les 3 dernières enchères
+                if (bids[bidsLength - 1 - i] is Pass) nbLastPass++
             }
-            return nbLastPass  == 3                                          // Si 3 pass parmi ceux la on joue sinon non
+            // Si 3 pass parmi ceux-là, on joue sinon non
+            nbLastPass == 3
         }
     }
 }
@@ -145,13 +150,16 @@ fun isLastBid(bids: List<Bid>): Boolean {
  * What is the current bid, considering all the bids?
  * @return the bid that we all agreed on, and that we should play
  */
-fun getCurrentBid(allBids: List<Bid>) : Bid {
-    var bidsLength = allBids.size
-    // Cette boucle possible car soit on sarrete avant datteindre le out of bounds (annonce coinche sucrcoinche -> listsize = 3) soit listesize >= 4
+fun getCurrentBid(allBids: List<Bid>): Bid {
+    val bidsLength = allBids.size
+    // Cette boucle possible car soit on s'arrête avant d'atteindre le out of bounds
+    // (annonce coinche surcoinche -> listSize = 3) soit listeSize >= 4
     for (j in 1..4) {
-        if (allBids[bidsLength-j] !is Pass) return allBids[bidsLength-j]
+        if (allBids[bidsLength - j] !is Pass) return allBids[bidsLength - j]
     }
-    return allBids[0] // on ne passe par ici que si il n'y a eu que des pass dans ce cas on renvoie pass (on passe au tour suivant)
+    // on ne passe par ici que s’il n'y a eu que des pass
+    // dans ce cas on renvoie pass (on passe au tour suivant)
+    return allBids[0]
 }
 
 /**
