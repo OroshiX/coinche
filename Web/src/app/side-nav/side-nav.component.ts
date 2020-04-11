@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { ApiLobbyService } from '../services/apis/api-lobby.service';
@@ -8,6 +9,12 @@ import { FireAuthService } from '../services/authentication/fire-auth.service';
 import { SessionStorageService } from '../services/session-storage/session-storage.service';
 import { CurrentUser } from '../shared/models/user';
 import { isNotNullAndNotUndefined } from '../shared/utils/helper';
+import { CreateNicknameDialogComponent } from './create-nickname-dialog/create-nickname-dialog.component';
+
+export interface DialogData {
+  nickname: ''
+}
+export const DIALOG_WIDTH = '300px';
 
 @Component({
   selector: 'app-side-nav',
@@ -17,6 +24,7 @@ import { isNotNullAndNotUndefined } from '../shared/utils/helper';
 export class SideNavComponent implements OnInit, OnDestroy {
   sub: Subscription;
   currentUserName = '';
+  nickname = '';
   isDisabled = false;
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(
     [Breakpoints.Handset, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
@@ -30,7 +38,26 @@ export class SideNavComponent implements OnInit, OnDestroy {
     private apiService: ApiLogInOutService,
     private apiLobbyService: ApiLobbyService,
     private authService: FireAuthService,
-    private sessionService: SessionStorageService) {
+    private sessionService: SessionStorageService,
+    private dialog: MatDialog) {
+  }
+
+  // ----- dialog begin ------
+  openDialog(): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = false;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = this;
+    dialogConfig.width = DIALOG_WIDTH;
+
+    const dialogRef = this.dialog.open(CreateNicknameDialogComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((data: DialogData) => {
+      console.log('The dialog was closed');
+      this.nickname = data.nickname;
+      this.apiLobbyService.setNickname(this.nickname)
+        .subscribe(res => console.log('nickname', res));
+    });
   }
 
   ngOnInit(): void {
@@ -38,12 +65,14 @@ export class SideNavComponent implements OnInit, OnDestroy {
       .subscribe((userToken: CurrentUser | null) => {
         this.currentUserName = isNotNullAndNotUndefined(userToken) ? userToken.displayName : '';
         this.isDisabled = !isNotNullAndNotUndefined(userToken);
+        console.log(userToken);
       });
   }
 
   setNickname() {
     if (this.currentUserName !== '') {
-      this.apiLobbyService.setNickname('Istiti').subscribe(res => console.log(res));
+      this.openDialog();
+      /*this.apiLobbyService.setNickname('Istiti').subscribe(res => console.log(res));*/
     }
   }
 

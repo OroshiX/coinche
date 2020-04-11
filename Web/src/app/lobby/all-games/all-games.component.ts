@@ -11,6 +11,8 @@ export interface DialogData {
   name: '';
   nicknameCreator: ''
 }
+
+export const DIALOG_WIDTH = '300px';
 export const TABLE_WIDTH_SMALL = '410px';
 export const TABLE_WIDTH_LARGE = '550px';
 export const FIELD1_WIDTH_SMALL = 150;
@@ -53,7 +55,7 @@ export class AllGamesComponent implements OnInit {
     this.breakpointService.layoutChanges$()
       .subscribe(() => {
         this.updateLayoutForScreenChange();
-        console.log(this.isSmallScreen)
+        console.log(this.isSmallScreen);
         console.log(this.field1Width);
         console.log(this.field2Width);
         console.log(this.tableWidthSmall);
@@ -68,7 +70,7 @@ export class AllGamesComponent implements OnInit {
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.data = this.newGame;
-    dialogConfig.width = '300px';
+    dialogConfig.width = DIALOG_WIDTH;
 
     const dialogRef = this.dialog.open(CreateGameDialogComponent, dialogConfig);
 

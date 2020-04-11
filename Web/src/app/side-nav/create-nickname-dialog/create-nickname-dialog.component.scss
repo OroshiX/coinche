@@ -1,0 +1,16 @@
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.btn-action-save {
+  flex: fit-content;
+}
+.btn-action-cancel {
+  flex: fit-content;
+}
