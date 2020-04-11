@@ -27,6 +27,7 @@ import { CanActivateGame } from './services/can-activates/can-activate-game';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
 import { LoggingInterceptor } from './services/http-interceptors/logging-interceptor';
 import { AlertComponent } from './shared/alert/alert.component';
+import { CreateNicknameDialogComponent } from './side-nav/create-nickname-dialog/create-nickname-dialog.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
 
 export const httpInterceptorProviders = [
@@ -40,7 +41,11 @@ export const httpInterceptorProviders = [
     SideNavComponent,
     LoginPageComponent,
     AlertComponent,
-    LoginGoogleComponent
+    LoginGoogleComponent,
+    CreateNicknameDialogComponent
+  ],
+  entryComponents: [
+    CreateNicknameDialogComponent
   ],
   imports: [
     BrowserModule,

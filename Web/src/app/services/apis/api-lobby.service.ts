@@ -44,10 +44,10 @@ export class ApiLobbyService {
   }
 
   setNickname(nickname: string): Observable<HttpResponse<any>> {
-    const parameters = new HttpParams();
-    parameters.set('nickname', nickname);
+    /*const parameters = new HttpParams();
+    parameters.set('nickname', nickname);*/
     return this.httpClient.post<string>(API_BACKEND_LOBBY + SET_NICKNAME, nickname,
-      {params: parameters, observe: 'response'})
+      {observe: 'response'})
       .pipe(
         catchError(this.errorHandler.handleError)
       );
