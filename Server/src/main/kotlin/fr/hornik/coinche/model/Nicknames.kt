@@ -3,10 +3,10 @@ package fr.hornik.coinche.model
 import com.fasterxml.jackson.annotation.JsonAlias
 import fr.hornik.coinche.model.values.PlayerPosition
 
-data class Nicknames(@JsonAlias("NORTH") val NORTH: String,
-                     @JsonAlias("SOUTH") val SOUTH: String,
-                     @JsonAlias("EAST") val EAST: String,
-                     @JsonAlias("WEST") val WEST: String) {
+data class Nicknames(@JsonAlias("NORTH") val NORTH: String = "",
+                     @JsonAlias("SOUTH") val SOUTH: String = "",
+                     @JsonAlias("EAST") val EAST: String = "",
+                     @JsonAlias("WEST") val WEST: String = "") {
     fun toFirebase(): Map<String, String> {
         return mapOf("NORTH" to NORTH,
                      "SOUTH" to SOUTH,

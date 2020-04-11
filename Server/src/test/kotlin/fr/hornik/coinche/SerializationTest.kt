@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.CardColor
+import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.serialization.JsonSerialize
 import org.junit.jupiter.api.Test
@@ -30,5 +31,18 @@ class SerializationTest {
         val setOfGames = SetOfGames()
         setOfGames.currentBid = bid
         print(JsonSerialize.toJson(setOfGames))
+    }
+
+    @Test
+    fun serializeCard() {
+        val mapper = ObjectMapper()
+        val card = Card(CardValue.KING, CardColor.CLUB, true)
+        val st =
+                mapper.writerWithDefaultPrettyPrinter().writeValueAsString(card)
+        println(st)
+
+        println(JsonSerialize.toJson(card))
+        val deserialize = JsonSerialize.fromJson<Card>(st)
+        print(deserialize)
     }
 }
