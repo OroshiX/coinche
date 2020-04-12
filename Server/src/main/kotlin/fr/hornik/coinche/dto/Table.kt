@@ -1,5 +1,6 @@
 package fr.hornik.coinche.dto
 
+import com.google.firebase.database.util.JsonMapper
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
@@ -26,8 +27,8 @@ data class Table(val id: String,
                 "state" to state.value,
                 "nextPlayer" to nextPlayer.value,
                 "myPosition" to myPosition.value,
-                "bids" to bids.map { JsonSerialize.toJson(it) },
-                "currentBid" to JsonSerialize.toJson(currentBid),
+                "bids" to bids.map { JsonMapper.parseJson(JsonSerialize.toJson(it)) },
+                "currentBid" to JsonMapper.parseJson(JsonSerialize.toJson(currentBid)),
                 "score" to score.toFirebase(),
                 "winnerLastTrick" to winnerLastTrick?.value,
                 "lastTrick" to lastTrick
