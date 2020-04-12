@@ -21,6 +21,8 @@ class TableWidget extends StatelessWidget {
     var left = getPlayerPositionLeft(game);
     var right = getPlayerPositionRight(game);
     var me = game.myPosition;
+    final double cardWidth = 100;
+    final double cardHeight = 150;
     return SafeArea(
         child: Container(
       child: Stack(
@@ -115,50 +117,54 @@ class TableWidget extends StatelessWidget {
               child: Container(
                   color: Color.fromRGBO(192, 214, 233, 1),
 //                  padding: EdgeInsets.all(20),
-                  height: 160,
+                  height: cardHeight + 20,
                   width: screenSize.width,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: game.cards.length,
-                      itemBuilder: (context, index) => Container(
-                            width: 90,
-//                            height: 200,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 4),
-                              child: LongPressDraggable(
-                                  hapticFeedbackOnStart: true,
-                                  data: game.cards[index],
-                                  childWhenDragging: Container(
+                      itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 4),
+                            child: LongPressDraggable(
+                                hapticFeedbackOnStart: true,
+                                data: game.cards[index],
+                                childWhenDragging: Container(
+                                  constraints: BoxConstraints.tight(
+                                      Size(cardWidth, cardHeight)),
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.grey[800],
+                                            offset: Offset(1, 1),
+                                            blurRadius: 4,
+                                            spreadRadius: 1),
+                                        BoxShadow(
+                                            color: Colors.grey[600],
+                                            offset: Offset(-3, -3),
+                                            blurRadius: 0,
+                                            spreadRadius: 2)
+                                      ]),
+                                ),
+                                feedback: Container(
+                                    padding: EdgeInsets.all(10),
+                                    constraints: BoxConstraints.tight(
+                                        Size(cardWidth, cardHeight)),
                                     decoration: BoxDecoration(
-                                        color: Colors.transparent,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(20),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color: Colors.grey[800],
-                                              offset: Offset(1, 1),
-                                              blurRadius: 4,
-                                              spreadRadius: 1),
-                                          BoxShadow(
-                                              color: Colors.grey[600],
-                                              offset: Offset(-3, -3),
-                                              blurRadius: 0,
-                                              spreadRadius: 2)
-                                        ]),
-                                  ),
-                                  feedback: Container(
-                                      padding: EdgeInsets.all(10),
-                                      width: 150,
-                                      height: 200,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.grey[100],
-                                      ),
-                                      child: CardWidget(game.cards[index])),
-                                  child: CardWidget(game.cards[index])),
-                            ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: CardWidget(game.cards[index])),
+                                child: Container(
+                                    constraints: BoxConstraints.tight(
+                                        Size(cardWidth, cardHeight)),
+                                    child: CardWidget(game.cards[index]))),
                           )))),
+          Positioned(child: Container(
+
+          )),
           Center(
             child: Text(game.id),
           ),
@@ -172,13 +178,40 @@ class TableWidget extends StatelessWidget {
               builder: (context, candidateData, rejectedData) {
                 if (candidateData.isNotEmpty) {
                   return Container(
-                    color: Colors.orange,
-                    width: 100,
-                    height: 100,
-                    child: CardWidget(candidateData.last),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: cardWidth,
+                        height: cardHeight,
+                        child: CardWidget(candidateData.last),
+                      ),
+                    ),
                   );
                 }
-                return Text("dragTarget");
+                if (rejectedData.isNotEmpty) {
+                  return Container(
+                    color: Colors.red,
+                    width: cardWidth,
+                    height: cardHeight,
+                  );
+                }
+                return Container(
+                  decoration: BoxDecoration(
+                      color: Colors.blueGrey[900],
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.blueGrey[900],
+                            spreadRadius: 2,
+                            blurRadius: 2,
+                            offset: Offset(2, 2))
+                      ]),
+                  width: cardWidth,
+                  height: cardHeight,
+                );
               },
             ),
           )
