@@ -15,6 +15,13 @@ class Card {
   factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardToJson(this);
+
+  @override
+  String toString() {
+    return "${value.toString().split(".").last}"
+        " of ${color.toString().split(".").last}"
+        "${playable != null && playable ? " (playable)" : ""}";
+  }
 }
 
 enum CardValue {
@@ -34,6 +41,55 @@ enum CardValue {
   EIGHT,
   @JsonValue(7)
   SEVEN
+}
+
+int getDominanceColor(CardValue cardValue) {
+  switch (cardValue) {
+    case CardValue.ACE:
+      return 7;
+    case CardValue.KING:
+      return 6;
+    case CardValue.QUEEN:
+      return 5;
+    case CardValue.JACK:
+      return 4;
+    case CardValue.TEN:
+      return 3;
+    case CardValue.NINE:
+      return 2;
+    case CardValue.EIGHT:
+      return 1;
+    case CardValue.SEVEN:
+      return 0;
+  }
+  return -1;
+}
+
+int getDominanceTrump(CardValue cardValue) {
+  switch (cardValue) {
+    case CardValue.JACK:
+      return 7;
+    case CardValue.NINE:
+      return 6;
+    case CardValue.ACE:
+      return 5;
+    case CardValue.TEN:
+      return 4;
+    case CardValue.KING:
+      return 3;
+    case CardValue.QUEEN:
+      return 2;
+    case CardValue.EIGHT:
+      return 1;
+    case CardValue.SEVEN:
+      return 0;
+  }
+  return -1;
+}
+
+int compareValue(CardValue value, CardValue value2, bool isTrump) {
+  if (isTrump) return getDominanceTrump(value) - getDominanceTrump(value2);
+  return getDominanceColor(value) - getDominanceColor(value2);
 }
 
 enum CardColor {

@@ -38,7 +38,26 @@ class Game {
       this.winnerLastTrick,
       this.lastTrick});
 
+  String getNickNameOf(PlayerPosition playerPosition) {
+    switch (playerPosition) {
+      case PlayerPosition.NORTH:
+        return nicknames.north;
+      case PlayerPosition.SOUTH:
+        return nicknames.south;
+      case PlayerPosition.EAST:
+        return nicknames.east;
+      case PlayerPosition.WEST:
+        return nicknames.west;
+    }
+    return "<empty>";
+  }
+
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 
   Map<String, dynamic> toJson() => _$GameToJson(this);
+
+  @override
+  String toString() {
+    return "game: $id, myCards: $cards";
+  }
 }

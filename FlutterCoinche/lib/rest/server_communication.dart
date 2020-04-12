@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:FlutterCoinche/.env.dart';
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:requests/requests.dart';
@@ -58,5 +59,15 @@ class ServerCommunication {
     }
     var game = GameEmpty.fromJson(jsonDecode(r.content()));
     return game;
+  }
+
+  static playCard(Card data, String gameId) async {
+    var url = "$_baseUrl/games/$gameId/playCard";
+    print("connect to $url");
+    var r = await Requests.post(url,
+        body: data, timeoutSeconds: 60, bodyEncoding: RequestBodyEncoding.JSON);
+    if (r.hasError) {
+      throw "Error playing card: ${r.content()}";
+    }
   }
 }

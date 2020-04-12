@@ -14,7 +14,7 @@ class AllGamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
-
+    var gamesProvider = BlocProvider.of<GamesBloc>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -35,8 +35,7 @@ class AllGamesScreen extends StatelessWidget {
                       if (formKey.currentState.validate()) {
                         ServerCommunication.createGame(_controller.text).then(
                             (value) {
-                          BlocProvider.of<GamesBloc>(context)
-                              .changeGame(value.id);
+                          gamesProvider.changeGame(value.id);
                           Navigator.of(context)
                               .pushNamed(LobbyScreen.routeName);
                           return Flushbar(
@@ -84,7 +83,7 @@ class AllGamesScreen extends StatelessWidget {
               GameEmpty game = games[index];
               return GestureDetector(
                 onTap: () {
-                  BlocProvider.of<GamesBloc>(context).changeGame(game.id);
+                  gamesProvider.changeGame(game.id);
                   Navigator.of(context).pushNamed(LobbyScreen.routeName);
                 },
                 child: ListTile(
