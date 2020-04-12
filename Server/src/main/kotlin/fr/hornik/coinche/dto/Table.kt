@@ -22,8 +22,8 @@ data class Table(val id: String,
         return mapOf(
                 "id" to id,
                 "nicknames" to nicknames.toFirebase(),
-                "cards" to cards,
-                "onTable" to onTable,
+                "cards" to cards.map { JsonMapper.parseJson(JsonSerialize.toJson(it)) },
+                "onTable" to onTable.map { JsonMapper.parseJson(JsonSerialize.toJson(it)) },
                 "state" to state.value,
                 "nextPlayer" to nextPlayer.value,
                 "myPosition" to myPosition.value,
@@ -31,7 +31,7 @@ data class Table(val id: String,
                 "currentBid" to JsonMapper.parseJson(JsonSerialize.toJson(currentBid)),
                 "score" to score.toFirebase(),
                 "winnerLastTrick" to winnerLastTrick?.value,
-                "lastTrick" to lastTrick
+                "lastTrick" to lastTrick.map { JsonMapper.parseJson(JsonSerialize.toJson(it)) }
         )
     }
 }
