@@ -5,6 +5,7 @@ import com.google.cloud.firestore.Firestore
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
+import com.google.firebase.database.util.JsonMapper
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.model.SetOfGames
@@ -44,7 +45,7 @@ class FireApp {
         val jsonSet =
                 JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
         val addedDocRef =
-                db.collection(COLLECTION_SETS).add(mapOf("gson" to jsonSet))
+                db.collection(COLLECTION_SETS).add(JsonMapper.parseJson(jsonSet))
         return addedDocRef.get().id
     }
 
@@ -74,7 +75,7 @@ class FireApp {
         val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
         db.collection(
                 COLLECTION_SETS).document(table.id)
-                .set(mapOf("gson" to jsonTable))
+                .set(JsonMapper.parseJson(jsonTable))
     }
 
     fun getOrSetUsername(user: User): String {
@@ -118,15 +119,15 @@ class FireApp {
         }
         return userDto
     }
+
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
         val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
         for (docRef in listDocuments) {
             val documentSnapshot = docRef.get().get()
             if (documentSnapshot.exists()) {
-                val data: String =
-                        documentSnapshot.data?.getValue("gson") as String? ?: ""
-                JsonSerialize.fromJson<SetOfGames>(data).let {
+                val jsonString = JsonMapper.serializeJson(documentSnapshot.data)
+                JsonSerialize.fromJson<SetOfGames>(jsonString).let {
                     sets.add(it.copy(id = documentSnapshot.id))
                 }
             }
