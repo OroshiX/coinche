@@ -61,13 +61,13 @@ class ServerCommunication {
     return game;
   }
 
-  static playCard(Card data, String gameId) async {
+  static Future playCard(Card data, String gameId) async {
     var url = "$_baseUrl/games/$gameId/playCard";
     print("connect to $url");
     var r = await Requests.post(url,
         body: data, timeoutSeconds: 60, bodyEncoding: RequestBodyEncoding.JSON);
     if (r.hasError) {
-      throw "Error playing card: ${r.content()}";
+      throw r.json();
     }
   }
 }

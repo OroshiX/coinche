@@ -13,13 +13,24 @@ class CardWidget extends StatelessWidget {
       child: Center(
           child: Material(
               color: Colors.transparent,
-              child: Text(
-                card.toString(),
-                style: TextStyle(
-                    color: Color.fromRGBO(136, 151, 176, 1),
-                    fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    "images/${cardModel.getAssetImageFromColor(card.color)}",
+                    fit: BoxFit.contain,
+                    width: 50,
+                  ),
+                  Text(
+                    card.value.toString().split(".").last,
+                    style: TextStyle(
+                      color: Color.fromRGBO(136, 151, 176, 1),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  if (card.playable != null && card.playable) Icon(Icons.check)
+                ],
               ))),
     );
   }

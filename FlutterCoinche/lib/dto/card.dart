@@ -116,3 +116,18 @@ class CardPlayed {
 
   Map<String, dynamic> toJson() => _$CardPlayedToJson(this);
 }
+
+
+String getAssetImageFromColor(CardColor e) {
+  switch (e) {
+    case CardColor.DIAMOND:
+      return "diamond.png";
+    case CardColor.SPADE:
+      return "spade.png";
+    case CardColor.CLUB:
+      return "club.png";
+    case CardColor.HEART:
+      return "heart.png";
+  }
+  return "";
+}
