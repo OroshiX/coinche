@@ -355,9 +355,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-class UserArguments {
-  MyAuthUser myAuthUser;
-
-  UserArguments(this.myAuthUser);
-}

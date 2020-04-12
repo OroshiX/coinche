@@ -3,7 +3,6 @@ import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
-import 'package:FlutterCoinche/screen/login_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
