@@ -57,7 +57,7 @@ class _GameScreenState extends State<GameScreen> {
           }),
       backgroundColor: Colors.green[900],
       persistentFooterButtons: <Widget>[
-        FlatButton(
+         FlatButton(
             onPressed: () {
               setState(() {
                 myCards.sort((card.Card c1, card.Card c2) {
