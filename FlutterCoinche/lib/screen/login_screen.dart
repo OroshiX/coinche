@@ -1,4 +1,6 @@
+import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
+import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -78,7 +80,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _loginSuccess(MyAuthUser user) {
     _showSuccess(
-        "You are now signed in as ${user.displayName != null ? user.displayName : user.email}");
+        "You are now signed in as ${user.displayName != null ? user.displayName : user.email}, and we set user!");
+
+    BlocProvider.of<GamesBloc>(context).setUser(user);
+
     // navigate to other page
     Navigator.of(context).pushNamed(AllGamesScreen.routeName);
   }
@@ -349,4 +354,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+class UserArguments {
+  MyAuthUser myAuthUser;
+
+  UserArguments(this.myAuthUser);
 }

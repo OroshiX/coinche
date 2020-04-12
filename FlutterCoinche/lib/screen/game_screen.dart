@@ -1,3 +1,6 @@
+import 'package:FlutterCoinche/bloc/games_bloc.dart';
+import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +21,22 @@ class GameScreen extends StatelessWidget {
           ],
           title: Text("Game"),
         ),
-        body: Container(
-          child: Text("Bidding"),
-        ));
+        body: StreamBuilder<Game>(
+            stream: BlocProvider.of<GamesBloc>(context).gameBehavior,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error: ${snapshot.error}"),
+                );
+              }
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No data"),
+                );
+              }
+              return Container(
+                child: Text(snapshot.data.id),
+              );
+            }));
   }
 }

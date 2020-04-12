@@ -1,7 +1,9 @@
-import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/bloc/games_bloc.dart';
+import 'package:FlutterCoinche/dto/game_empty.dart';
+import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
-import 'package:FlutterCoinche/screen/argument/game_arguments.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/screen/login_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +36,10 @@ class AllGamesScreen extends StatelessWidget {
                       if (formKey.currentState.validate()) {
                         ServerCommunication.createGame(_controller.text).then(
                             (value) {
-                          Navigator.of(context).pushReplacementNamed(
-                              LobbyScreen.routeName,
-                              arguments: GameArguments(game: value));
+                          BlocProvider.of<GamesBloc>(context)
+                              .changeGame(value.id);
+                          Navigator.of(context)
+                              .pushNamed(LobbyScreen.routeName);
                           return Flushbar(
                             message: "YES! (now go to game)",
                           ).show(context);
@@ -51,8 +54,6 @@ class AllGamesScreen extends StatelessWidget {
               ],
             ),
           );
-          ServerCommunication.createGame("My awesome Game")
-              .then((value) => print("We got game = ${value.toJson()}"));
         },
         child: Icon(
           Icons.add,
@@ -61,17 +62,9 @@ class AllGamesScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text("All games"),
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(LobbyScreen.routeName);
-              },
-              child: Text("Lobby"))
-        ],
       ),
       body: SafeArea(
-          child: FutureBuilder<List<Game>>(
+          child: FutureBuilder<List<GameEmpty>>(
         future: ServerCommunication.allGames(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -85,13 +78,20 @@ class AllGamesScreen extends StatelessWidget {
             );
           }
           var games = snapshot.data;
-          return ListView.builder(
+          return ListView.separated(
+            separatorBuilder: (context, index) => Divider(),
             itemCount: games.length,
             itemBuilder: (context, index) {
-              Game game = games[index];
-              return ListTile(
-                title: Text("Game: ${game.name}"),
-                subtitle: Text("Nb joined: ${game.nbJoined}"),
+              GameEmpty game = games[index];
+              return GestureDetector(
+                onTap: () {
+                  BlocProvider.of<GamesBloc>(context).changeGame(game.id);
+                  Navigator.of(context).pushNamed(LobbyScreen.routeName);
+                },
+                child: ListTile(
+                  title: Text("Game: ${game.name}"),
+                  subtitle: Text("Nb joined: ${game.nbJoined}"),
+                ),
               );
             },
           );

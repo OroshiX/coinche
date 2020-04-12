@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:FlutterCoinche/.env.dart';
-import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:requests/requests.dart';
 
@@ -22,7 +22,7 @@ class ServerCommunication {
     return true;
   }
 
-  static Future<List<Game>> allGames() async {
+  static Future<List<GameEmpty>> allGames() async {
     var url = '$_baseUrl/lobby/allGames';
     print("connecting to Server $url");
 
@@ -32,7 +32,7 @@ class ServerCommunication {
     }
     List<dynamic> dynList = jsonDecode(r.content());
 
-    List<Game> games = dynList.map((i) => Game.fromJson(i)).toList();
+    List<GameEmpty> games = dynList.map((i) => GameEmpty.fromJson(i)).toList();
     print(games);
     return games;
   }
@@ -46,7 +46,7 @@ class ServerCommunication {
     return false;
   }
 
-  static Future<Game> createGame(String gameName) async {
+  static Future<GameEmpty> createGame(String gameName) async {
     var url = "$_baseUrl/lobby/createGame";
     print("connect to $url");
     var r = await Requests.post(url,
@@ -56,7 +56,7 @@ class ServerCommunication {
     if (r.hasError) {
       throw "Error creating game: ${r.content()}";
     }
-    var game = Game.fromJson(jsonDecode(r.content()));
+    var game = GameEmpty.fromJson(jsonDecode(r.content()));
     return game;
   }
 }
