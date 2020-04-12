@@ -55,7 +55,7 @@ class CalculusTest {
         var NS: MutableList<MutableList<CardPlayed>> = mutableListOf()
         var aPair = Pair(EW, NS)
 
-        for (i in 1..2000) {
+        for (i in 1..20) {
             DBGprintln(dbgLevel.HTML, "<h2> Partie N $i</h2>\n\n")
             aPair = testPartie(pliNS = NS, pliEW = EW)
             EW = aPair.first

@@ -12,9 +12,15 @@ import org.springframework.stereotype.Service
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
-
     private final val sets: MutableList<SetOfGames> = mutableListOf()
 
+    /*
+        for debugging reason it can be useful to comment previous line and uncomment these 3 lines
+        companion object {
+
+            final val sets: MutableList<SetOfGames> = mutableListOf()
+        }
+    */
     init {
         sets.addAll(fire.getAllGames())
     }
@@ -71,7 +77,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                     firstDealOfCards(dealer, allSpreads.random())
                 else
                     dealCards(setOfGames.plisCampNS, setOfGames.plisCampEW, 10,
-                              allSpreads.random(), dealer)
+                            allSpreads.random(), dealer)
         setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
         setOfGames.players.first { it.position == PlayerPosition.EAST }.cardsInHand =
@@ -87,7 +93,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
         setOfGames.state = TableState.ENDED
         setOfGames.score += calculateScoreGame(setOfGames.plisCampNS, setOfGames.plisCampEW,
-                                        setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
+                setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
         setOfGames.whoWonLastTrick = null
@@ -111,7 +117,9 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 setOfGames.state, TableState.BIDDING)
         val me = setOfGames.players.first { player -> player.uid == user.uid }
         if (setOfGames.whoseTurn != me.position) throw NotYourTurnException()
-        if (!isValidBid(setOfGames.bids, bid)) throw InvalidBidException(bid)
+        // Bid needs to be valid and bid.position needs to be me !!!!
+        if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
+
         setOfGames.bids.add(bid)
         if (isLastBid(setOfGames.bids)) {
             // change status to playing
@@ -137,10 +145,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun playCard(setOfGames: SetOfGames, card: Card, user: User,
                  beloteValue: BeloteValue = BeloteValue.NONE) {
         if (!isValidCard(
-                    myCardsInHand = setOfGames.players.first { it.uid == user.uid }.cardsInHand,
-                    bid = setOfGames.currentBid,
-                    cardsOnTable = setOfGames.onTable,
-                    theCardToCheck = card)) {
+                        myCardsInHand = setOfGames.players.first { it.uid == user.uid }.cardsInHand,
+                        bid = setOfGames.currentBid,
+                        cardsOnTable = setOfGames.onTable,
+                        theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
 
@@ -152,24 +160,27 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
 
         setOfGames.onTable.add(CardPlayed(card, beloteValue,
-                                    setOfGames.players.first { it.uid == user.uid }.position))
-        setOfGames.players.first{it.uid == user.uid}.cardsInHand.remove(card)
+                setOfGames.players.first { it.uid == user.uid }.position))
+        setOfGames.players.first { it.uid == user.uid }.cardsInHand.remove(card)
 
-
+        setOfGames.whoseTurn += 1
         // Evaluation of who win the trick
-        if (setOfGames.onTable.size == 4 ) {
+        if (setOfGames.onTable.size == 4) {
             val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids))
+            // This function set the whoseturn field to winner
             setOfGames.winTrick(winner)
             if (setOfGames.players.size == 0) {
                 // We could calculate the score - no cards remain in hands
                 // but probably we wont call scoreAndCleanupAfterGame from here ????
                 // if we do, we will have to remove the save in firebase which is already don e in the function.
+                setOfGames.whoseTurn = setOfGames.currentFirstPlayer + 1
+
             }
 
         }
         // Save to firebase
 
-        fire.saveGame(setOfGames, true)
+        fire.saveGame(setOfGames)
 
     }
 }
