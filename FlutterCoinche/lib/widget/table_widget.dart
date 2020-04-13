@@ -4,6 +4,7 @@ import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
@@ -46,16 +47,17 @@ class _TableWidgetState extends State<TableWidget> {
       (element) => element is Coinche,
       orElse: () => null,
     ) as Coinche);
-    Bid lastBidCapotGeneral = (widget.game.bids.lastWhere(
+    Bid lastBidCapotGeneralOpposite = (widget.game.bids.lastWhere(
       (element) =>
-          element is SimpleBid || element is Capot || element is General,
+          (oppositeTeam(widget.game.myPosition).contains(element.position)) &&
+          (element is SimpleBid || element is Capot || element is General),
       orElse: () => null,
     ));
     bool enableSurcoinche = false;
     bool enableCoinche = false;
     if (coinche != null && !coinche.surcoinche) {
       enableSurcoinche = true;
-    } else if (coinche == null && lastBidCapotGeneral != null) {
+    } else if (coinche == null && lastBidCapotGeneralOpposite != null) {
       enableCoinche = true;
     }
     return SafeArea(
@@ -147,52 +149,8 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             ),
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Transform.translate(
-                offset: Offset(0, -heightContainerName - marginCardsPosition),
-                child: CardsInHandWidget(
-                  cards: widget.game.cards,
-                  cardHeight: cardHeight,
-                  cardWidth: cardWidth,
-                  screenWidth: screenSize.width,
-                  paddingVertical: paddingHeightCards,
-                ),
-              )),
-          Visibility(
-            visible: widget.game.state == TableState.BIDDING,
-            child: Positioned(
-                bottom:
-                    heightContainerName + marginCardsPosition + cardHeight + 20,
-                child: BiddingBar(
-                  minBidPoints: (widget.game.bids.lastWhere(
-                        (element) => element is SimpleBid,
-                        orElse: () => SimpleBid(points: 70),
-                      ) as SimpleBid)
-                          .points +
-                      10,
-                  enabledBid: widget.game.nextPlayer == widget.game.myPosition,
-                  height: heightBiddingBar,
-                  onBid: (Bid bid) {
-                    ServerCommunication.bid(bid, widget.game.id).then(
-                        (success) {
-                      print("success");
-                      FlushbarHelper.createSuccess(message: "bid $bid placed")
-                          .show(context);
-                    }, onError: (error) {
-                      print("Error: $error");
-                      FlushbarHelper.createError(
-                              message: "Error placing bid: $error")
-                          .show(context);
-                    });
-                  },
-                  screenWidth: screenSize.width,
-                  myPosition: widget.game.myPosition,
-                  enabledSurcoinche: enableSurcoinche,
-                  enabledCoinche: enableCoinche,
-                )),
-          ),
-          if (bidLeft != null)
+          // The last bids of the players
+          if (bidLeft != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
               offset: Offset(heightContainerName + 4, -widthContainer / 2),
               child: Bubble(
@@ -203,7 +161,7 @@ class _TableWidgetState extends State<TableWidget> {
                 elevation: 10,
               ),
             ),
-          if (bidRight != null)
+          if (bidRight != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
               offset: Offset(-heightContainerName - 4, -widthContainer / 2),
               child: Bubble(
@@ -214,7 +172,7 @@ class _TableWidgetState extends State<TableWidget> {
                 elevation: 10,
               ),
             ),
-          if (bidTop != null)
+          if (bidTop != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
               offset: Offset(0, heightContainerName + 4),
               child: Bubble(
@@ -225,7 +183,7 @@ class _TableWidgetState extends State<TableWidget> {
                 elevation: 10,
               ),
             ),
-          if (myBid != null)
+          if (myBid != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
               offset: Offset(
                   0,
@@ -243,18 +201,7 @@ class _TableWidgetState extends State<TableWidget> {
                 elevation: 10,
               ),
             ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: RecapWidget(
-              state: widget.game.state,
-              bid: widget.game.currentBid,
-              whoseTurn: widget.game.nextPlayer,
-            ),
-          ),
-          Center(
-            child: Text(widget.game.id),
-          ),
+
           Center(
             child: DragTarget<cardModel.Card>(
               onWillAccept: (data) {
@@ -333,9 +280,78 @@ class _TableWidgetState extends State<TableWidget> {
                 );
               },
             ),
-          )
+          ),
+          // My cards
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Transform.translate(
+                offset: Offset(0, -heightContainerName - marginCardsPosition),
+                child: CardsInHandWidget(
+                  cards: widget.game.cards,
+                  cardHeight: cardHeight,
+                  cardWidth: cardWidth,
+                  screenWidth: screenSize.width,
+                  paddingVertical: paddingHeightCards,
+                ),
+              )),
+          // To bid
+          Visibility(
+            visible: widget.game.state == TableState.BIDDING,
+            child: Positioned(
+                bottom:
+                    heightContainerName + marginCardsPosition + cardHeight + 20,
+                child: BiddingBar(
+                  minBidPoints: (widget.game.bids.lastWhere(
+                        (element) => element is SimpleBid,
+                        orElse: () => SimpleBid(points: 70),
+                      ) as SimpleBid)
+                          .points +
+                      10,
+                  enabledBid: widget.game.nextPlayer == widget.game.myPosition,
+                  height: heightBiddingBar,
+                  onBid: (Bid bid) {
+                    ServerCommunication.bid(bid, widget.game.id).then(
+                        (success) {
+                      print("success");
+                      FlushbarHelper.createSuccess(message: "bid $bid placed")
+                          .show(context);
+                    }, onError: (error) {
+                      print("Error: $error");
+                      FlushbarHelper.createError(
+                              message: "Error placing bid: $error")
+                          .show(context);
+                    });
+                  },
+                  screenWidth: screenSize.width,
+                  myPosition: widget.game.myPosition,
+                  enabledSurcoinche: enableSurcoinche,
+                  enabledCoinche: enableCoinche,
+                )),
+          ),
+          // Top right recap widget
+          Positioned(
+            top: 10,
+            right: 10,
+            child: RecapWidget(
+              state: widget.game.state,
+              bid: widget.game.currentBid,
+              whoseTurn: widget.game.nextPlayer,
+            ),
+          ),
         ],
       ),
     ));
+  }
+
+  List<PlayerPosition> oppositeTeam(PlayerPosition myPosition) {
+    switch (myPosition) {
+      case PlayerPosition.NORTH:
+      case PlayerPosition.SOUTH:
+        return [PlayerPosition.EAST, PlayerPosition.WEST];
+      case PlayerPosition.EAST:
+      case PlayerPosition.WEST:
+        return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
+    }
+    return [];
   }
 }
