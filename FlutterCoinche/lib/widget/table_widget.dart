@@ -9,23 +9,29 @@ import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
+import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 
-class TableWidget extends StatelessWidget {
+class TableWidget extends StatefulWidget {
   final Game game;
 
   TableWidget(this.game);
 
   @override
+  _TableWidgetState createState() => _TableWidgetState();
+}
+
+class _TableWidgetState extends State<TableWidget> {
+  @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     double heightContainerName = 50;
     double widthContainer = 200;
-    var top = getPlayerPositionTop(game);
-    var left = getPlayerPositionLeft(game);
-    var right = getPlayerPositionRight(game);
-    var me = game.myPosition;
+    var top = getPlayerPositionTop(widget.game);
+    var left = getPlayerPositionLeft(widget.game);
+    var right = getPlayerPositionRight(widget.game);
+    var me = widget.game.myPosition;
     final double cardWidth = 100;
     final double cardHeight = 150;
     final double marginCardsPosition = 20;
@@ -46,7 +52,7 @@ class TableWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(game.getNickNameOf(top)),
+                        Text(widget.game.getNickNameOf(top)),
                         Text("($top)"),
                       ],
                     ),
@@ -69,7 +75,7 @@ class TableWidget extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(game.getNickNameOf(right)),
+                      Text(widget.game.getNickNameOf(right)),
                       Text("($right)"),
                     ],
                   ),
@@ -89,7 +95,7 @@ class TableWidget extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(game.getNickNameOf(me)),
+                        Text(widget.game.getNickNameOf(me)),
                         Text("($me)"),
                       ],
                     ),
@@ -111,7 +117,7 @@ class TableWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(game.getNickNameOf(left)),
+                      Text(widget.game.getNickNameOf(left)),
                       Text("($left)"),
                     ],
                   ),
@@ -119,10 +125,40 @@ class TableWidget extends StatelessWidget {
               ),
             ),
           ),
+          Transform.translate(
+            offset: Offset(heightContainerName + 4, -widthContainer / 2),
+            child: Bubble(
+              color: Colors.white,
+              child: Text("Pass"),
+              alignment: Alignment.centerLeft,
+              nip: BubbleNip.leftTop,
+              elevation: 10,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(-heightContainerName - 4, -widthContainer / 2),
+            child: Bubble(
+              alignment: Alignment.centerRight,
+              color: Colors.white,
+              child: Text("Pass trdastashta"),
+              nip: BubbleNip.rightTop,
+              elevation: 10,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(0, heightContainerName + 4),
+            child: Bubble(
+              alignment: Alignment.topCenter,
+              color: Colors.white,
+              child: Text("Pass"),
+              nip: BubbleNip.no,
+              elevation: 10,
+            ),
+          ),
           Positioned(
               bottom: heightContainerName + marginCardsPosition,
               child: CardsInHandWidget(
-                cards: game.cards,
+                cards: widget.game.cards,
                 cardHeight: cardHeight,
                 cardWidth: cardWidth,
                 screenWidth: screenSize.width,
@@ -136,33 +172,50 @@ class TableWidget extends StatelessWidget {
                   print("bid: $bid");
                 },
                 screenWidth: screenSize.width,
+                myPosition: widget.game.myPosition,
               )),
           Positioned(
             top: 10,
             right: 10,
             child: RecapWidget(
-              state: game.state,
-              bid: game.currentBid,
-              whoseTurn: game.nextPlayer,
+              state: widget.game.state,
+              bid: widget.game.currentBid,
+              whoseTurn: widget.game.nextPlayer,
             ),
           ),
           Center(
-            child: Text(game.id),
+            child: Text(widget.game.id),
           ),
           Center(
             child: DragTarget<cardModel.Card>(
               onWillAccept: (data) {
-                print(data);
-                return data.playable != null && data.playable;
+                // if it is my turn and the card is playable
+                return widget.game.myPosition == widget.game.nextPlayer &&
+                    data.playable != null &&
+                    data.playable;
               },
               onAccept: (data) {
-                return ServerCommunication.playCard(data, game.id).then((_) {},
+                return ServerCommunication.playCard(data, widget.game.id).then(
+                    (_) {},
                     onError: (error) => FlushbarHelper.createError(
                             message: "Error: ${error["message"]}",
                             duration: Duration(seconds: 5))
                         .show(context));
               },
               builder: (context, candidateData, rejectedData) {
+                if (widget.game.onTable
+                    .map((e) => e.position)
+                    .contains(widget.game.myPosition)) {
+                  return Container(
+                    width: cardWidth,
+                    height: cardHeight,
+                    padding: EdgeInsets.all(8),
+                    child: CardWidget(widget.game.onTable
+                        .firstWhere((element) =>
+                            element.position == widget.game.myPosition)
+                        .card),
+                  );
+                }
                 if (candidateData.isNotEmpty) {
                   return Container(
                     decoration: BoxDecoration(
@@ -171,8 +224,8 @@ class TableWidget extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
-                        width: cardWidth,
-                        height: cardHeight,
+                        width: cardWidth + 20,
+                        height: cardHeight + 20,
                         child: CardWidget(candidateData.last),
                       ),
                     ),
@@ -180,9 +233,19 @@ class TableWidget extends StatelessWidget {
                 }
                 if (rejectedData.isNotEmpty) {
                   return Container(
-                    color: Colors.red,
-                    width: cardWidth,
-                    height: cardHeight,
+                    decoration: BoxDecoration(
+                      color: Colors.red[900],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    width: cardWidth + 20,
+                    height: cardHeight + 20,
+                    child: Center(
+                      child: Icon(
+                        Icons.do_not_disturb_alt,
+                        color: Colors.white,
+                        size: 120,
+                      ),
+                    ),
                   );
                 }
                 return Container(
@@ -196,8 +259,8 @@ class TableWidget extends StatelessWidget {
                             blurRadius: 2,
                             offset: Offset(2, 2))
                       ]),
-                  width: cardWidth,
-                  height: cardHeight,
+                  width: cardWidth + 20,
+                  height: cardHeight + 20,
                 );
               },
             ),

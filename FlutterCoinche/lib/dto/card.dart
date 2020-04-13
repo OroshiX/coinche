@@ -47,13 +47,13 @@ int getDominanceColor(CardValue cardValue) {
   switch (cardValue) {
     case CardValue.ACE:
       return 7;
-    case CardValue.KING:
-      return 6;
-    case CardValue.QUEEN:
-      return 5;
-    case CardValue.JACK:
-      return 4;
     case CardValue.TEN:
+      return 6;
+    case CardValue.KING:
+      return 5;
+    case CardValue.QUEEN:
+      return 4;
+    case CardValue.JACK:
       return 3;
     case CardValue.NINE:
       return 2;
@@ -93,14 +93,14 @@ int compareValue(CardValue value, CardValue value2, bool isTrump) {
 }
 
 enum CardColor {
-  @JsonValue("DIAMOND")
-  DIAMOND,
   @JsonValue("SPADE")
   SPADE,
+  @JsonValue("HEART")
+  HEART,
   @JsonValue("CLUB")
   CLUB,
-  @JsonValue("HEART")
-  HEART
+  @JsonValue("DIAMOND")
+  DIAMOND,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -117,7 +117,6 @@ class CardPlayed {
   Map<String, dynamic> toJson() => _$CardPlayedToJson(this);
 }
 
-
 String getAssetImageFromColor(CardColor e) {
   switch (e) {
     case CardColor.DIAMOND:
@@ -128,6 +127,28 @@ String getAssetImageFromColor(CardColor e) {
       return "club.png";
     case CardColor.HEART:
       return "heart.png";
+  }
+  return "";
+}
+
+String getLetterFromValue(CardValue v) {
+  switch (v) {
+    case CardValue.ACE:
+      return "A";
+    case CardValue.KING:
+      return "K";
+    case CardValue.QUEEN:
+      return 'Q';
+    case CardValue.JACK:
+      return "J";
+    case CardValue.TEN:
+      return "10";
+    case CardValue.NINE:
+      return "9";
+    case CardValue.EIGHT:
+      return "8";
+    case CardValue.SEVEN:
+      return "7";
   }
   return "";
 }

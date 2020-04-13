@@ -52,10 +52,17 @@ class CardsInHandWidget extends StatelessWidget {
                       feedback: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white,
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                            )
+                          ],
+//                          color: Colors.white,
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: Container(
                               constraints: BoxConstraints.tight(
                                   Size(cardWidth, cardHeight)),

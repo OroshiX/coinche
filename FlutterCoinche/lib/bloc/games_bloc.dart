@@ -1,10 +1,12 @@
 import 'package:FlutterCoinche/bloc/bloc_base.dart';
+import 'package:FlutterCoinche/dto/card.dart' as card;
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class GamesBloc implements BlocBase {
+class GamesBloc with ChangeNotifier implements BlocBase {
   BehaviorSubject<Game> gameBehavior = BehaviorSubject();
   MyAuthUser _myAuthUser;
 
@@ -12,6 +14,7 @@ class GamesBloc implements BlocBase {
 
   void setUser(MyAuthUser myAuthUser) {
     this._myAuthUser = myAuthUser;
+    notifyListeners();
   }
 
   void changeGame(String idGame) {
@@ -24,6 +27,7 @@ class GamesBloc implements BlocBase {
         .then((value) {
       print(value.data);
       gameBehavior.add(Game.fromJson(value.data));
+      notifyListeners();
     });
 
     Firestore.instance
@@ -34,12 +38,18 @@ class GamesBloc implements BlocBase {
         .snapshots()
         .map((event) => Game.fromJson(event.data))
         .listen((event) {
+      event.cards.sort((card.Card c1, card.Card c2) {
+        if (c1.color.index < c2.color.index) return -1;
+        if (c1.color.index > c2.color.index) return 1;
+        return card.compareValue(c2.value, c1.value, false);
+      });
       gameBehavior.add(event);
     });
   }
 
   @override
   void dispose() {
+    super.dispose();
     gameBehavior.close();
   }
 }
