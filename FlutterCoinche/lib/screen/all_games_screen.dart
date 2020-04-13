@@ -15,6 +15,8 @@ class AllGamesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var formKey = GlobalKey<FormState>();
     var gamesProvider = BlocProvider.of<GamesBloc>(context);
+    ServerCommunication.allGames()
+        .then((value) => gamesProvider.addAllMyGames(value));
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -60,11 +62,20 @@ class AllGamesScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text("All games"),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                ServerCommunication.allGames().then((value) {
+                  gamesProvider.addAllMyGames(value);
+                });
+              })
+        ],
       ),
       body: SafeArea(
-          child: FutureBuilder<List<GameEmpty>>(
-        future: ServerCommunication.allGames(),
-        builder: (context, snapshot) {
+          child: StreamBuilder<List<GameEmpty>>(
+        stream: gamesProvider.allMyGames,
+        builder: (context, AsyncSnapshot<List<GameEmpty>> snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Text("Error: ${snapshot.error}"),
@@ -83,8 +94,18 @@ class AllGamesScreen extends StatelessWidget {
               GameEmpty game = games[index];
               return GestureDetector(
                 onTap: () {
-                  gamesProvider.changeGame(game.id);
-                  Navigator.of(context).pushNamed(LobbyScreen.routeName);
+                  if (!game.inRoom) {
+                    // TODO join game
+                    ServerCommunication.joinGame(
+                      gameId: game.id,
+                    ).then((_) {
+                      gamesProvider.changeGame(game.id);
+                      Navigator.of(context).pushNamed(LobbyScreen.routeName);
+                    });
+                  } else {
+                    gamesProvider.changeGame(game.id);
+                    Navigator.of(context).pushNamed(LobbyScreen.routeName);
+                  }
                 },
                 child: ListTile(
                   title: Text("Game: ${game.name}"),

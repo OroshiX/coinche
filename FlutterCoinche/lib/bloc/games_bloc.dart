@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:FlutterCoinche/bloc/bloc_base.dart';
 import 'package:FlutterCoinche/dto/card.dart' as card;
 import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +11,17 @@ import 'package:rxdart/rxdart.dart';
 
 class GamesBloc with ChangeNotifier implements BlocBase {
   BehaviorSubject<Game> gameBehavior = BehaviorSubject();
+  BehaviorSubject<List<GameEmpty>> allMyGames;
   MyAuthUser _myAuthUser;
+  StreamSubscription<Game> subscription;
 
-  GamesBloc();
+  GamesBloc() {
+    allMyGames = BehaviorSubject();
+  }
+
+  void addAllMyGames(List<GameEmpty> games) {
+    allMyGames.add(games);
+  }
 
   void setUser(MyAuthUser myAuthUser) {
     this._myAuthUser = myAuthUser;
@@ -18,6 +29,10 @@ class GamesBloc with ChangeNotifier implements BlocBase {
   }
 
   void changeGame(String idGame) {
+    if (subscription != null) {
+      subscription.cancel();
+    }
+    /*
     Firestore.instance
         .collection('playersSets')
         .document(idGame)
@@ -29,8 +44,8 @@ class GamesBloc with ChangeNotifier implements BlocBase {
       gameBehavior.add(Game.fromJson(value.data));
       notifyListeners();
     });
-
-    Firestore.instance
+*/
+    subscription = Firestore.instance
         .collection('playersSets')
         .document(idGame)
         .collection('players')
@@ -51,5 +66,7 @@ class GamesBloc with ChangeNotifier implements BlocBase {
   void dispose() {
     super.dispose();
     gameBehavior.close();
+    subscription.cancel();
+    allMyGames.close();
   }
 }

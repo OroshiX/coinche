@@ -70,4 +70,17 @@ class ServerCommunication {
       throw r.json();
     }
   }
+
+  static Future joinGame({String gameId, String nickname}) async {
+    var url = "$_baseUrl/lobby/joinGame";
+    var r = await Requests.post(url,
+        queryParameters: {
+          "gameId": gameId,
+          if (nickname != null) "nickname": nickname
+        },
+        timeoutSeconds: 60);
+    if (r.hasError) {
+      throw r.json();
+    }
+  }
 }
