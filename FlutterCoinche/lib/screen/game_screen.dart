@@ -38,7 +38,9 @@ class _GameScreenState extends State<GameScreen> {
               },
               child: Text("Games"))
         ],
-        title: Text("Game"),
+        title: StreamBuilder<Game>(
+            stream: gamesBloc.game,
+            builder: (context, snapshot) => Text("${snapshot.data.id}")),
       ),
       body: StreamBuilder<Game>(
           stream: gamesBloc.game,
@@ -58,7 +60,7 @@ class _GameScreenState extends State<GameScreen> {
           }),
       backgroundColor: colorLightBlue,
       persistentFooterButtons: <Widget>[
-         FlatButton(
+        FlatButton(
             onPressed: () {
               setState(() {
                 myCards.sort((card.Card c1, card.Card c2) {

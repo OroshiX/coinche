@@ -95,7 +95,7 @@ class AllGamesScreen extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   if (!game.inRoom) {
-                    // TODO join game
+                    // join game
                     ServerCommunication.joinGame(
                       gameId: game.id,
                     ).then((_) {
