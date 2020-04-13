@@ -72,6 +72,11 @@ class SimpleBid extends Bid {
       _$SimpleBidFromJson(json);
 
   Map<String, dynamic> toJson() => _$SimpleBidToJson(this);
+
+  @override
+  String toString() {
+    return "$points ${color.toString().split(".").last}";
+  }
 }
 
 @JsonSerializable()
@@ -86,6 +91,11 @@ class General extends Bid {
       _$GeneralFromJson(json);
 
   Map<String, dynamic> toJson() => _$GeneralToJson(this);
+
+  @override
+  String toString() {
+    return "Generale ${belote ? "belote " : ""}${color.toString().split(".").last}";
+  }
 }
 
 @JsonSerializable()
@@ -99,6 +109,11 @@ class Capot extends Bid {
   factory Capot.fromJson(Map<String, dynamic> json) => _$CapotFromJson(json);
 
   Map<String, dynamic> toJson() => _$CapotToJson(this);
+
+  @override
+  String toString() {
+    return "Capot ${belote ? "belote " : ""}${color.toString().split(".").last}";
+  }
 }
 
 @JsonSerializable()
@@ -113,6 +128,11 @@ class Coinche extends Bid {
       _$CoincheFromJson(json);
 
   Map<String, dynamic> toJson() => _$CoincheToJson(this);
+
+  @override
+  String toString() {
+    return "${surcoinche ? "sur" : ""}coinche";
+  }
 }
 
 @JsonSerializable()
@@ -122,4 +142,9 @@ class Pass extends Bid {
   factory Pass.fromJson(Map<String, dynamic> json) => _$PassFromJson(json);
 
   Map<String, dynamic> toJson() => _$PassToJson(this);
+
+  @override
+  String toString() {
+    return "Pass";
+  }
 }

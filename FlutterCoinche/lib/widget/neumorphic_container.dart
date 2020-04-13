@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:flutter/material.dart';
 
 class NeumorphicWidget extends StatelessWidget {
@@ -43,8 +44,8 @@ class NeumorphicWidget extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromRGBO(230, 239, 245, 1),
-                Color.fromRGBO(204, 223, 237, 1),
+                colorGradient1,
+                colorGradient2,
               ]),
           borderRadius: BorderRadius.circular(borderRadius),
           boxShadow: [
@@ -55,7 +56,7 @@ class NeumorphicWidget extends StatelessWidget {
               offset: Offset(offset1, offset1),
             ),
             BoxShadow(
-                color: Color.fromRGBO(146, 182, 216, 1),
+                color: colorShadow,
                 blurRadius: blur2,
                 offset: Offset(offset2, offset2),
                 spreadRadius: spread2)

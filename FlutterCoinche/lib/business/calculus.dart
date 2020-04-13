@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 
@@ -13,6 +14,13 @@ PlayerPosition getPlayerPositionTop(Game game) {
       return PlayerPosition.EAST;
   }
   return null;
+}
+
+Bid getPlayerBid(Game game, PlayerPosition position) {
+  return game.bids.lastWhere(
+    (element) => element.position == position,
+    orElse: () => null,
+  );
 }
 
 PlayerPosition getPlayerPositionLeft(Game game) {

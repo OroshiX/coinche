@@ -3,6 +3,7 @@ import 'package:FlutterCoinche/dto/card.dart' as card;
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/provider/bloc_provider.dart';
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
 import 'package:FlutterCoinche/widget/table_widget.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class _GameScreenState extends State<GameScreen> {
             }
             return TableWidget(snapshot.data);
           }),
-      backgroundColor: Colors.green[900],
+      backgroundColor: colorLightBlue,
       persistentFooterButtons: <Widget>[
          FlatButton(
             onPressed: () {

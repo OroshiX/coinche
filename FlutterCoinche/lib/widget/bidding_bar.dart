@@ -1,6 +1,7 @@
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:FlutterCoinche/widget/inkwell_round_icon_button.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class BiddingBar extends StatefulWidget {
   final double screenWidth;
   final int minBidPoints;
   final void Function(Bid bid) onBid;
-
+  final double height;
   final PlayerPosition myPosition;
 
   const BiddingBar(
@@ -16,7 +17,8 @@ class BiddingBar extends StatefulWidget {
       @required this.screenWidth,
       this.onBid,
       this.minBidPoints = 80,
-      @required this.myPosition})
+      @required this.myPosition,
+      this.height})
       : super(key: key);
 
   @override
@@ -39,7 +41,7 @@ class _BiddingBarState extends State<BiddingBar> {
     return Container(
       color: Colors.white,
       width: widget.screenWidth,
-      height: 70,
+      height: widget.height != null ? widget.height : 70,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -54,36 +56,39 @@ class _BiddingBarState extends State<BiddingBar> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      if (points > widget.minBidPoints) {
-                        setState(() {
-                          points -= 10;
-                        });
-                      }
-                    },
-                    padding: EdgeInsets.zero,
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Icon(Icons.remove)),
+                  Padding(padding: const EdgeInsets.only(left: 8)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: InkwellNeumorphicButton.round(
+                      onTap: () {
+                        if (points > widget.minBidPoints) {
+                          setState(() {
+                            points -= 10;
+                          });
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: Icon(Icons.remove),
+                      ),
+                    ),
                   ),
                   Text(points.toString()),
-                  FlatButton(
-                    onPressed: () {
-                      if (points < 160) {
-                        setState(() {
-                          points += 10;
-                        });
-                      }
-                    },
-                    padding: EdgeInsets.zero,
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Icon(Icons.add)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: InkwellNeumorphicButton.round(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Icon(Icons.add),
+                      ),
+                      onTap: () {
+                        if (points < 160) {
+                          setState(() {
+                            points += 10;
+                          });
+                        }
+                      },
+                    ),
                   ),
                   DropdownButtonHideUnderline(
                     child: DropdownButton<cardModel.CardColor>(
@@ -102,25 +107,19 @@ class _BiddingBarState extends State<BiddingBar> {
                           });
                         }),
                   ),
-                  GestureDetector(
+                  InkwellNeumorphicButton.rrect(
                     onTap: () {
                       widget.onBid(SimpleBid(
                           points: points,
                           color: _cardColor,
                           position: widget.myPosition));
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: NeumorphicWidget(
-                        sizeShadow: SizeShadow.SMALL,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Bid"),
-                        ),
-                        borderRadius: 5,
-                      ),
+                    borderRadius: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text("Bid"),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

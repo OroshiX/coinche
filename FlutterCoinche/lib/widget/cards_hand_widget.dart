@@ -1,4 +1,5 @@
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +17,7 @@ class CardsInHandWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Color.fromRGBO(192, 214, 233, 1),
+        color: colorLightBlue,
 //                  padding: EdgeInsets.all(20),
         height: cardHeight + 20,
         width: screenWidth,
@@ -26,8 +27,8 @@ class CardsInHandWidget extends StatelessWidget {
             itemBuilder: (context, index) => Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4),
-                  child: LongPressDraggable(
-                      hapticFeedbackOnStart: true,
+                  child: Draggable(
+//                      hapticFeedbackOnStart: true,
                       data: cards[index],
                       childWhenDragging: Container(
                         constraints:

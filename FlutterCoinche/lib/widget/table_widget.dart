@@ -35,7 +35,11 @@ class _TableWidgetState extends State<TableWidget> {
     final double cardWidth = 100;
     final double cardHeight = 150;
     final double marginCardsPosition = 20;
-
+    final double heightBiddingBar = 70;
+    var bidLeft = getPlayerBid(widget.game, left);
+    var bidTop = getPlayerBid(widget.game, top);
+    var bidRight = getPlayerBid(widget.game, right);
+    var myBid = getPlayerBid(widget.game, me);
     return SafeArea(
         child: Container(
       child: Stack(
@@ -125,48 +129,22 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             ),
           ),
-          Transform.translate(
-            offset: Offset(heightContainerName + 4, -widthContainer / 2),
-            child: Bubble(
-              color: Colors.white,
-              child: Text("Pass"),
-              alignment: Alignment.centerLeft,
-              nip: BubbleNip.leftTop,
-              elevation: 10,
-            ),
-          ),
-          Transform.translate(
-            offset: Offset(-heightContainerName - 4, -widthContainer / 2),
-            child: Bubble(
-              alignment: Alignment.centerRight,
-              color: Colors.white,
-              child: Text("Pass trdastashta"),
-              nip: BubbleNip.rightTop,
-              elevation: 10,
-            ),
-          ),
-          Transform.translate(
-            offset: Offset(0, heightContainerName + 4),
-            child: Bubble(
-              alignment: Alignment.topCenter,
-              color: Colors.white,
-              child: Text("Pass"),
-              nip: BubbleNip.no,
-              elevation: 10,
-            ),
-          ),
-          Positioned(
-              bottom: heightContainerName + marginCardsPosition,
-              child: CardsInHandWidget(
-                cards: widget.game.cards,
-                cardHeight: cardHeight,
-                cardWidth: cardWidth,
-                screenWidth: screenSize.width,
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Transform.translate(
+                offset: Offset(0, -heightContainerName - marginCardsPosition),
+                child: CardsInHandWidget(
+                  cards: widget.game.cards,
+                  cardHeight: cardHeight,
+                  cardWidth: cardWidth,
+                  screenWidth: screenSize.width,
+                ),
               )),
           Positioned(
               bottom:
                   heightContainerName + marginCardsPosition + cardHeight + 20,
               child: BiddingBar(
+                height: heightBiddingBar,
                 onBid: (Bid bid) {
                   // TODO on bid do send
                   print("bid: $bid");
@@ -174,6 +152,57 @@ class _TableWidgetState extends State<TableWidget> {
                 screenWidth: screenSize.width,
                 myPosition: widget.game.myPosition,
               )),
+          if (bidLeft != null)
+            Transform.translate(
+              offset: Offset(heightContainerName + 4, -widthContainer / 2),
+              child: Bubble(
+                color: Colors.white,
+                child: Text(bidLeft.toString()),
+                alignment: Alignment.centerLeft,
+                nip: BubbleNip.leftTop,
+                elevation: 10,
+              ),
+            ),
+          if (bidRight != null)
+            Transform.translate(
+              offset: Offset(-heightContainerName - 4, -widthContainer / 2),
+              child: Bubble(
+                alignment: Alignment.centerRight,
+                color: Colors.white,
+                child: Text(bidRight.toString()),
+                nip: BubbleNip.rightTop,
+                elevation: 10,
+              ),
+            ),
+          if (bidTop != null)
+            Transform.translate(
+              offset: Offset(0, heightContainerName + 4),
+              child: Bubble(
+                alignment: Alignment.topCenter,
+                color: Colors.white,
+                child: Text(bidTop.toString()),
+                nip: BubbleNip.no,
+                elevation: 10,
+              ),
+            ),
+          if (myBid != null)
+            Transform.translate(
+              offset: Offset(
+                  0,
+                  -heightContainerName -
+                      cardHeight -
+                      marginCardsPosition -
+                      20 -
+                      heightBiddingBar -
+                      10),
+              child: Bubble(
+                alignment: Alignment.bottomCenter,
+                color: Colors.white,
+                child: Text(myBid.toString()),
+                nip: BubbleNip.no,
+                elevation: 10,
+              ),
+            ),
           Positioned(
             top: 10,
             right: 10,

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:flutter/material.dart';
 
@@ -28,14 +29,6 @@ class CardWidget extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: 50,
                 ),
-//                      Text(
-//                        card.value.toString().split(".").last,
-//                        style: TextStyle(
-//                          color: Color.fromRGBO(136, 151, 176, 1),
-//                          fontWeight: FontWeight.bold,
-//                        ),
-//                        textAlign: TextAlign.center,
-//                      ),
                 if (card.playable != null && card.playable)
                   Icon(Icons.check)
               ],
@@ -51,7 +44,7 @@ class CardWidget extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                        color: Color.fromRGBO(136, 151, 176, 1),
+                        color: color1,
                         fontSize: 20,
                       ),
                     ),
@@ -71,7 +64,7 @@ class CardWidget extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                          color: Color.fromRGBO(136, 151, 176, 1),
+                          color: color1,
                           fontSize: 20),
                     ),
                     Image.asset(
