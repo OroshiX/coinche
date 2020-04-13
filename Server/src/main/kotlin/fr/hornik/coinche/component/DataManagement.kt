@@ -103,7 +103,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
             // Continue playing another game
             distribute(setOfGames)
         }
-        fire.saveGame(setOfGames)
     }
 
     private fun getGame(setId: String): SetOfGames? =
@@ -126,6 +125,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
             setOfGames.state = TableState.PLAYING
             setOfGames.whoseTurn = setOfGames.currentFirstPlayer
             setOfGames.currentBid = getCurrentBid(setOfGames.bids)
+            val nextPlayer: Player = setOfGames.players.first { player -> player.position == setOfGames.whoseTurn }
+            for (card in nextPlayer.cardsInHand) {
+                card.playable = true
+            }
         } else {
             // Next player
             setOfGames.whoseTurn += 1
@@ -144,6 +147,14 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     fun playCard(setOfGames: SetOfGames, card: Card, user: User,
                  beloteValue: BeloteValue = BeloteValue.NONE) {
+        // check if on table is full
+
+        if (setOfGames.onTable.size == 4) {
+            // the cards on the table are from last trick, we can clear them
+            setOfGames.onTable.clear()
+        }
+
+        // get the real object in hand
         if (!isValidCard(
                         myCardsInHand = setOfGames.players.first { it.uid == user.uid }.cardsInHand,
                         bid = setOfGames.currentBid,
@@ -152,16 +163,11 @@ class DataManagement(@Autowired private val fire: FireApp) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
 
-        // check if on table is full
 
-        if (setOfGames.onTable.size == 4) {
-            // the cards on the table are from last trick, we can clear them
-            setOfGames.onTable.clear()
-        }
 
         setOfGames.onTable.add(CardPlayed(card, beloteValue,
                 setOfGames.players.first { it.uid == user.uid }.position))
-        setOfGames.players.first { it.uid == user.uid }.cardsInHand.remove(card)
+        setOfGames.players.first { it.uid == user.uid }.cardsInHand.removeIf { it.isSimilar(card) }
 
         setOfGames.whoseTurn += 1
         // Evaluation of who win the trick
@@ -169,12 +175,22 @@ class DataManagement(@Autowired private val fire: FireApp) {
             val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids))
             // This function set the whoseturn field to winner
             setOfGames.winTrick(winner)
-            if (setOfGames.players.size == 0) {
-                // We could calculate the score - no cards remain in hands
-                // but probably we wont call scoreAndCleanupAfterGame from here ????
-                // if we do, we will have to remove the save in firebase which is already don e in the function.
-                setOfGames.whoseTurn = setOfGames.currentFirstPlayer + 1
+            if (setOfGames.players.first().cardsInHand.isEmpty()) {
+                // no more cards in hand - last turn
+                setOfGames.whoWonLastTrick = winner
+                scoreAndCleanupAfterGame(setOfGames)
+            } else {
+                // Still cards in hand, but first card of trick : all cards are playable
+                for (card in setOfGames.nextPlayer().cardsInHand) {
+                    card.playable = true
+                }
+            }
+        } else {
+            val valid = allValidCardsToPlay(setOfGames.nextPlayer().cardsInHand, setOfGames.currentBid, setOfGames.onTable)
 
+            // still cards to play, need to set playable to the right value for next player
+            for (card in setOfGames.nextPlayer().cardsInHand) {
+                card.playable = valid.contains(card)
             }
 
         }

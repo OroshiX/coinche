@@ -93,9 +93,14 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
  */
 fun isValidCard(myCardsInHand: List<Card>, bid: Bid,
                 cardsOnTable: List<CardPlayed>, theCardToCheck: Card): Boolean {
+
     val validCards = allValidCardsToPlay(myCardsInHand, bid,
-                                         cardsOnTable)    // A mettre en argument si on veut eviter de tout recalucler
-    return validCards.contains(theCardToCheck)
+            cardsOnTable)    // A mettre en argument si on veut eviter de tout recalucler
+    val myBool = validCards.contains(myCardsInHand.first { it.isSimilar(theCardToCheck) })
+    if (! myBool) {
+        // for breakpoint if needed
+    }
+    return myBool
 }
 
 fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {

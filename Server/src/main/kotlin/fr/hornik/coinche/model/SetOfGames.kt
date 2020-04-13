@@ -56,6 +56,10 @@ data class SetOfGames(
         return players.size >= 4
     }
 
+    fun nextPlayer():Player {
+        return players.first {player -> player.position == whoseTurn}
+        }
+
     fun toTable(uidUser: String): Table {
         val me = players.first { it.uid == uidUser }
         return Table(
@@ -95,7 +99,6 @@ data class SetOfGames(
             PlayerPosition.EAST, PlayerPosition.WEST   ->
                 plisCampEW.add(onTable.toList())
         }
-        whoWonLastTrick = who
         whoseTurn = who
 
         // The clear of table is done when playing the first card of next tour

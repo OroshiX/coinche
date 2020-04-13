@@ -2,6 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 // outside game
 export const API_BACKEND = 'http://www.hornik.fr:8080/';
+//export const API_BACKEND = 'http://localhost:8080/';
 export const LOBBY = 'lobby/';
 export const API_BACKEND_LOBBY = API_BACKEND + LOBBY;
 export const LOGIN = 'loginToken';
