@@ -24,47 +24,50 @@ class NeumorphicWidget extends StatefulWidget {
 
 class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   bool _isPressed;
-  bool _onTapGood;
 
   @override
   void initState() {
     super.initState();
     _isPressed = widget.alwaysPressedPosition;
-    _onTapGood = false;
   }
 
-  void _onPointerDown(PointerDownEvent event) {
+  void _onPointerDown(TapDownDetails event) {
     if (widget.interactable) {
       setState(() {
         _isPressed = true;
       });
-      _onTapGood = true;
     }
   }
 
-  void _onPointerUp(PointerUpEvent event) {
+  void _onPointerUp(TapUpDetails event) {
     if (widget.interactable) {
       setState(() {
         _isPressed = false;
       });
-      if (_onTapGood && widget.onTap != null) {
-        widget.onTap();
-      }
     }
   }
 
-  void _onPointerCancel(PointerCancelEvent event) {
+  void _onTapCancel() {
     if (widget.interactable) {
-      _onTapGood = false;
+      setState(() {
+        _isPressed = false;
+      });
+    }
+  }
+
+  void _onTap() {
+    if (widget.interactable && widget.onTap != null) {
+      widget.onTap();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerDown: _onPointerDown,
-      onPointerUp: _onPointerUp,
-      onPointerCancel: _onPointerCancel,
+    return GestureDetector(
+      onTapDown: _onPointerDown,
+      onTapUp: _onPointerUp,
+      onTap: _onTap,
+      onTapCancel: _onTapCancel,
       child: AnimatedContainer(
         decoration: buildNeumorphicDecoration(
           borderRadius: widget.borderRadius,
