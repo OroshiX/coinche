@@ -36,12 +36,28 @@ class _TableWidgetState extends State<TableWidget> {
     final double cardWidth = 100;
     final double cardHeight = 150;
     final double marginCardsPosition = 20;
-    final double heightBiddingBar = 70;
+    final double heightBiddingBar = 200;
     final double paddingHeightCards = 15;
     var bidLeft = getPlayerBid(widget.game, left);
     var bidTop = getPlayerBid(widget.game, top);
     var bidRight = getPlayerBid(widget.game, right);
     var myBid = getPlayerBid(widget.game, me);
+    Coinche coinche = (widget.game.bids.lastWhere(
+      (element) => element is Coinche,
+      orElse: () => null,
+    ) as Coinche);
+    Bid lastBidCapotGeneral = (widget.game.bids.lastWhere(
+      (element) =>
+          element is SimpleBid || element is Capot || element is General,
+      orElse: () => null,
+    ));
+    bool enableSurcoinche = false;
+    bool enableCoinche = false;
+    if (coinche != null && !coinche.surcoinche) {
+      enableSurcoinche = true;
+    } else if (coinche == null && lastBidCapotGeneral != null) {
+      enableCoinche = true;
+    }
     return SafeArea(
         child: Container(
       child: Stack(
@@ -151,11 +167,11 @@ class _TableWidgetState extends State<TableWidget> {
                 child: BiddingBar(
                   minBidPoints: (widget.game.bids.lastWhere(
                         (element) => element is SimpleBid,
-                        orElse: () => null,
+                        orElse: () => SimpleBid(points: 70),
                       ) as SimpleBid)
                           .points +
                       10,
-                  enabled: widget.game.nextPlayer == widget.game.myPosition,
+                  enabledBid: widget.game.nextPlayer == widget.game.myPosition,
                   height: heightBiddingBar,
                   onBid: (Bid bid) {
                     ServerCommunication.bid(bid, widget.game.id).then(
@@ -172,6 +188,8 @@ class _TableWidgetState extends State<TableWidget> {
                   },
                   screenWidth: screenSize.width,
                   myPosition: widget.game.myPosition,
+                  enabledSurcoinche: enableSurcoinche,
+                  enabledCoinche: enableCoinche,
                 )),
           ),
           if (bidLeft != null)

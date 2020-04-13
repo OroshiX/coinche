@@ -1,31 +1,35 @@
 import 'dart:async';
 
-import 'package:FlutterCoinche/bloc/bloc_base.dart';
 import 'package:FlutterCoinche/dto/card.dart' as card;
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-class GamesBloc with ChangeNotifier implements BlocBase {
-  BehaviorSubject<Game> gameBehavior = BehaviorSubject();
-  BehaviorSubject<List<GameEmpty>> allMyGames;
+class GamesBloc implements Bloc {
+  final BehaviorSubject<Game> _gameController =
+      BehaviorSubject<Game>.seeded(Game());
+
+  ValueStream<Game> get game => _gameController;
+
+  ValueStream<List<GameEmpty>> get allGames => _allMyGames;
+
+  BehaviorSubject<List<GameEmpty>> _allMyGames;
   MyAuthUser _myAuthUser;
   StreamSubscription<Game> subscription;
 
   GamesBloc() {
-    allMyGames = BehaviorSubject();
+    _allMyGames = BehaviorSubject();
   }
 
   void addAllMyGames(List<GameEmpty> games) {
-    allMyGames.add(games);
+    _allMyGames.add(games);
   }
 
   void setUser(MyAuthUser myAuthUser) {
     this._myAuthUser = myAuthUser;
-    notifyListeners();
   }
 
   void changeGame(String idGame) {
@@ -58,15 +62,14 @@ class GamesBloc with ChangeNotifier implements BlocBase {
         if (c1.color.index > c2.color.index) return 1;
         return card.compareValue(c2.value, c1.value, false);
       });
-      gameBehavior.add(event);
+      _gameController.sink.add(event);
     });
   }
 
   @override
   void dispose() {
-    super.dispose();
-    gameBehavior.close();
+    _gameController.close();
     subscription.cancel();
-    allMyGames.close();
+    _allMyGames.close();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/game.dart';
-import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/screen/game_screen.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class LobbyScreen extends StatelessWidget {
@@ -21,7 +21,7 @@ class LobbyScreen extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<Game>(
-          stream: BlocProvider.of<GamesBloc>(context).gameBehavior,
+          stream: BlocProvider.of<GamesBloc>(context).game,
           builder: (BuildContext context, AsyncSnapshot<Game> snapshot) {
             if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");

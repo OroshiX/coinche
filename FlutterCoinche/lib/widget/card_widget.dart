@@ -44,7 +44,7 @@ class CardWidget extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                        color: color1,
+                        color: colorText,
                         fontSize: 20,
                       ),
                     ),
@@ -64,7 +64,7 @@ class CardWidget extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                          color: color1,
+                          color: colorText,
                           fontSize: 20),
                     ),
                     Image.asset(

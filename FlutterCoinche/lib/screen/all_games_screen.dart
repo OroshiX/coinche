@@ -1,8 +1,8 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
-import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class AllGamesScreen extends StatelessWidget {
       ),
       body: SafeArea(
           child: StreamBuilder<List<GameEmpty>>(
-        stream: gamesProvider.allMyGames,
+        stream: gamesProvider.allGames,
         builder: (context, AsyncSnapshot<List<GameEmpty>> snapshot) {
           if (snapshot.hasError) {
             return Center(

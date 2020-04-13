@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
-import 'package:FlutterCoinche/provider/bloc_provider.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
