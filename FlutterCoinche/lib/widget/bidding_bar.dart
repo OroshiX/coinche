@@ -11,6 +11,7 @@ class BiddingBar extends StatefulWidget {
   final void Function(Bid bid) onBid;
   final double height;
   final PlayerPosition myPosition;
+  final bool enabled;
 
   const BiddingBar(
       {Key key,
@@ -18,7 +19,8 @@ class BiddingBar extends StatefulWidget {
       this.onBid,
       this.minBidPoints = 80,
       @required this.myPosition,
-      this.height})
+      this.height,
+      this.enabled})
       : super(key: key);
 
   @override
@@ -32,7 +34,7 @@ class _BiddingBarState extends State<BiddingBar> {
   @override
   void initState() {
     super.initState();
-    points = widget.minBidPoints;
+    points = widget.minBidPoints < 160 ? widget.minBidPoints : 160;
     _cardColor = cardModel.CardColor.HEART;
   }
 
@@ -115,6 +117,7 @@ class _BiddingBarState extends State<BiddingBar> {
                           position: widget.myPosition));
                     },
                     borderRadius: 5,
+                    enabled: widget.enabled,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text("Bid"),

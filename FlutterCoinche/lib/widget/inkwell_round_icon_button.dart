@@ -8,19 +8,24 @@ class InkwellNeumorphicButton extends StatelessWidget {
   final double borderRadius;
 
   const InkwellNeumorphicButton.round(
-      {@required this.onTap, this.child, this.sizeShadow = SizeShadow.SMALL})
+      {@required this.onTap,
+      this.child,
+      this.sizeShadow = SizeShadow.SMALL,
+      this.enabled = true})
       : isRound = true,
         borderRadius = null;
 
   final void Function() onTap;
   final bool isRound;
   final Widget child;
+  final bool enabled;
 
   const InkwellNeumorphicButton.rrect(
       {@required this.onTap,
       this.child,
       this.sizeShadow = SizeShadow.SMALL,
-      @required this.borderRadius})
+      @required this.borderRadius,
+      this.enabled = true})
       : isRound = false;
 
   const InkwellNeumorphicButton(
@@ -29,19 +34,28 @@ class InkwellNeumorphicButton extends StatelessWidget {
       this.isRound = false,
       this.child,
       this.borderRadius,
-      this.sizeShadow})
+      this.sizeShadow,
+      this.enabled = true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final material = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: colorShadow,
-        onTap: onTap,
+    Material material;
+    if (enabled) {
+      material = Material(
+        color: Colors.transparent,
+        child: InkWell(
+          splashColor: colorShadow,
+          onTap: onTap,
+          child: child,
+        ),
+      );
+    } else {
+      material = Material(
+        color: Colors.black12,
         child: child,
-      ),
-    );
+      );
+    }
     var clip;
     if (isRound) {
       clip = ClipOval(child: material);

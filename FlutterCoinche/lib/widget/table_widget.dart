@@ -4,6 +4,7 @@ import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
@@ -36,6 +37,7 @@ class _TableWidgetState extends State<TableWidget> {
     final double cardHeight = 150;
     final double marginCardsPosition = 20;
     final double heightBiddingBar = 70;
+    final double paddingHeightCards = 15;
     var bidLeft = getPlayerBid(widget.game, left);
     var bidTop = getPlayerBid(widget.game, top);
     var bidRight = getPlayerBid(widget.game, right);
@@ -138,20 +140,40 @@ class _TableWidgetState extends State<TableWidget> {
                   cardHeight: cardHeight,
                   cardWidth: cardWidth,
                   screenWidth: screenSize.width,
+                  paddingVertical: paddingHeightCards,
                 ),
               )),
-          Positioned(
-              bottom:
-                  heightContainerName + marginCardsPosition + cardHeight + 20,
-              child: BiddingBar(
-                height: heightBiddingBar,
-                onBid: (Bid bid) {
-                  // TODO on bid do send
-                  print("bid: $bid");
-                },
-                screenWidth: screenSize.width,
-                myPosition: widget.game.myPosition,
-              )),
+          Visibility(
+            visible: widget.game.state == TableState.BIDDING,
+            child: Positioned(
+                bottom:
+                    heightContainerName + marginCardsPosition + cardHeight + 20,
+                child: BiddingBar(
+                  minBidPoints: (widget.game.bids.lastWhere(
+                        (element) => element is SimpleBid,
+                        orElse: () => null,
+                      ) as SimpleBid)
+                          .points +
+                      10,
+                  enabled: widget.game.nextPlayer == widget.game.myPosition,
+                  height: heightBiddingBar,
+                  onBid: (Bid bid) {
+                    ServerCommunication.bid(bid, widget.game.id).then(
+                        (success) {
+                      print("success");
+                      FlushbarHelper.createSuccess(message: "bid $bid placed")
+                          .show(context);
+                    }, onError: (error) {
+                      print("Error: $error");
+                      FlushbarHelper.createError(
+                              message: "Error placing bid: $error")
+                          .show(context);
+                    });
+                  },
+                  screenWidth: screenSize.width,
+                  myPosition: widget.game.myPosition,
+                )),
+          ),
           if (bidLeft != null)
             Transform.translate(
               offset: Offset(heightContainerName + 4, -widthContainer / 2),
@@ -192,7 +214,7 @@ class _TableWidgetState extends State<TableWidget> {
                   -heightContainerName -
                       cardHeight -
                       marginCardsPosition -
-                      20 -
+                      paddingHeightCards * 2 -
                       heightBiddingBar -
                       10),
               child: Bubble(

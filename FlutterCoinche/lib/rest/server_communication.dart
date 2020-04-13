@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:FlutterCoinche/.env.dart';
+import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,5 +83,18 @@ class ServerCommunication {
     if (r.hasError) {
       throw r.json();
     }
+  }
+
+  static Future<bool> bid(Bid bid, String gameId) async {
+    var url = "$_baseUrl/games/$gameId/announceBid";
+    print("connect to $url");
+    var r = await Requests.post(url,
+        body: bid.toJson(),
+        timeoutSeconds: 60,
+        bodyEncoding: RequestBodyEncoding.JSON);
+    if (r.hasError) {
+      throw r.json();
+    }
+    return true;
   }
 }

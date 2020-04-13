@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'bid.g.dart';
@@ -23,7 +24,7 @@ class Bid {
   @JsonKey(name: "position")
   PlayerPosition position;
 
-  Bid({this.position});
+  Bid({this.position, @required this.type});
 
   factory Bid.fromJson(Map<String, dynamic> json) {
     print("trying to change bid $json to Bid");
@@ -44,6 +45,7 @@ class Bid {
   }
 
   Map<String, dynamic> toJson() {
+    print("we are in toJson of SUPER");
 //    switch(type) {
 //      case "SimpleBid":
 //        return SimpleBid.toJson(this);
@@ -66,12 +68,15 @@ class SimpleBid extends Bid {
   CardColor color;
 
   SimpleBid({this.points, this.color, PlayerPosition position})
-      : super(position: position);
+      : super(position: position, type: "SimpleBid");
 
   factory SimpleBid.fromJson(Map<String, dynamic> json) =>
       _$SimpleBidFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SimpleBidToJson(this);
+  Map<String, dynamic> toJson() {
+    print("We are in toJson of SimpleBid");
+    return _$SimpleBidToJson(this);
+  }
 
   @override
   String toString() {
@@ -85,7 +90,7 @@ class General extends Bid {
   bool belote;
 
   General({this.color, this.belote, PlayerPosition position})
-      : super(position: position);
+      : super(position: position, type: "General");
 
   factory General.fromJson(Map<String, dynamic> json) =>
       _$GeneralFromJson(json);
@@ -104,7 +109,7 @@ class Capot extends Bid {
   bool belote;
 
   Capot({this.color, this.belote, PlayerPosition position})
-      : super(position: position);
+      : super(position: position, type: "Capot");
 
   factory Capot.fromJson(Map<String, dynamic> json) => _$CapotFromJson(json);
 
@@ -122,7 +127,7 @@ class Coinche extends Bid {
   bool surcoinche;
 
   Coinche({this.annonce, this.surcoinche, PlayerPosition position})
-      : super(position: position);
+      : super(position: position, type: "Coinche");
 
   factory Coinche.fromJson(Map<String, dynamic> json) =>
       _$CoincheFromJson(json);
@@ -137,7 +142,7 @@ class Coinche extends Bid {
 
 @JsonSerializable()
 class Pass extends Bid {
-  Pass({PlayerPosition position}) : super(position: position);
+  Pass({PlayerPosition position}) : super(position: position, type: "Pass");
 
   factory Pass.fromJson(Map<String, dynamic> json) => _$PassFromJson(json);
 

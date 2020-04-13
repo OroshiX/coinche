@@ -43,7 +43,6 @@ class _GameScreenState extends State<GameScreen> {
       body: StreamBuilder<Game>(
           stream: gamesBloc.gameBehavior,
           builder: (context, snapshot) {
-            print("data has changed: $snapshot");
             if (snapshot.hasError) {
               return Center(
                 child: Text("Error: ${snapshot.error}"),
@@ -54,6 +53,7 @@ class _GameScreenState extends State<GameScreen> {
                 child: Text("No data"),
               );
             }
+            print("data has changed: ${snapshot.data}");
             return TableWidget(snapshot.data);
           }),
       backgroundColor: colorLightBlue,
