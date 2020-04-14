@@ -4,6 +4,8 @@ import 'package:FlutterCoinche/dto/card.dart' as card;
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
@@ -11,6 +13,8 @@ import 'package:rxdart/rxdart.dart';
 class GamesBloc implements Bloc {
   final BehaviorSubject<Game> _gameController =
       BehaviorSubject<Game>.seeded(Game());
+
+  AudioCache audioCache;
 
   ValueStream<Game> get game => _gameController;
 
@@ -22,6 +26,9 @@ class GamesBloc implements Bloc {
 
   GamesBloc() {
     _allMyGames = BehaviorSubject();
+    audioCache = AudioCache(
+        prefix: "sounds/",
+        fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
   }
 
   void addAllMyGames(List<GameEmpty> games) {

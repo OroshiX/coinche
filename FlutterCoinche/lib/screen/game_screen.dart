@@ -40,7 +40,10 @@ class _GameScreenState extends State<GameScreen> {
         ],
         title: StreamBuilder<Game>(
             stream: gamesBloc.game,
-            builder: (context, snapshot) => Text("${snapshot.data.id}")),
+            builder: (context, snapshot) {
+              if (snapshot.hasError || !snapshot.hasData) return Text("Game");
+              return Text("${snapshot.data.id}");
+            }),
       ),
       body: StreamBuilder<Game>(
           stream: gamesBloc.game,

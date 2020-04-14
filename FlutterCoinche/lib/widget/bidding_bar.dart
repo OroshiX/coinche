@@ -1,9 +1,12 @@
+import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class BiddingBar extends StatefulWidget {
@@ -46,9 +49,14 @@ class _BiddingBarState extends State<BiddingBar> {
 
   BidType bidType;
 
+  AudioCache _audioCache;
+  final soundName = "clic.mp3";
+  final soundName2 = "click.mp3";
+
   @override
   void initState() {
     super.initState();
+    _audioCache = BlocProvider.of<GamesBloc>(context).audioCache;
     points = widget.minBidPoints < 160 ? widget.minBidPoints : 160;
     _belote = false;
     bidType = widget.initialBidType;
@@ -74,6 +82,7 @@ class _BiddingBarState extends State<BiddingBar> {
                 child: NeumorphicWidget(
                   sizeShadow: SizeShadow.MEDIUM,
                   onTap: () {
+                    _audioCache.play(soundName, volume: 0.5);
                     if (points > widget.minBidPoints) {
                       setState(() {
                         points -= 10;
@@ -102,6 +111,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     child: Icon(Icons.add, color: colorText),
                   ),
                   onTap: () {
+                    _audioCache.play("buttonPush.mp3", volume: 0.5);
                     if (points < 160) {
                       setState(() {
                         points += 10;
@@ -209,6 +219,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
+                          _audioCache.play(soundName2, volume: 0.2);
                           setState(() {
                             bidType = BidType.Simple;
                           });
@@ -230,6 +241,7 @@ class _BiddingBarState extends State<BiddingBar> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          _audioCache.play(soundName2, volume: 0.2);
                           setState(() {
                             bidType = BidType.Capot;
                           });
@@ -249,6 +261,7 @@ class _BiddingBarState extends State<BiddingBar> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          _audioCache.play(soundName2, volume: 0.2);
                           setState(() {
                             bidType = BidType.Generale;
                           });
