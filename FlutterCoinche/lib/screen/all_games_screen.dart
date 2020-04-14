@@ -1,9 +1,13 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/widget/neu_round_inset.dart';
+import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +22,8 @@ class AllGamesScreen extends StatelessWidget {
     ServerCommunication.allGames()
         .then((value) => gamesProvider.addAllMyGames(value));
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      floatingActionButton: NeuRoundInset(
+        onTap: () {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -55,10 +59,7 @@ class AllGamesScreen extends StatelessWidget {
             ),
           );
         },
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: Icon(Icons.add, color: colorTextDark,),
       ),
       appBar: AppBar(
         title: Text("All games"),
@@ -73,48 +74,96 @@ class AllGamesScreen extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-          child: StreamBuilder<List<GameEmpty>>(
-        stream: gamesProvider.allGames,
-        builder: (context, AsyncSnapshot<List<GameEmpty>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text("Error: ${snapshot.error}"),
-            );
-          }
-          if (!snapshot.hasData || snapshot.data.isEmpty) {
-            return Center(
-              child: Text("No data"),
-            );
-          }
-          var games = snapshot.data;
-          return ListView.separated(
-            separatorBuilder: (context, index) => Divider(),
-            itemCount: games.length,
-            itemBuilder: (context, index) {
-              GameEmpty game = games[index];
-              return GestureDetector(
-                onTap: () {
-                  if (!game.inRoom) {
-                    // join game
-                    ServerCommunication.joinGame(
-                      gameId: game.id,
-                    ).then((_) {
-                      gamesProvider.changeGame(game.id);
-                      Navigator.of(context).pushNamed(LobbyScreen.routeName);
-                    });
-                  } else {
-                    gamesProvider.changeGame(game.id);
-                    Navigator.of(context).pushNamed(LobbyScreen.routeName);
-                  }
-                },
-                child: ListTile(
-                  title: Text("Game: ${game.name}"),
-                  subtitle: Text("Nb joined: ${game.nbJoined}"),
-                ),
+          child: Container(
+        color: colorGradient1,
+        child: StreamBuilder<List<GameEmpty>>(
+          stream: gamesProvider.allGames,
+          builder: (context, AsyncSnapshot<List<GameEmpty>> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Error: ${snapshot.error}"),
               );
-            },
-          );
-        },
+            }
+            if (!snapshot.hasData || snapshot.data.isEmpty) {
+              return Center(
+                child: Text("No data"),
+              );
+            }
+            var games = snapshot.data;
+            return ListView.builder(
+              itemCount: games.length,
+              itemBuilder: (context, index) {
+                GameEmpty game = games[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 16),
+                  child: NeumorphicWidget(
+                    onTap: () {
+                      FlushbarHelper.createInformation(message: "todo");
+                      if (!game.inRoom) {
+                        // join game
+                        ServerCommunication.joinGame(
+                          gameId: game.id,
+                        ).then((_) {
+                          gamesProvider.changeGame(game.id);
+                          Navigator.of(context)
+                              .pushNamed(LobbyScreen.routeName);
+                        }, onError: (error) {
+                          FlushbarHelper.createError(
+                                  message:
+                                      "Cannot join game ${game.id}: $error",
+                                  duration: Duration(seconds: 4))
+                              .show(context);
+                        });
+                      } else {
+                        gamesProvider.changeGame(game.id);
+                        Navigator.of(context).pushNamed(LobbyScreen.routeName);
+                      }
+                    },
+                    child: ListTile(
+                      title: Text(
+                        "Game: ${game.name}",
+                        style: TextStyle(
+                            color: colorTextDark,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text("Created by ${game.nicknameCreator}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            game.nbJoined.toString(),
+                            style: TextStyle(color: colorText, fontSize: 18),
+                          ),
+                          SizedBox(
+                            width: 2,
+                          ),
+                          Icon(game.nbJoined > 1 ? Icons.people : Icons.person),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       )),
     );
   }

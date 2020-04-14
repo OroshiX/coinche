@@ -31,6 +31,22 @@ class GamesBloc implements Bloc {
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
   }
 
+  void playError() {
+    audioCache.play("bad.mp3", volume: 0.7);
+  }
+
+  void playSoftButton() {
+    audioCache.play("click.mp3", volume: 0.2);
+  }
+
+  void playHardButton() {
+    audioCache.play("clic.mp3", volume: 0.3);
+  }
+
+  void playPlop() {
+    audioCache.play("buttonPush.mp3", volume: 0.5);
+  }
+
   void addAllMyGames(List<GameEmpty> games) {
     _allMyGames.add(games);
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:FlutterCoinche/.env.dart';
@@ -62,7 +63,7 @@ class ServerCommunication {
     return game;
   }
 
-  static Future playCard(Card data, String gameId) async {
+  static Future<bool> playCard(Card data, String gameId) async {
     var url = "$_baseUrl/games/$gameId/playCard";
     print("connect to $url");
     var r = await Requests.post(url,
@@ -70,9 +71,10 @@ class ServerCommunication {
     if (r.hasError) {
       throw r.json();
     }
+    return true;
   }
 
-  static Future joinGame({String gameId, String nickname}) async {
+  static Future<void> joinGame({String gameId, String nickname}) async {
     var url = "$_baseUrl/lobby/joinGame";
     var r = await Requests.post(url,
         queryParameters: {

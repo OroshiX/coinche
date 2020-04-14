@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
@@ -11,6 +12,7 @@ import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
+import 'package:bloc_provider/bloc_provider.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -211,12 +213,14 @@ class _TableWidgetState extends State<TableWidget> {
                     data.playable;
               },
               onAccept: (data) {
-                return ServerCommunication.playCard(data, widget.game.id).then(
-                    (_) {},
-                    onError: (error) => FlushbarHelper.createError(
-                            message: "Error: ${error["message"]}",
-                            duration: Duration(seconds: 5))
-                        .show(context));
+                return ServerCommunication.playCard(data, widget.game.id)
+                    .then((void _) {}, onError: (error) {
+                  BlocProvider.of<GamesBloc>(context).playError();
+                  return FlushbarHelper.createError(
+                          message: "Error: ${error["message"]}",
+                          duration: Duration(seconds: 5))
+                      .show(context);
+                });
               },
               builder: (context, candidateData, rejectedData) {
                 if (widget.game.onTable

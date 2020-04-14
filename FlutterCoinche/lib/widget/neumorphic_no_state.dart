@@ -2,17 +2,24 @@ import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:flutter/material.dart';
 
+const double kBlur1 = 2,
+    kSpread1 = -1.25,
+    kOffset1 = -1.25,
+    kBlur2 = 1.25,
+    kOffset2 = 1.75,
+    kSpread2 = -0.25;
+
 BoxDecoration buildNeumorphicDecoration({
   double borderRadius,
   SizeShadow sizeShadow,
   bool pressed,
 }) {
-  double blur1 = 2,
-      spread1 = -1.25,
-      offset1 = -1.25,
-      blur2 = 1.25,
-      offset2 = 1.75,
-      spread2 = -0.25;
+  double blur1 = kBlur1,
+      spread1 = kSpread1,
+      offset1 = kOffset1,
+      blur2 = kBlur2,
+      offset2 = kOffset2,
+      spread2 = kSpread2;
   switch (sizeShadow) {
     case SizeShadow.MEDIUM:
       blur1 *= 2;
@@ -86,9 +93,10 @@ class NeumorphicNoStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
       decoration: buildNeumorphicDecoration(
           sizeShadow: sizeShadow, pressed: pressed, borderRadius: borderRadius),
+      duration: Duration(milliseconds: 150),
       child: child,
     );
   }

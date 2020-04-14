@@ -5,7 +5,6 @@ import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
-import 'package:audioplayers/audio_cache.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -48,15 +47,12 @@ class _BiddingBarState extends State<BiddingBar> {
   bool _belote;
 
   BidType bidType;
-
-  AudioCache _audioCache;
-  final soundName = "clic.mp3";
-  final soundName2 = "click.mp3";
+  GamesBloc gamesBloc;
 
   @override
   void initState() {
     super.initState();
-    _audioCache = BlocProvider.of<GamesBloc>(context).audioCache;
+    gamesBloc = BlocProvider.of<GamesBloc>(context);
     points = widget.minBidPoints < 160 ? widget.minBidPoints : 160;
     _belote = false;
     bidType = widget.initialBidType;
@@ -82,7 +78,7 @@ class _BiddingBarState extends State<BiddingBar> {
                 child: NeumorphicWidget(
                   sizeShadow: SizeShadow.MEDIUM,
                   onTap: () {
-                    _audioCache.play(soundName, volume: 0.5);
+                    gamesBloc.playHardButton();
                     if (points > widget.minBidPoints) {
                       setState(() {
                         points -= 10;
@@ -111,7 +107,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     child: Icon(Icons.add, color: colorText),
                   ),
                   onTap: () {
-                    _audioCache.play("buttonPush.mp3", volume: 0.5);
+                    gamesBloc.playPlop();
                     if (points < 160) {
                       setState(() {
                         points += 10;
@@ -177,6 +173,7 @@ class _BiddingBarState extends State<BiddingBar> {
               Switch(
                   value: _belote,
                   onChanged: (value) {
+                    gamesBloc.playSoftButton();
                     setState(() {
                       _belote = value;
                     });
@@ -219,7 +216,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                          _audioCache.play(soundName2, volume: 0.2);
+                          gamesBloc.playSoftButton();
                           setState(() {
                             bidType = BidType.Simple;
                           });
@@ -241,7 +238,7 @@ class _BiddingBarState extends State<BiddingBar> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _audioCache.play(soundName2, volume: 0.2);
+                          gamesBloc.playSoftButton();
                           setState(() {
                             bidType = BidType.Capot;
                           });
@@ -261,7 +258,7 @@ class _BiddingBarState extends State<BiddingBar> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _audioCache.play(soundName2, volume: 0.2);
+                          gamesBloc.playSoftButton();
                           setState(() {
                             bidType = BidType.Generale;
                           });
@@ -285,6 +282,7 @@ class _BiddingBarState extends State<BiddingBar> {
                   NeumorphicWidget(
                     onTap: () {
                       Bid bid;
+                      gamesBloc.playPlop();
                       switch (bidType) {
                         case BidType.Simple:
                           bid = SimpleBid(
@@ -332,6 +330,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     child: NeumorphicWidget(
                       sizeShadow: SizeShadow.SMALL,
                       onTap: () {
+                        gamesBloc.playPlop();
                         widget.onBid(Coinche(
                             position: widget.myPosition,
                             surcoinche: false,
@@ -356,6 +355,7 @@ class _BiddingBarState extends State<BiddingBar> {
                     child: NeumorphicWidget(
                       sizeShadow: SizeShadow.SMALL,
                       onTap: () {
+                        gamesBloc.playPlop();
                         widget.onBid(Coinche(
                             position: widget.myPosition,
                             surcoinche: true,
@@ -378,8 +378,10 @@ class _BiddingBarState extends State<BiddingBar> {
                   child: NeumorphicWidget(
                     sizeShadow: SizeShadow.SMALL,
                     borderRadius: 5,
-                    onTap: () =>
-                        widget.onBid(Pass(position: widget.myPosition)),
+                    onTap: () {
+                      gamesBloc.playPlop();
+                      widget.onBid(Pass(position: widget.myPosition));
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
