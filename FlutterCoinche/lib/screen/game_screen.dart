@@ -27,40 +27,59 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(AllGamesScreen.routeName);
-              },
-              child: Text("Games"))
-        ],
-        title: StreamBuilder<Game>(
+    return WillPopScope(
+      onWillPop: () async {
+        return (await showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Exit game?"),
+                actions: [
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text("No, stay here")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text("Yes, exit!"))
+                ],
+              ),
+            )) ??
+            false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(AllGamesScreen.routeName);
+                },
+                child: Text("Games"))
+          ],
+          title: StreamBuilder<Game>(
+              stream: gamesBloc.game,
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData) return Text("Game");
+                return Text("${snapshot.data.id}");
+              }),
+        ),
+        body: StreamBuilder<Game>(
             stream: gamesBloc.game,
             builder: (context, snapshot) {
-              if (snapshot.hasError || !snapshot.hasData) return Text("Game");
-              return Text("${snapshot.data.id}");
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error: ${snapshot.error}"),
+                );
+              }
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No data"),
+                );
+              }
+              print("data has changed: ${snapshot.data}");
+              return TableWidget(snapshot.data);
             }),
+        backgroundColor: colorLightBlue,
       ),
-      body: StreamBuilder<Game>(
-          stream: gamesBloc.game,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Error: ${snapshot.error}"),
-              );
-            }
-            if (!snapshot.hasData) {
-              return Center(
-                child: Text("No data"),
-              );
-            }
-            print("data has changed: ${snapshot.data}");
-            return TableWidget(snapshot.data);
-          }),
-      backgroundColor: colorLightBlue,
     );
   }
 }
