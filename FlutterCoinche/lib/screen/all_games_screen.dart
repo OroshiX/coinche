@@ -59,7 +59,10 @@ class AllGamesScreen extends StatelessWidget {
             ),
           );
         },
-        child: Icon(Icons.add, color: colorTextDark,),
+        child: Icon(
+          Icons.add,
+          color: colorTextDark,
+        ),
       ),
       appBar: AppBar(
         title: Text("All games"),
@@ -149,7 +152,8 @@ class AllGamesScreen extends StatelessWidget {
                             width: 10,
                             height: 10,
                             decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color:
+                                    game.inRoom ? Colors.blue : Colors.blueGrey,
                                 borderRadius: BorderRadius.circular(5)),
                           ),
                           SizedBox(

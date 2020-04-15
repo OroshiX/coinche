@@ -94,6 +94,7 @@ class NeumorphicNoStateWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      curve: Curves.easeOutCirc,
       decoration: buildNeumorphicDecoration(
           sizeShadow: sizeShadow, pressed: pressed, borderRadius: borderRadius),
       duration: Duration(milliseconds: 150),

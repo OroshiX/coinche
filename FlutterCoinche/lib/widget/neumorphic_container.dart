@@ -69,6 +69,7 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
       onTap: _onTap,
       onTapCancel: _onTapCancel,
       child: AnimatedContainer(
+        curve: Curves.easeOutExpo,
         decoration: buildNeumorphicDecoration(
           borderRadius: widget.borderRadius,
           pressed: _isPressed,

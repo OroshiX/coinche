@@ -47,13 +47,16 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
 
   @override
   Widget build(BuildContext context) {
+    final curve = Curves.easeOutCirc;
+    final duration = Duration(milliseconds: 100);
     return GestureDetector(
         onTapDown: _onPointerDown,
         onTapUp: _onPointerUp,
         onTap: _onTap,
         onTapCancel: _onTapCancel,
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 150),
+          curve: curve,
+          duration: duration,
           decoration: buildNeumorphicDecoration(
             borderRadius: 50,
             pressed: _isPressed,
@@ -62,6 +65,7 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TweenAnimationBuilder(
+              curve: curve,
               tween: Tween<double>(begin: 1, end: _isPressed ? 1 : 5),
               builder: (_, d, __) => InnerShadow(
                 color: colorShadow,
@@ -82,7 +86,7 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
                   ),
                 ),
               ),
-              duration: Duration(milliseconds: 200),
+              duration: duration,
             ),
           ),
         ));
