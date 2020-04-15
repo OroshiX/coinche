@@ -11,6 +11,7 @@ import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/cards_on_table.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:bubble/bubble.dart';
@@ -151,6 +152,19 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             ),
           ),
+
+          CardsOnTable(
+            state: widget.game.state,
+            cardsOnTable: widget.game.onTable,
+            posTableToCardinal: {
+              AxisDirection.left: left,
+              AxisDirection.up: top,
+              AxisDirection.right: right,
+              AxisDirection.down: me
+            },
+            maxHeightCard: cardHeight,
+            minPadding: 20,
+          ),
           // The last bids of the players
           if (bidLeft != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
@@ -230,10 +244,11 @@ class _TableWidgetState extends State<TableWidget> {
                     width: cardWidth,
                     height: cardHeight,
                     padding: EdgeInsets.all(8),
-                    child: CardWidget(widget.game.onTable
-                        .firstWhere((element) =>
-                            element.position == widget.game.myPosition)
-                        .card),
+                    child: CardWidget(
+                        card: widget.game.onTable
+                            .firstWhere((element) =>
+                                element.position == widget.game.myPosition)
+                            .card),
                   );
                 }
                 if (candidateData.isNotEmpty) {
@@ -246,7 +261,7 @@ class _TableWidgetState extends State<TableWidget> {
                       child: Container(
                         width: cardWidth + 20,
                         height: cardHeight + 20,
-                        child: CardWidget(candidateData.last),
+                        child: CardWidget(card: candidateData.last),
                       ),
                     ),
                   );

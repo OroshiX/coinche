@@ -72,13 +72,13 @@ class CardsInHandWidget extends StatelessWidget {
                         child: Container(
                             constraints: BoxConstraints.tight(
                                 Size(cardWidth, cardHeight)),
-                            child: CardWidget(cards[index])),
+                            child: CardWidget(card: cards[index])),
                       ),
                     ),
                     child: Container(
                         constraints:
                             BoxConstraints.tight(Size(cardWidth, cardHeight)),
-                        child: CardWidget(cards[index]))),
+                        child: CardWidget(card: cards[index]))),
               );
             }));
   }

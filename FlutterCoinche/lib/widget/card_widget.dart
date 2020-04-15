@@ -2,21 +2,22 @@ import 'dart:math';
 
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/resources/colors.dart';
-import 'package:FlutterCoinche/widget/neumorphic_container.dart';
+import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
   final cardModel.Card card;
   final double marginValue = 5;
+  final bool displayPlayable;
 
-  CardWidget(this.card);
+  CardWidget({@required this.card, this.displayPlayable = true});
 
   @override
   Widget build(BuildContext context) {
     final image = "images/${cardModel.getAssetImageFromColor(card.color)}";
     final letter = cardModel.getLetterFromValue(card.value);
-    return NeumorphicWidget(
-      onTap: null,
+    return NeumorphicNoStateWidget(
+      pressed: false,
       child: Material(
         color: Colors.transparent,
         child: Stack(
@@ -30,7 +31,7 @@ class CardWidget extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: 50,
                 ),
-                if (card.playable != null && card.playable)
+                if (card.playable != null && displayPlayable && card.playable)
                   Icon(Icons.check)
               ],
             )),
@@ -64,9 +65,7 @@ class CardWidget extends StatelessWidget {
                   child: Column(children: [
                     Text(
                       letter,
-                      style: TextStyle(
-                          color: colorText,
-                          fontSize: 20),
+                      style: TextStyle(color: colorText, fontSize: 20),
                     ),
                     Image.asset(
                       image,

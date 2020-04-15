@@ -193,7 +193,6 @@ class _BiddingBarState extends State<BiddingBar> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
-      color: Colors.white,
       width: widget.screenWidth,
       height: widget.height,
       child: Row(

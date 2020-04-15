@@ -1,6 +1,5 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/card.dart' as card;
-import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
@@ -62,19 +61,6 @@ class _GameScreenState extends State<GameScreen> {
             return TableWidget(snapshot.data);
           }),
       backgroundColor: colorLightBlue,
-      persistentFooterButtons: <Widget>[
-        FlatButton(
-            onPressed: () {
-              setState(() {
-                myCards.sort((card.Card c1, card.Card c2) {
-                  if (c1.color.index < c2.color.index) return -1;
-                  if (c1.color.index > c2.color.index) return 1;
-                  return compareValue(c1.value, c2.value, false);
-                });
-              });
-            },
-            child: Text("Sort"))
-      ],
     );
   }
 }
