@@ -19,39 +19,58 @@ class CardsOnTable extends StatelessWidget {
   CardsOnTable(
       {this.cardsOnTable,
       this.posTableToCardinal,
-      this.maxHeightCard = 300,
+      this.maxHeightCard = 250,
       this.minPadding,
       @required this.state,
       this.minHeightCard = 20})
-      : cardLeft = posTableToCardinal[AxisDirection.left] != null
-            ? cardsOnTable.firstWhere((element) =>
-                element.position == posTableToCardinal[AxisDirection.left])
+      : assert(minHeightCard <= maxHeightCard),
+        cardLeft = posTableToCardinal[AxisDirection.left] != null
+            ? cardsOnTable.firstWhere(
+                (element) =>
+                    element.position == posTableToCardinal[AxisDirection.left],
+                orElse: () => null)
             : null,
         cardTop = posTableToCardinal[AxisDirection.up] != null
-            ? cardsOnTable.firstWhere((element) =>
-                element.position == posTableToCardinal[AxisDirection.up])
+            ? cardsOnTable.firstWhere(
+                (element) =>
+                    element.position == posTableToCardinal[AxisDirection.up],
+                orElse: () => null)
             : null,
         cardRight = posTableToCardinal[AxisDirection.right] != null
-            ? cardsOnTable.firstWhere((element) =>
-                element.position == posTableToCardinal[AxisDirection.right])
+            ? cardsOnTable.firstWhere(
+                (element) =>
+                    element.position == posTableToCardinal[AxisDirection.right],
+                orElse: () => null,
+              )
             : null,
         cardMe = posTableToCardinal[AxisDirection.down] != null
-            ? cardsOnTable.firstWhere((element) =>
-                element.position == posTableToCardinal[AxisDirection.down])
+            ? cardsOnTable.firstWhere(
+                (element) =>
+                    element.position == posTableToCardinal[AxisDirection.down],
+                orElse: () => null,
+              )
             : null,
         orderedCards = List(4) {
-    orderedCards[cardsOnTable
-            .indexWhere((element) => element.position == cardLeft.position)] =
-        MapEntry(AxisDirection.left, cardLeft);
-    orderedCards[cardsOnTable
-            .indexWhere((element) => element.position == cardRight.position)] =
-        MapEntry(AxisDirection.right, cardRight);
-    orderedCards[cardsOnTable
-            .indexWhere((element) => element.position == cardMe.position)] =
-        MapEntry(AxisDirection.down, cardMe);
-    orderedCards[cardsOnTable
-            .indexWhere((element) => element.position == cardTop.position)] =
-        MapEntry(AxisDirection.up, cardTop);
+    var index = cardsOnTable
+        .indexWhere((element) => element.position == cardLeft.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.left, cardLeft);
+    }
+    index = cardsOnTable
+        .indexWhere((element) => element.position == cardRight.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.right, cardRight);
+    }
+    index = cardsOnTable
+        .indexWhere((element) => element.position == cardMe.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.down, cardMe);
+    }
+    index = cardsOnTable
+        .indexWhere((element) => element.position == cardTop.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.up, cardTop);
+    }
   }
 
   @override
@@ -64,12 +83,14 @@ class CardsOnTable extends StatelessWidget {
         MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
     final minCardHeight = max(minHeightCard, availableSpace / 2 - minPadding);
     final cardHeight = min(maxHeightCard, minCardHeight);
-    final cardWidth = cardHeight * 2 / 3;
+    final cardWidth = cardHeight / 1.6180339887; // Golden ratio / nombre d'or
+    print(
+        "minHeight = $minHeightCard, minCardHeight: $minCardHeight, maxHeightCard=$maxHeightCard, cardHeight=$cardHeight");
     return Container(
       child: Stack(
         children: [
           for (var c in orderedCards)
-            _positionWidget(c.key, cardWidth, cardHeight),
+            _positionWidget(c?.key, cardWidth, cardHeight),
         ],
       ),
     );
@@ -143,7 +164,7 @@ class CardsOnTable extends StatelessWidget {
         return Align(
           alignment: Alignment.center,
           child: Transform.translate(
-            offset: Offset(-cardWidth / 2, 0),
+            offset: Offset(-cardHeight / 2, 0),
             child: Transform.rotate(
               angle: -pi / 2,
               child: AnimatedOpacity(

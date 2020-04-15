@@ -5,6 +5,7 @@ import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -84,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     BlocProvider.of<GamesBloc>(context).setUser(user);
 
+    Navigator.of(context).popUntil((route) => route.isFirst);
     // navigate to other page
     Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
   }
@@ -134,6 +136,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        FlutterLogin(
+          onSignup: (LoginData loginData) =>
+              _signUp(loginData.name, loginData.password),
+          onLogin: (LoginData loginData) =>
+              _signInWithCredentials(loginData.name, loginData.password),
+          onRecoverPassword: (String email) => _resetPassword(email),
+          title: "Coinchons!",
+          emailValidator: (value) {
+            var regex = RegExp(
+                r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
+            if (!regex.hasMatch(value)) return "Email format invalid";
+            return null;
+          },
+          showDebugButtons: false,
+        ),
+        Positioned(
+          bottom: 20,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: SignInButton(
+              Buttons.Google,
+              onPressed: () => _googleSignIn(),
+            ),
+          ),
+        ),
+      ],
+    );
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(247, 245, 237, 1),
       body: SafeArea(

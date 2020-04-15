@@ -171,8 +171,8 @@ class _TableWidgetState extends State<TableWidget> {
                 AxisDirection.right: right,
                 AxisDirection.down: me
               },
-              maxHeightCard: cardHeight,
-              minPadding: 20,
+              maxHeightCard: 400,
+              minPadding: heightContainerName + 20,
             ),
           ),
           // The last bids of the players

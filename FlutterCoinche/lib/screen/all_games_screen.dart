@@ -3,6 +3,7 @@ import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/screen/login_screen.dart';
 import 'package:FlutterCoinche/ui/inner_shadow.dart';
 import 'package:FlutterCoinche/widget/neu_round_inset.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
@@ -74,7 +75,16 @@ class AllGamesScreen extends StatelessWidget {
                 ServerCommunication.allGames().then((value) {
                   gamesProvider.addAllMyGames(value);
                 });
-              })
+              }),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                ServerCommunication.logout().then(
+                    (value) => Navigator.of(context)
+                        .pushReplacementNamed(LoginScreen.routeName),
+                    onError: (error) => FlushbarHelper.createError(
+                        message: "Couldn't logout: $error"));
+              }),
         ],
       ),
       body: SafeArea(
@@ -143,8 +153,8 @@ class AllGamesScreen extends StatelessWidget {
                           child: Container(
                               padding: EdgeInsets.all(18),
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: colorGradient2,
+                                shape: BoxShape.circle,
+                                color: colorGradient2,
 //                                  borderRadius: BorderRadius.circular(50)
                               ),
                               child: Text(
