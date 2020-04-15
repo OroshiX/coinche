@@ -41,7 +41,7 @@ private val user: User) {
             user.apply {
                 this.uid = uid
                 this.nickname =
-                        if (decodedToken.name.isBlank()) decodedToken.email
+                        if ((decodedToken.name == null ) || (decodedToken.name.isBlank())) decodedToken.email
                         else decodedToken.name
             }
             val saveUser = fire.saveUser(UserDto(user))
