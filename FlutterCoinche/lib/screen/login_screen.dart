@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
     BlocProvider.of<GamesBloc>(context).setUser(user);
 
     // navigate to other page
-    Navigator.of(context).pushNamed(AllGamesScreen.routeName);
+    Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
   }
 
   void _showWarning(String warningMessage) {

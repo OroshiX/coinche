@@ -11,6 +11,7 @@ import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/cards_on_table.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:bubble/bubble.dart';
@@ -151,6 +152,29 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             ),
           ),
+
+          Padding(
+            padding: EdgeInsets.only(
+                top: heightContainerName,
+                bottom: heightContainerName +
+                    cardHeight +
+                    marginCardsPosition +
+                    paddingHeightCards * 2,
+                left: heightContainerName,
+                right: heightContainerName),
+            child: CardsOnTable(
+              state: widget.game.state,
+              cardsOnTable: widget.game.onTable,
+              posTableToCardinal: {
+                AxisDirection.left: left,
+                AxisDirection.up: top,
+                AxisDirection.right: right,
+                AxisDirection.down: me
+              },
+              maxHeightCard: cardHeight,
+              minPadding: 20,
+            ),
+          ),
           // The last bids of the players
           if (bidLeft != null && widget.game.state == TableState.BIDDING)
             Transform.translate(
@@ -204,85 +228,83 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             ),
 
-          Center(
-            child: DragTarget<cardModel.Card>(
-              onWillAccept: (data) {
-                // if it is my turn and the card is playable
-                return widget.game.myPosition == widget.game.nextPlayer &&
-                    data.playable != null &&
-                    data.playable;
-              },
-              onAccept: (data) {
-                return ServerCommunication.playCard(data, widget.game.id)
-                    .then((void _) {}, onError: (error) {
-                  BlocProvider.of<GamesBloc>(context).playError();
-                  return FlushbarHelper.createError(
-                          message: "Error: ${error["message"]}",
-                          duration: Duration(seconds: 5))
-                      .show(context);
-                });
-              },
-              builder: (context, candidateData, rejectedData) {
-                if (widget.game.onTable
-                    .map((e) => e.position)
-                    .contains(widget.game.myPosition)) {
-                  return Container(
-                    width: cardWidth,
-                    height: cardHeight,
-                    padding: EdgeInsets.all(8),
-                    child: CardWidget(widget.game.onTable
-                        .firstWhere((element) =>
-                            element.position == widget.game.myPosition)
-                        .card),
-                  );
-                }
-                if (candidateData.isNotEmpty) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: cardWidth + 20,
-                        height: cardHeight + 20,
-                        child: CardWidget(candidateData.last),
+          Padding(
+            padding: EdgeInsets.only(
+                top: heightContainerName,
+                bottom: heightContainerName +
+                    cardHeight +
+                    marginCardsPosition +
+                    paddingHeightCards * 2,
+                left: heightContainerName,
+                right: heightContainerName),
+            child: Center(
+              child: DragTarget<cardModel.Card>(
+                onWillAccept: (data) {
+                  // if it is my turn and the card is playable
+                  return widget.game.myPosition == widget.game.nextPlayer &&
+                      data.playable != null &&
+                      data.playable;
+                },
+                onAccept: (data) {
+                  return ServerCommunication.playCard(data, widget.game.id)
+                      .then((void _) {}, onError: (error) {
+                    BlocProvider.of<GamesBloc>(context).playError();
+                    return FlushbarHelper.createError(
+                            message: "Error: ${error["message"]}",
+                            duration: Duration(seconds: 5))
+                        .show(context);
+                  });
+                },
+                builder: (context, candidateData, rejectedData) {
+//                if (widget.game.onTable
+//                    .map((e) => e.position)
+//                    .contains(widget.game.myPosition)) {
+//                  return Container(
+//                    width: cardWidth,
+//                    height: cardHeight,
+//                    padding: EdgeInsets.all(8),
+//                    child: CardWidget(
+//                        card: widget.game.onTable
+//                            .firstWhere((element) =>
+//                                element.position == widget.game.myPosition)
+//                            .card),
+//                  );
+//                }
+                  if (candidateData.isNotEmpty) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: cardWidth + 20,
+                          height: cardHeight + 20,
+                          child: CardWidget(card: candidateData.last),
+                        ),
                       ),
-                    ),
-                  );
-                }
-                if (rejectedData.isNotEmpty) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red[900],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    width: cardWidth + 20,
-                    height: cardHeight + 20,
-                    child: Center(
-                      child: Icon(
-                        Icons.do_not_disturb_alt,
-                        color: Colors.white,
-                        size: 120,
+                    );
+                  }
+                  if (rejectedData.isNotEmpty) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red[900],
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                    ),
-                  );
-                }
-                return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.blueGrey[900],
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.blueGrey[900],
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            offset: Offset(2, 2))
-                      ]),
-                  width: cardWidth + 20,
-                  height: cardHeight + 20,
-                );
-              },
+                      width: cardWidth + 20,
+                      height: cardHeight + 20,
+                      child: Center(
+                        child: Icon(
+                          Icons.do_not_disturb_alt,
+                          color: Colors.white,
+                          size: 120,
+                        ),
+                      ),
+                    );
+                  }
+                  return Expanded(child: Placeholder());
+                },
+              ),
             ),
           ),
           // My cards
@@ -291,6 +313,8 @@ class _TableWidgetState extends State<TableWidget> {
               child: Transform.translate(
                 offset: Offset(0, -heightContainerName - marginCardsPosition),
                 child: CardsInHandWidget(
+                  inPlayMode: widget.game.state == TableState.PLAYING,
+                  myTurn: widget.game.myPosition == widget.game.nextPlayer,
                   cards: widget.game.cards,
                   cardHeight: cardHeight,
                   cardWidth: cardWidth,
@@ -299,38 +323,42 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               )),
           // To bid
-          Visibility(
-            visible: widget.game.state == TableState.BIDDING,
-            child: Positioned(
-                bottom:
-                    heightContainerName + marginCardsPosition + cardHeight + 20,
-                child: BiddingBar(
-                  minBidPoints: (widget.game.bids.lastWhere(
-                        (element) => element is SimpleBid,
-                        orElse: () => SimpleBid(points: 70),
-                      ) as SimpleBid)
-                          .points +
-                      10,
-                  enabledBid: widget.game.nextPlayer == widget.game.myPosition,
-                  height: heightBiddingBar,
-                  onBid: (Bid bid) {
-                    ServerCommunication.bid(bid, widget.game.id).then(
-                        (success) {
-                      print("success");
-                      FlushbarHelper.createSuccess(message: "bid $bid placed")
-                          .show(context);
-                    }, onError: (error) {
-                      print("Error: $error");
-                      FlushbarHelper.createError(
-                              message: "Error placing bid: $error")
-                          .show(context);
-                    });
-                  },
-                  screenWidth: screenSize.width,
-                  myPosition: widget.game.myPosition,
-                  enabledSurcoinche: enableSurcoinche,
-                  enabledCoinche: enableCoinche,
-                )),
+
+          AnimatedPositioned(
+            bottom: heightContainerName + marginCardsPosition + cardHeight + 20,
+            left:
+                widget.game.state == TableState.BIDDING ? 0 : -screenSize.width,
+            duration: Duration(milliseconds: 500),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: widget.game.state == TableState.BIDDING ? 1 : 0,
+              child: BiddingBar(
+                minBidPoints: (widget.game.bids.lastWhere(
+                      (element) => element is SimpleBid,
+                      orElse: () => SimpleBid(points: 70),
+                    ) as SimpleBid)
+                        .points +
+                    10,
+                enabledBid: widget.game.nextPlayer == widget.game.myPosition,
+//                height: heightBiddingBar,
+                onBid: (Bid bid) {
+                  ServerCommunication.bid(bid, widget.game.id).then((success) {
+                    print("success");
+                    FlushbarHelper.createSuccess(message: "bid $bid placed")
+                        .show(context);
+                  }, onError: (error) {
+                    print("Error: $error");
+                    FlushbarHelper.createError(
+                            message: "Error placing bid: $error")
+                        .show(context);
+                  });
+                },
+//                screenWidth: screenSize.width,
+                myPosition: widget.game.myPosition,
+                enabledSurcoinche: enableSurcoinche,
+                enabledCoinche: enableCoinche,
+              ),
+            ),
           ),
           // Top right recap widget
           Positioned(

@@ -1,6 +1,5 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/card.dart' as card;
-import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
@@ -28,53 +27,59 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(AllGamesScreen.routeName);
-              },
-              child: Text("Games"))
-        ],
-        title: StreamBuilder<Game>(
+    return WillPopScope(
+      onWillPop: () async {
+        return (await showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Exit game?"),
+                actions: [
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text("No, stay here")),
+                  FlatButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text("Yes, exit!"))
+                ],
+              ),
+            )) ??
+            false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(AllGamesScreen.routeName);
+                },
+                child: Text("Games"))
+          ],
+          title: StreamBuilder<Game>(
+              stream: gamesBloc.game,
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData) return Text("Game");
+                return Text("${snapshot.data.id}");
+              }),
+        ),
+        body: StreamBuilder<Game>(
             stream: gamesBloc.game,
             builder: (context, snapshot) {
-              if (snapshot.hasError || !snapshot.hasData) return Text("Game");
-              return Text("${snapshot.data.id}");
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Error: ${snapshot.error}"),
+                );
+              }
+              if (!snapshot.hasData) {
+                return Center(
+                  child: Text("No data"),
+                );
+              }
+              print("data has changed: ${snapshot.data}");
+              return TableWidget(snapshot.data);
             }),
+        backgroundColor: colorLightBlue,
       ),
-      body: StreamBuilder<Game>(
-          stream: gamesBloc.game,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Error: ${snapshot.error}"),
-              );
-            }
-            if (!snapshot.hasData) {
-              return Center(
-                child: Text("No data"),
-              );
-            }
-            print("data has changed: ${snapshot.data}");
-            return TableWidget(snapshot.data);
-          }),
-      backgroundColor: colorLightBlue,
-      persistentFooterButtons: <Widget>[
-        FlatButton(
-            onPressed: () {
-              setState(() {
-                myCards.sort((card.Card c1, card.Card c2) {
-                  if (c1.color.index < c2.color.index) return -1;
-                  if (c1.color.index > c2.color.index) return 1;
-                  return compareValue(c1.value, c2.value, false);
-                });
-              });
-            },
-            child: Text("Sort"))
-      ],
     );
   }
 }

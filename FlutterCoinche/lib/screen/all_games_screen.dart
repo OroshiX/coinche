@@ -3,6 +3,7 @@ import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/ui/inner_shadow.dart';
 import 'package:FlutterCoinche/widget/neu_round_inset.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:bloc_provider/bloc_provider.dart';
@@ -130,6 +131,27 @@ class AllGamesScreen extends StatelessWidget {
                             color: colorTextDark,
                             fontSize: 18,
                             fontWeight: FontWeight.bold),
+                      ),
+                      leading: InnerShadow(
+                        color: colorShadow,
+                        blur: 2,
+                        offset: Offset(2, 2),
+                        child: InnerShadow(
+                          blur: 2,
+                          color: Colors.white,
+                          offset: Offset(-2, -2),
+                          child: Container(
+                              padding: EdgeInsets.all(18),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: colorGradient2,
+//                                  borderRadius: BorderRadius.circular(50)
+                              ),
+                              child: Text(
+                                game.state.toString().split(".").last,
+                                style: TextStyle(color: colorTextDark),
+                              )),
+                        ),
                       ),
                       subtitle: Text("Created by ${game.nicknameCreator}"),
                       trailing: Row(

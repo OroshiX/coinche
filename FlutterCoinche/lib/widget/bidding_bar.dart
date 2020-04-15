@@ -9,10 +9,11 @@ import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
 class BiddingBar extends StatefulWidget {
-  final double screenWidth;
+//  final double screenWidth;
   final int minBidPoints;
   final void Function(Bid bid) onBid;
-  final double height;
+
+//  final double height;
   final PlayerPosition myPosition;
   final bool enabledBid;
   final bool enabledCoinche, enabledSurcoinche;
@@ -22,11 +23,11 @@ class BiddingBar extends StatefulWidget {
 
   const BiddingBar(
       {Key key,
-      @required this.screenWidth,
+//      @required this.screenWidth,
       this.onBid,
       this.minBidPoints = 80,
       @required this.myPosition,
-      this.height = 200,
+//      this.height = 200,
       @required this.enabledBid,
       @required this.enabledCoinche,
       @required this.enabledSurcoinche,
@@ -193,11 +194,10 @@ class _BiddingBarState extends State<BiddingBar> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 20, left: 15, right: 15),
-      color: Colors.white,
-      width: widget.screenWidth,
-      height: widget.height,
+//      width: widget.screenWidth,
+//      height: widget.height,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
@@ -316,6 +316,9 @@ class _BiddingBarState extends State<BiddingBar> {
                 ],
               ),
             ),
+          ),
+          SizedBox(
+            width: 20,
           ),
           IntrinsicWidth(
             child: Column(

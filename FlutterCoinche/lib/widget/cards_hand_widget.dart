@@ -8,13 +8,17 @@ class CardsInHandWidget extends StatelessWidget {
   final List<cardModel.Card> cards;
 
   final double paddingVertical;
+  final bool inPlayMode;
+  final bool myTurn;
 
   CardsInHandWidget(
       {@required this.cardHeight,
       @required this.cards,
       @required this.cardWidth,
       @required this.screenWidth,
-      @required this.paddingVertical});
+      @required this.paddingVertical,
+      this.inPlayMode = false,
+      this.myTurn = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,8 @@ class CardsInHandWidget extends StatelessWidget {
                 padding: EdgeInsets.symmetric(
                     vertical: paddingVertical, horizontal: 4),
                 child: Draggable(
-                    maxSimultaneousDrags: card.playable != null ? 1 : 0,
+                    maxSimultaneousDrags:
+                        inPlayMode && myTurn && card.playable != null ? 1 : 0,
 //                      hapticFeedbackOnStart: true,
                     data: card,
                     childWhenDragging: Container(
@@ -72,13 +77,19 @@ class CardsInHandWidget extends StatelessWidget {
                         child: Container(
                             constraints: BoxConstraints.tight(
                                 Size(cardWidth, cardHeight)),
-                            child: CardWidget(cards[index])),
+                            child: CardWidget(
+                              card: cards[index],
+                              displayPlayable: inPlayMode && myTurn,
+                            )),
                       ),
                     ),
                     child: Container(
                         constraints:
                             BoxConstraints.tight(Size(cardWidth, cardHeight)),
-                        child: CardWidget(cards[index]))),
+                        child: CardWidget(
+                          card: cards[index],
+                          displayPlayable: inPlayMode && myTurn,
+                        ))),
               );
             }));
   }

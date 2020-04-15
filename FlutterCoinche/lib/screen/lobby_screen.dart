@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/game.dart';
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/screen/game_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ class LobbyScreen extends StatelessWidget {
         actions: <Widget>[
           FlatButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(GameScreen.routeName);
+                Navigator.of(context)
+                    .pushReplacementNamed(GameScreen.routeName);
               },
               child: Text("Play"))
         ],
@@ -31,8 +33,26 @@ class LobbyScreen extends StatelessWidget {
                 child: Text("No data"),
               );
             }
+            if (snapshot.data.state != TableState.JOINING) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context)
+                    .pushReplacementNamed(GameScreen.routeName);
+              });
+              return SizedBox();
+            }
             return Container(
-              child: Text("Lobby of game ${snapshot.data.id}"),
+              child: Center(
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                    CircularProgressIndicator(
+                      strokeWidth: 5,
+                    ),
+                    Text(
+                        "Waiting for additional players... ${snapshot.data.id}"),
+                  ])),
             );
           }),
     );

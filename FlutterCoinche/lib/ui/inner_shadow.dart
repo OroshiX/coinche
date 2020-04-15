@@ -8,7 +8,7 @@ class InnerShadow extends SingleChildRenderObjectWidget {
     Key key,
     this.color,
     this.blur,
-    this.offset,
+    @required this.offset,
     Widget child,
   }) : super(key: key, child: child);
 

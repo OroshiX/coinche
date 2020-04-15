@@ -2,6 +2,7 @@ import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
+import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class RecapWidget extends StatelessWidget {
@@ -16,7 +17,8 @@ class RecapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicWidget(
+    return NeumorphicNoStateWidget(
+      pressed: false,
       borderRadius: 10,
       sizeShadow: SizeShadow.MEDIUM,
       child: Padding(
