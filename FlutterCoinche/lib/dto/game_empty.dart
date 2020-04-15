@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game_empty.g.dart';
@@ -13,8 +14,15 @@ class GameEmpty {
   String nicknameCreator;
   bool inRoom;
 
+  TableState state;
+
   GameEmpty(
-      this.id, this.nbJoined, this.name, this.nicknameCreator, this.inRoom);
+      {this.id,
+      this.nbJoined,
+      this.name,
+      this.nicknameCreator,
+      this.inRoom,
+      this.state = TableState.JOINING});
 
   factory GameEmpty.fromJson(Map<String, dynamic> json) =>
       _$GameEmptyFromJson(json);

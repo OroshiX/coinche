@@ -16,6 +16,7 @@ class CardWidget extends StatelessWidget {
     final image = "images/${cardModel.getAssetImageFromColor(card.color)}";
     final letter = cardModel.getLetterFromValue(card.value);
     return NeumorphicWidget(
+      onTap: null,
       child: Material(
         color: Colors.transparent,
         child: Stack(
