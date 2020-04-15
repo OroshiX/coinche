@@ -7,6 +7,7 @@ import fr.hornik.coinche.dto.Game
 import fr.hornik.coinche.exception.AlreadyJoinedException
 import fr.hornik.coinche.exception.GameFullException
 import fr.hornik.coinche.exception.NotAuthenticatedException
+import fr.hornik.coinche.exception.NotAuthorizedOperation
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.model.values.PlayerPosition
@@ -52,7 +53,11 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
     @PostMapping("/setNickname")
     fun setNickname(@RequestBody(required = true) nickname: String) {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
+        if ((nickname == null) || (nickname.isBlank())) throw  NotAuthorizedOperation("Nickname cannot be empty")
+
         user.nickname = nickname
+
+
         fire.setNewUsername(user)
         // Only for the games to come
     }
