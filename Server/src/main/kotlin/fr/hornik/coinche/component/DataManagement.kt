@@ -219,11 +219,13 @@ class DataManagement(@Autowired private val fire: FireApp) {
         // Evaluation of who win the trick
         if (setOfGames.onTable.size == 4) {
             val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids))
+            setOfGames.whoWonLastTrick = winner
+
             // This function set the whoseturn field to winner
             setOfGames.winTrick(winner)
             if (setOfGames.players.first().cardsInHand.isEmpty()) {
                 // no more cards in hand - last turn
-                setOfGames.whoWonLastTrick = winner
+
                 scoreAndCleanupAfterGame(setOfGames)
             } else {
                 // Still cards in hand, but first card of trick : all cards are playable

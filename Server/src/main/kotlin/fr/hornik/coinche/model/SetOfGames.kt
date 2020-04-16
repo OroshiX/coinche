@@ -110,7 +110,7 @@ data class SetOfGames(
                 plisCampEW.add(onTable.toList())
         }
         whoseTurn = who
-
+        whoWonLastTrick = who
         // The clear of table is done when playing the first card of next tour
         // onTable.clear()
         return true
