@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
+import { CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 
 @Component({
@@ -10,9 +11,9 @@ import { CardImageService } from '../services/card-image.service';
 export class PlayInitComponent implements OnInit {
 
   map = new Map<number, string[]>();
-  cardMap = new Map<string, string>();
-  c2: any;
-  cA: any;
+  cardMap = new Map<string, CardView>();
+  C2: any;
+  CA: CardView;
   backCard: any;
   isActive = true;
 
@@ -33,8 +34,10 @@ export class PlayInitComponent implements OnInit {
       this.cardMap = this.service.getCardMap();
       this.backCard = this.service.getBackCard();
     }
-    this.c2 = this.map.get(0)[0];
-    this.cA = this.cardMap.get('c11');
+    this.C2 = this.map.get(0)[0];
+    this.CA = this.cardMap.get('CLUB6');
+    console.log(this.CA);
+    console.log(this.cardMap.get('CLUB6'));
     console.log(this.backCard);
   }
 

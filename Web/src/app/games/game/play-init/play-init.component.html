@@ -1,19 +1,52 @@
-<div *ngFor="let el of [0,1,2,3]">
-  <div class="card" [class.mat-elevation-z8]="isActive" *ngFor="let cardSmall of map.get(el); index as i" [ngStyle]="{'background': cardSmall}">
-  </div>
-</div>
-<div>
-  <!--<button class="card" [ngStyle]="{'background': cA}" (click)="onClick($event)" value="cA">
-  </button>-->
-  <button class="card" [class.mat-elevation-z8]="isActive" [ngStyle]="isActive ? {'background': cA} : {'background': backCard}" (click)="isActive = !isActive" value="cA">
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Playing card
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div *ngFor="let el of [0,1,2,3]" class="background-table">
+      <div class="wrapper-cards">
+        <div class="card custom-shadow" *ngFor="let cardSmall of map.get(el); index as i"
+             [ngStyle]="{'background': cardSmall}">
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+
+</mat-card>
+<br>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>My cards</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="background-table-my-cards">
+    <div *ngFor="let el of [0]">
+      <div class="wrapper-cards-my-cards">
+        <button class="card custom-shadow" *ngFor="let card of map.get(el); index as i"
+             [ngStyle]="{'background': card}">
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!--<div>
+  <button class="card custom-shadow" [class.mat-elevation-z8]="isActive"
+          [ngStyle]="isActive ? {'background': CA.backgroundImg} : {'background': backCard}" (click)="isActive = !isActive"
+          value="CA">
   </button>
-</div>
+</div>-->
 <br/>
 <div>
-  <button class="card" [ngStyle]="{'background': c2, 'filter': 'blur(3px)', 'border-color': 'red', 'border-width': '3px'}" (click)="onClick($event)" value="c2">
+  <button class="card"
+          [ngStyle]="{'background': C2, 'filter': 'blur(3px)', 'border-color': 'red', 'border-width': '3px'}"
+          (click)="onClick($event)" value="C2">
   </button>
 </div>
-<div>
-  <button class="card" [ngStyle]="{'background': cardMap.get('c5'), 'border-color': 'red'}" (click)="onClick($event)" value="c2">
+<!--<div>
+  <button class="card" [ngStyle]="{'background': cardMap.get('CLUB7').backgroundImg, 'border-color': 'red'}" (click)="onClick($event)"
+          [value]="cardMap.get('CLUB7').value">
   </button>
-</div>
+</div>-->

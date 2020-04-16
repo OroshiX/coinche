@@ -53,7 +53,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
       console.log('The dialog was closed');
       console.log(data);
       this.apiLobbyService.setNickname(data)
-        .subscribe(res => console.log('nickname succeed'));
+        .subscribe(() => console.log('nickname succeed'));
     });
   }
 
@@ -69,18 +69,16 @@ export class SideNavComponent implements OnInit, OnDestroy {
   setNickname() {
     if (this.currentUserName !== '') {
       this.openDialog();
-      /*this.apiLobbyService.setNickname('Istiti').subscribe(res => console.log(res));*/
     }
   }
 
   logout() {
     console.log('call logout');
     this.authService.signOut().then(() => alert('You are disconnected from Firebase !'));
-    /*this.apiService.logoutToServer()
+    this.apiService.logoutToServer()
       .subscribe(ret => {
         console.log('logout', ret);
-        // this.authDervice.signOut().then(() => console.log('signout firebase'));
-      });*/
+      });
   }
 
   ngOnDestroy(): void {
