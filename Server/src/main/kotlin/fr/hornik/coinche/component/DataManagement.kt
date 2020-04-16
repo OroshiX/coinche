@@ -52,6 +52,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                         action = true
                     }
                 }
+                else -> {}
             }
         }
         if (action) refresh()
@@ -220,16 +221,16 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 scoreAndCleanupAfterGame(setOfGames)
             } else {
                 // Still cards in hand, but first card of trick : all cards are playable
-                for (card in setOfGames.nextPlayer().cardsInHand) {
-                    card.playable = true
+                for (mcard in setOfGames.nextPlayer().cardsInHand) {
+                    mcard.playable = true
                 }
             }
         } else {
             val valid = allValidCardsToPlay(setOfGames.nextPlayer().cardsInHand, setOfGames.currentBid, setOfGames.onTable)
 
             // still cards to play, need to set playable to the right value for next player
-            for (card in setOfGames.nextPlayer().cardsInHand) {
-                card.playable = valid.contains(card)
+            for (mcard in setOfGames.nextPlayer().cardsInHand) {
+                mcard.playable = valid.contains(card)
             }
 
         }

@@ -3,56 +3,59 @@ package fr.hornik.coinche.model
 import com.fasterxml.jackson.annotation.JsonIgnore
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.model.values.PrefsScore
 import fr.hornik.coinche.model.values.TableState
 import java.util.*
 
 data class SetOfGames(
                       // currentBid = the Bid we are playing during TableState.PLAYING
-                      var currentBid: Bid = Pass(),
+        var currentBid: Bid = Pass(),
 
                       // Unique id identifying the current set of Game
-                      var id: String = "",
+        var id: String = "",
 
                       // Table Name
-                      var name: String = "",
+        var name: String = "",
 
                       // Current Score
-                      var score: Score = Score(0, 0),
+        var score: Score = Score(0, 0),
 
                       // Player who won the last Trick, will be the first to play this game
-                      var whoWonLastTrick: PlayerPosition? = null,
+        var whoWonLastTrick: PlayerPosition? = null,
 
                       // List of "plis" done by each camp
-                      val plisCampNS: MutableList<List<CardPlayed>> = mutableListOf(),
-                      val plisCampEW: MutableList<List<CardPlayed>> = mutableListOf(),
+        val plisCampNS: MutableList<List<CardPlayed>> = mutableListOf(),
+        val plisCampEW: MutableList<List<CardPlayed>> = mutableListOf(),
 
                       // History of bid of the current game
-                      val bids: MutableList<Bid> = mutableListOf(),
+        val bids: MutableList<Bid> = mutableListOf(),
 
                       // the one we are expecting an action ( playing or bidding )
-                      var whoseTurn: PlayerPosition = PlayerPosition.NORTH,
+        var whoseTurn: PlayerPosition = PlayerPosition.NORTH,
 
                       // Date in seconds for last action of whose turn
                       // This variable should be set to current millis every time whoseturn do something
-                      var whoseTurnTimeLastChg: Long = System.currentTimeMillis(),
+        var whoseTurnTimeLastChg: Long = System.currentTimeMillis(),
+
 
                       // Preferences for this game ( should be preferences for all games ? )
-                      val preferences: Preferences = Preferences(),
+        @JsonIgnore
+        val preferences: Preferences = Preferences(PrefsScore.POINTSANNOUNCED,JoiningMaxTime = 300000, BiddingMaxTime = 120000),
 
                       // list of cards present on the table
-                      val onTable: MutableList<CardPlayed> = mutableListOf(),
+        val onTable: MutableList<CardPlayed> = mutableListOf(),
 
-                      var state: TableState = TableState.JOINING,
+        var state: TableState = TableState.JOINING,
 
                       // The player who did start to play during the current game.
-                      var currentFirstPlayer: PlayerPosition = PlayerPosition.NORTH,
+        var currentFirstPlayer: PlayerPosition = PlayerPosition.NORTH,
 
                       // list of players
-                      val players: MutableList<Player> = mutableListOf(),
+        val players: MutableList<Player> = mutableListOf(),
 
                       // when is it updated ? at creation only or on any change of the table ?
                       // currently only at creation
-                      var lastModified: Date = Date()) {
+        var lastModified: Date = Date()) {
 
     constructor(user: User, name: String) : this(name = name) {
         players.add(Player(user.uid, PlayerPosition.NORTH, user.nickname))
