@@ -29,6 +29,7 @@ class GamesBloc implements Bloc {
     audioCache = AudioCache(
         prefix: "sounds/",
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
+    audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
   }
 
   void playError() {

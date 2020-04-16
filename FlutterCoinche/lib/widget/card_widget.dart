@@ -2,22 +2,61 @@ import 'dart:math';
 
 import 'package:FlutterCoinche/dto/card.dart' as cardModel;
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/resources/dimens.dart';
+import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
   final cardModel.Card card;
-  final double marginValue = 5;
   final bool displayPlayable;
+  final double width, height;
 
-  CardWidget({@required this.card, this.displayPlayable = true});
+  CardWidget(
+      {@required this.card,
+      this.displayPlayable = true,
+      @required this.width,
+      @required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    final big = isBigCardWidth(cardWidth: width);
+    return NeumorphicNoStateWidget(
+      sizeShadow: big ? SizeShadow.LARGE : SizeShadow.MEDIUM,
+      borderRadius: big ? 20 : 10,
+      pressed: false,
+      child: CardContent(
+        width: width,
+        height: height,
+        card: card,
+        displayPlayable: displayPlayable,
+      ),
+    );
+  }
+}
+
+class CardContent extends StatelessWidget {
+  final cardModel.Card card;
+  final bool displayPlayable;
+  final double width, height;
+
+  const CardContent(
+      {Key key,
+      @required this.card,
+      this.displayPlayable = true,
+      @required this.width,
+      @required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final image = "images/${cardModel.getAssetImageFromColor(card.color)}";
     final letter = cardModel.getLetterFromValue(card.value);
-    return NeumorphicNoStateWidget(
-      pressed: false,
+    final marginValue = getPaddingInCard(cardWidth: width);
+
+    return Container(
+      width: width,
+      height: height,
       child: Material(
         color: Colors.transparent,
         child: Stack(
@@ -29,7 +68,7 @@ class CardWidget extends StatelessWidget {
                 Image.asset(
                   image,
                   fit: BoxFit.contain,
-                  width: 50,
+                  width: getSizeSuitIcon(cardWidth: width),
                 ),
                 if (card.playable != null && displayPlayable && card.playable)
                   Icon(Icons.check)
@@ -47,12 +86,12 @@ class CardWidget extends StatelessWidget {
                       letter,
                       style: TextStyle(
                         color: colorText,
-                        fontSize: 20,
+                        fontSize: getTextSizeCard(cardWidth: width),
                       ),
                     ),
                     Image.asset(
                       image,
-                      width: 12,
+                      width: getSizeSuitMiniIcon(cardWidth: width),
                       fit: BoxFit.contain,
                     )
                   ],
@@ -65,11 +104,13 @@ class CardWidget extends StatelessWidget {
                   child: Column(children: [
                     Text(
                       letter,
-                      style: TextStyle(color: colorText, fontSize: 20),
+                      style: TextStyle(
+                          color: colorText,
+                          fontSize: getTextSizeCard(cardWidth: width)),
                     ),
                     Image.asset(
                       image,
-                      width: 12,
+                      width: getSizeSuitMiniIcon(cardWidth: width),
                       fit: BoxFit.contain,
                     )
                   ]),

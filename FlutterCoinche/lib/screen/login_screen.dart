@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/screen/all_games_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
@@ -136,6 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final inputBorder = BorderRadius.vertical(
+        bottom: Radius.circular(10), top: Radius.circular(20));
     return Stack(
       children: <Widget>[
         FlutterLogin(
@@ -144,7 +147,91 @@ class _LoginScreenState extends State<LoginScreen> {
           onLogin: (LoginData loginData) =>
               _signInWithCredentials(loginData.name, loginData.password),
           onRecoverPassword: (String email) => _resetPassword(email),
+          messages: LoginMessages(
+            usernameHint: "Email",
+            passwordHint: "Password",
+            confirmPasswordHint: "Confirm password",
+            loginButton: "LOG IN",
+            signupButton: "REGISTER",
+            forgotPasswordButton: "Forgot your password?",
+            recoverPasswordButton: "RECOVER PASSWORD",
+            goBackButton: "BACK",
+            confirmPasswordError: "Passwords should match",
+            recoverPasswordDescription:
+                "We'll send you a mail at this address to change your password.",
+            recoverPasswordSuccess: "Now you can check your emails",
+          ),
           title: "Coinchons!",
+          theme: LoginTheme(
+            pageColorLight: colorGradient2,
+            pageColorDark: colorGradient1,
+            primaryColor: colorTextDark,
+            accentColor: colorGradient2,
+            errorColor: Colors.amber,
+            titleStyle: TextStyle(
+              color: colorTextDark,
+              fontFamily: 'Quicksand',
+              letterSpacing: 4,
+            ),
+            bodyStyle: TextStyle(
+              fontStyle: FontStyle.italic,
+            ),
+            textFieldStyle: TextStyle(
+              color: colorTextDark,
+//              shadows: [Shadow(color: Colors.yellow, blurRadius: 2)],
+            ),
+            buttonStyle: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: colorTextDark,
+            ),
+            cardTheme: CardTheme(
+              color: colorLightBlue,
+              elevation: 5,
+              margin: EdgeInsets.only(top: 15),
+              shape: ContinuousRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.0)),
+            ),
+            inputTheme: InputDecorationTheme(
+              filled: true,
+              fillColor: Colors.blueGrey.withOpacity(.1),
+              contentPadding: EdgeInsets.zero,
+              errorStyle: TextStyle(
+//                backgroundColor: Colors.orange,
+                color: Colors.purple.shade900,
+              ),
+              labelStyle: TextStyle(fontSize: 12),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: colorTextDark, width: 5),
+                borderRadius: inputBorder,
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: colorTextDark, width: 6),
+                borderRadius: inputBorder,
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.purple.shade700, width: 7),
+                borderRadius: inputBorder,
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.purple.shade700, width: 8),
+                borderRadius: inputBorder,
+              ),
+              disabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 5),
+                borderRadius: inputBorder,
+              ),
+            ),
+            buttonTheme: LoginButtonTheme(
+              splashColor: colorGradientMiddle,
+              backgroundColor: colorGradient1,
+              highlightColor: colorGradientMiddle,
+              elevation: 9,
+              highlightElevation: 6,
+//              shape: BeveledRectangleBorder(
+//                borderRadius: BorderRadius.circular(10),
+//              ),
+            ),
+          ),
           emailValidator: (value) {
             var regex = RegExp(
                 r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
@@ -165,226 +252,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ],
-    );
-
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(247, 245, 237, 1),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Container(
-            constraints: BoxConstraints.tight(Size(width, height)),
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: height * (signUp ? 0.65 : 0.54),
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.only(bottomRight: Radius.circular(150)),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment(-1, -1),
-                              end: Alignment(1, 1),
-                              colors: [
-                            Color.fromRGBO(255, 237, 167, 1),
-                            Color.fromRGBO(249, 177, 125, 1),
-                          ])),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 25, horizontal: 5),
-                                  child: Center(
-                                    child: Text(
-                                      signUp ? "Sign Up" : "Sign In",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ),
-                                ),
-                                Text("Email"),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                TextField(
-                                  controller: emailController,
-                                  onChanged: (value) {
-                                    print("$value has changed");
-                                  },
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text("Password"),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Stack(children: [
-                                  TextField(
-                                    controller: passwordController,
-                                    obscureText: true,
-                                    onChanged: (value) {
-                                      print("$value has changed");
-                                    },
-                                  ),
-                                  Positioned(
-                                    right: 2,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        print("pressed help");
-                                      },
-                                      icon: Icon(
-                                        Icons.help_outline,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  )
-                                ]),
-                                if (signUp) SizedBox(height: 20),
-                                if (signUp) Text("Confirm Password"),
-                                if (signUp) SizedBox(height: 10),
-                                if (signUp)
-                                  Stack(children: [
-                                    TextField(
-                                      controller: password2Controller,
-                                      obscureText: true,
-                                      onChanged: (value) {
-                                        print("$value has changed");
-                                      },
-                                    ),
-                                    Positioned(
-                                      right: 2,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          print("pressed help");
-                                        },
-                                        icon: Icon(
-                                          Icons.help_outline,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                    )
-                                  ]),
-                                SizedBox(
-                                  height: 45,
-                                ),
-                                Center(
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      String email = emailController.text;
-                                      String password = passwordController.text;
-                                      if (email.isEmpty || password.isEmpty) {
-                                        _showWarning(
-                                            "Please fill email and password fields");
-                                        return;
-                                      }
-                                      if (signUp &&
-                                          password2Controller.text !=
-                                              password) {
-                                        _showWarning("Your passwords differ.");
-                                        return;
-                                      }
-                                      if (signUp) {
-                                        _signUp(email, password);
-                                      } else {
-                                        _signInWithCredentials(
-                                          email,
-                                          password,
-                                        );
-                                      }
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color.fromRGBO(42, 48, 57, 1),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20.0),
-                                        child: Icon(
-                                          Icons.arrow_forward,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Or",
-                    style: TextStyle(color: Colors.blueGrey),
-                  ),
-                ),
-                SizedBox(
-                    height: height * .22,
-                    child: Column(
-                      children: <Widget>[
-                        SignInButton(
-                          Buttons.Google,
-                          onPressed: () => _googleSignIn(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 25),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              FlatButton(
-                                child: Text(
-                                  "Forgot your password?",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                onPressed: () {
-                                  String email = emailController.text;
-                                  if (email == null || email.isEmpty) {
-                                    _showWarning(
-                                        "Please fill the email address first");
-                                    return;
-                                  }
-                                  _resetPassword(email);
-                                },
-                              ),
-                              FlatButton(
-                                child: Text(
-                                  signUp
-                                      ? "Have an account?"
-                                      : "No account yet?",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    signUp = !signUp;
-                                  });
-                                },
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    )),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

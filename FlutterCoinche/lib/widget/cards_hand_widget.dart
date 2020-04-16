@@ -74,22 +74,20 @@ class CardsInHandWidget extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                            constraints: BoxConstraints.tight(
-                                Size(cardWidth, cardHeight)),
-                            child: CardWidget(
-                              card: cards[index],
-                              displayPlayable: inPlayMode && myTurn,
-                            )),
-                      ),
-                    ),
-                    child: Container(
-                        constraints:
-                            BoxConstraints.tight(Size(cardWidth, cardHeight)),
                         child: CardWidget(
+                          height: cardHeight,
+                          width: cardWidth,
                           card: cards[index],
                           displayPlayable: inPlayMode && myTurn,
-                        ))),
+                        ),
+                      ),
+                    ),
+                    child: CardWidget(
+                      width: cardWidth,
+                      height: cardHeight,
+                      card: cards[index],
+                      displayPlayable: inPlayMode && myTurn,
+                    )),
               );
             }));
   }
