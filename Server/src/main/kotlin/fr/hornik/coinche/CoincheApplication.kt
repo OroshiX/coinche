@@ -5,6 +5,7 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.filter.CommonsRequestLoggingFilter
+import java.util.*
 
 @SpringBootApplication
 class CoincheApplication

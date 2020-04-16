@@ -53,6 +53,7 @@ class GameController(@Autowired val data: DataManagement,
         if (game.state != TableState.PLAYING) throw NotValidStateException(
                 game.state, TableState.PLAYING)
         if (game.players.first { it.uid == user.uid }.position != game.whoseTurn) throw NotYourTurnException()
+        game.whoseTurnTimeLastChg = System.currentTimeMillis()
         data.playCard(game, card, user)
         fire.saveGame(game)
     }
@@ -61,6 +62,7 @@ class GameController(@Autowired val data: DataManagement,
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun announceBid(@PathVariable gameId: String, @RequestBody bid: Bid) {
         val game = data.getGameOrThrow(gameId)
+        game.whoseTurnTimeLastChg = System.currentTimeMillis()
         data.announceBid(game, bid, user)
         fire.saveGame(game)
     }

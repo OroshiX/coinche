@@ -9,6 +9,7 @@ import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
@@ -21,8 +22,46 @@ class DataManagement(@Autowired private val fire: FireApp) {
             final val sets: MutableList<SetOfGames> = mutableListOf()
         }
     */
+
+    val task = object: TimerTask() {
+        var timesRan = 0
+        override fun run() = reviewTimer("timer passed ${++timesRan} time(s)")
+
+    }
+
+    fun reviewTimer(Message:String) {
+        //println("$Message\n")
+        val millis = System.currentTimeMillis()
+        var action = false
+        for (set in sets) {
+            // for testing purpose we delete only the games which name is TOBEDELETED
+            when (set.state) {
+                TableState.JOINING -> if ((millis - set.whoseTurnTimeLastChg) > set.preferences.JoiningMaxTime) {
+                    // TODO we should remove the set ?
+                    if (set.name.contains("TOBEDELETED")) {
+                        println("${set.name}_${set.state} : JOINING TIMEOUT (id:${set.id})\n")
+                        fire.deleteGame(set)
+                        action = true
+                    }
+                }
+                TableState.BIDDING -> if ((millis - set.whoseTurnTimeLastChg) > set.preferences.BiddingMaxTime) {
+                    // TODO we should remove the set ?
+                    if (set.name.contains("TOBEDELETED")) {
+                        println("${set.name}_${set.state} : BIDDING TIMEOUT (id:${set.id})\n")
+                        fire.deleteGame(set)
+                        action = true
+                    }
+                }
+            }
+        }
+        if (action) refresh()
+
+    }
+    val timer = java.util.Timer()
     init {
         sets.addAll(fire.getAllGames())
+
+        timer.schedule(task,0,1000)
     }
 
     fun allMyGames(uid: String): List<Game> {

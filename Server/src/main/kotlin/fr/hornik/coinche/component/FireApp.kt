@@ -48,7 +48,11 @@ class FireApp {
                 db.collection(COLLECTION_SETS).add(JsonMapper.parseJson(jsonSet))
         return addedDocRef.get().id
     }
+    fun deleteGame(setOfGames: SetOfGames) {
+        db.collection(COLLECTION_SETS).document(setOfGames.id).delete()
+        db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.id).delete()
 
+    }
     fun saveGame(setOfGames: SetOfGames, new: Boolean = false) {
         // save the game in sets
         if (new) {

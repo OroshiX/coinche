@@ -32,6 +32,13 @@ data class SetOfGames(
                       // the one we are expecting an action ( playing or bidding )
                       var whoseTurn: PlayerPosition = PlayerPosition.NORTH,
 
+                      // Date in seconds for last action of whose turn
+                      // This variable should be set to current millis every time whoseturn do something
+                      var whoseTurnTimeLastChg: Long = System.currentTimeMillis(),
+
+                      // Preferences for this game ( should be preferences for all games ? )
+                      val preferences: Preferences = Preferences(),
+
                       // list of cards present on the table
                       val onTable: MutableList<CardPlayed> = mutableListOf(),
 
