@@ -82,6 +82,29 @@ class CalculusTest {
 
     }
 
+    @Test
+    fun testValidCartes () {
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+        var currBid :Bid = SimpleBid(CardColor.HEART, 100, PlayerPosition.EAST)
+        var listCardPlayed = listOf(CardPlayed(Card(CardValue.TEN,CardColor.HEART),belote = BeloteValue.NONE,position = PlayerPosition.EAST))
+        myCards.add(Card(CardValue.KING,CardColor.CLUB,playable = null))
+        myCards.add(Card(CardValue.NINE,CardColor.CLUB,playable = null))
+        myCards.add(Card(CardValue.KING,CardColor.DIAMOND,playable = null))
+        myCards.add(Card(CardValue.SEVEN,CardColor.DIAMOND,playable = null))
+        myCards.add(Card(CardValue.EIGHT,CardColor.DIAMOND,playable = null))
+        myCards.add(Card(CardValue.EIGHT,CardColor.SPADE,playable = null))
+        myCards.add(Card(CardValue.NINE,CardColor.SPADE,playable = null))
+        myCards.add(Card(CardValue.KING,CardColor.HEART,playable = null))
+        println("Mycards are $myCards\n")
+        val c = allValidCardsToPlay(myCardsInHand = myCards, bid = currBid, cardsOnTable = listCardPlayed)
+        println("$c\n ")
+        for (mcard in myCards) {
+            mcard.playable = c.contains(mcard)
+        }
+    }
+
+
+
     fun testPartie(pliNS: MutableList<MutableList<CardPlayed>>, pliEW: MutableList<MutableList<CardPlayed>>): Pair<MutableList<MutableList<CardPlayed>>, MutableList<MutableList<CardPlayed>>> {
         DBGprintln(dbgLevel.FUNCTION,"Enter testPartie")
 

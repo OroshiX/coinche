@@ -95,6 +95,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
             if (it.isNotBlank())
                 fire.setNewUsername(user.apply { this.nickname = it })
         }
+        // somebody did join the game - we reset the timer.
+        setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
         val player = setOfGames.addPlayer(user.uid, user.nickname)
         if (setOfGames.isFull()) {
             // Time to distribute
@@ -160,6 +162,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
 
         setOfGames.bids.add(bid)
+        setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
+
         if (isLastBid(setOfGames.bids)) {
             // change status to playing
             setOfGames.state = TableState.PLAYING
@@ -208,6 +212,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
         setOfGames.onTable.add(CardPlayed(card, beloteValue,
                 setOfGames.players.first { it.uid == user.uid }.position))
         setOfGames.players.first { it.uid == user.uid }.cardsInHand.removeIf { it.isSimilar(card) }
+        // there was some action on the table - we reset the timer.
+        setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
 
         setOfGames.whoseTurn += 1
         // Evaluation of who win the trick
@@ -230,7 +236,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
             // still cards to play, need to set playable to the right value for next player
             for (mcard in setOfGames.nextPlayer().cardsInHand) {
-                mcard.playable = valid.contains(card)
+                mcard.playable = valid.contains(mcard)
             }
 
         }
