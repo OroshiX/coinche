@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
+import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginGoogleComponent } from './login-google/login-google.component';
-import { CanActivateGame } from './services/can-activates/can-activate-game';
-
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [
   {
@@ -12,12 +12,14 @@ const routes: Routes = [
   {
     path: 'play',
     loadChildren: () => import('./games/game/game.module').then(m => m.GameModule),
-    canActivate: [CanActivateGame]
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin}
   },
   {
     path: 'all-games',
     loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
-    canActivate: [CanActivateGame]
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin}
   },
   {
     path: '**',

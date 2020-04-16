@@ -1,0 +1,68 @@
+<mat-card>
+  <mat-card-header>
+    <div>
+      <mat-horizontal-stepper #stepper>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>JOINING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>BIDDING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>PLAYING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>ENDED</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>BETWEEN GAMES</ng-template>
+        </mat-step>
+      </mat-horizontal-stepper>
+
+      <button mat-button (click)="onNext()">Next</button>
+      <button mat-button (click)="onReset()">Reset</button>
+    </div>
+
+  </mat-card-header>
+  <mat-card-content>
+    <!--<div *ngFor="let el of [0,1,2,3]" class="background-table">
+      <div class="wrapper-cards">
+        <div class="card custom-shadow" *ngFor="let cardSmall of map.get(el); index as i"
+             [ngStyle]="{'background': cardSmall}">
+        </div>
+      </div>
+    </div>-->
+  </mat-card-content>
+</mat-card>
+<br>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>My cards</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="background-table-my-cards">
+    <div *ngFor="let el of [0]">
+      <div class="wrapper-cards-my-cards">
+        <button class="card custom-shadow" *ngFor="let card of map.get(el); index as i"
+                [ngStyle]="{'background': card}" (click)="onClickCard($event, i, card)">
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!--<div>
+  <button class="card custom-shadow" [class.mat-elevation-z8]="isActive"
+          [ngStyle]="isActive ? {'background': cA.backgroundImg} : {'background': backCard}"
+          (click)="isActive = !isActive"
+          [value]="cA.value">
+  </button>
+</div>-->
+<!--<div>
+  <button class="card custom-shadow" [class.mat-elevation-z8]="isActive"
+          [ngStyle]="isActive ? {'background': cardMap.get('HEART5').backgroundImg} : {'background': backCard}"
+          (click)="isActive = !isActive"
+          [value]="cardMap.get('HEART5').value">
+  </button>
+</div>-->
+<br/>
+

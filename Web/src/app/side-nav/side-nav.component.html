@@ -6,8 +6,11 @@
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
       <button mat-list-item [routerLink]="['/login']" routerLinkActive="active-link">Login</button>
-      <button mat-list-item [routerLink]="['/play']" routerLinkActive="active-link"
-              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">Play
+      <button mat-list-item [routerLink]="['/play/init']" routerLinkActive="active-link"
+              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">Init Play
+      </button>
+      <button mat-list-item [routerLink]="['/play/start']" routerLinkActive="active-link"
+              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">Start Play
       </button>
       <button mat-list-item [routerLink]="['/all-games']" routerLinkActive="active-link"
               [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">All Games

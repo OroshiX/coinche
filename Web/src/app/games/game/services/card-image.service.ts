@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { CARD_COLOR, CARD_VALUES_LIST, CardView, ColorList, MultiCardValues } from '../../../shared/models/play';
 
-const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat `;
-const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat `;
+const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
+const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
 const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
 const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
 
@@ -10,13 +11,16 @@ const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repe
 })
 export class CardImageService {
 
+  constructor() {
+  }
+
 
   listPositionC = [
-    `${bckgrndUrlImg} -480px 0px`,
+    /*`${bckgrndUrlImg} -480px 0px`,
     `${bckgrndUrlImg} -960px 0px`,
     `${bckgrndUrlImg} -1440px 0px`,
     `${bckgrndUrlImg} -1920px 0px`,
-    `${bckgrndUrlImg} -2400px 0px`,
+    `${bckgrndUrlImg} -2400px 0px`,*/
     `${bckgrndUrlImg} -2880px 0px`,
     `${bckgrndUrlImg} -3360px 0px`,
     `${bckgrndUrlImg} -3840px 0px`,
@@ -28,11 +32,11 @@ export class CardImageService {
   ];
 
   listPositionCSmall = [
-    `${bckgrndUrlImgSmall} -240px 0px`,
+    /*`${bckgrndUrlImgSmall} -240px 0px`,
     `${bckgrndUrlImgSmall} -480px 0px`,
     `${bckgrndUrlImgSmall} -720px 0px`,
     `${bckgrndUrlImgSmall} -960px 0px`,
-    `${bckgrndUrlImgSmall} -1200px 0px`,
+    `${bckgrndUrlImgSmall} -1200px 0px`,*/
     `${bckgrndUrlImgSmall} -1440px 0px`,
     `${bckgrndUrlImgSmall} -1680px 0px`,
     `${bckgrndUrlImgSmall} -1920px 0px`,
@@ -44,11 +48,11 @@ export class CardImageService {
   ];
 
   listPositionD = [
-    `${bckgrndUrlImg} -600px 0px`,
+    /*`${bckgrndUrlImg} -600px 0px`,
     `${bckgrndUrlImg} -1080px 0px`,
     `${bckgrndUrlImg} -1560px 0px`,
     `${bckgrndUrlImg} -2040px 0px`,
-    `${bckgrndUrlImg} -2520px 0px`,
+    `${bckgrndUrlImg} -2520px 0px`,*/
     `${bckgrndUrlImg} -3000px 0px`,
     `${bckgrndUrlImg} -3480px 0px`,
     `${bckgrndUrlImg} -3960px 0px`,
@@ -60,11 +64,11 @@ export class CardImageService {
   ];
 
   listPositionDSmall = [
-    `${bckgrndUrlImgSmall} -300px 0px`,
+    /*`${bckgrndUrlImgSmall} -300px 0px`,
     `${bckgrndUrlImgSmall} -540px 0px`,
     `${bckgrndUrlImgSmall} -780px 0px`,
     `${bckgrndUrlImgSmall} -1020px 0px`,
-    `${bckgrndUrlImgSmall} -1260px 0px`,
+    `${bckgrndUrlImgSmall} -1260px 0px`,*/
     `${bckgrndUrlImgSmall} -1500px 0px`,
     `${bckgrndUrlImgSmall} -1740px 0px`,
     `${bckgrndUrlImgSmall} -1980px 0px`,
@@ -76,11 +80,11 @@ export class CardImageService {
   ];
 
   listPositionH = [
-    `${bckgrndUrlImg} -720px 0px`,
+    /*`${bckgrndUrlImg} -720px 0px`,
     `${bckgrndUrlImg} -1200px 0px`,
     `${bckgrndUrlImg} -1680px 0px`,
     `${bckgrndUrlImg} -2160px 0px`,
-    `${bckgrndUrlImg} -2640px 0px`,
+    `${bckgrndUrlImg} -2640px 0px`,*/
     `${bckgrndUrlImg} -3120px 0px`,
     `${bckgrndUrlImg} -3600px 0px`,
     `${bckgrndUrlImg} -4080px 0px`,
@@ -92,11 +96,11 @@ export class CardImageService {
   ];
 
   listPositionHSmall = [
-    `${bckgrndUrlImgSmall} -360px 0px`,
+    /*`${bckgrndUrlImgSmall} -360px 0px`,
     `${bckgrndUrlImgSmall} -600px 0px`,
     `${bckgrndUrlImgSmall} -840px 0px`,
     `${bckgrndUrlImgSmall} -1080px 0px`,
-    `${bckgrndUrlImgSmall} -1320px 0px`,
+    `${bckgrndUrlImgSmall} -1320px 0px`,*/
     `${bckgrndUrlImgSmall} -1560px 0px`,
     `${bckgrndUrlImgSmall} -1800px 0px`,
     `${bckgrndUrlImgSmall} -2040px 0px`,
@@ -108,11 +112,11 @@ export class CardImageService {
   ];
 
   listPositionS = [
-    `${bckgrndUrlImg} -840px 0px`,
+    /*`${bckgrndUrlImg} -840px 0px`,
     `${bckgrndUrlImg} -1320px 0px`,
     `${bckgrndUrlImg} -1800px 0px`,
     `${bckgrndUrlImg} -2280px 0px`,
-    `${bckgrndUrlImg} -2760px 0px`,
+    `${bckgrndUrlImg} -2760px 0px`,*/
     `${bckgrndUrlImg} -3240px 0px`,
     `${bckgrndUrlImg} -3720px 0px`,
     `${bckgrndUrlImg} -4200px 0px`,
@@ -124,11 +128,11 @@ export class CardImageService {
   ];
 
   listPositionSSmall = [
-    `${bckgrndUrlImgSmall} -420px 0px`,
+    /*`${bckgrndUrlImgSmall} -420px 0px`,
     `${bckgrndUrlImgSmall} -660px 0px`,
     `${bckgrndUrlImgSmall} -900px 0px`,
     `${bckgrndUrlImgSmall} -1140px 0px`,
-    `${bckgrndUrlImgSmall} -1380px 0px`,
+    `${bckgrndUrlImgSmall} -1380px 0px`,*/
     `${bckgrndUrlImgSmall} -1620px 0px`,
     `${bckgrndUrlImgSmall} -1860px 0px`,
     `${bckgrndUrlImgSmall} -2100px 0px`,
@@ -141,38 +145,43 @@ export class CardImageService {
 
   map = new Map<number, string[]>();
   mapSmall = new Map<number, string[]>();
-  cardMapSmall = new Map<string, string>();
-  cardMap = new Map<string, string>();
-
-  constructor() {
-  }
+  cardMapSmall = new Map<string, CardView>();
+  cardMap = new Map<string, CardView>();
 
   processCardMap() {
     this.processMap();
 
-    const listGroup = ['c', 'd', 'h', 's'];
-    listGroup.forEach((groupId) => {
-      for (let j = 0; j <= 12; j++) {
+    ColorList.forEach((groupId) => {
+      for (let j = 0; j <= 7; j++) {
         switch (groupId) {
-          case 'c':
-            this.cardMapSmall.set(groupId + j, this.listPositionCSmall[j]);
-            this.cardMap.set(groupId + j, this.listPositionC[j]);
+          case CARD_COLOR.CLUB:
+            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.CLUB, j, this.listPositionCSmall[j]));
+            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.CLUB, j, this.listPositionC[j]));
             break;
-          case 'd':
-            this.cardMapSmall.set(groupId + j, this.listPositionDSmall[j]);
-            this.cardMap.set(groupId + j, this.listPositionD[j]);
+          case CARD_COLOR.DIAMOND:
+            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.DIAMOND, j, this.listPositionDSmall[j]));
+            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.DIAMOND, j, this.listPositionD[j]));
             break;
-          case 'h':
-            this.cardMapSmall.set(groupId + j, this.listPositionHSmall[j]);
-            this.cardMap.set(groupId + j, this.listPositionH[j]);
+          case CARD_COLOR.HEART:
+            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.HEART, j, this.listPositionHSmall[j]));
+            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.HEART, j, this.listPositionH[j]));
             break;
-          case 's':
-            this.cardMapSmall.set(groupId + j, this.listPositionSSmall[j]);
-            this.cardMap.set(groupId + j, this.listPositionS[j]);
+          case CARD_COLOR.SPADE:
+            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.SPADE, j, this.listPositionSSmall[j]));
+            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.SPADE, j, this.listPositionS[j]));
             break;
         }
       }
 
+    });
+  }
+
+  private createCardView(col: string, val: number, imageUrl: string): CardView {
+    return new CardView({
+      color: col,
+      value: val,
+      valuesMap: this.createValuesMap(val),
+      backgroundImg: imageUrl
     });
   }
 
@@ -213,5 +222,16 @@ export class CardImageService {
     this.map.set(1, this.listPositionD);
     this.map.set(2, this.listPositionH);
     this.map.set(3, this.listPositionS);
+  }
+
+  private createValuesMap(key: number): Map<number, MultiCardValues> {
+    return new Map<number, MultiCardValues>().set(key,
+      new MultiCardValues({
+        value: CARD_VALUES_LIST[key][0],
+        atoutPoints: CARD_VALUES_LIST[key][1],
+        colorPoints: CARD_VALUES_LIST[key][2],
+        dominanceAtout: CARD_VALUES_LIST[key][3],
+        dominanceColor: CARD_VALUES_LIST[key][4]
+      }));
   }
 }
