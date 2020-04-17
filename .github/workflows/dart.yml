@@ -45,7 +45,6 @@ jobs:
       working-directory: ${{env.working-directory}}
     - name: Create a Release APK
       uses: ncipollo/release-action@v1.6.1
-#      working-directory: ${{env.working-directory}}
       with:
         artifacts: "${{env.working-directory}}/build/app/outputs/apk/debug/*.apk"
         token: ${{ secrets.TOKEN }}
