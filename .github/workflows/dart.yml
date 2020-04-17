@@ -3,6 +3,8 @@ name: Test, Build and Release apk
 on:
   push:
     branches: [ deploy ]
+    tags:
+      - '*'
   pull_request:
     branches: [ deploy ]
 
@@ -45,5 +47,5 @@ jobs:
       uses: ncipollo/release-action@v1.6.1
 #      working-directory: ${{env.working-directory}}
       with:
-        artifact: "${{env.working-directory}}/build/app/outputs/apk/debug/*.apk"
+        artifacts: "${{env.working-directory}}/build/app/outputs/apk/debug/*.apk"
         token: ${{ secrets.TOKEN }}
