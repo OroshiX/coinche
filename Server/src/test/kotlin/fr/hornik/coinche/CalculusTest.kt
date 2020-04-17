@@ -28,7 +28,7 @@ class CalculusTest {
         }
     }
 
-    var TraceLevel: dbgLevel = dbgLevel.FUNCTION
+    var TraceLevel: dbgLevel = dbgLevel.NONE
 
     @BeforeEach
     fun initBids() {
@@ -84,6 +84,10 @@ class CalculusTest {
 
     @Test
     fun testValidCartes () {
+        // EAST : 100 HEART
+        // East plays 10 Heart
+        // South should be able to play K HEART  and only K Heart
+
         var myCards: MutableList<Card> = mutableListOf<Card>()
         var currBid :Bid = SimpleBid(CardColor.HEART, 100, PlayerPosition.EAST)
         var listCardPlayed = listOf(CardPlayed(Card(CardValue.TEN,CardColor.HEART),belote = BeloteValue.NONE,position = PlayerPosition.EAST))
@@ -95,14 +99,78 @@ class CalculusTest {
         myCards.add(Card(CardValue.EIGHT,CardColor.SPADE,playable = null))
         myCards.add(Card(CardValue.NINE,CardColor.SPADE,playable = null))
         myCards.add(Card(CardValue.KING,CardColor.HEART,playable = null))
-        println("Mycards are $myCards\n")
+        if ((dbgLevel.DEBUG and TraceLevel) != 0)
+            printHand(myCards,"Mycards are ")
         val c = allValidCardsToPlay(myCardsInHand = myCards, bid = currBid, cardsOnTable = listCardPlayed)
-        println("$c\n ")
+
+        DBGprintln(dbgLevel.DEBUG,"\nBid is $currBid\n\n")
+        if ((dbgLevel.DEBUG and TraceLevel) != 0) {
+
+            printHand(listCardPlayed.map { it -> it.card }, "\n\nOn table")
+
+            printHand(c, "\nAnd I can Play")
+        }
         for (mcard in myCards) {
             mcard.playable = c.contains(mcard)
         }
-    }
+        if ((myCards.filter{e -> (e.playable == true)}.size != 1 ) || (myCards.filter{e -> (e.playable == true)}.first().color != CardColor.HEART)) {
+            println("********FAIL - Activate trace for details (CalculusTest.TraceLevel to DEBUG) ***************\n")
+        } else {
+            println("TEST testValidCartes PASS\n")
+        }
 
+
+    }
+    @Test
+    fun testCoincheValidCartes () {
+
+        // North : 100 Spade
+        // South : Coinche
+        // East plays K Heart
+        // South plays 8 Club ( no heart / no spade )
+        // West has AS 10S AH 9H 7H JC JD 7D
+        // playable should be true for A,9 or 7 H
+
+
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+        var currBid :Bid = SimpleBid(CardColor.SPADE, 100, PlayerPosition.NORTH)
+        var listCardPlayed = listOf(CardPlayed(Card(CardValue.KING,CardColor.HEART),belote = BeloteValue.NONE,position = PlayerPosition.EAST),(CardPlayed(Card(CardValue.EIGHT,CardColor.CLUB),belote = BeloteValue.NONE,position = PlayerPosition.SOUTH)))
+        var suBid:Bid = Coinche(currBid,PlayerPosition.SOUTH,surcoinche = false)
+
+
+        myCards.add(Card(CardValue.ACE,CardColor.SPADE,playable = null))
+        myCards.add(Card(CardValue.TEN,CardColor.SPADE,playable = null))
+        myCards.add(Card(CardValue.ACE,CardColor.HEART,playable = null))
+        myCards.add(Card(CardValue.NINE,CardColor.HEART,playable = null))
+        myCards.add(Card(CardValue.SEVEN,CardColor.HEART,playable = null))
+        myCards.add(Card(CardValue.JACK,CardColor.CLUB,playable = null))
+        myCards.add(Card(CardValue.JACK,CardColor.DIAMOND,playable = null))
+        myCards.add(Card(CardValue.SEVEN,CardColor.DIAMOND,playable = null))
+        if ((dbgLevel.DEBUG and TraceLevel) != 0)
+            printHand(myCards,"Mycards are ")
+        val c = allValidCardsToPlay(myCardsInHand = myCards, bid = suBid, cardsOnTable = listCardPlayed)
+
+        DBGprintln(dbgLevel.DEBUG,"\nBid is $suBid\n\n")
+        if ((dbgLevel.DEBUG and TraceLevel) != 0) {
+
+            printHand(listCardPlayed.map { it -> it.card }, "\n\nOn table")
+
+            printHand(c, "\nAnd I can Play")
+        }
+        for (mcard in myCards) {
+            mcard.playable = c.contains(mcard)
+        }
+
+
+
+        if ((c.size != 3 ) || c.any{ e -> (e.color != CardColor.HEART)} ){
+                    println("********FAIL - Activate trace for details (CalculusTest.TraceLevel to DEBUG) ***************\n")
+                } else {
+            println("TEST testCoincheValidCartes PASS\n")
+        }
+
+
+    }
 
 
     fun testPartie(pliNS: MutableList<MutableList<CardPlayed>>, pliEW: MutableList<MutableList<CardPlayed>>): Pair<MutableList<MutableList<CardPlayed>>, MutableList<MutableList<CardPlayed>>> {

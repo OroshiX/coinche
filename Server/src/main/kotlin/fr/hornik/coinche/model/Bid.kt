@@ -26,6 +26,7 @@ sealed class Bid(val position: PlayerPosition = PlayerPosition.NORTH) {
             is SimpleBid -> this.color
             is Capot     -> this.color
             is General   -> this.color
+            is Coinche -> this.annonce.curColor()
             else         -> CardColor.HEART
             // TODO treat error case ( last else)
         }
