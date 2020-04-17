@@ -1,14 +1,12 @@
 name: Angular deploy
 on:
-  push:
-    branches: 
-      - deploy-angular
+  create:
     tags:
-      - '*'
-  pull_request:
-    branches: [ deploy-angular ]
-    tags:
-      - '*'
+      - 'v*angular*'
+#  pull_request:
+#    branches: [ deploy-angular ]
+#    tags:
+#      - '*angular*'
       
 jobs:
   build:
@@ -42,7 +40,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: dist
-        path: dist
+        path: ${{env.working-directory}}/dist
   deploy:
     name: Deploy
     needs: build
