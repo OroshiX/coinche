@@ -24,7 +24,6 @@ export class CreateNicknameDialogComponent implements OnInit{
   }
 
   save(): void {
-    console.log(this.nicknameControl.value);
     this.dialogRef.close(this.nicknameControl.value);
   }
 

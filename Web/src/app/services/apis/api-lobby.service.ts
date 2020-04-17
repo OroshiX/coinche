@@ -17,7 +17,6 @@ export class ApiLobbyService {
   }
 
   allGames(): Observable<GameI[]> {
-    console.log(API_BACKEND_LOBBY + ALL_GAMES);
     return this.httpClient.get<GameI[]>(API_BACKEND_LOBBY + ALL_GAMES)
       .pipe(
         shareReplay<GameI[]>(1),
@@ -33,10 +32,7 @@ export class ApiLobbyService {
   }
 
   joinGame(gameId: string, nickname: string | ''): Observable<any> {
-    console.log(gameId);
     const parameters = new HttpParams().set('gameId', gameId).set('nickname', nickname);
-
-    console.log(parameters);
     return this.httpClient.post<any>(API_BACKEND_LOBBY + JOIN_GAME, '',
       {params: parameters})
       .pipe(

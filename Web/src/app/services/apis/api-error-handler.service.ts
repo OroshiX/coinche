@@ -22,8 +22,8 @@ export class ApiErrorHandlerService {
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error.error}`);
       if (error.status === 401) {
-        this.sessionService.resetCurrentUser();
         this.router.navigateByUrl('login').then(() => console.log('navigate to login page'));
+        // this.sessionService.updateUser();
       }
       if (error.status === 412) {
         alert('You have already joined the selected game! Please choose another one')

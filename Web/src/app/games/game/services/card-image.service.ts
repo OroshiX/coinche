@@ -1,10 +1,20 @@
 import { Injectable } from '@angular/core';
-import { CARD_COLOR, CARD_VALUES_LIST, CardView, ColorList, MultiCardValues } from '../../../shared/models/play';
+import {
+  Card,
+  CARD_COLOR,
+  CARD_VALUE,
+  cardIdList,
+  cardValueMapToCardId,
+  cardValues,
+  CardView,
+  colorList
+} from '../../../shared/models/play';
 
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
 const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
 const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
+
 
 @Injectable({
   providedIn: 'root'
@@ -147,40 +157,78 @@ export class CardImageService {
   mapSmall = new Map<number, string[]>();
   cardMapSmall = new Map<string, CardView>();
   cardMap = new Map<string, CardView>();
+  myCardMapSmall = new Map<string, CardView>();
+  myCardMap = new Map<string, CardView>();
 
   processCardMap() {
     this.processMap();
-
-    ColorList.forEach((groupId) => {
-      for (let j = 0; j <= 7; j++) {
-        switch (groupId) {
-          case CARD_COLOR.CLUB:
-            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.CLUB, j, this.listPositionCSmall[j]));
-            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.CLUB, j, this.listPositionC[j]));
-            break;
-          case CARD_COLOR.DIAMOND:
-            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.DIAMOND, j, this.listPositionDSmall[j]));
-            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.DIAMOND, j, this.listPositionD[j]));
-            break;
-          case CARD_COLOR.HEART:
-            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.HEART, j, this.listPositionHSmall[j]));
-            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.HEART, j, this.listPositionH[j]));
-            break;
-          case CARD_COLOR.SPADE:
-            this.cardMapSmall.set(groupId + j, this.createCardView(CARD_COLOR.SPADE, j, this.listPositionSSmall[j]));
-            this.cardMap.set(groupId + j, this.createCardView(CARD_COLOR.SPADE, j, this.listPositionS[j]));
-            break;
-        }
-      }
-
+    colorList.forEach((cardColor) => {
+      cardIdList.forEach((cardId, i) => {
+        const cardValue = cardValues[i];
+        this.buildCardMap(cardColor, cardValue);
+      });
     });
+  }
+
+  buildCardMap(color: CARD_COLOR,
+               value: CARD_VALUE) {
+    const key = color + value;
+    const cardId = cardValueMapToCardId(value);
+    switch (color) {
+      case CARD_COLOR.CLUB:
+        this.myCardMapSmall.set(key,
+          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionCSmall[cardId]));
+        this.myCardMap.set(key,
+          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId]));
+        break;
+      case CARD_COLOR.DIAMOND:
+        this.myCardMapSmall.set(key,
+          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionDSmall[cardId]));
+        this.myCardMap.set(key,
+          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId]));
+        break;
+      case CARD_COLOR.HEART:
+        this.myCardMapSmall.set(key,
+          this.createCardView(CARD_COLOR.HEART, value, this.listPositionHSmall[cardId]));
+        this.myCardMap.set(key,
+          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId]));
+        break;
+      case CARD_COLOR.SPADE:
+        this.myCardMapSmall.set(key,
+          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionSSmall[cardId]));
+        this.myCardMap.set(key,
+          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId]));
+        break;
+    }
+  }
+
+  buildMyDeck(list: Card[]): Map<string, CardView> {
+    const sortedCardList= this.sortList(list);
+    sortedCardList.forEach(card => {
+      this.buildCardMap(card.color, card.value);
+    });
+    return this.myCardMap;
+  }
+
+  buildMyDeckSmall(listSmall: Card[]): Map<string, CardView> {
+    const sortedCardListSmall = this.sortList(listSmall);
+    sortedCardListSmall.forEach(card => {
+      this.buildCardMap(card.color, card.value);
+    });
+    return this.myCardMapSmall;
+  }
+
+  private sortList(list: Card[]): Card[] {
+    return list
+      .sort((a, b) => {
+        return (a.color > b.color) ? 1 : (a.color < b.color) ? -1 : 0;
+      });
   }
 
   private createCardView(col: string, val: number, imageUrl: string): CardView {
     return new CardView({
       color: col,
       value: val,
-      valuesMap: this.createValuesMap(val),
       backgroundImg: imageUrl
     });
   }
@@ -224,14 +272,5 @@ export class CardImageService {
     this.map.set(3, this.listPositionS);
   }
 
-  private createValuesMap(key: number): Map<number, MultiCardValues> {
-    return new Map<number, MultiCardValues>().set(key,
-      new MultiCardValues({
-        value: CARD_VALUES_LIST[key][0],
-        atoutPoints: CARD_VALUES_LIST[key][1],
-        colorPoints: CARD_VALUES_LIST[key][2],
-        dominanceAtout: CARD_VALUES_LIST[key][3],
-        dominanceColor: CARD_VALUES_LIST[key][4]
-      }));
-  }
+
 }

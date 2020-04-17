@@ -3,7 +3,6 @@ import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import * as firebase from 'firebase';
-import { CurrentUser } from '../../shared/models/user';
 import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
 import { ApiLogInOutService } from '../apis/api-log-in-out.service';
 import { SessionStorageService } from '../session-storage/session-storage.service';
@@ -33,9 +32,8 @@ export class FireAuthService {
       }
       this.apiService.loginToServer(idToken)
         .subscribe((ret: HttpResponse<any>) => {
-          console.log(ret.status);
           if (ret.status === 204) {
-            this.updateUserToken(response.user, idToken);
+            // this.updateUserToken(response.user, idToken);
             this.ngZone.run(() => {
               this.router.navigate(['all-games']);
             });
@@ -56,18 +54,18 @@ export class FireAuthService {
   // Firebase Logout
   signOut() {
     return this.afAuth.signOut().then(() => {
-      this.sessionService.resetCurrentUser();
+      this.sessionService.updateUser();
       this.router.navigate(['login']).then(() => console.log('redirectTo Login page'));
     });
   }
 
-  updateUserToken(user: any, idToken: any) {
+  /*updateUserToken(user: any, idToken: any) {
     let usr: CurrentUser;
     if (isNotNullAndNotUndefined(user)) {
       usr = new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName});
       usr.idToken = idToken;
     }
     this.sessionService.saveCurrentUser(usr);
-  }
+  }*/
 
 }

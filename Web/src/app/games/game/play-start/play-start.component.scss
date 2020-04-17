@@ -45,7 +45,12 @@
 }
 .wrapper-cards-my-cards {
   flex-direction: row;
-  margin: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.stepper-wrapper {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 

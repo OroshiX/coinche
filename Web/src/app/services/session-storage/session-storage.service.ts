@@ -1,65 +1,27 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { CurrentUser } from '../../shared/models/user';
-import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
-
-const CURRENT_USER = 'currentUser';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionStorageService {
 
-  private userToken: BehaviorSubject<CurrentUser> =
-    new BehaviorSubject<CurrentUser>(JSON.parse(sessionStorage.getItem(CURRENT_USER)));
+  private user: BehaviorSubject<Observable<firebase.User>> =
+    new BehaviorSubject<Observable<firebase.User>>(null);
+  user$ = this.user.asObservable()
+    .pipe(switchMap((user: Observable<firebase.User>) => user));
 
-  userToken$ = this.userToken.asObservable();
-
-  static statusCurrentUser(usr: CurrentUser): boolean {
-    return isNotNullAndNotUndefined(usr) && isNotNullAndNotUndefined(usr.idToken) && usr.idToken !== '';
+  constructor(private afAuth: AngularFireAuth) {
+    this.updateUser();
   }
 
-  static saveCurrentUserSession(currentUser: CurrentUser): void {
-    sessionStorage.setItem(CURRENT_USER, JSON.stringify(currentUser));
+  getUser$(): Observable<firebase.User> {
+    return this.user$;
   }
 
-  static getCurrentUserSession() {
-    return JSON.parse(sessionStorage.getItem(CURRENT_USER));
-  }
-
-  static clearCurrentUserSession(): void {
-    sessionStorage.clear();
-  }
-
-
-  constructor() {
-  }
-
-  saveCurrentUser(currentUser: CurrentUser) {
-    SessionStorageService.saveCurrentUserSession(currentUser);
-    this.userToken.next(SessionStorageService.getCurrentUserSession());
-  }
-
-  getCurrentUserObs(): Observable<CurrentUser> {
-    return this.userToken$;
-  }
-
-  getCurrentUser(): CurrentUser {
-    return this.userToken.value;
-  }
-
-  isConnected(): boolean {
-    return SessionStorageService.statusCurrentUser(this.getCurrentUser());
-  }
-
-  isConnectedObs(): Observable<boolean> {
-    return this.getCurrentUserObs()
-      .pipe(map(usr => SessionStorageService.statusCurrentUser(usr)));
-  }
-
-  resetCurrentUser() {
-    SessionStorageService.clearCurrentUserSession();
-    this.userToken.next(null);
+  updateUser() {
+    this.user.next(this.afAuth.authState);
   }
 }

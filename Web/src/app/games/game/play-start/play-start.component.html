@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
-    <div>
-      <mat-horizontal-stepper #stepper>
+    <div class="stepper-wrapper">
+      <mat-horizontal-stepper #stepper [ngStyle]="{'fontSize': '11px'}">
         <mat-step [editable]="false">
           <ng-template matStepLabel>JOINING</ng-template>
         </mat-step>
@@ -15,7 +15,7 @@
           <ng-template matStepLabel>ENDED</ng-template>
         </mat-step>
         <mat-step [editable]="false">
-          <ng-template matStepLabel>BETWEEN GAMES</ng-template>
+          <ng-template matStepLabel>IDLE</ng-template>
         </mat-step>
       </mat-horizontal-stepper>
 
@@ -25,19 +25,13 @@
 
   </mat-card-header>
   <mat-card-content>
-    <!--<div *ngFor="let el of [0,1,2,3]" class="background-table">
-      <div class="wrapper-cards">
-        <div class="card custom-shadow" *ngFor="let cardSmall of map.get(el); index as i"
-             [ngStyle]="{'background': cardSmall}">
-        </div>
-      </div>
-    </div>-->
+
   </mat-card-content>
 </mat-card>
 <br>
 <mat-card>
   <mat-card-header>
-    <mat-card-title>My cards</mat-card-title>
+    <mat-card-title>Table</mat-card-title>
   </mat-card-header>
   <mat-card-content class="background-table-my-cards">
     <div *ngFor="let el of [0]">
@@ -47,6 +41,24 @@
         </button>
       </div>
     </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>My cards</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="background-table-my-cards">
+    <ng-container *ngIf="myCardMap">
+      <div>
+        <div class="wrapper-cards-my-cards">
+          <button class="card custom-shadow" *ngFor="let key of myCardMap.keys(); index as i"
+                  [ngStyle]="{'background': myCardMap.get(key).backgroundImg}"
+                  (click)="onClickCard($event, i, myCardMap.get(key).value)" [value]="myCardMap.get(key).value">
+          </button>
+        </div>
+      </div>
+    </ng-container>
   </mat-card-content>
 </mat-card>
 

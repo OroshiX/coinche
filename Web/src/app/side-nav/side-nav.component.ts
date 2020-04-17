@@ -7,7 +7,6 @@ import { ApiLobbyService } from '../services/apis/api-lobby.service';
 import { ApiLogInOutService } from '../services/apis/api-log-in-out.service';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
 import { SessionStorageService } from '../services/session-storage/session-storage.service';
-import { CurrentUser } from '../shared/models/user';
 import { isNotNullAndNotUndefined } from '../shared/utils/helper';
 import { CreateNicknameDialogComponent } from './create-nickname-dialog/create-nickname-dialog.component';
 
@@ -51,18 +50,16 @@ export class SideNavComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((data: string) => {
       console.log('The dialog was closed');
-      console.log(data);
       this.apiLobbyService.setNickname(data)
         .subscribe(() => console.log('nickname succeed'));
     });
   }
 
   ngOnInit(): void {
-    this.sessionService.getCurrentUserObs()
-      .subscribe((userToken: CurrentUser | null) => {
-        this.currentUserName = isNotNullAndNotUndefined(userToken) ? userToken.displayName : '';
-        this.isDisabled = !isNotNullAndNotUndefined(userToken);
-        console.log(userToken);
+    this.sessionService.getUser$()
+      .subscribe((user: any | null) => {
+        this.currentUserName = isNotNullAndNotUndefined(user) ? user.displayName : '';
+        this.isDisabled = !isNotNullAndNotUndefined(user);
       });
   }
 

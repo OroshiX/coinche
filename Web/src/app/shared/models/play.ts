@@ -1,3 +1,8 @@
+export interface Card {
+  color: CARD_COLOR;
+  value: CARD_VALUE;
+}
+
 export enum SCREEN {
   SMALL= 'small',
   LARGE = 'large '
@@ -33,15 +38,18 @@ export class PlayCard {
 }
 
 export class CardView {
-  value: number;
-  color: string;
-  key: string;
-  valuesMap: Map<number, MultiCardValues>;
+  id: number;     // 0  from [0, 1, 2, 3, 4, 5, 6, 7]
+  value: number;  // 7  from [7, 8, 9, 10, 11, 12, 13, 1]
+  color: string;  // HEART  FROM [CLUB, DIAMOND, HEARD, SPADE]
+  key: string;  // ex. HEART0 from `${color}${id}`
+  valuesMap: MultiValuesCard;
   backgroundImg: string;
   playable: boolean;
 
   constructor(obj: Partial<CardView>) {
-    obj.key = obj?.color?.toString().toUpperCase().charAt(0) + obj?.value.toString();
+    obj.id = cardValueMapToCardId(obj.value);
+    obj.key = `${obj.color.toUpperCase()}${obj.id}`;  // ex. HEART0 - HEART7
+    obj.valuesMap = createValuesMap(obj.id);
     Object.assign(this, obj);
   }
 }
@@ -50,16 +58,17 @@ export enum CARD_COLOR {
   CLUB = 'CLUB', DIAMOND = 'DIAMOND', HEART = 'HEART', SPADE = 'SPADE'
 }
 
-export const ColorList = [CARD_COLOR.CLUB, CARD_COLOR.DIAMOND, CARD_COLOR.HEART, CARD_COLOR.SPADE];
+export const colorList = [CARD_COLOR.CLUB, CARD_COLOR.DIAMOND, CARD_COLOR.HEART, CARD_COLOR.SPADE];
 
-export class MultiCardValues {
+export class MultiValuesCard {
   value: number;
   atoutPoints: number;
   colorPoints: number;
   dominanceAtout: number;
   dominanceColor: number;
+  key: number;
 
-  constructor(obj: Partial<MultiCardValues>) {
+  constructor(obj: Partial<MultiValuesCard>) {
     Object.assign(this, obj);
   }
 }
@@ -75,15 +84,45 @@ export enum CARD_ID {
   ACE
 }
 
+export enum CARD_VALUE {
+  SEVEN = 7,
+  EIGHT,
+  NINE,
+  TEN,
+  JACK,
+  QUEEN,
+  KING,
+  ACE = 1
+}
+
+export const cardIdList =
+  [CARD_ID.SEVEN, CARD_ID.EIGHT, CARD_ID.NINE, CARD_ID.TEN, CARD_ID.JACK, CARD_ID.QUEEN, CARD_ID.KING, CARD_ID.ACE];
+
+export const cardValues =
+  [CARD_VALUE.SEVEN, CARD_VALUE.EIGHT, CARD_VALUE.NINE, CARD_VALUE.TEN, CARD_VALUE.JACK, CARD_VALUE.QUEEN, CARD_VALUE.KING, CARD_VALUE.ACE];
+
 export const CARD_VALUES_LIST: number[][] = [
-  [7, 0, 0, 0, 0],
-  [8, 0, 0, 1, 1],
-  [9, 14, 0, 6, 2],
-  [10, 10, 10, 4, 6],
-  [11, 20, 2, 7, 3],
-  [12, 3, 3, 2, 4],
-  [13, 4, 4, 3, 5],
-  [1, 11, 11, 5, 7]
+  [CARD_VALUE.SEVEN, 0, 0, 0, 0, CARD_ID.SEVEN],
+  [CARD_VALUE.EIGHT, 0, 0, 1, 1, CARD_ID.EIGHT],
+  [CARD_VALUE.NINE, 14, 0, 6, 2, CARD_ID.NINE],
+  [CARD_VALUE.TEN, 10, 10, 4, 6, CARD_ID.TEN],
+  [CARD_VALUE.JACK, 20, 2, 7, 3, CARD_ID.JACK],
+  [CARD_VALUE.QUEEN, 3, 3, 2, 4, CARD_ID.QUEEN],
+  [CARD_VALUE.KING, 4, 4, 3, 5, CARD_ID.KING],
+  [CARD_VALUE.ACE, 11, 11, 5, 7, CARD_ID.ACE]
 ];
 
+export function cardValueMapToCardId(value: CARD_VALUE): number {
+  return cardIdList[cardValues.indexOf(value)];
+}
 
+function createValuesMap(cardId: number): MultiValuesCard {
+  return new MultiValuesCard({
+    value: CARD_VALUES_LIST[cardId][0],
+    atoutPoints: CARD_VALUES_LIST[cardId][1],
+    colorPoints: CARD_VALUES_LIST[cardId][2],
+    dominanceAtout: CARD_VALUES_LIST[cardId][3],
+    dominanceColor: CARD_VALUES_LIST[cardId][4],
+    key: CARD_VALUES_LIST[cardId][5]
+  });
+}

@@ -11,6 +11,6 @@ export class LoginPageService {
   }
 
   updateUserToken(usr: CurrentUser) {
-    this.sessionUser.saveCurrentUser(usr);
+    this.sessionUser.updateUser();
   }
 }

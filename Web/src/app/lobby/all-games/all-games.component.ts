@@ -72,8 +72,7 @@ export class AllGamesComponent implements OnInit {
 
     dialogRef.afterClosed()
       .pipe(switchMap(data => this.processCreateGame(data)))
-      .subscribe(res => {
-        console.log(res);
+      .subscribe(() => {
         this.rowData$ = this.apiService.allGames();
       });
   }

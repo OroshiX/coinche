@@ -23,7 +23,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
-import { CanActivateGame } from './services/can-activates/can-activate-game';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
 import { LoggingInterceptor } from './services/http-interceptors/logging-interceptor';
 import { AlertComponent } from './shared/alert/alert.component';
@@ -69,7 +68,7 @@ export const httpInterceptorProviders = [
     MatDialogModule,
     MatTooltipModule,
   ],
-  providers: [CanActivateGame, httpInterceptorProviders],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule {
