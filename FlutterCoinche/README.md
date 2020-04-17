@@ -1,3 +1,5 @@
+[![build status](https://github.com/OroshiX/coinche/workflows/Test,%20Build%20and%20Release%20apk/badge.svg)](https://github.com/OroshiX/coinche/actions)
+
 # FlutterCoinche
 
 A flutter client for coinche

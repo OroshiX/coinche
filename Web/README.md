@@ -1,3 +1,5 @@
+[![build status](https://github.com/OroshiX/coinche/workflows/Angular%20deploy/badge.svg)](https://github.com/OroshiX/coinche/actions)
+
 # DisplayCards
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.

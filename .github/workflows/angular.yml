@@ -1,0 +1,45 @@
+name: Angular deploy
+on:
+  push:
+    branches: [ deploy ]
+    tags:
+      - '*angular*'
+  pull_request:
+    branches: [ deploy ]
+    tags:
+      - '*angular*'
+      
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [13.x]
+    env:
+      working-directory: ./Web
+      APP_BASE_URL: ${{ secrets.APP_BASE_URL }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Node ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{matrix.node-version}}
+    - name: npm ci and npm run build
+      working-directory: ${{env.working-directory}}
+      run: |
+        npm ci
+        npm run build:prod
+    - uses: w9jds/firebase-action@master
+      working-directory: ${{env.working-directory}}
+      with:
+        args: deploy --only hosting
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
