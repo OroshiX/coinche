@@ -1,13 +1,14 @@
 name: Angular deploy
 on:
   push:
-    branches: [ deploy ]
+    branches: 
+      - deploy-angular
     tags:
-      - '*angular*'
+      - '*'
   pull_request:
-    branches: [ deploy ]
+    branches: [ deploy-angular ]
     tags:
-      - '*angular*'
+      - '*'
       
 jobs:
   build:
@@ -37,8 +38,24 @@ jobs:
       run: |
         npm ci
         npm run build:prod
-    - uses: w9jds/firebase-action@master
-      working-directory: ${{env.working-directory}}
+    - name: Archive Production Artifact
+      uses: actions/upload-artifact@master
+      with:
+        name: dist
+        path: dist
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+    - name: Download Artifact
+      uses: actions/download-artifact@master
+      with:
+        name: dist
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@master
       with:
         args: deploy --only hosting
       env:

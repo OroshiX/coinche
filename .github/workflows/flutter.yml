@@ -2,11 +2,11 @@ name: Test, Build and Release apk
 
 on:
   push:
-    branches: [ deploy ]
+    branches: [ deploy-flutter ]
     tags:
-      - '*flutter*'
+      - '*'
   pull_request:
-    branches: [ deploy ]
+    branches: [ deploy-flutter ]
 
 jobs:
   build:
