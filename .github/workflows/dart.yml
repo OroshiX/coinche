@@ -27,6 +27,12 @@ jobs:
     - name: Prod env
       run: dart tool/env.dart
       working-directory: ${{env.working-directory}}
+        channel: 'master' #'stable' or: 'dev' or 'beta'
+    - name: No analytics
+      run: flutter config --no-analytics
+    - name: Prod env
+      run: dart tool/env.dart
+      working-directory: ${{env.working-directory}}
     - name: Install dependencies
       run: flutter pub get
       working-directory: ${{env.working-directory}}
