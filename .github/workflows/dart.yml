@@ -28,7 +28,7 @@ jobs:
       run: dart tool/env.dart
       working-directory: ${{env.working-directory}}
     - name: Install NDK
-      run: echo "y" | sudo /usr/local/lib/android/tools/bin/sdkmanager --install "ndk;20.0.5594570" --sdk_root=${ANDROID_SDK_ROOT}
+      run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;20.0.5594570"
     - name: Install dependencies
       run: flutter pub get
       working-directory: ${{env.working-directory}}
