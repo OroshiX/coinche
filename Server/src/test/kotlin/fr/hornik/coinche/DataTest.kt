@@ -16,7 +16,7 @@ class DataTest {
     lateinit var dataManagement: DataManagement
     lateinit var set: SetOfGames
 
-    var TraceLevel: dbgLevel = dbgLevel.MISC
+    var TraceLevel: dbgLevel = dbgLevel.NONE
     fun DBGprintln(wantedLevel: dbgLevel, Str: Any) {
 
         if ((wantedLevel and TraceLevel) != 0) {
