@@ -13,6 +13,9 @@ export class SessionStorageService {
   user$ = this.user.asObservable()
     .pipe(switchMap((user: Observable<firebase.User>) => user));
 
+  private userUid: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  userUid$ = this.userUid.asObservable();
+
   constructor(private afAuth: AngularFireAuth) {
     this.updateUser();
   }
@@ -23,5 +26,13 @@ export class SessionStorageService {
 
   updateUser() {
     this.user.next(this.afAuth.authState);
+  }
+
+  updateUserUid(userUid: string) {
+    this.userUid.next(userUid);
+  }
+
+  getUserUid() {
+    return this.userUid.value;
   }
 }

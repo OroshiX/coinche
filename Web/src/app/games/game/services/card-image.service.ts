@@ -203,26 +203,34 @@ export class CardImageService {
   }
 
   buildMyDeck(list: Card[]): Map<string, CardView> {
-    const sortedCardList= this.sortList(list);
-    sortedCardList.forEach(card => {
-      this.buildCardMap(card.color, card.value);
-    });
+    const sortedCardList = this.sortList(list);
+    sortedCardList.forEach(card => this.buildCardMap(card.color, card.value));
     return this.myCardMap;
   }
 
-  buildMyDeckSmall(listSmall: Card[]): Map<string, CardView> {
-    const sortedCardListSmall = this.sortList(listSmall);
-    sortedCardListSmall.forEach(card => {
-      this.buildCardMap(card.color, card.value);
-    });
+  buildMyDeckSmall(list: Card[]): Map<string, CardView> {
+    const sortedCardListSmall = this.sortList(list);
+    sortedCardListSmall.forEach(card => this.buildCardMap(card.color, card.value));
     return this.myCardMapSmall;
   }
 
   private sortList(list: Card[]): Card[] {
-    return list
-      .sort((a, b) => {
-        return (a.color > b.color) ? 1 : (a.color < b.color) ? -1 : 0;
-      });
+    const clubList = this.sortPerColor(list, CARD_COLOR.CLUB);
+    const diamondList = this.sortPerColor(list, CARD_COLOR.DIAMOND);
+    const heartList = this.sortPerColor(list, CARD_COLOR.HEART);
+    const spadeList = this.sortPerColor(list, CARD_COLOR.SPADE);
+    return [...clubList, ...diamondList, ...heartList, ...spadeList];
+  }
+
+  private sortPerColor(list: Card[], color: CARD_COLOR): Card[] {
+    const clubList = list.filter(c => c.color === color)
+      .sort((a, b) => (a.value > b.value) ? 1 : (a.value < b.value) ? -1 : 0);
+    const idx = clubList.findIndex(card => card.value === CARD_VALUE.ACE);
+    if (idx >= 0 ) {
+      const ace = clubList.shift();
+      return [...clubList, ace];
+    }
+    return [...clubList];
   }
 
   private createCardView(col: string, val: number, imageUrl: string): CardView {

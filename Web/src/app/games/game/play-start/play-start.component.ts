@@ -1,7 +1,10 @@
 import { CdkStepper } from '@angular/cdk/stepper';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { switchMap } from 'rxjs/operators';
+import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
-import { CARD_COLOR, CardView } from '../../../shared/models/play';
+import { TableGame } from '../../../shared/models/collection-game';
+import { Card, CARD_COLOR, CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 
 @Component({
@@ -20,6 +23,8 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
   backCard: any;
   isActive = true;
 
+  data: any;
+
   listOfMyCard = [
     {color: CARD_COLOR.HEART, value: 7},
     {color: CARD_COLOR.SPADE, value: 8},
@@ -35,37 +40,32 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
 
   constructor(private service: CardImageService,
               private breakpointService: BreakpointService,
+              private firestoreService: ApiFirestoreService,
               private cd: ChangeDetectorRef) {
     this.cd.detach();
   }
 
   ngOnInit(): void {
+    const gameId = 'DE6nV9kAg5YB8mMaJlEh';
     this.breakpointService.layoutChanges$()
-      .subscribe(() => {
-        this.updateLayoutForScreenChange();
+      .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
+      .subscribe( (data: TableGame) => {
+        this.updateLayoutForScreenChange(data.cards);
       });
   }
 
   ngAfterViewInit(): void {
-    /*this.cd.detectChanges();
-    this.breakpointService.layoutChanges$()
-      .subscribe(() => {
-        this.updateLayoutForScreenChange();
-      });*/
-    // this.cd.detectChanges();
   }
 
-  private updateLayoutForScreenChange() {
+  private updateLayoutForScreenChange(cards: Card[]) {
     if (this.breakpointService.isSmallScreen()) {
       this.map = this.service.getMapSmall();
-      // this.cardMap = this.service.getCardMapSmall();
       this.backCard = this.service.getBackCardSmall();
-      this.myCardMap = this.service.buildMyDeckSmall(this.listOfMyCard);
+      this.myCardMap = this.service.buildMyDeckSmall(cards);
     } else {
       this.map = this.service.getMap();
-      // this.cardMap = this.service.getCardMap();
       this.backCard = this.service.getBackCard();
-      this.myCardMap = this.service.buildMyDeck(this.listOfMyCard);
+      this.myCardMap = this.service.buildMyDeck(cards);
     }
     this.cd.detectChanges();
   }

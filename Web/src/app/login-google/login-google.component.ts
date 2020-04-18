@@ -28,6 +28,7 @@ export class LoginGoogleComponent implements OnInit, OnDestroy {
     this.fireAuthService.signinWithGoogle()
       .then((res) => {
           console.log('Sign in with google - user: ', res?.user?.displayName);
+          this.sessionService.updateUserUid(res.user.uid);
         },
         (error) => console.log('error ', error)
       );
