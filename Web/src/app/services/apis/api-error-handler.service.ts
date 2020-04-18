@@ -26,8 +26,6 @@ export class ApiErrorHandlerService {
       if (error.status === 401) {
         this.authService.signOut();
         this.sessionService.updateUser();
-        // this.router.navigateByUrl('login').then(() => console.log('navigate to login page'));
-        // this.sessionService.updateUser();
       }
       if (error.status === 412) {
         alert('You have already joined the selected game! Please choose another one');
