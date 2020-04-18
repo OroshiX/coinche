@@ -25,5 +25,5 @@ flutter:
 	cd FlutterCoinche; flutter pub get
 	cd FlutterCoinche; dart tool/env.dart ; flutter pub run build_runner build --delete-conflicting-outputs
 	cd FlutterCoinche; flutter build ios 
-	
-	#perhaps you will have to run : flutter pub get
+	#to run on device xxxx
+	#flutter run -d 420095c6ea425400
