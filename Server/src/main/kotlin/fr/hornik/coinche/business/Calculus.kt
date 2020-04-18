@@ -220,7 +220,7 @@ fun calculateScoreGame(plisNS: List<List<CardPlayed>>,
                        bid: Bid,
                        scoreRule: PrefsScore = PrefsScore.POINTSANNOUNCED): Score {
     val score = calculateScoreTricks(plisNS, plisEW, dixDer, bid)
-    println("DEBUG : score reel NS ${score.northSouth}, EW ${score.eastWest}")
+    // println("DEBUG : score reel NS ${score.northSouth}, EW ${score.eastWest}")
     var threshold = 0
     var posTaker = PlayerPosition.NORTH
     when (bid) {
