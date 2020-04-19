@@ -49,9 +49,12 @@ class FireApp {
         return addedDocRef.get().id
     }
     fun deleteGame(setOfGames: SetOfGames) {
-        db.collection(COLLECTION_SETS).document(setOfGames.id).delete()
+        for (uid in setOfGames.players.map { it.uid }) {
+            db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.id)
+                    .collection(COLLECTION_PLAYERS).document(uid).delete()
+        }
         db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.id).delete()
-
+        db.collection(COLLECTION_SETS).document(setOfGames.id).delete()
     }
     fun saveGame(setOfGames: SetOfGames, new: Boolean = false) {
         // save the game in sets

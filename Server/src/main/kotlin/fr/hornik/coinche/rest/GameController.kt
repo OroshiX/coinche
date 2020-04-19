@@ -67,6 +67,19 @@ class GameController(@Autowired val data: DataManagement,
         fire.saveGame(game)
     }
 
+    @PostMapping("/{gameId}/deleteGame")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    fun deleteGame(@PathVariable gameId: String) {
+        val game = data.getGameOrThrow(gameId)
+        if (user.uid == null) throw NotAuthorizedOperation("You need to be authenticated for any modifiation action")
+        if (! data.deleteGame(game, user) ) {
+            // the fire delete has been done in data.deleteGame as well as the refresh.
+            throw NotAuthorizedOperation(
+                    "You need to be registered in a game to delete it")
+        }
+    }
+
+
     @GetMapping("/{gameId}/showLastTrick",
                 produces = [MediaType.APPLICATION_JSON_VALUE])
     fun showLastTrick(@PathVariable gameId: String): List<CardPlayed> {

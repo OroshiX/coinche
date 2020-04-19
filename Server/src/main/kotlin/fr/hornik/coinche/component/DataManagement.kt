@@ -5,6 +5,7 @@ import fr.hornik.coinche.dto.Game
 import fr.hornik.coinche.exception.*
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.BeloteValue
+import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,33 +23,62 @@ class DataManagement(@Autowired private val fire: FireApp) {
             final val sets: MutableList<SetOfGames> = mutableListOf()
         }
     */
+    val AUTOMATEDGAMESID = "AUTOMATED"
+    val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
 
-    val task = object: TimerTask() {
+    val timeoutTask = object: TimerTask() {
         var timesRan = 0
-        override fun run() = reviewTimer("timer passed ${++timesRan} time(s)")
+        override fun run() = reviewTimer("Timeout timer passed ${++timesRan} time(s)")
 
     }
 
+    val IAPlayerTask = object: TimerTask() {
+        var timesRanIA = 0
+        override fun run() = IAPlayers("IA timer passed ${++timesRanIA} time(s)")
+
+    }
+
+    fun IAPlayers (Message: String) {
+        val millis = System.currentTimeMillis()
+        for (setOfGames in sets.filter{e -> (e.name.contains(AUTOMATEDGAMESID))}) {
+
+            //println(".\n")
+            if (! setOfGames.players.filter{ e -> ((e.uid.contains(AUTOMATEDPLAYERSID)) && (setOfGames.whoseTurn == e.position))}.isEmpty() ) {
+                IARun(setOfGames).run(this)
+                fire.saveGame(setOfGames)
+
+            }
+        }
+
+    }
     fun reviewTimer(Message:String) {
         //println("$Message\n")
         val millis = System.currentTimeMillis()
         var action = false
-        for (set in sets) {
+        for (setOfGames in sets) {
             // for testing purpose we delete only the games which name is TOBEDELETED
-            when (set.state) {
-                TableState.JOINING -> if ((millis - set.whoseTurnTimeLastChg) > set.preferences.JoiningMaxTime) {
+            when (setOfGames.state) {
+                TableState.JOINING -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.JoiningMaxTime) {
                     // TODO we should remove the set ?
-                    if (set.name.contains("TOBEDELETED")) {
-                        println("${set.name}_${set.state} : JOINING TIMEOUT (id:${set.id})\n")
-                        fire.deleteGame(set)
+                    if (setOfGames.name.contains("TOBEDELETED")) {
+                        println("${setOfGames.name}_${setOfGames.state} : JOINING TIMEOUT (id:${setOfGames.id})\n")
+                        fire.deleteGame(setOfGames)
                         action = true
                     }
+                    if ((setOfGames.name.contains(AUTOMATEDGAMESID)) && (setOfGames.players.size < 4 )){
+                        //The names means that we can add an automatic player ( probably will be done later through a preference
+                        val v:Int = Random().nextInt()
+                        val w:Int = Random().nextInt()
+
+                        joinGame(setOfGames, User("${w}$AUTOMATEDPLAYERSID${v}", "AUTOMATED PLAYER ${v%10}"),"AUTOMATED PLAYER ${v%10}")
+                        setOfGames.whoseTurnTimeLastChg = millis
+                    }
                 }
-                TableState.BIDDING -> if ((millis - set.whoseTurnTimeLastChg) > set.preferences.BiddingMaxTime) {
+                TableState.BIDDING -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.BiddingMaxTime) {
                     // TODO we should remove the set ?
-                    if (set.name.contains("TOBEDELETED")) {
-                        println("${set.name}_${set.state} : BIDDING TIMEOUT (id:${set.id})\n")
-                        fire.deleteGame(set)
+                    if (setOfGames.name.contains("TOBEDELETED")) {
+                        println("${setOfGames.name}_${setOfGames.state} : BIDDING TIMEOUT (id:${setOfGames.id})\n")
+                        fire.deleteGame(setOfGames)
                         action = true
                     }
                 }
@@ -62,7 +92,9 @@ class DataManagement(@Autowired private val fire: FireApp) {
     init {
         sets.addAll(fire.getAllGames())
 
-        timer.schedule(task,0,1000)
+        timer.schedule(timeoutTask,0,1000)
+        timer.schedule(IAPlayerTask,0,2501)
+
     }
 
     fun allMyGames(uid: String): List<Game> {
@@ -107,15 +139,21 @@ class DataManagement(@Autowired private val fire: FireApp) {
     }
 
     private fun distribute(setOfGames: SetOfGames) {
+        val firstDeal = setOfGames.plisCampEW.isEmpty() && setOfGames.plisCampNS.isEmpty()
         setOfGames.state = TableState.DISTRIBUTING
         // Random first player
-        setOfGames.currentFirstPlayer = PlayerPosition.values().random()
+        if (firstDeal) {
+            setOfGames.currentFirstPlayer = PlayerPosition.values().random()
+        } else {
+            setOfGames.currentFirstPlayer += 1
+        }
+
         setOfGames.whoseTurn = setOfGames.currentFirstPlayer
         val dealer = setOfGames.currentFirstPlayer - 1
 
         // Distribute
         val hands =
-                if (setOfGames.plisCampEW.isEmpty() && setOfGames.plisCampNS.isEmpty())
+                if (firstDeal)
                     firstDealOfCards(dealer, allSpreads.random())
                 else
                     dealCards(setOfGames.plisCampNS, setOfGames.plisCampEW, 10,
@@ -144,6 +182,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
             // Continue playing another game
             distribute(setOfGames)
+            setOfGames.plisCampEW.clear()
+            setOfGames.plisCampNS.clear()
         }
     }
 
@@ -153,7 +193,16 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun getGameOrThrow(setId: String): SetOfGames =
             getGame(setId) ?: throw GameNotExistingException(setId)
 
-    fun announceBid(setOfGames: SetOfGames, bid: Bid, user: User) {
+    fun deleteGame(setOfGames: SetOfGames, user: User):Boolean {
+        val me = setOfGames.players.first { player -> player.uid == user.uid }
+        if (me != null ) {
+            fire.deleteGame(setOfGames)
+            refresh()
+            return true
+        }
+        return false
+    }
+        fun announceBid(setOfGames: SetOfGames, bid: Bid, user: User) {
         if (setOfGames.state != TableState.BIDDING) throw NotValidStateException(
                 setOfGames.state, TableState.BIDDING)
         val me = setOfGames.players.first { player -> player.uid == user.uid }

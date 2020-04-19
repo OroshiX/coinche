@@ -40,7 +40,7 @@ data class SetOfGames(
 
                       // Preferences for this game ( should be preferences for all games ? )
         @JsonIgnore
-        val preferences: Preferences = Preferences(PrefsScore.POINTSANNOUNCED,JoiningMaxTime = 300000, BiddingMaxTime = 120000),
+        val preferences: Preferences = Preferences(PrefsScore.POINTSANNOUNCED,JoiningMaxTime = 15000, BiddingMaxTime = 120000),
 
                       // list of cards present on the table
         val onTable: MutableList<CardPlayed> = mutableListOf(),
