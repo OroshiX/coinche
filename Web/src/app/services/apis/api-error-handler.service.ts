@@ -1,15 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { throwError } from 'rxjs';
-import { SessionStorageService } from '../session-storage/session-storage.service';
+import { FireAuthService } from '../authentication/fire-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiErrorHandlerService {
 
-  constructor(private sessionService: SessionStorageService, private router: Router) { }
+  constructor(private authService: FireAuthService) {
+  }
 
   handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -22,16 +22,12 @@ export class ApiErrorHandlerService {
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error.error}`);
       if (error.status === 401) {
-        this.router.navigateByUrl('login').then(() => console.log('navigate to login page'));
-        // this.sessionService.updateUser();
-      }
-      if (error.status === 412) {
-        alert('You have already joined the selected game! Please choose another one')
+        this.authService.signOut();
       }
     }
     // return an observable with a user-facing error message
     return throwError(
-      'Something bad happened; please try again later.');
+      error.status);
   };
 
 

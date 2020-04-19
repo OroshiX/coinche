@@ -10,14 +10,20 @@ const routes: Routes = [
     component: LoginGoogleComponent
   },
   {
+    path: 'all-games',
+    loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin}
+  },
+  {
     path: 'play',
     loadChildren: () => import('./games/game/game.module').then(m => m.GameModule),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin}
   },
   {
-    path: 'all-games',
-    loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
+    path: 'distributing',
+    loadChildren: () => import('./games/distributing/distributing.module').then(m => m.DistributingModule),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin}
   },

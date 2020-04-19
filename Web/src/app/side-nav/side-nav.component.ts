@@ -1,8 +1,8 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Observable, Subscription } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ApiLobbyService } from '../services/apis/api-lobby.service';
 import { ApiLogInOutService } from '../services/apis/api-log-in-out.service';
 import { FireAuthService } from '../services/authentication/fire-auth.service';
@@ -18,16 +18,11 @@ export const DIALOG_WIDTH = '300px';
   styleUrls: ['./side-nav.component.scss']
 })
 export class SideNavComponent implements OnInit, OnDestroy {
-  sub: Subscription;
+  private unsubscribe$ = new Subject<void>();
   currentUserName = '';
   nickname = '';
   isDisabled = false;
-  isHandset$: Observable<boolean> = this.breakpointObserver.observe(
-    [Breakpoints.Handset, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
-    .pipe(
-      map(result => result.matches),
-      shareReplay()
-    );
+  isHandset$: Observable<boolean>;
 
   constructor(
     private breakpointObserver: BreakpointObserver,
@@ -36,6 +31,12 @@ export class SideNavComponent implements OnInit, OnDestroy {
     private authService: FireAuthService,
     private sessionService: SessionStorageService,
     private dialog: MatDialog) {
+    this.isHandset$ = this.breakpointObserver.observe(
+      [Breakpoints.Handset, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
+      .pipe(
+        map(result => result.matches),
+        shareReplay()
+      );
   }
 
   // ----- dialog begin ------
@@ -51,12 +52,14 @@ export class SideNavComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((data: string) => {
       console.log('The dialog was closed');
       this.apiLobbyService.setNickname(data)
+        .pipe(takeUntil(this.unsubscribe$))
         .subscribe(() => console.log('nickname succeed'));
     });
   }
 
   ngOnInit(): void {
-    this.sessionService.getUser$()
+    this.sessionService.getCurrentUser$()
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((user: any | null) => {
         this.currentUserName = isNotNullAndNotUndefined(user) ? user.displayName : '';
         this.isDisabled = !isNotNullAndNotUndefined(user);
@@ -73,13 +76,15 @@ export class SideNavComponent implements OnInit, OnDestroy {
     console.log('call logout');
     this.authService.signOut().then(() => alert('You are disconnected from Firebase !'));
     this.apiService.logoutToServer()
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe(ret => {
         console.log('logout', ret);
       });
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 }

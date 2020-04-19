@@ -28,7 +28,12 @@ export class LoggingInterceptor implements HttpInterceptor {
           // Succeeds when there is a response; ignore other events
           event => ok = event instanceof HttpResponse ? 'succeeded' : '',
           // Operation failed; error is an HttpErrorResponse
-          () => ok = 'failed'
+          () => {
+            ok = 'failed';
+           /* alert('response not OK !!');
+            this.sessionService.resetCurrentUser();
+            window.location.replace('login');*/
+          }
         ),
         // Log when response observable either completes or errors
         finalize(() => {
@@ -36,8 +41,6 @@ export class LoggingInterceptor implements HttpInterceptor {
           const msg = `${req.method} "${req.urlWithParams}" ${stat}
              ${ok} in ${elapsed} ms.`;
           this.messenger.addMsg(msg);
-          // this.sessionService.resetCurrentUser();
-          // this.router.navigateByUrl('login');
         })
       );
   }
