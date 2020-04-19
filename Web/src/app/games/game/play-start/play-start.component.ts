@@ -11,7 +11,6 @@ import { CardImageService } from '../services/card-image.service';
   selector: 'app-play-start',
   templateUrl: './play-start.component.html',
   styleUrls: ['./play-start.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlayStartComponent implements OnInit, AfterViewInit {
   @ViewChild('stepper') stepper: CdkStepper;

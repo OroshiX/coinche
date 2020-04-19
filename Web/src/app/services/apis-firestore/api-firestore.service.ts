@@ -1,36 +1,38 @@
 import { Injectable } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Game } from '../../shared/models/game';
-import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiFirestoreService {
   private gameCollection: AngularFirestoreCollection<any>;
-  private games$: Observable<any>;
 
-  uid: string;
-
-  constructor(private afs: AngularFirestore, private sessionService: SessionStorageService) {
+  constructor(private afs: AngularFirestore, private afAuth: AngularFireAuth) {
     this.gameCollection = afs.collection<any>('playersSets');
-    // this.uid = this.sessionService.getUserUid();
   }
 
   getTableGame(gameId: string): Observable<any> {
-    this.games$ = this.gameCollection
-      .doc(gameId)
-      .collection('players')
-      .doc(this.sessionService.getUserUid())
-      .snapshotChanges().pipe(
-        map(a => {
-          const data = a.payload.data() as Game;
-          const id = a.payload.id;
-          return {id, ...data};
+    return from(this.afAuth.currentUser)
+      .pipe(
+        switchMap(usr => {
+          return this.gameCollection
+            .doc(gameId)
+            .collection('players')
+            .doc(usr.uid)
+            .snapshotChanges()
+            .pipe(
+              map(a => {
+                const data = a.payload.data() as Game;
+                const id = a.payload.id;
+                return {id, ...data};
+              })
+            );
         })
       );
-    return this.games$;
   }
+
 }

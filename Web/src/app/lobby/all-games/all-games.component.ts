@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -49,6 +50,7 @@ export class AllGamesComponent implements OnInit {
   columnDefs: any;
 
   constructor(
+    private router: Router,
     private apiService: ApiLobbyService,
     private breakpointService: BreakpointService,
     private dialog: MatDialog
@@ -98,9 +100,15 @@ export class AllGamesComponent implements OnInit {
     console.log('join game');
     this.apiService.joinGame(this.selectedDataStringPresentation, '')
       .subscribe(() => {
-        this.rowData$ = this.apiService.allGames();
-        this.isRowSelected = false;
-      });
+          this.rowData$ = this.apiService.allGames();
+          this.isRowSelected = false;
+        },
+        (error) => {
+          console.log(error);
+          if (error === 412) {
+            this.router.navigateByUrl('play/start');
+          }
+        });
   }
 
   createNewGame() {

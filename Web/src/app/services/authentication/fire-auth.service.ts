@@ -15,8 +15,8 @@ export class FireAuthService {
     public router: Router,
     public ngZone: NgZone,
     public afAuth: AngularFireAuth,
+    private sessionService: SessionStorageService,
     private apiService: ApiLogInOutService,
-    private sessionService: SessionStorageService
   ) {
   }
 
@@ -39,8 +39,10 @@ export class FireAuthService {
             });
           }
         });
+      console.log(this.afAuth.authState);
       return response;
     } catch (error) {
+      console.log(this.afAuth.authState);
       alert(error);
     }
   }
@@ -54,18 +56,9 @@ export class FireAuthService {
   // Firebase Logout
   signOut() {
     return this.afAuth.signOut().then(() => {
-      this.sessionService.updateUser();
+      this.sessionService.resetCurrentUser();
       this.router.navigate(['login']).then(() => console.log('redirectTo Login page'));
     });
   }
-
-  /*updateUserToken(user: any, idToken: any) {
-    let usr: CurrentUser;
-    if (isNotNullAndNotUndefined(user)) {
-      usr = new CurrentUser({uid: user.uid, email: user.email, displayName: user.displayName});
-      usr.idToken = idToken;
-    }
-    this.sessionService.saveCurrentUser(usr);
-  }*/
 
 }
