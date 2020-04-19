@@ -202,7 +202,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
         return false
     }
-        fun announceBid(setOfGames: SetOfGames, bid: Bid, user: User) {
+
+    fun announceBid(setOfGames: SetOfGames, bid: Bid, user: User) {
         if (setOfGames.state != TableState.BIDDING) throw NotValidStateException(
                 setOfGames.state, TableState.BIDDING)
         val me = setOfGames.players.first { player -> player.uid == user.uid }
@@ -212,12 +213,16 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
         setOfGames.bids.add(bid)
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
-
+        if (setOfGames.onTable.size == 4) {
+            // the cards on the table are from last trick, we can clear them
+            setOfGames.onTable.clear()
+        }
         if (isLastBid(setOfGames.bids)) {
             // change status to playing
             setOfGames.state = TableState.PLAYING
             setOfGames.whoseTurn = setOfGames.currentFirstPlayer
             setOfGames.currentBid = getCurrentBid(setOfGames.bids)
+
             val nextPlayer: Player = setOfGames.players.first { player -> player.position == setOfGames.whoseTurn }
             for (card in nextPlayer.cardsInHand) {
                 card.playable = true
