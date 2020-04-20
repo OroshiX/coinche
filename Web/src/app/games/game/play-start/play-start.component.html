@@ -29,20 +29,74 @@
   </mat-card-content>
 </mat-card>
 <br>
-<mat-card>
+<!--<mat-card>
   <mat-card-header>
     <mat-card-title>Table</mat-card-title>
   </mat-card-header>
-  <mat-card-content class="background-table-my-cards">
-    <div *ngFor="let el of [0]">
-      <div class="wrapper-cards-my-cards">
-        <button class="card custom-shadow" *ngFor="let card of map.get(el); index as i"
-                [ngStyle]="{'background': card}" (click)="onClickCard($event, i, card)">
-        </button>
+  <mat-card-content class="background-table">
+    <div>
+      <div class="wrapper-cards">
+        <div class="row1">
+          <button class="card-played custom-shadow"
+                  [ngStyle]="{'background': myCardMap.get('HEART8').backgroundImg}"
+                  (click)="onClickCard($event, 1, myCardMap.get('HEART8').value)"
+                  [value]="myCardMap.get('HEART8').value">
+          </button>
+        </div>
+        <div class="row2">
+          <button class="card-played custom-shadow"
+                  [ngStyle]="{'background': myCardMap.get('HEART11').backgroundImg}"
+                  (click)="onClickCard($event, 1, myCardMap.get('HEART11').value)"
+                  [value]="myCardMap.get('HEART11').value">
+          </button>
+          <button class="card-played custom-shadow"
+                  [ngStyle]="{'background': myCardMap.get('SPADE7').backgroundImg}"
+                  (click)="onClickCard($event, 1, myCardMap.get('SPADE7').value)"
+                  [value]="myCardMap.get('SPADE7').value">
+          </button>
+        </div>
+        <div class="row3">
+          <button class="card-played custom-shadow"
+                  [ngStyle]="{'background': myCardMap.get('CLUB10').backgroundImg}"
+                  (click)="onClickCard($event, 1, myCardMap.get('CLUB10').value)"
+                  [value]="myCardMap.get('CLUB10').value">
+          </button>
+        </div>
       </div>
     </div>
   </mat-card-content>
-</mat-card>
+</mat-card>-->
+
+<div class="background-table">
+  <div class="wrapper-cards">
+    <div class="row1">
+      <button class="card-played custom-shadow"
+              [ngStyle]="{'background': myCardMap.get('HEART8').backgroundImg}"
+              (click)="onClickCard($event, 1, myCardMap.get('HEART8').value)"
+              [value]="myCardMap.get('HEART8').value">
+      </button>
+    </div>
+    <div class="row2">
+      <button class="card-played custom-shadow"
+              [ngStyle]="{'background': myCardMap.get('HEART11').backgroundImg}"
+              (click)="onClickCard($event, 1, myCardMap.get('HEART11').value)"
+              [value]="myCardMap.get('HEART11').value">
+      </button>
+      <button class="card-played custom-shadow"
+              [ngStyle]="{'background': myCardMap.get('SPADE7').backgroundImg}"
+              (click)="onClickCard($event, 1, myCardMap.get('SPADE7').value)"
+              [value]="myCardMap.get('SPADE7').value">
+      </button>
+    </div>
+    <div class="row3">
+      <button class="card-played custom-shadow"
+              [ngStyle]="{'background': myCardMap.get('CLUB10').backgroundImg}"
+              (click)="onClickCard($event, 1, myCardMap.get('CLUB10').value)"
+              [value]="myCardMap.get('CLUB10').value">
+      </button>
+    </div>
+  </div>
+</div>
 
 <mat-card>
   <mat-card-header>

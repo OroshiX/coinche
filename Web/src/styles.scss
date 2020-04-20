@@ -8,6 +8,6 @@
   @include ag-theme-alpine();
 }
 .custom-shadow {
-  @include mat-elevation(3, #0a0d0b, 8.0);
+  @include mat-elevation(8, #0a0d0b, 8.0);
 }
 
