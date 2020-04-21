@@ -53,7 +53,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
     @PostMapping("/setNickname")
     fun setNickname(@RequestBody(required = true) nickname: String) {
         if (user.uid.isBlank()) throw NotAuthenticatedException()
-        if ((nickname == null) || (nickname.isBlank())) throw  NotAuthorizedOperation("Nickname cannot be empty")
+        if (nickname.isBlank()) throw  NotAuthorizedOperation("Nickname cannot be empty")
 
         user.nickname = nickname
 

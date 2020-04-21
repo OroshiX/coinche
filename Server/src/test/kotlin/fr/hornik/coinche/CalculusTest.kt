@@ -42,10 +42,6 @@ class CalculusTest {
                 Coinche(SimpleBid(CardColor.CLUB, 90, PlayerPosition.WEST), PlayerPosition.NORTH, surcoinche = true))
     }
 
-    val deck = listOf(
-            Card(CardValue.KING, CardColor.SPADE, null) // TODO ETC.
-    )
-
     @Test
     fun testBid() {
         //testUnit()

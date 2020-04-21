@@ -71,7 +71,7 @@ class GameController(@Autowired val data: DataManagement,
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun deleteGame(@PathVariable gameId: String) {
         val game = data.getGameOrThrow(gameId)
-        if (user.uid == null) throw NotAuthorizedOperation("You need to be authenticated for any modifiation action")
+        if (user.uid.isBlank()) throw NotAuthorizedOperation("You need to be authenticated for any modifiation action")
         if (! data.deleteGame(game, user) ) {
             // the fire delete has been done in data.deleteGame as well as the refresh.
             throw NotAuthorizedOperation(
