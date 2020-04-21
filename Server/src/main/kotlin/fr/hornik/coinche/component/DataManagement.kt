@@ -39,7 +39,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
     }
 
     fun IAPlayers (Message: String) {
-        val millis = System.currentTimeMillis()
         for (setOfGames in sets.filter{e -> (e.name.contains(AUTOMATEDGAMESID))}) {
 
             //println(".\n")
@@ -218,6 +217,23 @@ class DataManagement(@Autowired private val fire: FireApp) {
             setOfGames.onTable.clear()
         }
         if (isLastBid(setOfGames.bids)) {
+            if ((setOfGames.bids.size == 4 ) && (setOfGames.bids.filterIsInstance<Pass>().size == 4 )) {
+                // 4 pass means we need to redistribute
+                // First we need fill pli from camp EW and NS
+                setOfGames.bids.clear()
+                setOfGames.whoWonLastTrick = null
+
+                for (i in 0..3) {
+                    val pli = listOf( setOfGames.players[i].cardsInHand.take(4).map{ e -> CardPlayed(e)},
+                                                          setOfGames.players[i].cardsInHand.takeLast(4).map{ e -> CardPlayed(e)})
+                    setOfGames.plisCampNS.addAll(pli)
+                    setOfGames.players[i].cardsInHand.clear()
+                }
+                distribute(setOfGames)
+                setOfGames.plisCampEW.clear()
+                setOfGames.plisCampNS.clear()
+                return
+            }
             // change status to playing
             setOfGames.state = TableState.PLAYING
             setOfGames.whoseTurn = setOfGames.currentFirstPlayer
