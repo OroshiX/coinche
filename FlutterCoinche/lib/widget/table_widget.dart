@@ -277,6 +277,7 @@ class _TableWidgetState extends State<TableWidget> {
                   state: widget.game.state,
                   bid: widget.game.currentBid,
                   whoseTurn: widget.game.nextPlayer,
+                  score: widget.game.score,
                 ),
               ),
             ],

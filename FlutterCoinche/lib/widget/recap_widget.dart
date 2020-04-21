@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
@@ -8,11 +9,11 @@ import 'package:flutter/material.dart';
 class RecapWidget extends StatelessWidget {
   final TableState state;
   final PlayerPosition whoseTurn;
-
+  final Score score;
   final Bid bid;
 
   const RecapWidget(
-      {Key key, @required this.state, this.bid, @required this.whoseTurn})
+      {Key key, @required this.state, this.bid, @required this.whoseTurn, this.score})
       : super(key: key);
 
   @override
@@ -29,7 +30,8 @@ class RecapWidget extends StatelessWidget {
             if (state == TableState.PLAYING) Text("${bid.toString()}"),
             if (state == TableState.PLAYING || state == TableState.BIDDING)
               Text(
-                  "${whoseTurn.toString().split(".").last}'s turn to ${state == TableState.PLAYING ? "play" : state == TableState.BIDDING ? "bid" : ""}")
+                  "${whoseTurn.toString().split(".").last}'s turn to ${state == TableState.PLAYING ? "play" : state == TableState.BIDDING ? "bid" : ""}"),
+            Text("Score NS = ${score.northSouth} / EW = ${score.eastWest}")
           ],
         ),
       ),
