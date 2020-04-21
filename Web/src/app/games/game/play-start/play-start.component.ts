@@ -1,5 +1,6 @@
 import { CdkStepper } from '@angular/cdk/stepper';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
@@ -37,18 +38,25 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
 
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
 
-  constructor(private service: CardImageService,
-              private breakpointService: BreakpointService,
-              private firestoreService: ApiFirestoreService,
-              private cd: ChangeDetectorRef) {
+  constructor(
+    private route: ActivatedRoute,
+    private service: CardImageService,
+    private breakpointService: BreakpointService,
+    private firestoreService: ApiFirestoreService,
+    private cd: ChangeDetectorRef
+  ) {
     this.cd.detach();
   }
 
   ngOnInit(): void {
-    const gameId = 'DE6nV9kAg5YB8mMaJlEh';
+    // const gameId = 'DE6nV9kAg5YB8mMaJlEh';
+    // route.data includes both `data` and `resolve`
+    // const user = this.route.data.pipe(map(d => d.user));
+    const gameId: string = this.route.snapshot.params.id;
+    console.log(gameId);
     this.breakpointService.layoutChanges$()
       .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
-      .subscribe( (data: TableGame) => {
+      .subscribe((data: TableGame) => {
         this.updateLayoutForScreenChange(data.cards);
       });
   }

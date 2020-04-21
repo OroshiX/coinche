@@ -3,12 +3,12 @@
   height: $height-value;
   border: none;
   border-radius: 5px;
-  margin: 5px;
 }
 
 @media(max-width: 959px) {
   .card {
     @include width-height-card(60px, 87px);
+    margin: 15px -15px;
   }
   .card-played {
     @include width-height-card(60px, 87px);
@@ -22,6 +22,7 @@
 @media(min-width: 960px) {
   .card {
     @include width-height-card(120px, 174px);
+    margin: 30px -30px;
   }
   .card-played {
     @include width-height-card(120px, 174px);

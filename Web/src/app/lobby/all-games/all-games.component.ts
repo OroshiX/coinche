@@ -93,7 +93,7 @@ export class AllGamesComponent implements OnInit {
   }
 
   isRowSelectable(rowNode: any): boolean {
-    return rowNode.data ? rowNode.data.nbJoined < 4 : false;
+    return rowNode.data ? rowNode.data.nbJoined <= 4 : false;
   }
 
   joinGame() {
@@ -104,9 +104,8 @@ export class AllGamesComponent implements OnInit {
           this.isRowSelected = false;
         },
         (error) => {
-          console.log(error);
           if (error === 412) {
-            this.router.navigateByUrl('play/start');
+            this.router.navigate(['play', this.selectedDataStringPresentation]);
           }
         });
   }

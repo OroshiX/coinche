@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Game } from '../../shared/models/game';
+import { UserLocalStorageService } from '../session-storage/user-local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +11,12 @@ import { Game } from '../../shared/models/game';
 export class ApiFirestoreService {
   private gameCollection: AngularFirestoreCollection<any>;
 
-  constructor(private afs: AngularFirestore, private afAuth: AngularFireAuth) {
+  constructor(private afs: AngularFirestore, private userService: UserLocalStorageService) {
     this.gameCollection = afs.collection<any>('playersSets');
   }
 
   getTableGame(gameId: string): Observable<any> {
-    return from(this.afAuth.currentUser)
+    return this.userService.getCurrentUser$()
       .pipe(
         switchMap(usr => {
           return this.gameCollection

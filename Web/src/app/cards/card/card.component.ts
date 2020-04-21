@@ -28,7 +28,7 @@ export class CardComponent implements OnInit {
     this.breakpointService.layoutChanges$()
       .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
       .subscribe((data: TableGame) => {
-        this.updateLayoutForScreenChange(data.cards);
+        this.updateCardLayoutForScreenChange(data.cards);
       });
   }
 
@@ -39,7 +39,7 @@ export class CardComponent implements OnInit {
     this.cd.detectChanges();
   }
 
-  private updateLayoutForScreenChange(cards: Card[]) {
+  private updateCardLayoutForScreenChange(cards: Card[]) {
     if (this.breakpointService.isSmallScreen()) {
       this.map = this.service.getMapSmall();
       this.backCard = this.service.getBackCardSmall();

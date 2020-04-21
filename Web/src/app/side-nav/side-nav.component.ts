@@ -5,8 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ApiLobbyService } from '../services/apis/api-lobby.service';
 import { ApiLogInOutService } from '../services/apis/api-log-in-out.service';
-import { FireAuthService } from '../services/authentication/fire-auth.service';
-import { SessionStorageService } from '../services/session-storage/session-storage.service';
+import { FireAuthGoogleService } from '../services/authentication/fire-auth-google.service';
+import { UserLocalStorageService } from '../services/session-storage/user-local-storage.service';
 import { isNotNullAndNotUndefined } from '../shared/utils/helper';
 import { CreateNicknameDialogComponent } from './create-nickname-dialog/create-nickname-dialog.component';
 
@@ -28,8 +28,8 @@ export class SideNavComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private apiService: ApiLogInOutService,
     private apiLobbyService: ApiLobbyService,
-    private authService: FireAuthService,
-    private sessionService: SessionStorageService,
+    private authService: FireAuthGoogleService,
+    private userService: UserLocalStorageService,
     private dialog: MatDialog) {
     this.isHandset$ = this.breakpointObserver.observe(
       [Breakpoints.Handset, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
@@ -58,11 +58,11 @@ export class SideNavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sessionService.getCurrentUser$()
+    this.userService.getCurrentUser$()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((user: any | null) => {
         this.currentUserName = isNotNullAndNotUndefined(user) ? user.displayName : '';
-        this.isDisabled = !isNotNullAndNotUndefined(user);
+        this.isDisabled = !this.userService.isConnected();
       });
   }
 

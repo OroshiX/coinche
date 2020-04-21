@@ -1,15 +1,13 @@
-export class UserToken {
-  id: string;
+export class CurrentUser {
+  uid: any;
   email: string;
-  password: string;
-  constructor(email: string, password: string) {
-    this.email = name;
-    this.password = password;
-  }
-}
+  displayName: string;
+  nickname: string;
+  idToken: any;
+  photoURL: string;
+  emailVerified: boolean;
 
-export class Permissions {
-  canActivate(user: UserToken): boolean {
-    return true;
+  constructor(obj: Partial<CurrentUser>) {
+    Object.assign(this, obj);
   }
 }

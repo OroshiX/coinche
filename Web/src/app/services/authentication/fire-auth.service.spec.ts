@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { FireAuthService } from './fire-auth.service';
+import { FireAuthGoogleService } from './fire-auth-google.service';
 
 describe('LoginGoogleService', () => {
-  let service: FireAuthService;
+  let service: FireAuthGoogleService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(FireAuthService);
+    service = TestBed.inject(FireAuthGoogleService);
   });
 
   it('should be created', () => {

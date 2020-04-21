@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginGoogleComponent } from './login-google/login-google.component';
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+import { GameGuard } from './services/guards/game.guard';
 
 const routes: Routes = [
   {
@@ -12,20 +11,17 @@ const routes: Routes = [
   {
     path: 'all-games',
     loadChildren: () => import('./lobby/all-games/all-games.module').then(m => m.AllGamesModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin}
+
   },
   {
-    path: 'play',
+    path: 'play/:id',
     loadChildren: () => import('./games/game/game.module').then(m => m.GameModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin}
+    canActivate: [GameGuard]
   },
   {
     path: 'distributing',
     loadChildren: () => import('./games/distributing/distributing.module').then(m => m.DistributingModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin}
+    canActivate: [GameGuard]
   },
   {
     path: '**',
@@ -34,7 +30,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {enableTracing: false}  // <-- debugging purpose only
+  )],
   exports: [RouterModule]
 })
 export class AppRoutingModule {
