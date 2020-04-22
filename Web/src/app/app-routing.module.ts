@@ -24,6 +24,10 @@ const routes: Routes = [
     canActivate: [GameGuard]
   },
   {
+    path: 'grid',
+    loadChildren: () => import('./grid/grid/grid.module').then(m => m.GridModule),
+  },
+  {
     path: '**',
     component: LoginGoogleComponent
   }

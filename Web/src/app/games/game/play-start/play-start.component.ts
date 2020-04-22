@@ -2,10 +2,11 @@ import { CdkStepper } from '@angular/cdk/stepper';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { Tile } from '../../../grid/grid/grid.component';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { TableGame } from '../../../shared/models/collection-game';
-import { Card, CARD_COLOR, CardView } from '../../../shared/models/play';
+import { Card, CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 
 @Component({
@@ -20,20 +21,21 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
   cardMap = new Map<string, CardView>();
   c2: any;
   cA: CardView;
+  cardNorth: CardView;
+  cardSouth: CardView;
+  cardEast: CardView;
+  cardWest: CardView;
   backCard: any;
   isActive = true;
 
   data: any;
 
-  listOfMyCard = [
-    {color: CARD_COLOR.HEART, value: 7},
-    {color: CARD_COLOR.SPADE, value: 8},
-    {color: CARD_COLOR.CLUB, value: 7},
-    {color: CARD_COLOR.SPADE, value: 10},
-    {color: CARD_COLOR.DIAMOND, value: 8},
-    {color: CARD_COLOR.HEART, value: 12},
-    {color: CARD_COLOR.DIAMOND, value: 13},
-    {color: CARD_COLOR.HEART, value: 1},
+  tiles: Tile[] = [
+    {text: 'SOUTH', cols: 5, rows: 1, color: 'darkgreen'},
+    {text: 'EAST', cols: 1, rows: 4, color: 'darkgreen'},
+    {text: '', cols: 3, rows: 4, color: 'darkgreen'},
+    {text: 'WEST', cols: 1, rows: 4, color: 'darkgreen'},
+    {text: 'NORTH', cols: 5, rows: 2, color: 'grey'}
   ];
 
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
@@ -81,6 +83,9 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
     console.log(events);
     console.log(i);
     console.log(card);
+    i%2 === 0 ? this.cardNorth = card: this.cardSouth = card;
+    console.log(this.cardNorth);
+    console.log(this.cardSouth);
     this.cd.detectChanges();
   }
 

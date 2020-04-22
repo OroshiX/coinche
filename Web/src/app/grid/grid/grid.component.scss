@@ -8,7 +8,7 @@
 @media(max-width: 959px) {
   .card {
     @include width-height-card(60px, 87px);
-    margin: 15px -15px;
+    margin: 10px -15px;
   }
   .card-played {
     @include width-height-card(60px, 87px);
@@ -23,7 +23,7 @@
 @media(min-width: 960px) {
   .card {
     @include width-height-card(120px, 174px);
-    margin: 30px -30px;
+    margin: 20px -30px;
   }
   .card-played {
     @include width-height-card(120px, 174px);
@@ -42,17 +42,17 @@ div.row1 {
 }
 
 div.row2 {
+  margin-top: -70px;
   display: flex;
   flex: 1;
   justify-content: space-evenly;
-  margin-top: -70px;
 }
 
 div.row3 {
+  margin-top: -70px;
   display: flex;
   flex: 1;
   justify-content: space-evenly;
-  margin-top: -70px;
 }
 
 .background-table {

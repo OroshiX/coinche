@@ -8,7 +8,7 @@
 @media(max-width: 959px) {
   .card {
     @include width-height-card(60px, 87px);
-    margin: 15px -15px;
+    margin: 10px -15px;
   }
   .card-played {
     @include width-height-card(60px, 87px);
