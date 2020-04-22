@@ -44,6 +44,7 @@ export class CardView {
   key: string;  // ex. HEART0 from `${color}${id}`
   valuesMap: MultiValuesCard;
   backgroundImg: string;
+  backgroundImgSmall: string;
   playable: boolean;
 
   constructor(obj: Partial<CardView>) {

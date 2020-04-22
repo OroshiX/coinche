@@ -25,34 +25,29 @@
 
   </mat-card-header>
   <mat-card-content>
-
   </mat-card-content>
 </mat-card>
 <br>
 
-<mat-grid-list cols="5" rowHeight="120px" gutterSize="0">
+<mat-grid-list cols="5" [rowHeight]="rowHeight" gutterSize="0">
   <mat-grid-tile
     [colspan]="tiles[0].cols"
     [rowspan]="tiles[0].rows"
     [style.background]="tiles[0].color">
-    <div class="horizontal">
-      <div>
-        <span>Player 0</span>
-        <button mat-raised-button color="primary">Submit</button>
-        <button mat-raised-button color="accent">Cancel</button>
-      </div>
+    <div class="player-south">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">South</mat-chip>
+      </mat-chip-list>
     </div>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[1].cols"
     [rowspan]="tiles[1].rows"
     [style.background]="tiles[1].color">
-    <div class="lateral">
-      <div>
-        <span>Player 1</span>
-        <button mat-raised-button color="primary">Submit</button>
-        <button mat-raised-button color="accent">Cancel</button>
-      </div>
+    <div class="player-east">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">East</mat-chip>
+      </mat-chip-list>
     </div>
   </mat-grid-tile>
   <mat-grid-tile
@@ -62,14 +57,14 @@
     <div class="background-table">
       <div class="wrapper-cards">
         <div class="row1">
-          <app-card [card]="cardSouth"></app-card>
+          <app-card [card]="cardSouth" [isSmallScreen]="isSmallScreen"></app-card>
         </div>
         <div class="row2">
-          <app-card [card]="cardSouth"></app-card>
-          <app-card [card]="cardNorth"></app-card>
+          <app-card [card]="cardSouth" [isSmallScreen]="isSmallScreen"></app-card>
+          <app-card [card]="cardNorth" [isSmallScreen]="isSmallScreen"></app-card>
         </div>
-        <div class="row3">
-          <app-card [card]="cardNorth"></app-card>
+        <div class="row2">
+          <app-card [card]="cardNorth" [isSmallScreen]="isSmallScreen"></app-card>
         </div>
       </div>
     </div>
@@ -78,35 +73,38 @@
     [colspan]="tiles[3].cols"
     [rowspan]="tiles[3].rows"
     [style.background]="tiles[3].color">
-    <div>
-      <div>
-        <span>Player 2</span>
-        <button mat-raised-button color="primary">Submit</button>
-        <button mat-raised-button color="accent">Cancel</button>
-      </div>
+    <div class="player-west">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">West</mat-chip>
+      </mat-chip-list>
     </div>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[4].cols"
     [rowspan]="tiles[4].rows"
     [style.background]="tiles[4].color">
-    <mat-card [ngStyle]="{'width': '100%'}">
-      <mat-card-header>
-        <mat-card-title>My cards</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="background-table-my-cards">
+    <div class="wrapper-north">
+      <div class="player-north">
+        <mat-chip-list class="chip-north" aria-label="Player">
+          <mat-chip class="matChipCol">North</mat-chip>
+        </mat-chip-list>
+      </div>
+      <div class="background-table-my-cards">
         <ng-container *ngIf="myCardMap">
           <div>
             <div class="wrapper-cards-my-cards">
-              <button class="card custom-shadow" *ngFor="let key of myCardMap.keys(); index as i"
-                      [ngStyle]="{'background': myCardMap.get(key).backgroundImg}"
-                      (click)="onClickCard($event, i, myCardMap.get(key))" [value]="myCardMap.get(key).value">
+              <button class="card custom-shadow" *ngFor="let key of myCardMap?.keys(); index as i"
+                      [ngStyle]="isSmallScreen ?
+                                {'background':  myCardMap?.get(key)?.backgroundImgSmall} :
+                                {'background':  myCardMap?.get(key)?.backgroundImg} "
+                      (dblclick)="onDblClickCard($event, i, myCardMap?.get(key))"
+                      [value]="myCardMap?.get(key)?.value">
               </button>
             </div>
           </div>
         </ng-container>
-      </mat-card-content>
-    </mat-card>
+      </div>
+    </div>
   </mat-grid-tile>
 </mat-grid-list>
 

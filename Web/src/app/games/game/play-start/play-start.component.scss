@@ -5,18 +5,30 @@
   border-radius: 5px;
 }
 
+@mixin margin-overlapped($top) {
+  margin-top: $top;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+}
+
 @media(max-width: 959px) {
   .card {
     @include width-height-card(60px, 87px);
-    margin: 15px -15px;
+    margin: 10px -15px;
   }
   .card-played {
     @include width-height-card(60px, 87px);
     margin: 10px;
   }
-
   .cards {
     min-height: 105px;
+  }
+  .row1 {
+    @include margin-overlapped(0);
+  }
+  .row2 {
+    @include margin-overlapped(-30px);
   }
 }
 
@@ -33,26 +45,12 @@
   .cards {
     min-height: 210px;
   }
-}
-
-div.row1 {
-  display: flex;
-  flex: 1;
-  justify-content: space-evenly;
-}
-
-div.row2 {
-  display: flex;
-  flex: 1;
-  justify-content: space-evenly;
-  margin-top: -70px;
-}
-
-div.row3 {
-  display: flex;
-  flex: 1;
-  justify-content: space-evenly;
-  margin-top: -70px;
+  .row1 {
+    @include margin-overlapped(0);
+  }
+  .row2 {
+    @include margin-overlapped(-70px);
+  }
 }
 
 .background-table {
@@ -70,10 +68,41 @@ div.row3 {
 }
 
 .background-table-my-cards {
+  width: 100%;
+  flex: 1;
   background-color: darkred;
   display: flex;
   justify-content: center;
   align-content: center;
+}
+.wrapper-north {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.chip-north {
+  flex: fit-content;
+}
+.player-south {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-content: flex-end;
+}
+.player-north {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-content: flex-start;
+}
+.matChipCol {
+  background-color: #ff4081;
+  color: white;
+  font-family: "Roboto", sans-serif;
 }
 
 .wrapper-cards-my-cards {

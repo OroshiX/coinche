@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +28,7 @@ import { CardComponent } from './card/card.component';
     MatInputModule,
     MatIconModule,
     MatGridListModule,
+    MatChipsModule,
     ReactiveFormsModule
   ],
   providers: [

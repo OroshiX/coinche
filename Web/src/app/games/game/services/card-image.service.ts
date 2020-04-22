@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  Card,
-  CARD_COLOR,
-  CARD_VALUE,
-  cardIdList,
-  cardValueMapToCardId,
-  cardValues,
-  CardView,
-  colorList
-} from '../../../shared/models/play';
+import { Card, CARD_COLOR, CARD_VALUE, cardValueMapToCardId, CardView } from '../../../shared/models/play';
 
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
@@ -155,20 +146,7 @@ export class CardImageService {
 
   map = new Map<number, string[]>();
   mapSmall = new Map<number, string[]>();
-  cardMapSmall = new Map<string, CardView>();
-  cardMap = new Map<string, CardView>();
-  myCardMapSmall = new Map<string, CardView>();
   myCardMap = new Map<string, CardView>();
-
-  processCardMap() {
-    this.processMap();
-    colorList.forEach((cardColor) => {
-      cardIdList.forEach((cardId, i) => {
-        const cardValue = cardValues[i];
-        this.buildCardMap(cardColor, cardValue);
-      });
-    });
-  }
 
   buildCardMap(color: CARD_COLOR,
                value: CARD_VALUE) {
@@ -176,28 +154,20 @@ export class CardImageService {
     const cardId = cardValueMapToCardId(value);
     switch (color) {
       case CARD_COLOR.CLUB:
-        this.myCardMapSmall.set(key,
-          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionCSmall[cardId]));
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId]));
+          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId], this.listPositionCSmall[cardId]));
         break;
       case CARD_COLOR.DIAMOND:
-        this.myCardMapSmall.set(key,
-          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionDSmall[cardId]));
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId]));
+          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId], this.listPositionDSmall[cardId]));
         break;
       case CARD_COLOR.HEART:
-        this.myCardMapSmall.set(key,
-          this.createCardView(CARD_COLOR.HEART, value, this.listPositionHSmall[cardId]));
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId]));
+          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId], this.listPositionHSmall[cardId]));
         break;
       case CARD_COLOR.SPADE:
-        this.myCardMapSmall.set(key,
-          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionSSmall[cardId]));
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId]));
+          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId], this.listPositionSSmall[cardId]));
         break;
     }
   }
@@ -206,12 +176,6 @@ export class CardImageService {
     const sortedCardList = this.sortList(list);
     sortedCardList.forEach(card => this.buildCardMap(card.color, card.value));
     return this.myCardMap;
-  }
-
-  buildMyDeckSmall(list: Card[]): Map<string, CardView> {
-    const sortedCardListSmall = this.sortList(list);
-    sortedCardListSmall.forEach(card => this.buildCardMap(card.color, card.value));
-    return this.myCardMapSmall;
   }
 
   private sortList(list: Card[]): Card[] {
@@ -233,30 +197,21 @@ export class CardImageService {
     return [...clubList];
   }
 
-  private createCardView(col: string, val: number, imageUrl: string): CardView {
+  private createCardView(col: string, val: number, imageUrl: string, imageUrlSmall: string): CardView {
     return new CardView({
       color: col,
       value: val,
-      backgroundImg: imageUrl
+      backgroundImg: imageUrl,
+      backgroundImgSmall: imageUrlSmall
     });
   }
 
-  getBackCard() {
+  getBackCardImg() {
     return backCardImg;
   }
 
-  getBackCardSmall() {
+  getBackCardImgSmall() {
     return backCardImgSmall;
-  }
-
-  getCardMap() {
-    this.processCardMap();
-    return this.cardMap;
-  }
-
-  getCardMapSmall() {
-    this.processCardMap();
-    return this.cardMapSmall;
   }
 
   getMap() {

@@ -1,5 +1,7 @@
 <button class="card-played custom-shadow"
-        [ngStyle]="{'background': myCard.backgroundImg}"
+        [ngStyle]="isSmallScreen ?
+                  {'background':  card?.backgroundImgSmall} :
+                  {'background':  card?.backgroundImg} "
         (click)="onClickCard($event)"
-        [value]="myCard.value">
+        [value]="card?.value">
 </button>

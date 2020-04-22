@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CardView } from '../../../shared/models/play';
 
 @Component({
@@ -6,19 +6,20 @@ import { CardView } from '../../../shared/models/play';
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss']
 })
-export class CardComponent implements OnInit {
-  // tslint:disable-next-line:no-input-rename
-  @Input('card') myCard: CardView;
+export class CardComponent implements OnInit, OnChanges {
+  @Input() card: CardView;
+  @Input() isSmallScreen: boolean;
 
   constructor() {
   }
 
   ngOnInit(): void {
-    console.log(this.myCard);
   }
 
   onClickCard($event: any) {
-    console.log($event);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
   }
 
 }

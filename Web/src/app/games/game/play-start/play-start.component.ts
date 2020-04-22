@@ -19,14 +19,18 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
 
   map = new Map<number, string[]>();
   cardMap = new Map<string, CardView>();
+  myCardMap: Map<string, CardView> = new Map<string, CardView>();
   c2: any;
   cA: CardView;
   cardNorth: CardView;
   cardSouth: CardView;
   cardEast: CardView;
   cardWest: CardView;
-  backCard: any;
+  backCardImg: string;
+  backCardImgSmall: string;
   isActive = true;
+  isSmallScreen: boolean;
+  rowHeight: number;
 
   data: any;
 
@@ -35,10 +39,8 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
     {text: 'EAST', cols: 1, rows: 4, color: 'darkgreen'},
     {text: '', cols: 3, rows: 4, color: 'darkgreen'},
     {text: 'WEST', cols: 1, rows: 4, color: 'darkgreen'},
-    {text: 'NORTH', cols: 5, rows: 2, color: 'grey'}
+    {text: 'NORTH', cols: 5, rows: 3, color: 'darkgreen'}
   ];
-
-  myCardMap: Map<string, CardView> = new Map<string, CardView>();
 
   constructor(
     private route: ActivatedRoute,
@@ -51,11 +53,10 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // const gameId = 'DE6nV9kAg5YB8mMaJlEh';
     // route.data includes both `data` and `resolve`
     // const user = this.route.data.pipe(map(d => d.user));
     const gameId: string = this.route.snapshot.params.id;
-    console.log(gameId);
+    this.cd.detectChanges();
     this.breakpointService.layoutChanges$()
       .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
       .subscribe((data: TableGame) => {
@@ -64,28 +65,28 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.cd.detectChanges();
   }
 
   private updateLayoutForScreenChange(cards: Card[]) {
     if (this.breakpointService.isSmallScreen()) {
-      this.map = this.service.getMapSmall();
-      this.backCard = this.service.getBackCardSmall();
-      this.myCardMap = this.service.buildMyDeckSmall(cards);
+      this.isSmallScreen = true;
+      this.rowHeight = 70;
     } else {
-      this.map = this.service.getMap();
-      this.backCard = this.service.getBackCard();
-      this.myCardMap = this.service.buildMyDeck(cards);
+      this.isSmallScreen = false;
+      this.rowHeight = 120;
     }
+    this.backCardImg = this.service.getBackCardImgSmall();
+    this.backCardImgSmall = this.service.getBackCardImg();
+    this.myCardMap = this.service.buildMyDeck(cards);
     this.cd.detectChanges();
   }
 
-  onClickCard(events: any, i: number, card: any) {
-    console.log(events);
-    console.log(i);
-    console.log(card);
-    i%2 === 0 ? this.cardNorth = card: this.cardSouth = card;
-    console.log(this.cardNorth);
-    console.log(this.cardSouth);
+  onDblClickCard(events: any, i: number, card: any) {
+    // console.log(events);
+    // console.log(i);
+    // console.log(card);
+    i % 2 === 0 ? this.cardNorth = card : this.cardSouth = card;
     this.cd.detectChanges();
   }
 

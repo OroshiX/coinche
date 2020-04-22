@@ -12,6 +12,7 @@ export class PlayInitComponent implements OnInit {
   map = new Map<number, string[]>();
   C2: any;
   backCard: any;
+  isSmallScreen: boolean;
 
   constructor(private service: CardImageService, private breakpointService: BreakpointService) {
     this.breakpointService.layoutChanges$()
@@ -23,10 +24,10 @@ export class PlayInitComponent implements OnInit {
   private updateMyLayoutForScreenChange() {
     if (this.breakpointService.isSmallScreen()) {
       this.map = this.service.getMapSmall();
-      this.backCard = this.service.getBackCardSmall();
+      this.backCard = this.service.getBackCardImgSmall();
     } else {
       this.map = this.service.getMap();
-      this.backCard = this.service.getBackCard();
+      this.backCard = this.service.getBackCardImg();
     }
     this.C2 = this.map.get(0)[0];
   }
