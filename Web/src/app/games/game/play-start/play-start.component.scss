@@ -28,7 +28,7 @@
     @include margin-overlapped(0);
   }
   .row2 {
-    @include margin-overlapped(-30px);
+    @include margin-overlapped(-40px);
   }
 }
 
@@ -49,18 +49,21 @@
     @include margin-overlapped(0);
   }
   .row2 {
-    @include margin-overlapped(-70px);
+    @include margin-overlapped(-75px);
   }
 }
 
 .background-table {
   background-color: darkgreen;
   max-width: 1200px;
-  padding-top: 30px;
-  padding-bottom: 15px
+  /*padding-top: 10px;
+  padding-bottom: 10px*/
+  display: flex;
+  align-content: flex-start;
 }
 
 .wrapper-cards {
+  flex: 1;
   flex-direction: column;
   display: flex;
   justify-content: space-evenly;
@@ -76,7 +79,9 @@
   align-content: center;
 }
 .wrapper-north {
+  margin-top: 10px;
   width:100%;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -84,6 +89,7 @@
 }
 .chip-north {
   flex: fit-content;
+  margin-bottom: 10px;
 }
 .player-south {
   width: 100%;
@@ -91,6 +97,7 @@
   display: flex;
   justify-content: center;
   align-content: flex-end;
+  margin-bottom: 10px;
 }
 .player-north {
   width: 100%;
@@ -98,6 +105,20 @@
   display: flex;
   justify-content: center;
   align-content: flex-start;
+}
+.player-west {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+}
+.player-east {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-content: center;
 }
 .matChipCol {
   background-color: #ff4081;

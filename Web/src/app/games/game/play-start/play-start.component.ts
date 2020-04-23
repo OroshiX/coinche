@@ -39,7 +39,7 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
     {text: 'EAST', cols: 1, rows: 4, color: 'darkgreen'},
     {text: '', cols: 3, rows: 4, color: 'darkgreen'},
     {text: 'WEST', cols: 1, rows: 4, color: 'darkgreen'},
-    {text: 'NORTH', cols: 5, rows: 3, color: 'darkgreen'}
+    {text: 'NORTH', cols: 5, rows: 4, color: 'darkgreen'}
   ];
 
   constructor(
@@ -72,10 +72,10 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
   private updateLayoutForScreenChange(cards: Card[]) {
     if (this.breakpointService.isSmallScreen()) {
       this.isSmallScreen = true;
-      this.rowHeight = 70;
+      this.rowHeight = 60;
     } else {
       this.isSmallScreen = false;
-      this.rowHeight = 120;
+      this.rowHeight = 100;
     }
     this.backCardImg = this.service.getBackCardImgSmall();
     this.backCardImgSmall = this.service.getBackCardImg();
