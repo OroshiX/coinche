@@ -22,7 +22,6 @@ export class LoginGoogleComponent implements OnInit, OnDestroy {
     this.sub = this.userService.isConnected$()
       .subscribe(isConnected => {
         this.isConnected = isConnected;
-        console.log(this.isConnected);
       });
   }
 

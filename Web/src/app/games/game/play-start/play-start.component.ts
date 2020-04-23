@@ -1,6 +1,6 @@
 import { CdkStepper } from '@angular/cdk/stepper';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Tile } from '../../../grid/grid/grid.component';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
@@ -44,6 +44,7 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private service: CardImageService,
     private breakpointService: BreakpointService,
     private firestoreService: ApiFirestoreService,

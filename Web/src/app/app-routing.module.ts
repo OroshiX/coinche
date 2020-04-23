@@ -21,7 +21,6 @@ const routes: Routes = [
   {
     path: 'distributing',
     loadChildren: () => import('./games/distributing/distributing.module').then(m => m.DistributingModule),
-    canActivate: [GameGuard]
   },
   {
     path: 'grid',
