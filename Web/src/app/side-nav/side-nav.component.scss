@@ -29,12 +29,16 @@
   flex: auto;
 }
 .color-inactive{
-  background-color: whitesmoke;
-  color: darkgrey;
+  background-color: lightslategrey;
+  color: dimgrey;
+}
+.color-active{
+  background-color: dimgrey;
+  color: #0a0d0b;
 }
 .active-link {
   color: white;
-  background-color: #3F51B5 !important;
+  background-color: darkred !important;
 }
 .active-link:hover {
   color: lightgray;

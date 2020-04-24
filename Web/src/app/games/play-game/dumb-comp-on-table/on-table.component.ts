@@ -9,7 +9,6 @@ import { CardView } from '../../../shared/models/play';
 export class OnTableComponent implements OnInit {
   @Input() cardsPlayed: CardView[];
   @Input() isSmallScreen: boolean;
-  @Input() isOnTable: boolean;
 
   constructor() {
   }

@@ -9,6 +9,7 @@ import { CardView } from '../../../shared/models/play';
 export class CardComponent implements OnInit, OnChanges {
   @Input() card: CardView;
   @Input() isSmallScreen: boolean;
+  @Input() isDisable: boolean;
   @Input() isOnTable: boolean;
   @Output() cardChosen = new EventEmitter<CardView>();
 

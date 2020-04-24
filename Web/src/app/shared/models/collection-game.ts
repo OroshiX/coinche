@@ -6,8 +6,8 @@ export interface TableGame {
   cards: Card[];
   onTable: CardPlayed[];
   state: STATE;
-  nextPlayer: PlayerPosition;
-  myPosition: PlayerPosition;
+  nextPlayer: PLAYER_POSITION;
+  myPosition: PLAYER_POSITION;
   bids: Bid[];
   currentBid: Bid;
   score: Score;

@@ -9,7 +9,7 @@ import { CardView } from '../../../shared/models/play';
 export class MyCardsComponent implements OnInit {
   @Input() myCardMap: Map<string, CardView>;
   @Input() isSmallScreen: boolean;
-  @Input() isOnTable: boolean;
+  @Input() isDisable: boolean;
   @Output() cardChosen = new EventEmitter<CardView>();
 
   constructor() {

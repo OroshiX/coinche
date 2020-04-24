@@ -5,9 +5,10 @@
                [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <button mat-list-item [routerLink]="['/login']" routerLinkActive="active-link">Login</button>
+      <button mat-list-item [routerLink]="['/login']" routerLinkActive="active-link"
+              class="color-active">Login</button>
       <button mat-list-item [routerLink]="['/all-games']" routerLinkActive="active-link"
-              [disabled]="isDisabled" [ngClass]="{'color-inactive': isDisabled}">All Games
+              [disabled]="isDisabled" [ngClass]="isDisabled ? 'color-inactive': 'color-active'">All Games
       </button>
     </mat-nav-list>
   </mat-sidenav>

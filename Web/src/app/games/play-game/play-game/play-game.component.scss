@@ -15,14 +15,13 @@
   display: flex;
   justify-content: center;
   align-content: flex-end;
-  margin-bottom: 10px;
 }
 .player-north {
   width: 100%;
   flex: 1;
   display: flex;
   justify-content: center;
-  align-content: flex-start;
+  align-content: center;
 }
 .player-west {
   width: 100%;
@@ -39,9 +38,38 @@
   align-content: center;
 }
 .matChipCol {
-  background-color: #ff4081;
+  background-color: #193812;
   color: white;
   font-family: "Roboto", sans-serif;
+}
+.resume-wrapper {
+  flex: 1;
+  background-color: darkgreen;
+  display: flex;
+  align-self: center;
+}
+.resume {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.item {
+  flex: 1;
+  color: lightyellow;
+}
+.itemContent {
+  color: limegreen;
+  font-weight: bold;
+}
+.currentPlayer {
+  animation: blinker 3s step-start infinite;
+  color: limegreen;
+  font-weight: bold;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 

@@ -1,4 +1,4 @@
-<app-state [state]="gameState"></app-state>
+<!--<app-state [state]="gameState"></app-state>-->
 
 <mat-grid-list cols="5" [rowHeight]="rowHeight" gutterSize="0">
   <mat-grid-tile
@@ -6,18 +6,15 @@
     [rowspan]="tiles[0].rows"
     [style.background]="tiles[0].color">
     <div class="player-south">
-      <mat-chip-list aria-label="Player">
-        <mat-chip class="matChipCol">South</mat-chip>
-      </mat-chip-list>
     </div>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[1].cols"
     [rowspan]="tiles[1].rows"
     [style.background]="tiles[1].color">
-    <div class="player-east">
+    <div class="player-south">
       <mat-chip-list aria-label="Player">
-        <mat-chip class="matChipCol">East</mat-chip>
+        <mat-chip class="matChipCol">{{nicknameSouth}}</mat-chip>
       </mat-chip-list>
     </div>
   </mat-grid-tile>
@@ -25,15 +22,21 @@
     [colspan]="tiles[2].cols"
     [rowspan]="tiles[2].rows"
     [style.background]="tiles[2].color">
-    <app-on-table [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table>
+    <mat-card class="resume-wrapper">
+      <div class="resume">
+        <div class="item">Score: </div>
+        <div class="item">CurrentBid: <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span></div>
+        <div class="item">Turn to <span class="currentPlayer">{{currentPlayer}}</span> to play</div>
+      </div>
+    </mat-card>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[3].cols"
     [rowspan]="tiles[3].rows"
     [style.background]="tiles[3].color">
-    <div class="player-west">
+    <div class="player-east">
       <mat-chip-list aria-label="Player">
-        <mat-chip class="matChipCol">West</mat-chip>
+        <mat-chip class="matChipCol">{{nicknameEast}}</mat-chip>
       </mat-chip-list>
     </div>
   </mat-grid-tile>
@@ -41,18 +44,58 @@
     [colspan]="tiles[4].cols"
     [rowspan]="tiles[4].rows"
     [style.background]="tiles[4].color">
-    <div class="wrapper-north">
+    <ng-container *ngIf="gameState==='PLAYING'; else bidding">
+      <app-on-table [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table>
+    </ng-container>
+    <ng-template #bidding>
+      bidding here
+    </ng-template>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[5].cols"
+    [rowspan]="tiles[5].rows"
+    [style.background]="tiles[5].color">
+    <div class="player-west">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">{{nicknameWest}}</mat-chip>
+      </mat-chip-list>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[6].cols"
+    [rowspan]="tiles[6].rows"
+    [style.background]="tiles[6].color">
       <div class="player-north">
-        <mat-chip-list class="chip-north" aria-label="Player">
-          <mat-chip class="matChipCol">North</mat-chip>
-        </mat-chip-list>
       </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[7].cols"
+    [rowspan]="tiles[7].rows"
+    [style.background]="tiles[7].color">
+    <div class="player-north">
+      <mat-chip-list class="chip-north" aria-label="Player">
+        <mat-chip class="matChipCol">{{nicknameNorth}}</mat-chip>
+      </mat-chip-list>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[8].cols"
+    [rowspan]="tiles[8].rows"
+    [style.background]="tiles[8].color">
+    <div class="player-north">
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[9].cols"
+    [rowspan]="tiles[9].rows"
+    [style.background]="tiles[9].color">
       <app-my-cards
         [myCardMap]="myCardMap"
         [isSmallScreen]="isSmallScreen"
-        (cardChosen)="onCardChosen($event)">
+        (cardChosen)="onCardChosen($event)"
+        [isDisable]="isMyCardsDisable"
+      >
       </app-my-cards>
-    </div>
   </mat-grid-tile>
 </mat-grid-list>
 
