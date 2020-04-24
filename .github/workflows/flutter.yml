@@ -1,8 +1,10 @@
 name: Test, Build and Release apk
 
 on:
+  push:
+    branches:
+      - deploy-flutter
   create:
-#    branches: [ deploy-flutter ]
     tags:
       - 'v*flutter*'
 #  pull_request:

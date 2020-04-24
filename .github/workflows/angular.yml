@@ -1,5 +1,8 @@
 name: Angular deploy
 on:
+  push:
+    branches:
+      - deploy-angular
   create:
     tags:
       - 'v*angular*'
