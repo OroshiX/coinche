@@ -24,15 +24,9 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   cardsPlayed: CardView[] = new Array<CardView>();
   map = new Map<number, string[]>();
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
-  c2: any;
-  cA: CardView;
   cardNorth: CardView;
-  cardSouth: CardView;
-  cardEast: CardView;
-  cardWest: CardView;
   backCardImg: string;
   backCardImgSmall: string;
-  isActive = true;
   isSmallScreen: boolean;
   rowHeight: number;
 
@@ -73,6 +67,16 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.cd.detectChanges();
   }
+
+  onCardChosen(event$: any) {
+    console.log(event$);
+    this.cardNorth = event$;
+    this.cardsPlayed[0] = this.cardNorth;
+    const key = `${this.cardNorth.color}${this.cardNorth.value}`;
+    this.myCardMap.delete(key);
+    this.cd.detectChanges();
+  }
+
 
   private updateLayoutForScreenChange(cards: Card[]) {
     if (this.breakpointService.isSmallScreen()) {

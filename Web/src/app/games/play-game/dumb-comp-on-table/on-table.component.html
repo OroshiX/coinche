@@ -1,20 +1,20 @@
 <div class="background-table">
   <div class="wrapper-cards">
     <div class="row1">
-      <app-card [card]="cardsPlayed[2]" [isSmallScreen]="isSmallScreen" [cardPlayed]="cardPlayed"></app-card> <!-- South-->
+      <app-card [card]="cardsPlayed[2]" [isSmallScreen]="isSmallScreen" [isOnTable]="isOnTable"></app-card> <!-- South-->
     </div>
     <div class="row2">
       <app-card [card]="cardsPlayed[1]"
                 [isSmallScreen]="isSmallScreen"
-                [cardPlayed]="true"></app-card> <!-- East-->
+                [isOnTable]="true"></app-card> <!-- East-->
       <app-card [card]="cardsPlayed[3]"
                 [isSmallScreen]="isSmallScreen"
-                [cardPlayed]="true"></app-card> <!-- West-->
+                [isOnTable]="true"></app-card> <!-- West-->
     </div>
     <div class="row2">
       <app-card [card]="cardsPlayed[0]"
                 [isSmallScreen]="isSmallScreen"
-                [cardPlayed]="true"></app-card> <!-- North-->
+                [isOnTable]="true"></app-card> <!-- North-->
     </div>
   </div>
 </div>

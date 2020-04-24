@@ -7,7 +7,7 @@
 
 @media(max-width: 959px) {
   .row1 {
-    @include margin-overlapped(0);
+    @include margin-overlapped(-5px);
   }
   .row2 {
     @include margin-overlapped(-40px);
@@ -16,7 +16,7 @@
 
 @media(min-width: 960px) {
   .row1 {
-    @include margin-overlapped(0);
+    @include margin-overlapped(-10px);
   }
   .row2 {
     @include margin-overlapped(-95px);

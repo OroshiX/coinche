@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CardView } from '../../../shared/models/play';
 
 @Component({
@@ -9,7 +9,8 @@ import { CardView } from '../../../shared/models/play';
 export class CardComponent implements OnInit, OnChanges {
   @Input() card: CardView;
   @Input() isSmallScreen: boolean;
-  @Input() cardPlayed: boolean;
+  @Input() isOnTable: boolean;
+  @Output() cardChosen = new EventEmitter<CardView>();
 
   constructor() {
   }
@@ -17,9 +18,10 @@ export class CardComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  onClickCard($event: any) {
-    console.log($event);
+  onClickCard(card: CardView) {
+    console.log(card);
     console.log(JSON.stringify(this.card));
+    this.cardChosen.emit(card);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

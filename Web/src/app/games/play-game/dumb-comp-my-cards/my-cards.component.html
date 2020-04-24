@@ -6,7 +6,9 @@
           <app-card
             [card]="myCardMap?.get(key)"
             [isSmallScreen]="isSmallScreen"
-            [cardPlayed]="false"></app-card>
+            [isOnTable]="false"
+            (cardChosen)="onCardChosen($event)"
+          ></app-card>
         </ng-container>
       </div>
     </div>

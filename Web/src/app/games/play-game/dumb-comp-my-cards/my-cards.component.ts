@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CardView } from '../../../shared/models/play';
 
 @Component({
@@ -9,10 +9,8 @@ import { CardView } from '../../../shared/models/play';
 export class MyCardsComponent implements OnInit {
   @Input() myCardMap: Map<string, CardView>;
   @Input() isSmallScreen: boolean;
-  @Input() cardPlayed: boolean;
-
-  cardNorth: CardView;
-  cardSouth: CardView;
+  @Input() isOnTable: boolean;
+  @Output() cardChosen = new EventEmitter<CardView>();
 
   constructor() {
   }
@@ -20,15 +18,9 @@ export class MyCardsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onDblClickCard(events: any, i: number, card: any) {
-    console.log(events);
-    console.log(i);
-    console.log(card);
-    i % 2 === 0 ? this.cardNorth = card : this.cardSouth = card;
-    /*this.cardsPlayed[0] = card;
-    this.cardsPlayed[1] = card;
-    this.cardsPlayed[2] = card;
-    this.cardsPlayed[3] = card;*/
+  onCardChosen(event: any) {
+    console.log(event);
+    this.cardChosen.emit(event);
   }
 
 }
