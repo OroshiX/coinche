@@ -9,14 +9,17 @@ import { CardView } from '../../../shared/models/play';
 export class CardComponent implements OnInit, OnChanges {
   @Input() card: CardView;
   @Input() isSmallScreen: boolean;
+  @Input() cardPlayed: boolean;
 
   constructor() {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
   onClickCard($event: any) {
+    console.log($event);
+    console.log(JSON.stringify(this.card));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

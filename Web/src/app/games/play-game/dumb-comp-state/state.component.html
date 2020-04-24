@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-header>
+    <div class="stepper-wrapper">
+      <mat-horizontal-stepper #stepper [ngStyle]="{'fontSize': '11px'}">
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>JOINING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>BIDDING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>PLAYING</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>ENDED</ng-template>
+        </mat-step>
+        <mat-step [editable]="false">
+          <ng-template matStepLabel>IDLE</ng-template>
+        </mat-step>
+      </mat-horizontal-stepper>
+
+      <button mat-button (click)="onNext()">Next</button>
+      <button mat-button (click)="onReset()">Reset</button>
+    </div>
+
+  </mat-card-header>
+  <mat-card-content>
+  </mat-card-content>
+</mat-card>

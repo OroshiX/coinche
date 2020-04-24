@@ -1,0 +1,7 @@
+<button [ngClass]="cardPlayed ? 'card-played custom-shadow' : 'card custom-shadow'"
+        [ngStyle]="isSmallScreen ?
+          {'background':  card?.backgroundImgSmall} :
+          {'background':  card?.backgroundImg} "
+        (dblclick)=onClickCard($event)
+        [value]="card?.value">
+</button>

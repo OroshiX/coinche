@@ -1,0 +1,48 @@
+@mixin margin-overlapped($top) {
+  margin-top: $top;
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+}
+
+@media(max-width: 959px) {
+  .row1 {
+    @include margin-overlapped(0);
+  }
+  .row2 {
+    @include margin-overlapped(-40px);
+  }
+}
+
+@media(min-width: 960px) {
+  .row1 {
+    @include margin-overlapped(0);
+  }
+  .row2 {
+    @include margin-overlapped(-95px);
+  }
+}
+
+.background-table {
+  background-color: darkgreen;
+  max-width: 1200px;
+  display: flex;
+  align-content: flex-start;
+}
+
+.wrapper-cards {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+
+
+
+
+
+
+
+

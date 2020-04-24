@@ -1,24 +1,28 @@
-import { CdkStepper } from '@angular/cdk/stepper';
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { Tile } from '../../../grid/grid/grid.component';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { TableGame } from '../../../shared/models/collection-game';
 import { Card, CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 
+interface Tile {
+  text: string;
+  cols: number;
+  rows: number;
+  color: string;
+}
+
 @Component({
   selector: 'app-play-start',
-  templateUrl: './play-start.component.html',
-  styleUrls: ['./play-start.component.scss'],
+  templateUrl: './play-game.component.html',
+  styleUrls: ['./play-game.component.scss'],
 })
-export class PlayStartComponent implements OnInit, AfterViewInit {
-  @ViewChild('stepper') stepper: CdkStepper;
-
+export class PlayGameComponent implements OnInit, AfterViewInit {
+  gameState: any;
+  cardsPlayed: CardView[] = new Array<CardView>();
   map = new Map<number, string[]>();
-  cardMap = new Map<string, CardView>();
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
   c2: any;
   cA: CardView;
@@ -61,6 +65,7 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
     this.breakpointService.layoutChanges$()
       .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
       .subscribe((data: TableGame) => {
+        console.log(JSON.stringify(data));
         this.updateLayoutForScreenChange(data.cards);
       });
   }
@@ -80,24 +85,6 @@ export class PlayStartComponent implements OnInit, AfterViewInit {
     this.backCardImg = this.service.getBackCardImgSmall();
     this.backCardImgSmall = this.service.getBackCardImg();
     this.myCardMap = this.service.buildMyDeck(cards);
-    this.cd.detectChanges();
-  }
-
-  onDblClickCard(events: any, i: number, card: any) {
-    // console.log(events);
-    // console.log(i);
-    // console.log(card);
-    i % 2 === 0 ? this.cardNorth = card : this.cardSouth = card;
-    this.cd.detectChanges();
-  }
-
-  onNext() {
-    this.stepper.next();
-    this.cd.detectChanges();
-  }
-
-  onReset() {
-    this.stepper.reset();
     this.cd.detectChanges();
   }
 

@@ -1,0 +1,57 @@
+<app-state [state]="gameState"></app-state>
+
+<mat-grid-list cols="5" [rowHeight]="rowHeight" gutterSize="0">
+  <mat-grid-tile
+    [colspan]="tiles[0].cols"
+    [rowspan]="tiles[0].rows"
+    [style.background]="tiles[0].color">
+    <div class="player-south">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">South</mat-chip>
+      </mat-chip-list>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[1].cols"
+    [rowspan]="tiles[1].rows"
+    [style.background]="tiles[1].color">
+    <div class="player-east">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">East</mat-chip>
+      </mat-chip-list>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[2].cols"
+    [rowspan]="tiles[2].rows"
+    [style.background]="tiles[2].color">
+    <app-on-table [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[3].cols"
+    [rowspan]="tiles[3].rows"
+    [style.background]="tiles[3].color">
+    <div class="player-west">
+      <mat-chip-list aria-label="Player">
+        <mat-chip class="matChipCol">West</mat-chip>
+      </mat-chip-list>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile
+    [colspan]="tiles[4].cols"
+    [rowspan]="tiles[4].rows"
+    [style.background]="tiles[4].color">
+    <div class="wrapper-north">
+      <div class="player-north">
+        <mat-chip-list class="chip-north" aria-label="Player">
+          <mat-chip class="matChipCol">North</mat-chip>
+        </mat-chip-list>
+      </div>
+      <app-my-cards
+        [myCardMap]="myCardMap"
+        [isSmallScreen]="isSmallScreen">
+      </app-my-cards>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+

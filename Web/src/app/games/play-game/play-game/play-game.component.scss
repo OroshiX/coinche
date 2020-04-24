@@ -1,0 +1,49 @@
+.wrapper-north {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.chip-north {
+  flex: fit-content;
+  margin-bottom: 10px;
+}
+.player-south {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-content: flex-end;
+  margin-bottom: 10px;
+}
+.player-north {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-content: flex-start;
+}
+.player-west {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+}
+.player-east {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-content: center;
+}
+.matChipCol {
+  background-color: #ff4081;
+  color: white;
+  font-family: "Roboto", sans-serif;
+}
+
+
+
+

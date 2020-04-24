@@ -1,0 +1,14 @@
+<div class="background-table-my-cards">
+  <ng-container *ngIf="myCardMap">
+    <div>
+      <div class="wrapper-cards-my-cards">
+        <ng-container *ngFor="let key of myCardMap?.keys(); index as i">
+          <app-card
+            [card]="myCardMap?.get(key)"
+            [isSmallScreen]="isSmallScreen"
+            [cardPlayed]="false"></app-card>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -48,10 +48,14 @@ export class CardView {
   playable: boolean;
 
   constructor(obj: Partial<CardView>) {
-    obj.id = cardValueMapToCardId(obj.value);
-    obj.key = `${obj.color.toUpperCase()}${obj.id}`;  // ex. HEART0 - HEART7
-    obj.valuesMap = createValuesMap(obj.id);
-    Object.assign(this, obj);
+    if (obj === undefined || obj === null) {
+      Object.assign(this, null);
+    } else {
+      obj.id = cardValueMapToCardId(obj.value);
+      obj.key = `${obj.color.toUpperCase()}${obj.id}`;  // ex. HEART0 - HEART7
+      obj.valuesMap = createValuesMap(obj.id);
+      Object.assign(this, obj);
+    }
   }
 }
 

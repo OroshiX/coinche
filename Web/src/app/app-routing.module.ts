@@ -15,16 +15,8 @@ const routes: Routes = [
   },
   {
     path: 'play/:id',
-    loadChildren: () => import('./games/game/game.module').then(m => m.GameModule),
+    loadChildren: () => import('./games/play-game/play-game.module').then(m => m.PlayGameModule),
     canActivate: [GameGuard]
-  },
-  {
-    path: 'distributing',
-    loadChildren: () => import('./games/distributing/distributing.module').then(m => m.DistributingModule),
-  },
-  {
-    path: 'grid',
-    loadChildren: () => import('./grid/grid/grid.module').then(m => m.GridModule),
   },
   {
     path: '**',

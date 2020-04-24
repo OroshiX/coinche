@@ -10,17 +10,19 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatStepperModule } from '@angular/material/stepper';
-import { GameRoutingModule } from './game-routing.module';
-import { PlayInitComponent } from './play-init/play-init.component';
-import { PlayStartComponent } from './play-start/play-start.component';
-import { CardComponent } from './card/card.component';
+import { PlayGameRoutingModule } from './play-game-routing.module';
+import { PlayGameComponent } from './play-game/play-game.component';
+import { CardComponent } from './dumb-comp-card/card.component';
+import { StateComponent } from './dumb-comp-state/state.component';
+import { OnTableComponent } from './dumb-comp-on-table/on-table.component';
+import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
 
 
 @NgModule({
-  declarations: [PlayInitComponent, PlayStartComponent, CardComponent],
+  declarations: [PlayGameComponent, CardComponent, StateComponent, OnTableComponent, MyCardsComponent],
   imports: [
     CommonModule,
-    GameRoutingModule,
+    PlayGameRoutingModule,
     MatCardModule,
     MatStepperModule,
     MatButtonModule,
@@ -37,5 +39,5 @@ import { CardComponent } from './card/card.component';
       useValue: { displayDefaultIndicatorType: false }
     }
   ]})
-export class GameModule {
+export class PlayGameModule {
 }

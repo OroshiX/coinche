@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DistributingComponent } from './distributing.component';
+import { OnTableComponent } from './on-table.component';
 
-describe('DistributingComponent', () => {
-  let component: DistributingComponent;
-  let fixture: ComponentFixture<DistributingComponent>;
+describe('OnTableComponent', () => {
+  let component: OnTableComponent;
+  let fixture: ComponentFixture<OnTableComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DistributingComponent ]
+      declarations: [ OnTableComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DistributingComponent);
+    fixture = TestBed.createComponent(OnTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
