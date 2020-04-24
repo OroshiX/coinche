@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
-import { Bid, PLAYER_POSITION, PlayerPosition, STATE, TableGame } from '../../../shared/models/collection-game';
+import { Bid, PLAYER_POSITION, STATE, TableGame } from '../../../shared/models/collection-game';
 import { Card, CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
@@ -33,13 +33,11 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   gameState: STATE;
   isMyCardsDisable: boolean;
-  nicknameNorth: string;
-  nicknameEast: string;
-  nicknameSouth: string;
-  nicknameWest: string;
   currentPlayer: string;
+  currentPlayerIdx: number;
   currentBidType: any;
   currentBidNickname: string;
+  playersPosOnTable: string[] = [];
 
   tiles: Tile[] = [
     {text: '', cols: 2, rows: 1, color: 'darkgreen'},
@@ -99,7 +97,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
       this.rowHeight = 60;
     } else {
       this.isSmallScreen = false;
-      this.rowHeight = 100;
+      this.rowHeight = 95;
     }
     this.backCardImg = this.service.getBackCardImgSmall();
     this.backCardImgSmall = this.service.getBackCardImg();
@@ -109,29 +107,22 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   private setTableGame(data: TableGame) {
     this.gameState = data.state;
-    this.isMyCardsDisable = this.myCardsDisable(data.state, data.nextPlayer, data.myPosition);
-    this.setNicknames(data.nicknames);
+    this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.currentPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
-    this.setBidding(data.currentBid, data.nicknames);
+    this.currentPlayerIdx = this.helper.getIdxCurrentPlayer(data.myPosition);
+    this.playersPosOnTable = this.helper.getPlayersOrderByMyPos(data.myPosition, data.nicknames);
     this.cd.detectChanges();
+    console.log(this.playersPosOnTable);
+    this.seCurrentBidding(data.currentBid, data.nicknames);
   }
 
-  private setNicknames(nicknames: PlayerPosition) {
-    this.nicknameNorth = nicknames.NORTH;
-    this.nicknameEast = nicknames.EAST;
-    this.nicknameSouth = nicknames.SOUTH;
-    this.nicknameWest = nicknames.WEST;
-    console.log(nicknames.NORTH);
-    this.cd.detectChanges();
-  }
-
-  private setBidding(currentBid: Bid, nicknames) {
+  private seCurrentBidding(currentBid: Bid, nicknames) {
     this.currentBidType = currentBid.type;
     this.currentBidNickname = this.helper.getNicknameByPos(currentBid.position, nicknames);
     this.cd.detectChanges();
   }
 
-  private myCardsDisable(state: STATE, nextPlayer: PLAYER_POSITION, myPos: PLAYER_POSITION): boolean {
+  private isMyCardsOnTableDisable(state: STATE, nextPlayer: PLAYER_POSITION, myPos: PLAYER_POSITION): boolean {
     return !(state === STATE.PLAYING && nextPlayer === myPos);
   }
 

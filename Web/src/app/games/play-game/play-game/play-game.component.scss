@@ -9,38 +9,45 @@
   flex: fit-content;
   margin-bottom: 10px;
 }
-.player-south {
+.player-idx-two {
   width: 100%;
   height: 30px;
   display: flex;
   justify-content: center;
   align-content: flex-end;
 }
-.player-north {
+.player-idx-zero {
   width: 100%;
   flex: 1;
   display: flex;
   justify-content: center;
   align-content: center;
 }
-.player-west {
+.player-idx-three {
   width: 100%;
   flex: 1;
   display: flex;
   justify-content: flex-start;
   align-content: center;
 }
-.player-east {
+.player-idx-one {
   width: 100%;
   flex: 1;
   display: flex;
   justify-content: flex-end;
   align-content: center;
 }
-.matChipCol {
+@mixin chip-player {
   background-color: #193812;
   color: white;
   font-family: "Roboto", sans-serif;
+}
+.matChipCol-blink {
+  @include chip-player;
+  animation: blinker 2s step-start infinite;
+}
+.matChipCol {
+  @include chip-player;
 }
 .resume-wrapper {
   flex: 1;
@@ -62,7 +69,7 @@
   font-weight: bold;
 }
 .currentPlayer {
-  animation: blinker 3s step-start infinite;
+  // animation: blinker 3s step-start infinite;
   color: limegreen;
   font-weight: bold;
 }

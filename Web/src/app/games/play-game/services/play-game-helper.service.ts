@@ -1,19 +1,48 @@
 import { Injectable } from '@angular/core';
-import { PLAYER_POSITION, PlayerPosition } from '../../../shared/models/collection-game';
+import { PLAYER_POSITION, PlayerPosition, playersPositionRef } from '../../../shared/models/collection-game';
+
+const ZERO = 0;
+const ONE = 1;
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayGameHelperService {
 
-  constructor() { }
+  constructor() {
+  }
 
   getNicknameByPos(currentPos: PLAYER_POSITION, nicknames: PlayerPosition): string {
-    const nickname =
-      currentPos === PLAYER_POSITION.NORTH ? nicknames.NORTH :
-        currentPos === PLAYER_POSITION.EAST ? nicknames.EAST :
-          currentPos === PLAYER_POSITION.SOUTH ? nicknames.SOUTH :
-            currentPos === PLAYER_POSITION.WEST ? nicknames.WEST : '';
-    return nickname;
+    return currentPos === PLAYER_POSITION.NORTH ? nicknames.NORTH :
+      currentPos === PLAYER_POSITION.EAST ? nicknames.EAST :
+        currentPos === PLAYER_POSITION.SOUTH ? nicknames.SOUTH :
+          currentPos === PLAYER_POSITION.WEST ? nicknames.WEST : '';
   }
+
+  getPlayersOrderByMyPos(myPos: PLAYER_POSITION, nicknames: PlayerPosition): string[] {
+    const playersPosition = this.getNicknameListBase(nicknames);   // Player NORTH is at 0°
+    const idx180 =  this.getIdxCurrentPlayer(myPos);
+    console.log(idx180);
+    console.log(playersPosition);
+
+    if (idx180 === ZERO) {        // Player NORTH is at 180° => idx === ZERO
+      return playersPosition;
+    } else if (idx180 === ONE) {  // Player NORTH is at 270° => idx === ONE
+      const firstEl = playersPosition.shift();
+      return [...playersPosition, firstEl];
+    } else {                      // Player NORTH is at 0° or 90° => idx === TWO or THREE
+      const firstArr = playersPosition.slice(idx180);
+      const restArr = playersPosition.slice(0, idx180 - 1);
+      return [...firstArr, ...restArr];
+    }
+  }
+
+  getNicknameListBase(nicknames: PlayerPosition): string [] {
+    return [nicknames.NORTH, nicknames.EAST, nicknames.SOUTH, nicknames.WEST];
+  }
+
+  getIdxCurrentPlayer(myPos: PLAYER_POSITION): number {
+    return playersPositionRef.indexOf(myPos);
+  }
+
 }

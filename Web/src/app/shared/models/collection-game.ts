@@ -51,6 +51,12 @@ export enum PLAYER_POSITION {
   WEST = 'WEST'
 }
 
+export const playersPositionRef = [PLAYER_POSITION.NORTH, PLAYER_POSITION.EAST, PLAYER_POSITION.SOUTH, PLAYER_POSITION.WEST];
+/*
+export const playersPositionRef = ['NORTH', 'EAST', 'SOUTH', 'WEST'];
+*/
+
+
 export interface Score {
   northSouth: number;
   eastWest: number;
