@@ -14,7 +14,6 @@ export function enumToMap(enumeration: any): Map<string, string | number> {
     if (val !== undefined && val !== null)
       map.set(key, val);
   }
-  console.log(JSON.stringify(map));
   return map;
 }
 
