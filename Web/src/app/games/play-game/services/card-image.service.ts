@@ -3,8 +3,10 @@ import { Card, CARD_COLOR, CARD_VALUE, cardValueMapToCardId, CardView } from '..
 
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
-const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
+export const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
 const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
+
+export const iconClub = `url("../../assets/images/club.png") no-repeat`;
 
 
 @Injectable({
@@ -14,7 +16,6 @@ export class CardImageService {
 
   constructor() {
   }
-
 
   listPositionC = [
     /*`${bckgrndUrlImg} -480px 0px`,
@@ -190,7 +191,7 @@ export class CardImageService {
     const clubList = list.filter(c => c.color === color)
       .sort((a, b) => (a.value > b.value) ? 1 : (a.value < b.value) ? -1 : 0);
     const idx = clubList.findIndex(card => card.value === CARD_VALUE.ACE);
-    if (idx >= 0 ) {
+    if (idx >= 0) {
       const ace = clubList.shift();
       return [...clubList, ace];
     }

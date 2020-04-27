@@ -1,3 +1,5 @@
+import { enumToKeys, enumToObjList, enumToValues } from '../utils/helper';
+
 export interface Card {
   color: CARD_COLOR;
   value: CARD_VALUE;
@@ -63,7 +65,10 @@ export enum CARD_COLOR {
   CLUB = 'CLUB', DIAMOND = 'DIAMOND', HEART = 'HEART', SPADE = 'SPADE'
 }
 
-export const colorList = [CARD_COLOR.CLUB, CARD_COLOR.DIAMOND, CARD_COLOR.HEART, CARD_COLOR.SPADE];
+// export const colorList = [CARD_COLOR.CLUB, CARD_COLOR.DIAMOND, CARD_COLOR.HEART, CARD_COLOR.SPADE];
+export const colorList = enumToKeys(CARD_COLOR);
+
+export const colorListObj = enumToObjList(CARD_COLOR);
 
 export class MultiValuesCard {
   value: number;
@@ -100,11 +105,19 @@ export enum CARD_VALUE {
   ACE = 1
 }
 
+/*
 export const cardIdList =
   [CARD_ID.SEVEN, CARD_ID.EIGHT, CARD_ID.NINE, CARD_ID.TEN, CARD_ID.JACK, CARD_ID.QUEEN, CARD_ID.KING, CARD_ID.ACE];
+*/
 
+export const cardIdList = enumToValues(CARD_ID);
+export const cardIdListEnum = enumToValues(CARD_ID);
+
+export const cardValues= enumToValues(CARD_VALUE);
+/*
 export const cardValues =
   [CARD_VALUE.SEVEN, CARD_VALUE.EIGHT, CARD_VALUE.NINE, CARD_VALUE.TEN, CARD_VALUE.JACK, CARD_VALUE.QUEEN, CARD_VALUE.KING, CARD_VALUE.ACE];
+*/
 
 export const CARD_VALUES_LIST: number[][] = [
   [CARD_VALUE.SEVEN, 0, 0, 0, 0, CARD_ID.SEVEN],
@@ -118,7 +131,7 @@ export const CARD_VALUES_LIST: number[][] = [
 ];
 
 export function cardValueMapToCardId(value: CARD_VALUE): number {
-  return cardIdList[cardValues.indexOf(value)];
+  return +cardIdList[cardValues.indexOf(value)];
 }
 
 function createValuesMap(cardId: number): MultiValuesCard {

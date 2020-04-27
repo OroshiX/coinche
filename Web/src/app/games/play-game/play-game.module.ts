@@ -9,17 +9,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { PlayGameRoutingModule } from './play-game-routing.module';
 import { PlayGameComponent } from './play-game/play-game.component';
 import { CardComponent } from './dumb-comp-card/card.component';
 import { StateComponent } from './dumb-comp-state/state.component';
-import { OnTableComponent } from './dumb-comp-on-table/on-table.component';
+import { OnTablePlayingComponent } from './dumb-comp-on-table-playing/on-table-playing.component';
 import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
+import { OnTableBiddingComponent } from './dumb-comp-on-table-bidding/on-table-bidding.component';
+import { BidComponent } from './dumb-comp-bid/bid.component';
 
 
 @NgModule({
-  declarations: [PlayGameComponent, CardComponent, StateComponent, OnTableComponent, MyCardsComponent],
+  declarations: [
+    PlayGameComponent,
+    CardComponent,
+    StateComponent,
+    OnTablePlayingComponent,
+    MyCardsComponent,
+    OnTableBiddingComponent,
+    BidComponent],
   imports: [
     CommonModule,
     PlayGameRoutingModule,
@@ -31,6 +41,7 @@ import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
     MatIconModule,
     MatGridListModule,
     MatChipsModule,
+    MatSelectModule,
     ReactiveFormsModule
   ],
   providers: [

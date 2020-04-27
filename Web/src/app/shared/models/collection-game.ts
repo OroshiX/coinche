@@ -28,6 +28,20 @@ export enum TYPE_BID {
   COINCHE = 'Coinche',
 }
 
+export enum BID_POINTS {
+  EIGHTY = 80,
+  NINETY = EIGHTY + 10,
+  HUNDRED = EIGHTY + 2 * 10,
+  HUNDRED_AND_TEN = EIGHTY + 3 * 10,
+  HUNDRED_AND_TWENTY = EIGHTY + 4 * 10,
+  HUNDRED_AND_THIRTY = EIGHTY + 5 * 10,
+  HUNDRED_AND_FORTY = EIGHTY + 6 * 10,
+  HUNDRED_AND_FIFTY = EIGHTY + 7 * 10,
+  HUNDRED_AND_SIXTY = EIGHTY + 8 * 10,
+  HUNDRED_AND_SEVENTY = EIGHTY + 9 * 10,
+  HUNDRED_AND_EIGHTY = EIGHTY + 10 * 10,
+}
+
 export interface CardPlayed {
   color: string;
   value: number;

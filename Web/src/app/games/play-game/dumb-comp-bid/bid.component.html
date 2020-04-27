@@ -1,0 +1,50 @@
+<mat-card class="bid">
+  <ng-container *ngIf="!isMyBid">
+  <mat-card-header>
+    <mat-card-title>
+      90 DIAMOND QOINCHE
+    </mat-card-title>
+  </mat-card-header>
+  </ng-container>
+  <ng-container *ngIf="isMyBid">
+    <mat-card-content class="wrapper">
+      <form  (ngSubmit)="submit()" [formGroup]="formBid">
+        <mat-form-field class="field">
+          <mat-label>My bid points</mat-label>
+          <mat-select formControlName="bidPointControl">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let point of bidPoints" [value]="point">
+               {{point}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="field">
+          <mat-label>My bid color</mat-label>
+          <mat-select formControlName="bidColorControl">
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let cardColor of cardColors" [value]="cardColor">
+              {{cardColor}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="field">
+          <mat-label>My bid type</mat-label>
+          <mat-select formControlName="bidTypeControl" required>
+            <mat-option>--</mat-option>
+            <mat-option *ngFor="let bidType of bidTypes" [value]="bidType">
+              {{bidType}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="bidTypeControl.hasError('required')">Please choose a bid or Pass
+          </mat-error>
+          <mat-hint>{{bidTypeControl.value}}</mat-hint>
+        </mat-form-field>
+      </form>
+      <!--<button [ngStyle]="{'background': iconClub, 'width': '100%', 'height': '100%', 'border': 'none'}">
+      </button>-->
+    </mat-card-content>
+    <mat-card-footer class="footer">
+      <button class="validate" mat-button mat-raised-button type="submit">Validate my bid</button>
+    </mat-card-footer>
+  </ng-container>
+</mat-card>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OnTableComponent } from './on-table.component';
+import { BidComponent } from './bid.component';
 
-describe('OnTableComponent', () => {
-  let component: OnTableComponent;
-  let fixture: ComponentFixture<OnTableComponent>;
+describe('BidComponent', () => {
+  let component: BidComponent;
+  let fixture: ComponentFixture<BidComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OnTableComponent ]
+      declarations: [ BidComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OnTableComponent);
+    fixture = TestBed.createComponent(BidComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

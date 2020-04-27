@@ -1,6 +1,6 @@
 <!--<app-state [state]="gameState"></app-state>-->
 
-<mat-grid-list cols="5" [rowHeight]="rowHeight" gutterSize="0">
+<mat-grid-list cols="5" [rowHeight]="rowHeight" gutterSize="0" role="list">
   <mat-grid-tile
     [colspan]="tiles[0].cols"
     [rowspan]="tiles[0].rows"
@@ -50,14 +50,15 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile
+    role="listitem"
     [colspan]="tiles[4].cols"
     [rowspan]="tiles[4].rows"
     [style.background]="tiles[4].color">
-    <!--<ng-container *ngIf="gameState==='PLAYING'; else bidding">-->
-    <app-on-table [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table>
-    <!-- </ng-container>-->
+    <ng-container *ngIf="gameState==='PLAYING'; else bidding">
+      <app-on-table-playing [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table-playing>
+    </ng-container>
     <ng-template #bidding>
-      bidding here
+      <app-on-table-bidding [isSmallScreen]="isSmallScreen"></app-on-table-bidding>
     </ng-template>
   </mat-grid-tile>
   <mat-grid-tile
