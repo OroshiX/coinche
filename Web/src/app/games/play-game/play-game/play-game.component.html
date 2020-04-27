@@ -5,8 +5,19 @@
     [colspan]="tiles[0].cols"
     [rowspan]="tiles[0].rows"
     [style.background]="tiles[0].color">
-    <div class="player-idx-two">
-    </div>
+    <mat-card class="resume-wrapper">
+      <div class="resume">
+        <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
+        <div class="item">Score <span class="itemContent">E/W: {{eastWest}} - N/S: {{northSouth}}</span></div>
+        <div class="item">CurrentBid:
+          <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span>
+        </div>
+        <div class="item">Turn to
+          <span class="currentPlayer">{{currentPlayer}}
+          </span> to <span class="itemContent">{{playOrBid}}</span>
+        </div>
+      </div>
+    </mat-card>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[1].cols"
@@ -21,21 +32,10 @@
     </div>
   </mat-grid-tile>
   <mat-grid-tile
+    role="listItem"
     [colspan]="tiles[2].cols"
     [rowspan]="tiles[2].rows"
     [style.background]="tiles[2].color">
-    <mat-card class="resume-wrapper">
-      <div class="resume">
-        <div class="item">Score:</div>
-        <div class="item">CurrentBid:
-          <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span>
-        </div>
-        <div class="item">Turn to
-          <span class="currentPlayer">{{currentPlayer}}
-          </span> to play
-        </div>
-      </div>
-    </mat-card>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[3].cols"
@@ -96,8 +96,14 @@
     [colspan]="tiles[8].cols"
     [rowspan]="tiles[8].rows"
     [style.background]="tiles[8].color">
-    <div class="player-idx-zero">
-    </div>
+    <ng-container *ngIf="!isDisableBid">
+      <mat-card class="resume-wrapper">
+        <div class="button-bid">
+          <button [disabled]="isDisableBid" color="primary" mat-raised-button (click)="openDialog()">Announce my bid
+          </button>
+        </div>
+      </mat-card>
+    </ng-container>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[9].cols"

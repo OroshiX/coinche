@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -28,6 +29,7 @@ import { LoggingInterceptor } from './services/http-interceptors/logging-interce
 import { AlertComponent } from './shared/alert/alert.component';
 import { CreateNicknameDialogComponent } from './side-nav/create-nickname-dialog/create-nickname-dialog.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
+import { DialogBidComponent } from './games/play-game/dialog-bid/dialog-bid.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
@@ -41,7 +43,8 @@ export const httpInterceptorProviders = [
     LoginPageComponent,
     AlertComponent,
     LoginGoogleComponent,
-    CreateNicknameDialogComponent
+    CreateNicknameDialogComponent,
+    DialogBidComponent
   ],
   entryComponents: [
     CreateNicknameDialogComponent
@@ -61,6 +64,7 @@ export const httpInterceptorProviders = [
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatSelectModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),

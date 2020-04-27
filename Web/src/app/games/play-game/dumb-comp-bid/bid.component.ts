@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Bid } from '../../../shared/models/collection-game';
-import { cardIdList, cardIdListEnum, colorList, colorListObj } from '../../../shared/models/play';
+import { colorList } from '../../../shared/models/play';
 import { backCardImg, iconClub, } from '../services/card-image.service';
 
 @Component({
@@ -25,7 +25,6 @@ export class BidComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {
     this.cardColors = [...colorList];
-    console.log(this.cardColors);
   }
 
   get bidPointControl(): FormControl {
@@ -41,21 +40,12 @@ export class BidComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(cardIdListEnum);
-    console.log(cardIdList);
-    console.log(colorListObj);
-    console.log(colorList);
     this.cardColors = [...colorList];
-    console.log(this.cardColors);
     this.formBid = this.buildFormGroup();
     this.bidTypeControl.valueChanges.subscribe(val => {
       console.log(val);
     });
   }
-
-  /*ngOnChanges(changes: SimpleChanges): void {
-    console.log('');
-  }*/
 
   submit() {
     console.log('submit');

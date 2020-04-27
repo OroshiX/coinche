@@ -1,10 +1,12 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { Bid, PLAYER_POSITION, STATE, TableGame } from '../../../shared/models/collection-game';
 import { Card, CardView } from '../../../shared/models/play';
+import { DialogBidComponent } from '../dialog-bid/dialog-bid.component';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -32,6 +34,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   rowHeight: number;
 
   gameState: STATE;
+  eastWest: number;
+  northSouth: number;
+  playOrBid: string;
+  isDisableBid: boolean;
   isMyCardsDisable: boolean;
   currentPlayer: string;
   currentPlayerIdx: number;
@@ -52,7 +58,12 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     {text: '', cols: 5, rows: 2, color: 'darkred'}
   ];
 
+  animal: string;
+  name: string;
+
+
   constructor(
+    public dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private service: CardImageService,
@@ -63,6 +74,19 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   ) {
     this.cd.detach();
   }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogBidComponent, {
+      width: '250px',
+      data: {name: this.name, animal: this.animal}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.animal = result;
+    });
+  }
+
 
   ngOnInit(): void {
     const gameId: string = this.route.snapshot.params.id;
@@ -107,6 +131,11 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   private setTableGame(data: TableGame) {
     this.gameState = data.state;
+    this.playOrBid = this.gameState === STATE.BIDDING ?
+      'bid' : this.gameState === STATE.PLAYING ? 'play': '';
+    this.isDisableBid = this.gameState !== STATE.BIDDING;
+    this.eastWest = data.score.eastWest;
+    this.northSouth = data.score.northSouth;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.currentPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
     this.currentPlayerIdx = this.helper.getIdxCurrentPlayer(data.myPosition);

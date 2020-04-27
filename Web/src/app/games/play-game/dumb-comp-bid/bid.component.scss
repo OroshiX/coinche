@@ -2,32 +2,21 @@
   flex: 1;
   display: flex;
 }
-@mixin width-height-bid($min-width, $height-value, $margin-top-bid, $margin-right-bid) {
+@mixin width-height-bid($min-width, $margin-top-bid, $margin-bottom-bid, $margin-right-bid) {
   flex: 1;
-  margin: $margin-top-bid $margin-right-bid 0 $margin-right-bid;
+  margin: $margin-top-bid $margin-right-bid $margin-bottom-bid $margin-right-bid;
   background-color: darkgreen;
   color: limegreen;
   min-width: $min-width;
 }
-@mixin width-field($width-percent, $margin-right) {
-    flex: 1;
-    width: $width-percent;
-    margin: 0 $margin-right;
-}
 @media(max-width: 959px) {
   .bid {
-    @include width-height-bid(80px, 0, 10px, 2px)
-  }
-  .field {
-    @include width-field(25%, 2px)
+    @include width-height-bid(80px, 10px, 10px, 2px)
   }
 }
 @media(min-width: 960px) {
   .bid {
-    @include width-height-bid(120px, 0, 25px, 4px)
-  }
-  .field {
-    @include width-field(25%, 20px)
+    @include width-height-bid(120px, 40px, 40px, 20px)
   }
 }
 .wrapper {
@@ -40,6 +29,7 @@
   display: flex;
   justify-content: center;
   align-content: center;
+  margin: 2px;
 }
 .validate {
   flex: fit-content;
