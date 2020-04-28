@@ -1,0 +1,12 @@
+<!--<div class="player-idx-two">-->
+<div [ngClass]="idx===0 ? 'player-idx-zero' :
+                idx===1 ? 'player-idx-one':
+                idx===2 ? 'player-idx-two' :
+                idx===3 ? 'player-idx-three' : ''">
+  <mat-chip-list aria-label="Player">
+    <mat-chip [ngClass]="nextPlayerIdx===idx ? 'matChipCol-blink' : 'matChipCol'">
+      <mat-icon class="icon-player">person</mat-icon>
+      {{nickname}}
+    </mat-chip>
+  </mat-chip-list>
+</div>

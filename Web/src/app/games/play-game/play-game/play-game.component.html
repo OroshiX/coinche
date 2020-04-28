@@ -25,14 +25,7 @@
     [colspan]="tiles[1].cols"
     [rowspan]="tiles[1].rows"
     [style.background]="tiles[1].color">
-    <div class="player-idx-two">
-      <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="nextPlayerIdx===2 ? 'matChipCol-blink' : 'matChipCol'">
-          <mat-icon class="icon-player">person</mat-icon>
-          {{playersPosOnTable[2]}}
-        </mat-chip>
-      </mat-chip-list>
-    </div>
+    <app-chip-player [idx]="2" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersPosOnTable[2]"></app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
     role="listItem"
@@ -44,14 +37,7 @@
     [colspan]="tiles[3].cols"
     [rowspan]="tiles[3].rows"
     [style.background]="tiles[3].color">
-    <div class="player-idx-one">
-      <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="nextPlayerIdx===1 ? 'matChipCol-blink' : 'matChipCol'">
-          <mat-icon class="icon-player">person</mat-icon>
-          {{playersPosOnTable[1]}}
-        </mat-chip>
-      </mat-chip-list>
-    </div>
+    <app-chip-player [idx]="1" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersPosOnTable[1]"></app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
     role="listitem"
@@ -69,14 +55,7 @@
     [colspan]="tiles[5].cols"
     [rowspan]="tiles[5].rows"
     [style.background]="tiles[5].color">
-    <div class="player-idx-three">
-      <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="nextPlayerIdx===3 ? 'matChipCol-blink' : 'matChipCol'">
-          <mat-icon class="icon-player">person</mat-icon>
-          {{playersPosOnTable[3]}}
-        </mat-chip>
-      </mat-chip-list>
-    </div>
+    <app-chip-player [idx]="3" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersPosOnTable[3]"></app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[6].cols"
@@ -87,14 +66,7 @@
     [colspan]="tiles[7].cols"
     [rowspan]="tiles[7].rows"
     [style.background]="tiles[7].color">
-    <div class="player-idx-zero">
-      <mat-chip-list class="chip-north" aria-label="Player">
-        <mat-chip [ngClass]="nextPlayerIdx===0 ? 'matChipCol-blink' : 'matChipCol'">
-          <mat-icon class="icon-player">person</mat-icon>
-          {{playersPosOnTable[0]}}
-        </mat-chip>
-      </mat-chip-list>
-    </div>
+    <app-chip-player [idx]="0" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersPosOnTable[0]"></app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[8].cols"
