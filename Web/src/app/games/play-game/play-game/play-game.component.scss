@@ -52,7 +52,7 @@
   @include chip-player;
 }
 .resume-wrapper {
-  background-color: darkgreen;
+  background-color: #c2185b;
   display: flex;
   justify-content: flex-start;
   align-content: center;
@@ -71,21 +71,26 @@
 }
 .item {
   flex: 1;
-  color: lightyellow;
+  color: whitesmoke;
+  font-size: small;
 }
 .itemContent {
-  color: limegreen;
+  color: ghostwhite;
   font-weight: bold;
+  font-size: small;
 }
-.currentPlayer {
+.nextPlayer {
   // animation: blinker 3s step-start infinite;
-  color: limegreen;
+  color: lightpink;
   font-weight: bold;
 }
 @keyframes blinker {
   50% {
     opacity: 0;
   }
+}
+.icon-player {
+  margin-right: 10px;
 }
 
 

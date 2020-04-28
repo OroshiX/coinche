@@ -1,4 +1,5 @@
-import { Card } from './play';
+import { enumToValues } from '../utils/helper';
+import { Card, CARD_COLOR } from './play';
 
 export interface TableGame {
   id: string;
@@ -18,6 +19,8 @@ export interface TableGame {
 export interface Bid {
   position: PLAYER_POSITION;
   type: TYPE_BID;
+  color: CARD_COLOR;
+  points: BID_POINTS;
 }
 
 export enum TYPE_BID {
@@ -27,6 +30,8 @@ export enum TYPE_BID {
   PASS = 'Pass',
   COINCHE = 'Coinche',
 }
+
+export const bidTypeList = enumToValues(TYPE_BID);
 
 export enum BID_POINTS {
   EIGHTY = 80,
@@ -41,6 +46,8 @@ export enum BID_POINTS {
   HUNDRED_AND_SEVENTY = EIGHTY + 9 * 10,
   HUNDRED_AND_EIGHTY = EIGHTY + 10 * 10,
 }
+
+export const bidPointList = enumToValues(BID_POINTS);
 
 export interface CardPlayed {
   color: string;
@@ -65,10 +72,8 @@ export enum PLAYER_POSITION {
   WEST = 'WEST'
 }
 
-export const playersPositionRef = [PLAYER_POSITION.NORTH, PLAYER_POSITION.EAST, PLAYER_POSITION.SOUTH, PLAYER_POSITION.WEST];
-/*
-export const playersPositionRef = ['NORTH', 'EAST', 'SOUTH', 'WEST'];
-*/
+// export const playersPositionRef = [PLAYER_POSITION.NORTH, PLAYER_POSITION.EAST, PLAYER_POSITION.SOUTH, PLAYER_POSITION.WEST];
+export const playersPositionRef = enumToValues(PLAYER_POSITION);
 
 
 export interface Score {

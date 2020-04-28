@@ -22,6 +22,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { DialogBidComponent } from './games/play-game/dialog-comp-bid/dialog-bid.component';
 import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
@@ -29,7 +30,6 @@ import { LoggingInterceptor } from './services/http-interceptors/logging-interce
 import { AlertComponent } from './shared/alert/alert.component';
 import { CreateNicknameDialogComponent } from './side-nav/create-nickname-dialog/create-nickname-dialog.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
-import { DialogBidComponent } from './games/play-game/dialog-bid/dialog-bid.component';
 
 export const httpInterceptorProviders = [
   {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},

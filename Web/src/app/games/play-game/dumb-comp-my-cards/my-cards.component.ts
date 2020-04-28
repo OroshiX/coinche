@@ -19,7 +19,6 @@ export class MyCardsComponent implements OnInit {
   }
 
   onCardChosen(event: any) {
-    console.log(event);
     this.cardChosen.emit(event);
   }
 

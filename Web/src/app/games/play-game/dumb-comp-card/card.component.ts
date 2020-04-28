@@ -20,8 +20,6 @@ export class CardComponent implements OnInit, OnChanges {
   }
 
   onClickCard(card: CardView) {
-    console.log(card);
-    console.log(JSON.stringify(this.card));
     this.cardChosen.emit(card);
   }
 

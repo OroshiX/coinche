@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Bid } from '../../../shared/models/collection-game';
 
 @Component({
   selector: 'app-on-table-bidding',
@@ -7,7 +8,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class OnTableBiddingComponent implements OnInit {
   @Input() isSmallScreen: boolean;
-  constructor() { }
+  @Input() bidListOrdered: Bid[];
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

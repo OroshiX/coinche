@@ -9,11 +9,13 @@
       <div class="resume">
         <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
         <div class="item">Score <span class="itemContent">E/W: {{eastWest}} - N/S: {{northSouth}}</span></div>
+        <ng-container *ngIf="gameState === 'PLAYING' || gameState === 'ENDED'">
         <div class="item">CurrentBid:
           <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span>
         </div>
-        <div class="item">Turn to
-          <span class="currentPlayer">{{currentPlayer}}
+        </ng-container>
+        <div class="item">Waiting for
+          <span class="nextPlayer">{{nextPlayer}}
           </span> to <span class="itemContent">{{playOrBid}}</span>
         </div>
       </div>
@@ -25,7 +27,8 @@
     [style.background]="tiles[1].color">
     <div class="player-idx-two">
       <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="currentPlayerIdx===2 ? 'matChipCol-blink' : 'matChipCol'">
+        <mat-chip [ngClass]="nextPlayerIdx===2 ? 'matChipCol-blink' : 'matChipCol'">
+          <mat-icon class="icon-player">person</mat-icon>
           {{playersPosOnTable[2]}}
         </mat-chip>
       </mat-chip-list>
@@ -43,7 +46,8 @@
     [style.background]="tiles[3].color">
     <div class="player-idx-one">
       <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="currentPlayerIdx===1 ? 'matChipCol-blink' : 'matChipCol'">
+        <mat-chip [ngClass]="nextPlayerIdx===1 ? 'matChipCol-blink' : 'matChipCol'">
+          <mat-icon class="icon-player">person</mat-icon>
           {{playersPosOnTable[1]}}
         </mat-chip>
       </mat-chip-list>
@@ -58,7 +62,7 @@
       <app-on-table-playing [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen"></app-on-table-playing>
     </ng-container>
     <ng-template #bidding>
-      <app-on-table-bidding [isSmallScreen]="isSmallScreen"></app-on-table-bidding>
+      <app-on-table-bidding [isSmallScreen]="isSmallScreen" [bidListOrdered]="bidListOrdered"></app-on-table-bidding>
     </ng-template>
   </mat-grid-tile>
   <mat-grid-tile
@@ -67,7 +71,8 @@
     [style.background]="tiles[5].color">
     <div class="player-idx-three">
       <mat-chip-list aria-label="Player">
-        <mat-chip [ngClass]="currentPlayerIdx===3 ? 'matChipCol-blink' : 'matChipCol'">
+        <mat-chip [ngClass]="nextPlayerIdx===3 ? 'matChipCol-blink' : 'matChipCol'">
+          <mat-icon class="icon-player">person</mat-icon>
           {{playersPosOnTable[3]}}
         </mat-chip>
       </mat-chip-list>
@@ -86,7 +91,8 @@
     [style.background]="tiles[7].color">
     <div class="player-idx-zero">
       <mat-chip-list class="chip-north" aria-label="Player">
-        <mat-chip [ngClass]="currentPlayerIdx===0 ? 'matChipCol-blink' : 'matChipCol'">
+        <mat-chip [ngClass]="nextPlayerIdx===0 ? 'matChipCol-blink' : 'matChipCol'">
+          <mat-icon class="icon-player">person</mat-icon>
           {{playersPosOnTable[0]}}
         </mat-chip>
       </mat-chip-list>
@@ -96,10 +102,14 @@
     [colspan]="tiles[8].cols"
     [rowspan]="tiles[8].rows"
     [style.background]="tiles[8].color">
-    <ng-container *ngIf="!isDisableBid">
+    <ng-container *ngIf="isMyTurn && !isDisableBid">
       <mat-card class="resume-wrapper">
         <div class="button-bid">
-          <button [disabled]="isDisableBid" color="primary" mat-raised-button (click)="openDialog()">Announce my bid
+          <button
+            [disabled]="isDisableBid"
+            color="primary"
+            mat-raised-button
+            (click)="openDialog()">Announce my bid
           </button>
         </div>
       </mat-card>

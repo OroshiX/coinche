@@ -3,10 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
+import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
-import { Bid, PLAYER_POSITION, STATE, TableGame } from '../../../shared/models/collection-game';
-import { Card, CardView } from '../../../shared/models/play';
-import { DialogBidComponent } from '../dialog-bid/dialog-bid.component';
+import { Bid, BID_POINTS, PLAYER_POSITION, STATE, TableGame, TYPE_BID } from '../../../shared/models/collection-game';
+import { AnnounceBid, Card, CARD_COLOR, CardView } from '../../../shared/models/play';
+import { DialogBidComponent } from '../dialog-comp-bid/dialog-bid.component';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -17,13 +18,19 @@ interface Tile {
   color: string;
 }
 
+export interface DialogData {
+  points: BID_POINTS;
+  color: CARD_COLOR;
+  type: TYPE_BID
+}
+
 @Component({
   selector: 'app-play-start',
   templateUrl: './play-game.component.html',
   styleUrls: ['./play-game.component.scss'],
 })
 export class PlayGameComponent implements OnInit, AfterViewInit {
-
+  gameId: string;
   cardsPlayed: CardView[] = new Array<CardView>();
   map = new Map<number, string[]>();
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
@@ -38,12 +45,15 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   northSouth: number;
   playOrBid: string;
   isDisableBid: boolean;
+  isMyTurn: boolean;
   isMyCardsDisable: boolean;
-  currentPlayer: string;
-  currentPlayerIdx: number;
+  nextPlayer: string;
+  nextPlayerIdx: number;
+  myPosition: string;
   currentBidType: any;
   currentBidNickname: string;
   playersPosOnTable: string[] = [];
+  bidListOrdered: Bid[] = [];
 
   tiles: Tile[] = [
     {text: '', cols: 2, rows: 1, color: 'darkgreen'},
@@ -58,8 +68,9 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     {text: '', cols: 5, rows: 2, color: 'darkred'}
   ];
 
-  animal: string;
-  name: string;
+  myBidPoints: number;
+  myBidColor: string;
+  myTypeBid: string;
 
 
   constructor(
@@ -70,7 +81,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     private breakpointService: BreakpointService,
     private firestoreService: ApiFirestoreService,
     private cd: ChangeDetectorRef,
-    private helper: PlayGameHelperService
+    private helper: PlayGameHelperService,
+    private apiService: ApiGamesService
   ) {
     this.cd.detach();
   }
@@ -78,21 +90,30 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogBidComponent, {
       width: '250px',
-      data: {name: this.name, animal: this.animal}
+      data: {points: this.myBidPoints, color: this.myBidColor, type: this.myTypeBid, position: this.myPosition}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed()
+      .pipe(
+        switchMap(result => {
+          const bid = new AnnounceBid(result);
+          bid.position = this.myPosition;
+          return this.apiService.announceBid(this.gameId, bid);
+        }))
+      .subscribe(res => {
       console.log('The dialog was closed');
-      this.animal = result;
+      this.isMyTurn = false;
+      location.reload();
+      this.cd.detectChanges();
     });
   }
 
 
   ngOnInit(): void {
-    const gameId: string = this.route.snapshot.params.id;
+    this.gameId = this.route.snapshot.params.id;
     this.cd.detectChanges();
     this.breakpointService.layoutChanges$()
-      .pipe(switchMap(() => this.firestoreService.getTableGame(gameId)))
+      .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId)))
       .subscribe((data: TableGame) => {
         console.log(JSON.stringify(data));
         this.setTableGame(data);
@@ -107,7 +128,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   onCardChosen(event$: any) {
-    console.log(event$);
     this.cardNorth = event$;
     this.cardsPlayed[0] = this.cardNorth;
     const key = `${this.cardNorth.color}${this.cardNorth.value}`;
@@ -136,12 +156,14 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.isDisableBid = this.gameState !== STATE.BIDDING;
     this.eastWest = data.score.eastWest;
     this.northSouth = data.score.northSouth;
+    this.myPosition = data.myPosition;
+    this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
-    this.currentPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
-    this.currentPlayerIdx = this.helper.getIdxCurrentPlayer(data.myPosition);
+    this.nextPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
+    this.nextPlayerIdx = this.helper.getIdxPlayer(data.nextPlayer);
     this.playersPosOnTable = this.helper.getPlayersOrderByMyPos(data.myPosition, data.nicknames);
+    this.bidListOrdered = this.helper.getBidsOrderByMyPos(data.myPosition, data.bids);
     this.cd.detectChanges();
-    console.log(this.playersPosOnTable);
     this.seCurrentBidding(data.currentBid, data.nicknames);
   }
 

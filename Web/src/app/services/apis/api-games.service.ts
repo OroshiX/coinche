@@ -12,13 +12,13 @@ export class ApiGamesService {
   constructor(private httpClient: HttpClient) { }
 
   playCard(gameId: string, playCard: Play): Observable<any> {
-    const url = API_BACKEND_GAMES + gameId + '/' + PLAY_CARD;
+    const url = API_BACKEND_GAMES + '/' + gameId + '/' + PLAY_CARD;
     console.log(url);
     return this.httpClient.post(url, playCard, {observe: 'response'});
   }
 
   announceBid(gameId: string, announceBid: AnnounceBid) {
-    const url = API_BACKEND_GAMES + gameId + '/' + ANNOUNCE_BID;
+    const url = API_BACKEND_GAMES +  '/' + gameId + '/' + ANNOUNCE_BID;
     console.log(url);
     return this.httpClient.post(url, announceBid, {observe: 'response'})
   }

@@ -22,7 +22,8 @@ export class Play {
 export class AnnounceBid {
   points: number;
   color: string;
-  coinche: string;
+  position: string;
+  type: string;
 
   constructor(obj: Partial<AnnounceBid>) {
     Object.assign(this, obj);
@@ -32,7 +33,7 @@ export class AnnounceBid {
 export class PlayCard {
   value: number;
   color: string;
-  belote: string;
+  belote: boolean;
 
   constructor(obj: Partial<PlayCard>) {
     Object.assign(this, obj);

@@ -1,17 +1,17 @@
 <div class="background-table">
   <div class="wrapper-cards">
     <div class="bids">
-      <app-bid [isMyBid]="false" [isSmallScreen]="isSmallScreen"></app-bid>
+      <app-bid [bid]="bidListOrdered[2]" [isSmallScreen]="isSmallScreen"></app-bid>
       <!-- Player at 90°-->
     </div>
     <div class="bids">
-      <app-bid [isMyBid]="false" [isSmallScreen]="isSmallScreen"></app-bid>
-      <app-bid [isMyBid]="false" [isSmallScreen]="isSmallScreen"></app-bid>
+      <app-bid [bid]="bidListOrdered[1]" [isSmallScreen]="isSmallScreen"></app-bid>
+      <app-bid [bid]="bidListOrdered[3]" [isSmallScreen]="isSmallScreen"></app-bid>
       <!-- Player at 0°-->
       <!-- Player at 270°-->
     </div>
     <div class="bids">
-      <app-bid [isMyBid]="true" [isSmallScreen]="isSmallScreen"></app-bid>
+      <app-bid [bid]="bidListOrdered[0]" [isSmallScreen]="isSmallScreen"></app-bid>
       <!-- Me: 180°-->
     </div>
   </div>
