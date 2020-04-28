@@ -10,9 +10,9 @@
         <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
         <div class="item">Score <span class="itemContent">E/W: {{eastWest}} - N/S: {{northSouth}}</span></div>
         <ng-container *ngIf="gameState === 'PLAYING' || gameState === 'ENDED'">
-        <div class="item">CurrentBid:
-          <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span>
-        </div>
+          <div class="item">CurrentBid:
+            <span class="itemContent">{{currentBidNickname}} - {{currentBidType}}</span>
+          </div>
         </ng-container>
         <div class="item">Waiting for
           <span class="nextPlayer">{{nextPlayer}}
@@ -82,8 +82,6 @@
     [colspan]="tiles[6].cols"
     [rowspan]="tiles[6].rows"
     [style.background]="tiles[6].color">
-    <!--<div class="player-idx-zero">
-    </div>-->
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[7].cols"

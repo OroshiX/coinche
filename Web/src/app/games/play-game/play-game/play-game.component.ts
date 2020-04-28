@@ -68,9 +68,9 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     {text: '', cols: 5, rows: 2, color: 'darkred'}
   ];
 
-  myBidPoints: number;
+ /* myBidPoints: number;
   myBidColor: string;
-  myTypeBid: string;
+  myTypeBid: string;*/
 
 
   constructor(
@@ -90,7 +90,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogBidComponent, {
       width: '250px',
-      data: {points: this.myBidPoints, color: this.myBidColor, type: this.myTypeBid, position: this.myPosition}
+      data: {}
     });
 
     dialogRef.afterClosed()
