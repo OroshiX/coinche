@@ -50,6 +50,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   nextPlayer: string;
   nextPlayerIdx: number;
   myPosition: string;
+  currentBidColor: string;
+  currentBidPoints: number;
   currentBidType: any;
   currentBidNickname: string;
   playersPosOnTable: string[] = [];
@@ -67,10 +69,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     {text: '', cols: 2, rows: 1, color: 'darkgreen'},
     {text: '', cols: 5, rows: 2, color: 'darkred'}
   ];
-
- /* myBidPoints: number;
-  myBidColor: string;
-  myTypeBid: string;*/
 
 
   constructor(
@@ -103,7 +101,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
       .subscribe(res => {
       console.log('The dialog was closed');
       this.isMyTurn = false;
-      location.reload();
+      // location.reload();
       this.cd.detectChanges();
     });
   }
@@ -168,6 +166,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   private seCurrentBidding(currentBid: Bid, nicknames) {
+    this.currentBidPoints= currentBid.points;
+    this.currentBidColor= currentBid.color;
     this.currentBidType = currentBid.type;
     this.currentBidNickname = this.helper.getNicknameByPos(currentBid.position, nicknames);
     this.cd.detectChanges();

@@ -8,48 +8,6 @@
 .chip-north {
   flex: fit-content;
   margin-bottom: 0;
-  // margin-bottom: 10px;
-}
-.player-idx-two {
-  width: 100%;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-content: flex-end;
-  margin-bottom: 0;
-}
-.player-idx-zero {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-}
-.player-idx-three {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  justify-content: flex-start;
-  align-content: center;
-}
-.player-idx-one {
-  width: 100%;
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-content: center;
-}
-@mixin chip-player {
-  background-color: #193812;
-  color: white;
-  font-family: "Roboto", sans-serif;
-}
-.matChipCol-blink {
-  @include chip-player;
-  animation: blinker 2s step-start infinite;
-}
-.matChipCol {
-  @include chip-player;
 }
 .resume-wrapper {
   background-color: #c2185b;
@@ -89,9 +47,15 @@
     opacity: 0;
   }
 }
-.icon-player {
-  margin-right: 10px;
+.announce-bid-wrapper {
+  background-color: darkgreen;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
 }
+
+
 
 
 
