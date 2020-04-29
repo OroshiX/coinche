@@ -1,7 +1,10 @@
 package fr.hornik.coinche.component
 
+import com.google.api.core.ApiFuture
+import com.google.api.gax.rpc.InvalidArgumentException
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.Firestore
+import com.google.cloud.firestore.WriteResult
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.cloud.FirestoreClient
@@ -72,17 +75,31 @@ class FireApp {
     }
 
     private fun saveTable(table: Table, userUID: String): String {
-        db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
+        val future: ApiFuture<WriteResult> = db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
                 .collection(COLLECTION_PLAYERS).document(userUID)
                 .set(table.toFirebase())
+        // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
+
         return userUID
     }
 
     private fun updateGame(table: SetOfGames) {
         val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
-        db.collection(
+
+        val future: ApiFuture<WriteResult> = db.collection(
                 COLLECTION_SETS).document(table.id)
                 .set(JsonMapper.parseJson(jsonTable))
+
+        /*
+         * For debugging purpose only.
+           println(JsonMapper.parseJson(jsonTable))
+            val arg = JsonMapper.parseJson(jsonTable).toString()
+             try {
+                println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
+            } catch (e: InvalidArgumentException) {
+            println("********Exception $e with $arg")
+        }
+         */
     }
 
     fun getOrSetUsername(user: User): String {

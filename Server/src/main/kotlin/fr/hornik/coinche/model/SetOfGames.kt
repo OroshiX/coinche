@@ -24,8 +24,8 @@ data class SetOfGames(
         var whoWonLastTrick: PlayerPosition? = null,
 
                       // List of "plis" done by each camp
-        val plisCampNS: MutableList<List<CardPlayed>> = mutableListOf(),
-        val plisCampEW: MutableList<List<CardPlayed>> = mutableListOf(),
+        val plisCampNS: MutableMap<Int,List<CardPlayed>> = mutableMapOf(),
+        val plisCampEW: MutableMap<Int,List<CardPlayed>> = mutableMapOf(),
 
                       // History of bid of the current game
         val bids: MutableList<Bid> = mutableListOf(),
@@ -79,8 +79,8 @@ data class SetOfGames(
                 lastTrick = whoWonLastTrick?.let {
                     if (state == TableState.PLAYING) {
                         return@let when (it) {
-                            PlayerPosition.NORTH, PlayerPosition.SOUTH -> plisCampNS.last()
-                            PlayerPosition.WEST, PlayerPosition.EAST   -> plisCampEW.last()
+                            PlayerPosition.NORTH, PlayerPosition.SOUTH -> plisCampNS[plisCampNS.size -1]
+                            PlayerPosition.WEST, PlayerPosition.EAST   -> plisCampEW[plisCampEW.size -1]
                         }
                     }
                     return@let listOf<CardPlayed>()
@@ -96,6 +96,23 @@ data class SetOfGames(
         )
     }
 
+    @JsonIgnore
+    fun getAllTricks(): MutableMap<Int, List<CardPlayed>> {
+
+        var tempList : MutableMap<Int,List<CardPlayed>> = plisCampNS
+        val size = plisCampNS.size
+        for ((key,value) in plisCampNS ){
+            tempList[key+size]=value
+        }
+        return tempList
+
+    }
+
+    @JsonIgnore
+    fun getLastTrick() : List<CardPlayed> {
+        // TODO I suppose it would make sense to write this type of function here - currently implemented in gamecontroller
+        return listOf()
+    }
     /**
      * Return true if succeeded in winning the trick, else false
      */
@@ -104,10 +121,12 @@ data class SetOfGames(
         if (onTable.size != 4) return false
 
         when (who) {
-            PlayerPosition.NORTH, PlayerPosition.SOUTH ->
-                plisCampNS.add(onTable.toList())
-            PlayerPosition.EAST, PlayerPosition.WEST   ->
-                plisCampEW.add(onTable.toList())
+            PlayerPosition.NORTH, PlayerPosition.SOUTH -> {
+                plisCampNS[plisCampNS.size]=onTable.toList()
+            }
+            PlayerPosition.EAST, PlayerPosition.WEST   -> {
+                plisCampEW[plisCampEW.size]=onTable.toList()
+            }
         }
         whoseTurn = who
         whoWonLastTrick = who

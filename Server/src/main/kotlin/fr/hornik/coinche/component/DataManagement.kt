@@ -11,6 +11,7 @@ import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.swing.table.TableStringConverter
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
@@ -32,59 +33,50 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     }
 
-    val IAPlayerTask = object: TimerTask() {
-        var timesRanIA = 0
-        override fun run() = IAPlayers("IA timer passed ${++timesRanIA} time(s)")
-
-    }
-
-    fun IAPlayers (Message: String) {
-        for (setOfGames in sets.filter{e -> (e.name.contains(AUTOMATEDGAMESID))}) {
-
-            //println(".\n")
-            if (! setOfGames.players.filter{ e -> ((e.uid.contains(AUTOMATEDPLAYERSID)) && (setOfGames.whoseTurn == e.position))}.isEmpty() ) {
-                IARun(setOfGames).run(this)
-                fire.saveGame(setOfGames)
-
-            }
-        }
-
-    }
     fun reviewTimer(Message:String) {
         //println("$Message\n")
         val millis = System.currentTimeMillis()
         var action = false
         for (setOfGames in sets) {
-            // for testing purpose we delete only the games which name is TOBEDELETED
+            if (setOfGames.name.contains(AUTOMATEDGAMESID)) {
+                //The names means that we can add an automatic player ( probably will be done later through a preference
+
+                if (IARun(setOfGames).run(this, millis))
+                // in most case you dont need to save since announce/joining/bidding do the saving ... but IF we have to save something IARUN returns true
+                    fire.saveGame(setOfGames)
+            }
+            // TODO this sequence treat the timeout case like late bidding / leaving etc ...
             when (setOfGames.state) {
                 TableState.JOINING -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.JoiningMaxTime) {
-                    // TODO we should remove the set ?
-                    if (setOfGames.name.contains("TOBEDELETED")) {
-                        println("${setOfGames.name}_${setOfGames.state} : JOINING TIMEOUT (id:${setOfGames.id})\n")
-                        fire.deleteGame(setOfGames)
-                        action = true
-                    }
-                    if ((setOfGames.name.contains(AUTOMATEDGAMESID)) && (setOfGames.players.size < 4 )){
-                        //The names means that we can add an automatic player ( probably will be done later through a preference
-                        val v:Int = Random().nextInt()
-                        val w:Int = Random().nextInt()
-
-                        joinGame(setOfGames, User("${w}$AUTOMATEDPLAYERSID${v}", "AUTOMATED PLAYER ${v%10}"),"AUTOMATED PLAYER ${v%10}")
-                        setOfGames.whoseTurnTimeLastChg = millis
-                    }
+                    // TODO What if it is not an automated game ?
                 }
                 TableState.BIDDING -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.BiddingMaxTime) {
-                    // TODO we should remove the set ?
-                    if (setOfGames.name.contains("TOBEDELETED")) {
-                        println("${setOfGames.name}_${setOfGames.state} : BIDDING TIMEOUT (id:${setOfGames.id})\n")
-                        fire.deleteGame(setOfGames)
-                        action = true
-                    }
+                    // TODO Player took too much time to bet .... should we do something ?
                 }
-                else -> {}
+                TableState.BETWEEN_GAMES -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.betweenGameMaxTime) {
+
+                    //Going back to BIDDING
+                    println("${setOfGames.name} was between GAME")
+                    if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
+                        // Continue playing another game
+                        distribute(setOfGames)
+                        setOfGames.plisCampEW.clear()
+                        setOfGames.plisCampNS.clear()
+
+
+                    } else {
+                        setOfGames.state = TableState.ENDED
+                    }
+                    setOfGames.whoseTurnTimeLastChg = millis
+                    setOfGames.onTable.clear()
+                    fire.saveGame(setOfGames)
+                }
+                else -> {
+                }
             }
+            // TODO Currently Action is never true - will be true if we delete a game on timer ....
+            if (action) refresh()
         }
-        if (action) refresh()
 
     }
     val timer = java.util.Timer()
@@ -92,7 +84,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
         sets.addAll(fire.getAllGames())
 
         timer.schedule(timeoutTask,0,1000)
-        timer.schedule(IAPlayerTask,0,2501)
 
     }
 
@@ -155,7 +146,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 if (firstDeal)
                     firstDealOfCards(dealer, allSpreads.random())
                 else
-                    dealCards(setOfGames.plisCampNS, setOfGames.plisCampEW, 10,
+                    dealCards(setOfGames.plisCampNS.map { it -> it.value}, setOfGames.plisCampEW.map {it -> it.value}, 10,
                             allSpreads.random(), dealer)
         setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
@@ -170,20 +161,18 @@ class DataManagement(@Autowired private val fire: FireApp) {
     }
 
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
-        setOfGames.state = TableState.ENDED
-        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS, setOfGames.plisCampEW,
+
+        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map {it -> it.value}, setOfGames.plisCampEW.map {it -> it.value},
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
         setOfGames.whoWonLastTrick = null
         setOfGames.currentFirstPlayer = setOfGames.currentFirstPlayer + 1
-//        set.onTable.clear()
-        if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
-            // Continue playing another game
-            distribute(setOfGames)
-            setOfGames.plisCampEW.clear()
-            setOfGames.plisCampNS.clear()
-        }
+
+        setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
+
+        setOfGames.state = TableState.BETWEEN_GAMES
+
     }
 
     private fun getGame(setId: String): SetOfGames? =
@@ -224,14 +213,15 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 setOfGames.whoWonLastTrick = null
 
                 for (i in 0..3) {
-                    val pli = listOf( setOfGames.players[i].cardsInHand.take(4).map{ e -> CardPlayed(e)},
-                                                          setOfGames.players[i].cardsInHand.takeLast(4).map{ e -> CardPlayed(e)})
-                    setOfGames.plisCampNS.addAll(pli)
+                    setOfGames.plisCampNS[i*2] = setOfGames.players[i].cardsInHand.take(4).map{ e -> CardPlayed(e)}
+                    setOfGames.plisCampNS[i*2+1] = setOfGames.players[i].cardsInHand.takeLast(4).map{ e -> CardPlayed(e)}
+
                     setOfGames.players[i].cardsInHand.clear()
                 }
                 distribute(setOfGames)
                 setOfGames.plisCampEW.clear()
                 setOfGames.plisCampNS.clear()
+                fire.saveGame(setOfGames)
                 return
             }
             // change status to playing
@@ -247,6 +237,13 @@ class DataManagement(@Autowired private val fire: FireApp) {
             // Next player
             setOfGames.whoseTurn += 1
         }
+        // This helps UI in case they missed one of the announce of other player to still know what is the last significant Bid
+
+
+        setOfGames.currentBid = whatIsTheLastSignificantBid(setOfGames.bids)
+
+        fire.saveGame(setOfGames)
+
     }
 
     fun changeNickname(setOfGames: SetOfGames, user: User) {
@@ -276,7 +273,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
                         theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
-
 
 
         setOfGames.onTable.add(CardPlayed(card, beloteValue,

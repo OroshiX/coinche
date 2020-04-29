@@ -5,11 +5,13 @@ import fr.hornik.coinche.model.values.PrefsIAStyle
 
 data class Preferences(
                     // Counting Points Policy ( 2 Values possible : POINTSANNOUNCED or POINTSMARKED )
-                       val counting: PrefsScore = PrefsScore.POINTSANNOUNCED,
+                        val counting: PrefsScore = PrefsScore.POINTSANNOUNCED,
                     // 5 minutes to join a game
-                       val JoiningMaxTime: Long = 15000,
+                        val JoiningMaxTime: Long = 15000,
                     // 2 minutes to bid
-                       val BiddingMaxTime: Long = 120000,
+                        val BiddingMaxTime: Long = 120000,
                     // IA Style : BALANCED - AGGRESSIVE - DEFENSIVE
-                       val IAStyle: PrefsIAStyle = PrefsIAStyle.BALANCED
+                        val IAStyle: PrefsIAStyle = PrefsIAStyle.BALANCED,
+                    // Time between games
+                        val betweenGameMaxTime: Long = 5000
 )

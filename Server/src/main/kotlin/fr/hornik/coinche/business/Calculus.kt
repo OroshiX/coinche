@@ -167,6 +167,19 @@ fun getCurrentBid(allBids: List<Bid>): Bid {
     return allBids[0]
 }
 
+fun whatIsTheLastSignificantBid(allBids: List<Bid>):Bid {
+    // Similar to getCurrent Bid, but in this function we can be in any state, hence more case to take into account
+    val bidsLength = allBids.size
+    if (bidsLength == 0 ) {
+        return Pass()
+    }
+    for (j in 0..bidsLength-1) {
+        if (allBids[bidsLength-j-1] !is Pass) {
+            return allBids[bidsLength-j-1]
+        }
+    }
+    return allBids[bidsLength -1]
+}
 /**
  *  Fonction Gagnant
  */

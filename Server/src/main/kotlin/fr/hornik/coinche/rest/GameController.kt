@@ -55,7 +55,6 @@ class GameController(@Autowired val data: DataManagement,
         if (game.players.first { it.uid == user.uid }.position != game.whoseTurn) throw NotYourTurnException()
         game.whoseTurnTimeLastChg = System.currentTimeMillis()
         data.playCard(game, card, user)
-        fire.saveGame(game)
     }
 
     @PostMapping("/{gameId}/announceBid")
@@ -64,7 +63,7 @@ class GameController(@Autowired val data: DataManagement,
         val game = data.getGameOrThrow(gameId)
         game.whoseTurnTimeLastChg = System.currentTimeMillis()
         data.announceBid(game, bid, user)
-        fire.saveGame(game)
+        // no need to save after announceBid ( done at the end of the function
     }
 
     @PostMapping("/{gameId}/deleteGame")
@@ -84,12 +83,17 @@ class GameController(@Autowired val data: DataManagement,
                 produces = [MediaType.APPLICATION_JSON_VALUE])
     fun showLastTrick(@PathVariable gameId: String): List<CardPlayed> {
         val game = data.getGameOrThrow(gameId)
+        if ((game.plisCampNS.size + game.plisCampEW.size) == 0) {
+            throw IllegalStateException(
+                    "Nobody won a trick, you can't see the last trick")
+        }
+
         game.whoWonLastTrick?.let {
             return when (it) {
                 PlayerPosition.NORTH,
-                PlayerPosition.SOUTH -> game.plisCampNS.last()
+                PlayerPosition.SOUTH -> game.plisCampNS[game.plisCampNS.size -1]!!
                 PlayerPosition.EAST,
-                PlayerPosition.WEST  -> game.plisCampEW.last()
+                PlayerPosition.WEST  -> game.plisCampEW[game.plisCampEW.size -1]!!
             }
         } ?: throw IllegalStateException(
                 "Nobody won a trick, you can't see the last trick")
@@ -104,18 +108,18 @@ class GameController(@Autowired val data: DataManagement,
 
     @GetMapping("/{gameId}/showAllTricks",
                 produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun showAllTricks(@PathVariable gameId: String): List<List<CardPlayed>> {
+    fun showAllTricks(@PathVariable gameId: String): Map<Int,List<CardPlayed>> {
         val game = data.getGameOrThrow(gameId)
         // If not finished, not allowed
         when (game.state) {
             TableState.PLAYING      -> throw NotAuthorizedOperation(
                     "Show all tricks is not allowed during a game")
-            TableState.BETWEEN_GAMES,
             TableState.JOINING,
             TableState.BIDDING,
             TableState.DISTRIBUTING -> throw IllegalStateException(
                     "Game has not started yet")
-            TableState.ENDED        -> return game.plisCampNS + game.plisCampEW
+            TableState.ENDED,
+            TableState.BETWEEN_GAMES        -> return game.getAllTricks()
         }
     }
 
@@ -129,6 +133,5 @@ class GameController(@Autowired val data: DataManagement,
         if (nickname.isBlank()) throw EmptyNameException()
         user.nickname = nickname
         data.changeNickname(set, user)
-        fire.saveGame(set)
     }
 }
