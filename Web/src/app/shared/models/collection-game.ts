@@ -17,10 +17,10 @@ export interface TableGame {
 }
 
 export interface Bid {
-  position: PLAYER_POSITION;
-  type: TYPE_BID;
-  color: CARD_COLOR;
-  points: BID_POINTS;
+  position?: PLAYER_POSITION;
+  type?: TYPE_BID;
+  points?: BID_POINTS;
+  color?: CARD_COLOR;
 }
 
 export enum TYPE_BID {

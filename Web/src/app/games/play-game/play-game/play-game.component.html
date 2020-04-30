@@ -5,21 +5,10 @@
     [colspan]="tiles[0].cols"
     [rowspan]="tiles[0].rows"
     [style.background]="tiles[0].color">
-    <mat-card class="resume-wrapper">
-      <div class="resume">
-        <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
-        <div class="item">Score <span class="itemContent">E/W: {{eastWest}} - N/S: {{northSouth}}</span></div>
-        <ng-container *ngIf="gameState === 'PLAYING' || gameState === 'ENDED'">
-          <div class="item">CurrentBid:
-            <span class="itemContent">{{currentBidNickname}} - {{currentBidPoints}} {{currentBidColor}} {{currentBidType}}</span>
-          </div>
-        </ng-container>
-        <div class="item">Waiting for
-          <span class="nextPlayer">{{nextPlayer}}
-          </span> to <span class="itemContent">{{playOrBid}}</span>
-        </div>
-      </div>
-    </mat-card>
+    <app-resume-game
+      [gameState]="gameState"
+      [bidData]="bidData">
+    </app-resume-game>
   </mat-grid-tile>
   <mat-grid-tile
     [colspan]="tiles[1].cols"
@@ -45,11 +34,15 @@
     [rowspan]="tiles[4].rows"
     [style.background]="tiles[4].color">
     <ng-container *ngIf="gameState==='PLAYING'; else bidding">
-      <app-on-table-playing [cardsPlayed]="cardsPlayed" [isSmallScreen]="isSmallScreen">
+      <app-on-table-playing
+        [cardsPlayed]="cardsPlayed"
+        [isSmallScreen]="isSmallScreen">
       </app-on-table-playing>
     </ng-container>
     <ng-template #bidding>
-      <app-on-table-bidding [isSmallScreen]="isSmallScreen" [bidListOrdered]="bidListOrdered">
+      <app-on-table-bidding
+        [isSmallScreen]="isSmallScreen"
+        [bidListOrdered]="bidListOrdered">
       </app-on-table-bidding>
     </ng-template>
   </mat-grid-tile>
@@ -77,16 +70,12 @@
     [rowspan]="tiles[8].rows"
     [style.background]="tiles[8].color">
     <ng-container *ngIf="isMyTurn && !isDisableBid">
-      <mat-card class="announce-bid-wrapper">
-        <div class="button-bid">
-          <button
-            [disabled]="isDisableBid"
-            color="primary"
-            mat-raised-button
-            (click)="openDialog()">Announce my bid
-          </button>
-        </div>
-      </mat-card>
+      <app-bid-announce
+        [isDisableBid]="isDisableBid"
+        [myPosition]="myPosition"
+        [gameId]="gameId"
+        (announceBidData)="onAnnounceBid($event)">
+      </app-bid-announce>
     </ng-container>
   </mat-grid-tile>
   <mat-grid-tile

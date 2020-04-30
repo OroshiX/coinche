@@ -11,12 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { BidAnnounceComponent } from './dumb-comp-bid-announce/bid-announce.component';
 import { BidComponent } from './dumb-comp-bid/bid.component';
 import { CardComponent } from './dumb-comp-card/card.component';
 import { ChipPlayerComponent } from './dumb-comp-chip-player/chip-player.component';
 import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
 import { OnTableBiddingComponent } from './dumb-comp-on-table-bidding/on-table-bidding.component';
 import { OnTablePlayingComponent } from './dumb-comp-on-table-playing/on-table-playing.component';
+import { ResumeGameComponent } from './dumb-comp-resume-game/resume-game.component';
 import { StateComponent } from './dumb-comp-state/state.component';
 import { PlayGameRoutingModule } from './play-game-routing.module';
 import { PlayGameComponent } from './play-game/play-game.component';
@@ -31,7 +33,9 @@ import { PlayGameComponent } from './play-game/play-game.component';
     MyCardsComponent,
     OnTableBiddingComponent,
     BidComponent,
-    ChipPlayerComponent],
+    ChipPlayerComponent,
+    BidAnnounceComponent,
+    ResumeGameComponent],
   imports: [
     CommonModule,
     PlayGameRoutingModule,

@@ -1,0 +1,62 @@
+.wrapper-north {
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+.chip-north {
+  flex: fit-content;
+  margin-bottom: 0;
+}
+.resume-wrapper {
+  background-color: #c2185b;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+}
+.resume {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.button-bid {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.item {
+  flex: 1;
+  color: whitesmoke;
+  font-size: small;
+}
+.itemContent {
+  color: ghostwhite;
+  font-weight: bold;
+  font-size: small;
+}
+.nextPlayer {
+  // animation: blinker 3s step-start infinite;
+  color: lightpink;
+  font-weight: bold;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.announce-bid-wrapper {
+  background-color: darkgreen;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  flex-direction: row;
+}
+
+
+
+
+
+

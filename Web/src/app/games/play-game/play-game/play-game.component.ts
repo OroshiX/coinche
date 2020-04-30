@@ -3,11 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
-import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { Bid, BID_POINTS, PLAYER_POSITION, STATE, TableGame, TYPE_BID } from '../../../shared/models/collection-game';
-import { AnnounceBid, Card, CARD_COLOR, CardView } from '../../../shared/models/play';
-import { DialogBidComponent } from '../dialog-comp-bid/dialog-bid.component';
+import { Card, CARD_COLOR, CardView } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -22,6 +20,16 @@ export interface DialogData {
   points: BID_POINTS;
   color: CARD_COLOR;
   type: TYPE_BID
+}
+
+export interface BidData {
+  eastWest: number;
+  northSouth: number;
+  currentBidNickname: string;
+  currentBidPoints: number;
+  currentBidColor: CARD_COLOR;
+  currentBidType: TYPE_BID;
+  nextPlayer: string;
 }
 
 @Component({
@@ -41,19 +49,22 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   rowHeight: number;
 
   gameState: STATE;
+
+  bidData: BidData;
   eastWest: number;
   northSouth: number;
-  playOrBid: string;
+  currentBidColor: string;
+  currentBidPoints: number;
+  currentBidType: any;
+  currentBidNickname: string;
+
   isDisableBid: boolean;
   isMyTurn: boolean;
   isMyCardsDisable: boolean;
   nextPlayer: string;
   nextPlayerIdx: number;
   myPosition: string;
-  currentBidColor: string;
-  currentBidPoints: number;
-  currentBidType: any;
-  currentBidNickname: string;
+
   playersPosOnTable: string[] = [];
   bidListOrdered: Bid[] = [];
 
@@ -80,12 +91,12 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     private firestoreService: ApiFirestoreService,
     private cd: ChangeDetectorRef,
     private helper: PlayGameHelperService,
-    private apiService: ApiGamesService
+    /*private apiService: ApiGamesService*/
   ) {
     this.cd.detach();
   }
 
-  openDialog(): void {
+  /*openDialog(): void {
     const dialogRef = this.dialog.open(DialogBidComponent, {
       width: '250px',
       data: {}
@@ -104,7 +115,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
       // location.reload();
       this.cd.detectChanges();
     });
-  }
+  }*/
 
 
   ngOnInit(): void {
@@ -149,27 +160,25 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   private setTableGame(data: TableGame) {
     this.gameState = data.state;
-    this.playOrBid = this.gameState === STATE.BIDDING ?
-      'bid' : this.gameState === STATE.PLAYING ? 'play': '';
+    console.log(this.gameState);
     this.isDisableBid = this.gameState !== STATE.BIDDING;
-    this.eastWest = data.score.eastWest;
-    this.northSouth = data.score.northSouth;
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
-    this.nextPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
     this.nextPlayerIdx = this.helper.getIdxPlayer(data.nextPlayer);
     this.playersPosOnTable = this.helper.getPlayersOrderByMyPos(data.myPosition, data.nicknames);
-    this.bidListOrdered = this.helper.getBidsOrderByMyPos(data.myPosition, data.bids);
+    console.log(data.bids);
+    this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
+    console.log(JSON.stringify(this.bidListOrdered));
+    this.bidData = this.buildBidData(data);
+    console.log(JSON.stringify(this.bidData));
     this.cd.detectChanges();
-    this.seCurrentBidding(data.currentBid, data.nicknames);
   }
 
-  private seCurrentBidding(currentBid: Bid, nicknames) {
-    this.currentBidPoints= currentBid.points;
-    this.currentBidColor= currentBid.color;
+  private seCurrentBidding(currentBid: Bid) {
+    this.currentBidPoints = currentBid.points;
+    this.currentBidColor = currentBid.color;
     this.currentBidType = currentBid.type;
-    this.currentBidNickname = this.helper.getNicknameByPos(currentBid.position, nicknames);
     this.cd.detectChanges();
   }
 
@@ -177,4 +186,39 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     return !(state === STATE.PLAYING && nextPlayer === myPos);
   }
 
+  buildBidData(data: TableGame): BidData {
+    /*
+    bidData: BidData;
+  eastWest: number;
+  northSouth: number;
+  currentBidColor: string;
+  currentBidPoints: number;
+  currentBidType: any;
+  currentBidNickname: string;
+     */
+    /*this.currentBidPoints = currentBid.points;
+    this.currentBidColor = currentBid.color;
+    this.currentBidType = currentBid.type;*/
+    /*
+    this.eastWest = data.score.eastWest;
+    this.northSouth = data.score.northSouth;
+    this.nextPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
+    this.currentBidNickname = this.helper.getNicknameByPos(data.currentBid.position, data.nicknames);
+     */
+    return {
+      eastWest: data.score.eastWest,
+      northSouth: data.score.northSouth,
+      currentBidColor: data?.currentBid?.color,
+      currentBidNickname: this.helper.getNicknameByPos(data.currentBid.position, data.nicknames),
+      currentBidPoints: data?.currentBid?.points,
+      currentBidType: data?.currentBid?.type,
+      nextPlayer: this.helper.getNicknameByPos(data.nextPlayer, data.nicknames)
+    };
+  }
+
+  onAnnounceBid(bid: Bid) {
+    console.log(bid);
+    this.seCurrentBidding(bid);
+    this.isMyTurn = false;
+  }
 }
