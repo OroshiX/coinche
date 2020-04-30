@@ -16,10 +16,10 @@ class DataTest {
     lateinit var dataManagement: DataManagement
     lateinit var set: SetOfGames
 
-    var TraceLevel: dbgLevel = dbgLevel.NONE
-    fun DBGprintln(wantedLevel: dbgLevel, Str: Any) {
+    private var traceLevel: dbgLevel = dbgLevel.NONE
+    private fun debugPrintln(wantedLevel: dbgLevel, Str: Any) {
 
-        if ((wantedLevel and TraceLevel) != 0) {
+        if ((wantedLevel and traceLevel) != 0) {
             println("DATATEST_$wantedLevel : $Str")
         }
 
@@ -46,7 +46,7 @@ class DataTest {
 
     @Test
     fun testPlayCard() {
-        DBGprintln(dbgLevel.MISC,"**************************************************************")
+        debugPrintln(dbgLevel.MISC,"**************************************************************")
         val ptsRand = listOf(80, 90, 100, 110, 120, 130, 140, 150, 160)
 
         val ArmandH: User = User("AHID", "Armand")
@@ -70,13 +70,13 @@ class DataTest {
             newlist.add(Pair(i.first, set.players.first { it.uid == i.first.uid }.position))
         }
 
-        DBGprintln(dbgLevel.MISC,"Newlist = $newlist*****\n\n")
+        debugPrintln(dbgLevel.MISC,"Newlist = $newlist*****\n\n")
 
         val aBid = SimpleBid(CardColor.values().random(), ptsRand.random(), set.whoseTurn)
         var aPass = Pass(set.whoseTurn + 1)
 
-        DBGprintln(dbgLevel.MISC,"\n\n$set\n\n\n")
-        DBGprintln(dbgLevel.MISC,"\nnext to play : ${set.whoseTurn}\n\n")
+        debugPrintln(dbgLevel.MISC,"\n\n$set\n\n\n")
+        debugPrintln(dbgLevel.MISC,"\nnext to play : ${set.whoseTurn}\n\n")
 
         dataManagement.announceBid(set, aBid, newlist.first { it.second == set.whoseTurn }.first)
         aPass = Pass(set.whoseTurn)
@@ -89,23 +89,23 @@ class DataTest {
         dataManagement.announceBid(set, aPass, newlist.first { it.second == set.whoseTurn }.first)
 
 
-        DBGprintln(dbgLevel.MISC,"BID is ${set.currentBid}")
+        debugPrintln(dbgLevel.MISC,"BID is ${set.currentBid}")
         for (tour in 0..7) {
-            DBGprintln(dbgLevel.MISC,"Tour $tour \n")
+            debugPrintln(dbgLevel.MISC,"Tour $tour \n")
             for (i in 0..3) {
-                DBGprintln(dbgLevel.MISC,"Joueur $i")
+                debugPrintln(dbgLevel.MISC,"Joueur $i")
                 val prevPosition = set.whoseTurn
                 var Acard = set.players.first { it.position == set.whoseTurn }.cardsInHand.first { it.playable == true }
                 var myCard = Card(value = Acard.value, color = Acard.color)
-                DBGprintln(dbgLevel.MISC,"${set.whoseTurn} plays $Acard\n")
+                debugPrintln(dbgLevel.MISC,"${set.whoseTurn} plays $Acard\n")
                 dataManagement.playCard(set, myCard, newlist.first { it.second == set.whoseTurn }.first, beloteValue = BeloteValue.NONE)
-                DBGprintln(dbgLevel.MISC,"Joueur $i has ${set.players.first { it.position == prevPosition }.cardsInHand.size} Cards ${set.players.first { it.position == prevPosition}.cardsInHand}")
+                debugPrintln(dbgLevel.MISC,"Joueur $i has ${set.players.first { it.position == prevPosition }.cardsInHand.size} Cards ${set.players.first { it.position == prevPosition}.cardsInHand}")
 
             }
 
-            DBGprintln(dbgLevel.MISC,"And now cards on table are ${set.onTable} \n and cards on Hand are ")
+            debugPrintln(dbgLevel.MISC,"And now cards on table are ${set.onTable} \n and cards on Hand are ")
             for (play in 0..3) {
-                DBGprintln(dbgLevel.MISC,"\n\nNBCARDS :${set.players[play].cardsInHand.size} : \n ${set.players[play].position}${set.players[play].cardsInHand}\n")
+                debugPrintln(dbgLevel.MISC,"\n\nNBCARDS :${set.players[play].cardsInHand.size} : \n ${set.players[play].position}${set.players[play].cardsInHand}\n")
             }
 
         }

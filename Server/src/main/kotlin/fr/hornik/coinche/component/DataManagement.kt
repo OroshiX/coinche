@@ -5,13 +5,11 @@ import fr.hornik.coinche.dto.Game
 import fr.hornik.coinche.exception.*
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.BeloteValue
-import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
-import javax.swing.table.TableStringConverter
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
@@ -182,7 +180,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
             getGame(setId) ?: throw GameNotExistingException(setId)
 
     fun deleteGame(setOfGames: SetOfGames, user: User):Boolean {
-        val me = setOfGames.players.first { player -> player.uid == user.uid }
+        val me = setOfGames.players.firstOrNull { player -> player.uid == user.uid }
         if (me != null ) {
             fire.deleteGame(setOfGames)
             refresh()
@@ -198,7 +196,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (setOfGames.whoseTurn != me.position) throw NotYourTurnException()
         // Bid needs to be valid and bid.position needs to be me !!!!
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
-
+        val IABid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
+        if ((IABid.curColor()!=bid.curColor()) || (IABid.curPoint() != bid.curPoint())) {
+            println("****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $IABid ")
+        }
         setOfGames.bids.add(bid)
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
         if (setOfGames.onTable.size == 4) {
