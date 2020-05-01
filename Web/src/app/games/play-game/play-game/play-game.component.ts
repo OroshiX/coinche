@@ -51,17 +51,13 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   gameState: STATE;
 
   bidData: BidData;
-  eastWest: number;
-  northSouth: number;
   currentBidColor: string;
   currentBidPoints: number;
   currentBidType: any;
-  currentBidNickname: string;
 
   isDisableBid: boolean;
   isMyTurn: boolean;
   isMyCardsDisable: boolean;
-  nextPlayer: string;
   nextPlayerIdx: number;
   myPosition: string;
 
@@ -91,32 +87,9 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     private firestoreService: ApiFirestoreService,
     private cd: ChangeDetectorRef,
     private helper: PlayGameHelperService,
-    /*private apiService: ApiGamesService*/
   ) {
     this.cd.detach();
   }
-
-  /*openDialog(): void {
-    const dialogRef = this.dialog.open(DialogBidComponent, {
-      width: '250px',
-      data: {}
-    });
-
-    dialogRef.afterClosed()
-      .pipe(
-        switchMap(result => {
-          const bid = new AnnounceBid(result);
-          bid.position = this.myPosition;
-          return this.apiService.announceBid(this.gameId, bid);
-        }))
-      .subscribe(res => {
-      console.log('The dialog was closed');
-      this.isMyTurn = false;
-      // location.reload();
-      this.cd.detectChanges();
-    });
-  }*/
-
 
   ngOnInit(): void {
     this.gameId = this.route.snapshot.params.id;
@@ -139,6 +112,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   onCardChosen(event$: any) {
     this.cardNorth = event$;
     this.cardsPlayed[0] = this.cardNorth;
+    console.log('card played', this.cardNorth.value, this.cardNorth.color, this.myPosition);
     const key = `${this.cardNorth.color}${this.cardNorth.value}`;
     this.myCardMap.delete(key);
     this.cd.detectChanges();
@@ -159,17 +133,15 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   private setTableGame(data: TableGame) {
+    console.log(JSON.stringify(data));
     this.gameState = data.state;
-    console.log(this.gameState);
     this.isDisableBid = this.gameState !== STATE.BIDDING;
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.nextPlayerIdx = this.helper.getIdxPlayer(data.nextPlayer);
     this.playersPosOnTable = this.helper.getPlayersOrderByMyPos(data.myPosition, data.nicknames);
-    console.log(data.bids);
     this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
-    console.log(JSON.stringify(this.bidListOrdered));
     this.bidData = this.buildBidData(data);
     console.log(JSON.stringify(this.bidData));
     this.cd.detectChanges();
@@ -187,24 +159,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   buildBidData(data: TableGame): BidData {
-    /*
-    bidData: BidData;
-  eastWest: number;
-  northSouth: number;
-  currentBidColor: string;
-  currentBidPoints: number;
-  currentBidType: any;
-  currentBidNickname: string;
-     */
-    /*this.currentBidPoints = currentBid.points;
-    this.currentBidColor = currentBid.color;
-    this.currentBidType = currentBid.type;*/
-    /*
-    this.eastWest = data.score.eastWest;
-    this.northSouth = data.score.northSouth;
-    this.nextPlayer = this.helper.getNicknameByPos(data.nextPlayer, data.nicknames);
-    this.currentBidNickname = this.helper.getNicknameByPos(data.currentBid.position, data.nicknames);
-     */
     return {
       eastWest: data.score.eastWest,
       northSouth: data.score.northSouth,
@@ -217,7 +171,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   onAnnounceBid(bid: Bid) {
-    console.log(bid);
     this.seCurrentBidding(bid);
     this.isMyTurn = false;
   }

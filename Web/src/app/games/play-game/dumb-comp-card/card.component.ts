@@ -13,6 +13,8 @@ export class CardComponent implements OnInit, OnChanges {
   @Input() isOnTable: boolean;
   @Output() cardChosen = new EventEmitter<CardView>();
 
+  inactiveCard: boolean;
+
   constructor() {
   }
 
@@ -24,6 +26,7 @@ export class CardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.inactiveCard = !this.isOnTable && !this.card?.playable;
   }
 
 }

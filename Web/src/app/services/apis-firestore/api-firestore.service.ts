@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { Game } from '../../shared/models/game';
 import { UserLocalStorageService } from '../session-storage/user-local-storage.service';
 
@@ -18,6 +18,7 @@ export class ApiFirestoreService {
   getTableGame(gameId: string): Observable<any> {
     return this.userService.getCurrentUser$()
       .pipe(
+        filter(user => !!user),
         switchMap(usr => {
           return this.gameCollection
             .doc(gameId)

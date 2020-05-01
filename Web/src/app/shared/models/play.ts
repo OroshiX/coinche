@@ -3,6 +3,7 @@ import { enumToKeys, enumToObjList, enumToValues } from '../utils/helper';
 export interface Card {
   color: CARD_COLOR;
   value: CARD_VALUE;
+  playable?: boolean;
 }
 
 export enum SCREEN {

@@ -150,32 +150,33 @@ export class CardImageService {
   myCardMap = new Map<string, CardView>();
 
   buildCardMap(color: CARD_COLOR,
-               value: CARD_VALUE) {
+               value: CARD_VALUE,
+               playable: boolean) {
     const key = color + value;
     const cardId = cardValueMapToCardId(value);
     switch (color) {
       case CARD_COLOR.CLUB:
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId], this.listPositionCSmall[cardId]));
+          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId], this.listPositionCSmall[cardId], playable));
         break;
       case CARD_COLOR.DIAMOND:
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId], this.listPositionDSmall[cardId]));
+          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId], this.listPositionDSmall[cardId], playable));
         break;
       case CARD_COLOR.HEART:
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId], this.listPositionHSmall[cardId]));
+          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId], this.listPositionHSmall[cardId], playable));
         break;
       case CARD_COLOR.SPADE:
         this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId], this.listPositionSSmall[cardId]));
+          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId], this.listPositionSSmall[cardId], playable));
         break;
     }
   }
 
   buildMyDeck(list: Card[]): Map<string, CardView> {
     const sortedCardList = this.sortList(list);
-    sortedCardList.forEach(card => this.buildCardMap(card.color, card.value));
+    sortedCardList.forEach(card => this.buildCardMap(card.color, card.value, card.playable));
     return this.myCardMap;
   }
 
@@ -198,12 +199,13 @@ export class CardImageService {
     return [...clubList];
   }
 
-  private createCardView(col: string, val: number, imageUrl: string, imageUrlSmall: string): CardView {
+  private createCardView(col: string, val: number, imageUrl: string, imageUrlSmall: string, isPlayable: boolean): CardView {
     return new CardView({
       color: col,
       value: val,
       backgroundImg: imageUrl,
-      backgroundImgSmall: imageUrlSmall
+      backgroundImgSmall: imageUrlSmall,
+      playable: isPlayable
     });
   }
 
