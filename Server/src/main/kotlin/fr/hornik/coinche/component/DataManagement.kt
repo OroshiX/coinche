@@ -7,6 +7,8 @@ import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -32,7 +34,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
     }
 
     fun reviewTimer(Message:String) {
-        //println("$Message\n")
+        debugPrintln(dbgLevel.FUNCTION,"$Message\n")
         val millis = System.currentTimeMillis()
         var action = false
         for (setOfGames in sets) {
@@ -54,7 +56,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 TableState.BETWEEN_GAMES -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.betweenGameMaxTime) {
 
                     //Going back to BIDDING
-                    println("${setOfGames.name} was between GAME")
+                    debugPrintln(dbgLevel.DEBUG,"${setOfGames.name} was between GAME")
                     if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
                         // Continue playing another game
                         distribute(setOfGames)
@@ -198,7 +200,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
         val IABid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
         if ((IABid.curColor()!=bid.curColor()) || (IABid.curPoint() != bid.curPoint())) {
-            println("****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $IABid ")
+            debugPrintln(dbgLevel.DEBUG,"****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $IABid ")
         }
         setOfGames.bids.add(bid)
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
@@ -257,8 +259,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         sets.addAll(fire.getAllGames())
     }
 
-    fun playCard(setOfGames: SetOfGames, card: Card, user: User,
-                 beloteValue: BeloteValue = BeloteValue.NONE) {
+    fun playCard(setOfGames: SetOfGames, card: Card, user: User) {
         // check if on table is full
 
         if (setOfGames.onTable.size == 4) {
@@ -266,18 +267,23 @@ class DataManagement(@Autowired private val fire: FireApp) {
             setOfGames.onTable.clear()
         }
 
+        val myCards = setOfGames.players.first{it.uid == user.uid}.cardsInHand
+        val myPosition = setOfGames.players.first { it.uid == user.uid }.position
+
         // get the real object in hand
         if (!isValidCard(
-                        myCardsInHand = setOfGames.players.first { it.uid == user.uid }.cardsInHand,
+                        myCardsInHand = myCards,
                         bid = setOfGames.currentBid,
                         cardsOnTable = setOfGames.onTable,
                         theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
+        val beloteValue:BeloteValue = isBelote(card,myCards,myPosition, setOfGames.currentBid,setOfGames.plisCampNS,setOfGames.plisCampEW)
 
-
-        setOfGames.onTable.add(CardPlayed(card, beloteValue,
-                setOfGames.players.first { it.uid == user.uid }.position))
+        if (beloteValue != BeloteValue.NONE)  {
+            debugPrintln(dbgLevel.DEBUG,"***********${user.nickname}($myPosition) is playing $beloteValue playing $card")
+        }
+        setOfGames.onTable.add(CardPlayed(card, beloteValue, myPosition))
         setOfGames.players.first { it.uid == user.uid }.cardsInHand.removeIf { it.isSimilar(card) }
         // there was some action on the table - we reset the timer.
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()

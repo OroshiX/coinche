@@ -37,7 +37,7 @@ data class IARun(val setOfGames: SetOfGames) {
                 var myCard = Card(value = Acard.value, color = Acard.color)
                 setOfGames.whoseTurnTimeLastChg = millis
                 println("${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
-                data.playCard(setOfGames, myCard, beloteValue = BeloteValue.NONE, user = u)
+                data.playCard(setOfGames, myCard, user = u)
                 return false
             }
 

@@ -402,3 +402,28 @@ fun sumIfGeneraleOrCapot(sumBefore: Int,
 /**
  * Fonction cartes Valides
  */
+
+fun isBelote(card:Card,myCards:List<Card>,
+             position:PlayerPosition, curBid:Bid,
+             plisNS:MutableMap<Int,List<CardPlayed>>,
+             plisEW: MutableMap<Int,List<CardPlayed>>):BeloteValue {
+    if (card.color == curBid.curColor()) {
+
+        if ((card.value != CardValue.QUEEN) && (card.value != CardValue.KING)) {
+            return BeloteValue.NONE
+        }
+        val listAll = plisEW.toList().map{it -> it.second}.flatten().filter {it.position == position}.map{it->it.card} + plisNS.toList().map{it -> it.second }.flatten().filter {it.position == position}.map { it -> it.card}
+        // This is trump and it's a QUEEN or a KING
+        if (listAll.filter { it.color == curBid.curColor() }
+                        .filter { it.value == CardValue.QUEEN || it.value == CardValue.KING }.size == 1) {
+            return BeloteValue.REBELOTE
+        } else {
+            if (myCards.filter { it.color == curBid.curColor() }.any { it.value == CardValue.QUEEN || it.value == CardValue.KING }) {
+                return BeloteValue.BELOTE
+            }
+
+        }
+    }
+    return BeloteValue.NONE
+
+}
