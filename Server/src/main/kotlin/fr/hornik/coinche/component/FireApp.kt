@@ -14,6 +14,8 @@ import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.serialization.JsonSerialize
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -80,7 +82,7 @@ class FireApp {
                 .set(table.toFirebase())
         // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
         val arg = table.toFirebase().toString()
-        println("JSON from saveTable ${arg}")
+        debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
         return userUID
     }
 
@@ -92,9 +94,9 @@ class FireApp {
                 .set(JsonMapper.parseJson(jsonTable))
 
 
-         // For debugging purpose only.
-            val arg = JsonMapper.parseJson(jsonTable).toString()
-            println("JSON from updateGame $arg")
+        // For debugging purpose only.
+        val arg = JsonMapper.parseJson(jsonTable).toString()
+        debugPrintln(dbgLevel.DEBUG, "JSON from updateGame $arg")
 
         /*
           try {

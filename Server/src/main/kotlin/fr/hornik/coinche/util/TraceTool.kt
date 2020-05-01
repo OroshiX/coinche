@@ -1,7 +1,7 @@
 package fr.hornik.coinche.util
 
 enum class dbgLevel(val value: Int) {
-    NONE(0), DEBUG(1), FUNCTION(2), SCORE(4), HTML(8), HTMLFUNC(10), MISC(16), REGULAR(32), ALL (63);
+    NONE(0), DEBUG(1), FUNCTION(2), LOGIN(4), HTML(8), HTMLFUNC(10), MISC(16), REGULAR(32), ALL (63);
 
     infix fun and(traceLevel: dbgLevel): Any {
         return traceLevel.value and this.value

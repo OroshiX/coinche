@@ -7,6 +7,8 @@ import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.exception.DeprecatedException
 import fr.hornik.coinche.exception.LoginFailedException
 import fr.hornik.coinche.model.User
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -34,10 +36,10 @@ private val user: User) {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     fun loginToken(@RequestBody idToken: String) {
         try {
-            println("==============\nidToken: $idToken\n\n =======================")
+            debugPrintln(dbgLevel.LOGIN,"==============\nidToken: $idToken\n\n =======================")
             val decodedToken = auth.verifyIdToken(idToken)
             val uid = decodedToken.uid
-            println("uid: $uid")
+            debugPrintln(dbgLevel.LOGIN,"uid: $uid")
             user.apply {
                 this.uid = uid
                 this.nickname =
