@@ -23,11 +23,13 @@ fun debugPrintln(wantedLevel: dbgLevel, Str: Any) {
     val addtlTraces = when (wantedLevel) {
         dbgLevel.DEBUG -> "*****DEBUG******"
         dbgLevel.FUNCTION -> "Entering Function"
-        dbgLevel.SCORE -> "Score Traces"
+        dbgLevel.LOGIN -> "Score Traces"
         dbgLevel.HTML -> "HTML Traces"
         dbgLevel.MISC -> "MISC Traces"
-        dbgLevel.ALL -> "Generic Traces"
+        dbgLevel.REGULAR -> "Generic Traces"
         else -> "Other Traces"
+
+        // Wantedlevel cannot be a combination of levels ( e.g. ALL pr HTMLFUNC)
     }
     if ((wantedLevel and traceLevel) != 0) {
         println("$addtlTraces : $wantedLevel : $Str")
