@@ -3,34 +3,29 @@ package fr.hornik.coinche
 import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.model.*
-import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
-import fr.hornik.coinche.CalculusTest.dbgLevel
+import fr.hornik.coinche.util.traceLevel
 
 class DataTest {
 
     lateinit var dataManagement: DataManagement
     lateinit var set: SetOfGames
 
-    private var traceLevel: dbgLevel = dbgLevel.NONE
-    private fun debugPrintln(wantedLevel: dbgLevel, Str: Any) {
 
-        if ((wantedLevel and traceLevel) != 0) {
-            println("DATATEST_$wantedLevel : $Str")
-        }
-
-
-    }
 
     @BeforeEach
     fun initState() {
         dataManagement = DataManagement(FireApp())
         set = SetOfGames(id = "1")
         MockitoAnnotations.initMocks(this)
+        //traceLevel = dbgLevel.NONE
+
     }
 
 
@@ -98,7 +93,7 @@ class DataTest {
                 var Acard = set.players.first { it.position == set.whoseTurn }.cardsInHand.first { it.playable == true }
                 var myCard = Card(value = Acard.value, color = Acard.color)
                 debugPrintln(dbgLevel.MISC,"${set.whoseTurn} plays $Acard\n")
-                dataManagement.playCard(set, myCard, newlist.first { it.second == set.whoseTurn }.first, beloteValue = BeloteValue.NONE)
+                dataManagement.playCard(set, myCard, newlist.first { it.second == set.whoseTurn }.first)
                 debugPrintln(dbgLevel.MISC,"Joueur $i has ${set.players.first { it.position == prevPosition }.cardsInHand.size} Cards ${set.players.first { it.position == prevPosition}.cardsInHand}")
 
             }

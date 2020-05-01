@@ -5,6 +5,8 @@ import fr.hornik.coinche.model.CardPlayed
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 
 val allSpreads = listOf(Triple(3, 2, 3), Triple(2, 3, 3), Triple(3, 3, 2))
 
@@ -145,10 +147,10 @@ fun firstDealOfCards(dealerPosition: PlayerPosition,
     return fourHands
 }
 
-fun printHand(aListCard: List<Card>, Hand: String) {
-    println("Hand $Hand :")
+fun printHand(debugLevel:dbgLevel  = dbgLevel.ALL, aListCard: List<Card>, Hand: String) {
+    debugPrintln(debugLevel,"Hand $Hand :")
     for (aCard in aListCard) {
-        println(aCard)
+        debugPrintln(debugLevel,aCard)
     }
 }
 

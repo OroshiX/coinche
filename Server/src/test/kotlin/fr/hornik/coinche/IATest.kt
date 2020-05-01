@@ -1,5 +1,6 @@
 package fr.hornik.coinche
 
+import com.sun.deploy.trace.TraceLevel
 import fr.hornik.coinche.business.printHand
 import fr.hornik.coinche.model.Card
 import fr.hornik.coinche.model.IARun
@@ -8,36 +9,13 @@ import fr.hornik.coinche.model.SimpleBid
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.traceLevel
 import org.junit.jupiter.api.Test
 
 class IATest {
 
-    enum class dbgLevel(val value: Int) {
-        NONE(0), DEBUG(1), FUNCTION(2), SCORE(4), HTML(8), HTMLFUNC(10), MISC(16);
 
-        infix fun and(traceLevel: dbgLevel): Any {
-            return traceLevel.value and this.value
-
-        }
-        infix fun or(traceLevel: dbgLevel): Any {
-            return traceLevel.value or this.value
-
-        }
-        fun toInt():Int {
-            return this.value
-        }
-    }
-
-    var TraceLevel: dbgLevel = dbgLevel.NONE
-
-    fun DBGprintln(wantedLevel: dbgLevel, Str: Any) {
-
-        if ((wantedLevel and TraceLevel) != 0) {
-            println("$wantedLevel : $Str")
-        }
-
-
-    }
 
     @Test
     fun testEnchere90 () {
@@ -63,7 +41,7 @@ class IATest {
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.SEVEN, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and TraceLevel) != 0)
+        if ((dbgLevel.DEBUG and traceLevel) != 0)
             printHand(myCards,"Mycards are ")
 
 
@@ -101,7 +79,7 @@ class IATest {
         myCards.add(Card(CardValue.TEN, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and TraceLevel) != 0)
+        if ((dbgLevel.DEBUG and traceLevel) != 0)
             printHand(myCards,"Mycards are ")
 
 
@@ -137,7 +115,7 @@ class IATest {
         myCards.add(Card(CardValue.TEN, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and TraceLevel) != 0)
+        if ((dbgLevel.DEBUG and traceLevel) != 0)
             printHand(myCards,"Mycards are ")
 
 

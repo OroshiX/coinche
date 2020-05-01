@@ -79,7 +79,8 @@ class FireApp {
                 .collection(COLLECTION_PLAYERS).document(userUID)
                 .set(table.toFirebase())
         // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
-
+        val arg = table.toFirebase().toString()
+        println("JSON from saveTable ${arg}")
         return userUID
     }
 
@@ -90,16 +91,18 @@ class FireApp {
                 COLLECTION_SETS).document(table.id)
                 .set(JsonMapper.parseJson(jsonTable))
 
-        /*
-         * For debugging purpose only.
-           println(JsonMapper.parseJson(jsonTable))
+
+         // For debugging purpose only.
             val arg = JsonMapper.parseJson(jsonTable).toString()
-             try {
-                println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
-            } catch (e: InvalidArgumentException) {
-            println("********Exception $e with $arg")
-        }
-         */
+            println("JSON from updateGame $arg")
+
+        /*
+          try {
+             println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
+         } catch (e: InvalidArgumentException) {
+         println("********Exception $e with $arg")
+     }
+      */
     }
 
     fun getOrSetUsername(user: User): String {
