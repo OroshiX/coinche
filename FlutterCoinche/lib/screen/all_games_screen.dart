@@ -29,6 +29,7 @@ class AllGamesScreen extends StatelessWidget {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
+              title: Text("Name of the game"),
               content: Form(
                   key: formKey,
                   child: TextFormField(

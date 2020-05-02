@@ -9,6 +9,7 @@ import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
+import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -293,28 +294,54 @@ class _TableWidgetState extends State<TableWidget> {
           screenWidth: screenSize.width,
           paddingVertical: paddingHeightCards,
         ),
-        Container(
-          width: widthContainer,
-          height: heightContainerName,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-                color: widget.game.nextPlayer == me
-                    ? Colors.amber
-                    : Colors.transparent),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  widget.game.getNickNameOf(me),
-                  style: TextStyle(color: colorTextDark),
+        SizedBox(
+          width: screenSize.width,
+          child: Stack(children: [
+            Center(
+              child: Container(
+                width: widthContainer,
+                height: heightContainerName,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      color: widget.game.nextPlayer == me
+                          ? Colors.amber
+                          : Colors.transparent),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        widget.game.getNickNameOf(me),
+                        style: TextStyle(color: colorTextDark),
+                      ),
+                      Text(
+                        "(${me.toString().split(".").last})",
+                        style: TextStyle(color: colorTextDark),
+                      ),
+                    ],
+                  ),
                 ),
-                Text(
-                  "(${me.toString().split(".").last})",
-                  style: TextStyle(color: colorTextDark),
-                ),
-              ],
+              ),
             ),
-          ),
+            Positioned(
+              right: 2,
+              bottom: 2,
+              child: Visibility(
+                visible: widget.game.state == TableState.PLAYING,
+                child: NeumorphicWidget(
+                    onTap: () {},
+                    child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        child: Text(
+                          "Last Trick",
+                          style: TextStyle(color: colorTextDark),
+                        )),
+                    sizeShadow: SizeShadow.SMALL,
+                    borderRadius: 10,
+                    interactable: true),
+              ),
+            )
+          ]),
         ),
       ],
     );

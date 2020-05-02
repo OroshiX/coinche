@@ -77,7 +77,6 @@ class CardsOnTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO UNCOMMENT
     if (state != TableState.PLAYING) {
       return SizedBox();
     }

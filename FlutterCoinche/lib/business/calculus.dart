@@ -17,7 +17,7 @@ PlayerPosition getPlayerPositionTop(Game game) {
 }
 
 Bid getPlayerBid(Game game, PlayerPosition position) {
-  return game.bids.lastWhere(
+  return game.bids?.lastWhere(
     (element) => element.position == position,
     orElse: () => null,
   );
