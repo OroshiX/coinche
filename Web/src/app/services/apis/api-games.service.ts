@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AnnounceBid, Play } from '../../shared/models/play';
+import { AnnounceBid, PlayCard } from '../../shared/models/play';
 import { ANNOUNCE_BID, API_BACKEND_GAMES, PLAY_CARD } from './api-constant';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ApiGamesService {
 
   constructor(private httpClient: HttpClient) { }
 
-  playCard(gameId: string, playCard: Play): Observable<any> {
+  playCard(gameId: string, playCard: PlayCard): Observable<any> {
     const url = API_BACKEND_GAMES + '/' + gameId + '/' + PLAY_CARD;
     console.log(url);
     return this.httpClient.post(url, playCard, {observe: 'response'});

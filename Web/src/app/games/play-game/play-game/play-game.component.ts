@@ -6,7 +6,7 @@ import { ApiFirestoreService } from '../../../services/apis-firestore/api-firest
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { Bid, BID_POINTS, PLAYER_POSITION, STATE, TableGame, TYPE_BID } from '../../../shared/models/collection-game';
-import { CARD_COLOR, CardView, Play } from '../../../shared/models/play';
+import { CARD_COLOR, CardView, PlayCard } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -137,20 +137,12 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.bidData = this.buildBidData(data);
     console.log(this.bidData);
     console.log('nextPlayer', JSON.stringify(data.nextPlayer));
-    // console.log('bids', JSON.stringify(data.bids));
-    console.log('current bid', JSON.stringify(data.currentBid));
     console.log('onTable', JSON.stringify(data.onTable));
+    console.log('lastTrick', JSON.stringify(data.lastTrick));
     this.myCardMap = this.service.buildMyDeck(data.cards);
-    console.log(this.myCardMap);
+    this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
     this.cd.detectChanges();
   }
-
-  /*private reOrderMyCardsMap(state: STATE): void {
-    if (state === STATE.PLAYING) {
-      this.myCardMap = rebuildOrderedMap(this.myCardMap);
-      this.cd.detectChanges();
-    }
-  }*/
 
   private setCurrentBidding(currentBid: Bid) {
     this.currentBidPoints = currentBid.points;
@@ -183,14 +175,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   onCardChosen(event$: any) {
     const cardChosen = event$;
     this.cardsPlayed[0] = cardChosen;
-    console.log('card played', cardChosen.value, cardChosen.color, this.myPosition);
     this.apiService.playCard(this.gameId,
-      new Play({color: cardChosen.color, value: cardChosen.value, belote: null}))
+      new PlayCard({color: cardChosen.color, value: cardChosen.value, belote: null}))
       .subscribe(res => {
         console.log('Card played');
-        console.log(res);
-        // const key = `${cardChosen.color}${cardChosen.value}`;
-        // this.myCardMap.delete(key);
         this.cd.detectChanges();
       });
     this.cd.detectChanges();

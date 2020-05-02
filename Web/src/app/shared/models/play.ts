@@ -1,4 +1,5 @@
 import { enumToKeys, enumToObjList, enumToValues } from '../utils/helper';
+import { PLAYER_POSITION } from './collection-game';
 
 export interface KeyValue {
   id: string;
@@ -16,9 +17,9 @@ export enum SCREEN {
   LARGE = 'large '
 }
 export class Play {
-  value: number;
-  color: string;
+  card: Card;
   belote: string;
+  position: PLAYER_POSITION;
 
   constructor(obj: Partial<Play>) {
     Object.assign(this, obj);

@@ -30,9 +30,6 @@ export class LoggingInterceptor implements HttpInterceptor {
           // Operation failed; error is an HttpErrorResponse
           () => {
             ok = 'failed';
-           /* alert('response not OK !!');
-            this.sessionService.resetCurrentUser();
-            window.location.replace('login');*/
           }
         ),
         // Log when response observable either completes or errors

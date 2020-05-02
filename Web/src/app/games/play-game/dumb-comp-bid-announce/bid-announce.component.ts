@@ -33,11 +33,10 @@ export class BidAnnounceComponent implements OnInit {
         switchMap(result => {
           const bid = new AnnounceBid(result);
           bid.position = this.myPosition;
-          console.log(bid);
           return this.apiService.announceBid(this.gameId, bid);
         }))
       .subscribe(res => {
-        console.log('The dialog was closed', res);
+        console.log('The dialog was closed');
         this.announceBidData.emit(res);
       });
   }
