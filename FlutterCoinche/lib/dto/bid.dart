@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -9,17 +10,6 @@ part 'bid.g.dart';
 class Bid {
   @JsonKey(required: true)
   String type;
-
-//  @JsonKey(required: false)
-//  int points;
-//  @JsonKey(required: false)
-//  CardColor color;
-//  @JsonKey(required: false)
-//  bool belote;
-//  @JsonKey(required: false)
-//  Bid annonce;
-//  @JsonKey(required: false)
-//  bool surcoinche;
 
   @JsonKey(name: "position")
   PlayerPosition position;
@@ -46,18 +36,6 @@ class Bid {
 
   Map<String, dynamic> toJson() {
     print("we are in toJson of SUPER");
-//    switch(type) {
-//      case "SimpleBid":
-//        return SimpleBid.toJson(this);
-//      case "General":
-//        return General.toJson(this);
-//      case "Coinche":
-//        return Coinche.toJson(this);
-//      case "Pass":
-//        return Pass.toJson(this);
-//      case "Capot":
-//        return Capot.toJson(this);
-//    }
     return _$BidToJson(this);
   }
 }

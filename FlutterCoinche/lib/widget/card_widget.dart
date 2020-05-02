@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
@@ -8,7 +8,7 @@ import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
-  final cardModel.Card card;
+  final CardModel card;
   final bool displayPlayable;
   final double width, height;
 
@@ -36,7 +36,7 @@ class CardWidget extends StatelessWidget {
 }
 
 class CardContent extends StatelessWidget {
-  final cardModel.Card card;
+  final CardModel card;
   final bool displayPlayable;
   final double width, height;
 
@@ -50,8 +50,8 @@ class CardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = "images/${cardModel.getAssetImageFromColor(card.color)}";
-    final letter = cardModel.getLetterFromValue(card.value);
+    final image = getAssetImageFromColor(card.color);
+    final letter = getLetterFromValue(card.value);
     final marginValue = getPaddingInCard(cardWidth: width);
 
     return Container(

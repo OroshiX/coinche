@@ -5,7 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/dto/card.dart' ;
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -20,10 +20,10 @@ void main() {
           width: 50,
           height: 60,
           child: CardWidget(
-            card: cardModel.Card(
-                color: cardModel.CardColor.CLUB,
+            card: CardModel(
+                color: CardColor.CLUB,
                 playable: true,
-                value: cardModel.CardValue.KING),
+                value: CardValue.KING),
             width: 40,
             height: 60,
             displayPlayable: true,

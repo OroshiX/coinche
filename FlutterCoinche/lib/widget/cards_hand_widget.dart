@@ -1,11 +1,11 @@
-import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 
 class CardsInHandWidget extends StatelessWidget {
   final double cardHeight, cardWidth, screenWidth;
 
-  final List<cardModel.Card> cards;
+  final List<CardModel> cards;
 
   final double paddingVertical;
   final bool inPlayMode;

@@ -1,5 +1,5 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
-import 'package:FlutterCoinche/dto/card.dart' as cardModel;
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
@@ -43,7 +43,7 @@ class MiddleArea extends StatelessWidget {
           minPadding: 2,
         ),
         Center(
-          child: DragTarget<cardModel.Card>(
+          child: DragTarget<CardModel>(
             onWillAccept: (data) {
               // if it is my turn and the card is playable
               return game.myPosition == game.nextPlayer &&

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:FlutterCoinche/dto/card.dart' as card;
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
@@ -81,10 +81,10 @@ class GamesBloc implements Bloc {
         .snapshots()
         .map((event) => Game.fromJson(event.data))
         .listen((event) {
-      event.cards.sort((card.Card c1, card.Card c2) {
+      event.cards.sort((CardModel c1, CardModel c2) {
         if (c1.color.index < c2.color.index) return -1;
         if (c1.color.index > c2.color.index) return 1;
-        return card.compareValue(c2.value, c1.value, false);
+        return compareValue(c2.value, c1.value, false);
       });
       _gameController.sink.add(event);
     });

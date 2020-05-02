@@ -63,7 +63,7 @@ class ServerCommunication {
     return game;
   }
 
-  static Future<bool> playCard(Card data, String gameId) async {
+  static Future<bool> playCard(CardModel data, String gameId) async {
     var url = "$_baseUrl/games/$gameId/playCard";
     print("connect to $url");
     var r = await Requests.post(url,

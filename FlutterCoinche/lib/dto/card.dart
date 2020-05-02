@@ -5,16 +5,17 @@ import 'package:json_annotation/json_annotation.dart';
 part 'card.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Card {
+class CardModel {
   CardValue value;
   CardColor color;
   bool playable;
 
-  Card({this.value, this.color, this.playable});
+  CardModel({this.value, this.color, this.playable});
 
-  factory Card.fromJson(Map<String, dynamic> json) => _$CardFromJson(json);
+  factory CardModel.fromJson(Map<String, dynamic> json) =>
+      _$CardModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CardToJson(this);
+  Map<String, dynamic> toJson() => _$CardModelToJson(this);
 
   @override
   String toString() {
@@ -105,7 +106,7 @@ enum CardColor {
 
 @JsonSerializable(explicitToJson: true)
 class CardPlayed {
-  Card card;
+  CardModel card;
   BeloteValue belote;
   PlayerPosition position;
 
@@ -118,17 +119,22 @@ class CardPlayed {
 }
 
 String getAssetImageFromColor(CardColor e) {
+  var file = "";
   switch (e) {
     case CardColor.DIAMOND:
-      return "diamond.png";
+      file = "diamond.png";
+      break;
     case CardColor.SPADE:
-      return "spade.png";
+      file = "spade.png";
+      break;
     case CardColor.CLUB:
-      return "club.png";
+      file = "club.png";
+      break;
     case CardColor.HEART:
-      return "heart.png";
+      file = "heart.png";
+      break;
   }
-  return "";
+  return "images/$file";
 }
 
 String getLetterFromValue(CardValue v) {

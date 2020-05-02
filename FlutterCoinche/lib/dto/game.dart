@@ -12,7 +12,7 @@ part 'game.g.dart';
 class Game {
   String id;
   Nicknames nicknames;
-  List<Card> cards;
+  List<CardModel> cards;
   List<CardPlayed> onTable;
   TableState state;
   PlayerPosition nextPlayer;

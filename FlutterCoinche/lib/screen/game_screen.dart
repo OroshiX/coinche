@@ -1,5 +1,5 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
-import 'package:FlutterCoinche/dto/card.dart' as card;
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/table_widget.dart';
@@ -15,7 +15,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  List<card.Card> myCards;
+  List<CardModel> myCards;
   GamesBloc gamesBloc;
 
   @override

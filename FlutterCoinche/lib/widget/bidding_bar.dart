@@ -71,7 +71,7 @@ class _BiddingBarState extends State<BiddingBar> {
                   child: Container(
                     width: isLargeScreen(screenSize) ? 50 : 30,
                     child: Image.asset(
-                      "images/${cardModel.getAssetImageFromColor(e)}",
+                      cardModel.getAssetImageFromColor(e),
                       fit: BoxFit.contain,
                     ),
                   )))
