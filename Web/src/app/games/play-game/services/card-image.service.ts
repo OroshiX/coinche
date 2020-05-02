@@ -148,8 +148,8 @@ export class CardImageService {
   constructor() {
     this.mapListPosition.set(CARD_COLOR.CLUB, [[...this.listPositionC], [...this.listPositionCSmall]]);
     this.mapListPosition.set(CARD_COLOR.DIAMOND, [[...this.listPositionD], [...this.listPositionDSmall]]);
-    this.mapListPosition.set(CARD_COLOR.HEART, [[...this.listPositionH], [...this.listPositionHSmall]]);
     this.mapListPosition.set(CARD_COLOR.SPADE, [[...this.listPositionS], [...this.listPositionSSmall]]);
+    this.mapListPosition.set(CARD_COLOR.HEART, [[...this.listPositionH], [...this.listPositionHSmall]]);
   }
 
   buildCardView(color: CARD_COLOR,
@@ -176,7 +176,7 @@ export class CardImageService {
     const diamondList = this.sortPerColor(list, CARD_COLOR.DIAMOND);
     const heartList = this.sortPerColor(list, CARD_COLOR.HEART);
     const spadeList = this.sortPerColor(list, CARD_COLOR.SPADE);
-    return [...clubList, ...diamondList, ...heartList, ...spadeList];
+    return [...clubList, ...diamondList, ...spadeList, ...heartList];
   }
 
   private sortPerColor(list: Card[], color: CARD_COLOR): Card[] {
