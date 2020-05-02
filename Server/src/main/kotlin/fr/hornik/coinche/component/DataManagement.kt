@@ -249,6 +249,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     }
 
+    fun getIdMiddleFix(): String {
+        return (AUTOMATEDPLAYERSID)
+    }
+
     fun changeNickname(setOfGames: SetOfGames, user: User) {
         setOfGames.players.first { it.uid == user.uid }.nickname = user.nickname
         fire.saveGame(setOfGames)

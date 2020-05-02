@@ -25,7 +25,7 @@ fun dealCards(trickNS: List<List<CardPlayed>>, tricksEW: List<List<CardPlayed>>,
                        PlayerPosition.WEST to 3)
     val deck = mutableListOf<Card>()
     val nbPlis = (trickNS.size + tricksEW.size)
-    if (nbPlis != 8) println("**********ERROR we have $nbPlis ************, should be 8 ")
+    if (nbPlis != 8) debugPrintln(dbgLevel.REGULAR,"**********ERROR we have $nbPlis ************, should be 8 ")
     //Les 2 paquets sont comptés donc renversés, EW posé dessus
     for (trick in tricksEW) {
         for (i in 0 until 4) {
