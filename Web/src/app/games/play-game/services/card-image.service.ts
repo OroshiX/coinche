@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Card, CARD_COLOR, CARD_VALUE, cardValueMapToCardId, CardView } from '../../../shared/models/play';
+import { buildOrderedListPlayableTrueAndFalse } from '../../../shared/utils/helper';
 
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
@@ -176,7 +177,8 @@ export class CardImageService {
 
   buildMyDeck(list: Card[]): Map<string, CardView> {
     const sortedCardList = this.sortList(list);
-    sortedCardList.forEach(card => this.buildCardMap(card.color, card.value, card.playable));
+    const sortedCardListPlayable = buildOrderedListPlayableTrueAndFalse(sortedCardList);
+    sortedCardListPlayable.forEach(card => this.buildCardMap(card.color, card.value, card.playable));
     return this.myCardMap;
   }
 

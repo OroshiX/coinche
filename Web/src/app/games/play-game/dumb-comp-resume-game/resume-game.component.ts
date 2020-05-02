@@ -21,11 +21,11 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.bidData);
-    console.log(this.gameState);
+    // console.log(JSON.stringify(this.bidData));
+    // console.log(this.gameState);
     this.playOrBid = this.gameState === STATE.BIDDING ?
       'bid' : this.gameState === STATE.PLAYING ? 'play' : '';
-    console.log(this.playOrBid);
+    // console.log(this.playOrBid);
   }
 
 }

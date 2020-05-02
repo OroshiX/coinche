@@ -10,8 +10,10 @@
     @include width-height-card(60px, 87px);
     margin: 10px -15px;
   }
-  .inactive {
-    filter: blur(4px);
+  .card-inactive {
+    @include width-height-card(60px, 87px);
+    margin: 10px -15px;
+    filter: blur(3px);
   }
   .card-played {
     @include width-height-card(60px, 87px);
@@ -27,8 +29,10 @@
     @include width-height-card(120px, 174px);
     margin: 30px -30px;
   }
-  .inactive {
-    filter: blur(4px);
+  .card-inactive {
+    @include width-height-card(120px, 174px);
+    margin: 30px -30px;
+    filter: blur(3px);
   }
 
   .card-played {

@@ -4,7 +4,7 @@
     <ng-container *ngIf="gameState !== 'JOINING'">
       <div class="item">Score <span class="itemContent">E/W: {{bidData?.eastWest}} - N/S: {{bidData?.northSouth}}</span></div>
     </ng-container>
-    <ng-container *ngIf="gameState === 'PLAYING' || gameState === 'ENDED'">
+    <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
       <div class="item">CurrentBid:
         <span class="itemContent">{{bidData?.currentBidNickname}}
           - {{bidData.currentBidPoints}} {{bidData.currentBidColor}} {{bidData.currentBidType}}</span>

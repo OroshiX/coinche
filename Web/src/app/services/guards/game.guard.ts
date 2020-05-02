@@ -16,15 +16,21 @@ export class GameGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     const isConnected = this.userService.isConnected();
-    if (route.params.id === undefined || route.params.id === '') {
-      alert('No gameId found !');
-      console.log(route.params.id);
-      this.router.navigate(['/login']);
-      return false;
-    }
+    /* if (route.params.id === undefined || route.params.id === '') {
+       alert('No gameId found !');
+       console.log(route.params.id);
+       this.router.navigate(['/login']);
+       return false;
+     }*/
 
     if (isConnected) {
       // logged in so return true
+      if (route.params.id === undefined || route.params.id === '') {
+        alert('No gameId found !');
+        console.log(route.params.id);
+        this.router.navigate(['/login']);
+        return false;
+      }
       console.log('gameId:', route.params.id);
       return true;
     } else {

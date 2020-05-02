@@ -26,7 +26,8 @@ export class CardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.inactiveCard = !this.isOnTable && !this.card?.playable;
+    this.inactiveCard = !this.isOnTable && this.card?.playable === false;
+    // console.log(this.card?.color, this.card?.value, this.inactiveCard);
   }
 
 }
