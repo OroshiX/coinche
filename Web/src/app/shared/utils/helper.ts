@@ -70,14 +70,11 @@ export function buildOrderedListPlayableNull(cards: Card[]): Card[] {
 }
 
 export function buildOrderedListPlayableTrueAndFalse(cards: Card[]): Card[] {
-  console.log('in buildOrderedListPlayableTrueAndFalse');
   const listNull = cards.filter(card => card.playable === null);
   if (listNull.length > 0) {
-    console.log(listNull);
     return listNull;
   }
   const listTrue =  cards.filter(card => card.playable === true);
   const listFalse =cards.filter(card => card.playable === false);
-  console.log([...listTrue, ...listFalse]);
   return [...listTrue, ...listFalse];
 }

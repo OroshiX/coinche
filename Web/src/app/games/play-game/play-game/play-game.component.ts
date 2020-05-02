@@ -137,13 +137,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.bidData = this.buildBidData(data);
     console.log(this.bidData);
     console.log('nextPlayer', JSON.stringify(data.nextPlayer));
-    // console.log('bids', JSON.stringify(data.bids));
-    console.log('current bid', JSON.stringify(data.currentBid));
     console.log('onTable', JSON.stringify(data.onTable));
+    console.log('lastTrick', JSON.stringify(data.lastTrick));
     this.myCardMap = this.service.buildMyDeck(data.cards);
     this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
-    console.log(this.cardsPlayed);
-    console.log(this.myCardMap);
     this.cd.detectChanges();
   }
 
@@ -178,12 +175,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   onCardChosen(event$: any) {
     const cardChosen = event$;
     this.cardsPlayed[0] = cardChosen;
-    console.log('card played', cardChosen.value, cardChosen.color, this.myPosition);
     this.apiService.playCard(this.gameId,
       new PlayCard({color: cardChosen.color, value: cardChosen.value, belote: null}))
       .subscribe(res => {
         console.log('Card played');
-        console.log(res);
         this.cd.detectChanges();
       });
     this.cd.detectChanges();
