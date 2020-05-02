@@ -1,11 +1,11 @@
 import { enumToValues } from '../utils/helper';
-import { Card, CARD_COLOR } from './play';
+import { Card, CARD_COLOR, Play } from './play';
 
 export interface TableGame {
   id: string;
   nicknames: PlayerPosition;
   cards: Card[];
-  onTable: CardPlayed[];
+  onTable: Play[];
   state: STATE;
   nextPlayer: PLAYER_POSITION;
   myPosition: PLAYER_POSITION;
@@ -13,7 +13,7 @@ export interface TableGame {
   currentBid: Bid;
   score: Score;
   winnerLastTrick: PlayerPosition;
-  lastTrick: CardPlayed[];
+  lastTrick: Play[];
 }
 
 export interface Bid {
@@ -49,11 +49,11 @@ export enum BID_POINTS {
 
 export const bidPointList = enumToValues(BID_POINTS);
 
-export interface CardPlayed {
+/*export interface CardPlayed {
   color: string;
   value: number;
   etc: string;
-}
+}*/
 
 
 export enum STATE {

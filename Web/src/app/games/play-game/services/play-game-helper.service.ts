@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Bid, PLAYER_POSITION, PlayerPosition, playersPositionRef } from '../../../shared/models/collection-game';
+import { CardView, Play } from '../../../shared/models/play';
+import { CardImageService } from './card-image.service';
 
 const ZERO = 0;
 const ONE = 1;
@@ -9,7 +11,7 @@ const ONE = 1;
 })
 export class PlayGameHelperService {
 
-  constructor() {
+  constructor(private imgService: CardImageService) {
   }
 
   getNicknameByPos(currentPos: PLAYER_POSITION, nicknames: PlayerPosition): string {
@@ -27,6 +29,12 @@ export class PlayGameHelperService {
   getIdxPlayer(myPos: PLAYER_POSITION, playerPos?: PLAYER_POSITION | undefined | null): number {
     return this.playersPositionRefOrderedByMyPosZero(myPos)
       .indexOf(playerPos === undefined || playerPos === null ? myPos : playerPos);
+  }
+
+  onTableCardsOrdered(myPos: PLAYER_POSITION, onTable: Play[]): CardView[] {
+    const playersPos = this.playersPositionRefOrderedByMyPosZero(myPos);
+    return playersPos.map(pos => onTable.find((p: Play) => p.position===pos))
+      .map(pl => !!pl ? this.imgService.buildCardView(pl?.card?.color, pl?.card?.value, pl?.card?.playable) : new CardView(null));
   }
 
   // my position must always be found at idx zero of this list

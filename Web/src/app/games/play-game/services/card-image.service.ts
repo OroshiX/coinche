@@ -15,9 +15,6 @@ export const iconClub = `url("../../assets/images/club.png") no-repeat`;
 })
 export class CardImageService {
 
-  constructor() {
-  }
-
   listPositionC = [
     /*`${bckgrndUrlImg} -480px 0px`,
     `${bckgrndUrlImg} -960px 0px`,
@@ -146,40 +143,32 @@ export class CardImageService {
     `${bckgrndUrlImgSmall} -2340px 0px`
   ];
 
-  map = new Map<number, string[]>();
-  mapSmall = new Map<number, string[]>();
-  myCardMap = new Map<string, CardView>();
+  mapListPosition = new Map<CARD_COLOR | string, string[][]>();
 
-  buildCardMap(color: CARD_COLOR,
-               value: CARD_VALUE,
-               playable: boolean) {
-    const key = color + value;
+  constructor() {
+    this.mapListPosition.set(CARD_COLOR.CLUB, [[...this.listPositionC], [...this.listPositionCSmall]]);
+    this.mapListPosition.set(CARD_COLOR.DIAMOND, [[...this.listPositionD], [...this.listPositionDSmall]]);
+    this.mapListPosition.set(CARD_COLOR.HEART, [[...this.listPositionH], [...this.listPositionHSmall]]);
+    this.mapListPosition.set(CARD_COLOR.SPADE, [[...this.listPositionS], [...this.listPositionSSmall]]);
+  }
+
+  buildCardView(color: CARD_COLOR,
+                value: CARD_VALUE,
+                playable: boolean): CardView {
     const cardId = cardValueMapToCardId(value);
-    switch (color) {
-      case CARD_COLOR.CLUB:
-        this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.CLUB, value, this.listPositionC[cardId], this.listPositionCSmall[cardId], playable));
-        break;
-      case CARD_COLOR.DIAMOND:
-        this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.DIAMOND, value, this.listPositionD[cardId], this.listPositionDSmall[cardId], playable));
-        break;
-      case CARD_COLOR.HEART:
-        this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.HEART, value, this.listPositionH[cardId], this.listPositionHSmall[cardId], playable));
-        break;
-      case CARD_COLOR.SPADE:
-        this.myCardMap.set(key,
-          this.createCardView(CARD_COLOR.SPADE, value, this.listPositionS[cardId], this.listPositionSSmall[cardId], playable));
-        break;
-    }
+    return this.createCardView(color, value,
+      this.mapListPosition.get(color)[0][cardId],
+      this.mapListPosition.get(color)[1][cardId],
+      playable);
   }
 
   buildMyDeck(list: Card[]): Map<string, CardView> {
+    const cardMap = new Map<string, CardView>();
     const sortedCardList = this.sortList(list);
     const sortedCardListPlayable = buildOrderedListPlayableTrueAndFalse(sortedCardList);
-    sortedCardListPlayable.forEach(card => this.buildCardMap(card.color, card.value, card.playable));
-    return this.myCardMap;
+    sortedCardListPlayable
+      .map(card => cardMap.set(`${card.color}${card.value}`, this.buildCardView(card.color, card.value, card.playable)));
+    return cardMap;
   }
 
   private sortList(list: Card[]): Card[] {
@@ -201,7 +190,7 @@ export class CardImageService {
     return [...clubList];
   }
 
-  private createCardView(col: string, val: number, imageUrl: string, imageUrlSmall: string, isPlayable: boolean): CardView {
+  private createCardView(col: CARD_COLOR, val: CARD_VALUE, imageUrl: string, imageUrlSmall: string, isPlayable: boolean): CardView {
     return new CardView({
       color: col,
       value: val,
@@ -218,27 +207,5 @@ export class CardImageService {
   getBackCardImgSmall() {
     return backCardImgSmall;
   }
-
-  getMap() {
-    this.processMap();
-    return this.map;
-  }
-
-  getMapSmall() {
-    this.processMap();
-    return this.mapSmall;
-  }
-
-  private processMap() {
-    this.mapSmall.set(0, this.listPositionCSmall);
-    this.mapSmall.set(1, this.listPositionDSmall);
-    this.mapSmall.set(2, this.listPositionHSmall);
-    this.mapSmall.set(3, this.listPositionSSmall);
-    this.map.set(0, this.listPositionC);
-    this.map.set(1, this.listPositionD);
-    this.map.set(2, this.listPositionH);
-    this.map.set(3, this.listPositionS);
-  }
-
 
 }
