@@ -38,6 +38,58 @@ class Bid {
     print("we are in toJson of SUPER");
     return _$BidToJson(this);
   }
+
+  CardColor cardColor() {
+    if (this is SimpleBid) {
+      return (this as SimpleBid).color;
+    }
+    if (this is General) {
+      return (this as General).color;
+    }
+    if (this is Capot) {
+      return (this as Capot).color;
+    }
+    if (this is Coinche) {
+      return (this as Coinche).annonce.cardColor();
+    }
+    return null;
+  }
+
+  String readableValueBid() {
+    if (this is SimpleBid) {
+      return (this as SimpleBid).points.toString();
+    }
+    if (this is General) {
+      return "General${(this as General).belote ? " beloté-ed" : ""}";
+    }
+    if (this is Capot) {
+      return "Capot${(this as Capot).belote ? " beloté-ed" : ""}";
+    }
+    if (this is Coinche) {
+      return "${(this as Coinche).annonce.readableValueBid()}";
+    }
+    return "";
+  }
+
+  Row getReadableBidRow(double fontSize) {
+    return Row(
+      children: [
+        Text(
+          readableValueBid(),
+          style: TextStyle(fontSize: fontSize, color: colorTextDark),
+        ),
+        Image.asset(
+          getAssetImageFromColor(cardColor()),
+          width: fontSize,
+        ),
+        if (this is Coinche)
+          Text(
+            " coinché-d",
+            style: TextStyle(fontSize: fontSize, color: colorTextDark),
+          ),
+      ],
+    );
+  }
 }
 
 @JsonSerializable()

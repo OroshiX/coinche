@@ -8,8 +8,10 @@ import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
+import 'package:FlutterCoinche/widget/portrait/portrait_score_widget.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -343,6 +345,21 @@ class _TableWidgetState extends State<TableWidget> {
             )
           ]),
         ),
+        PortraitScoreWidget(),
+        LandscapeScoreWidget(
+          currentBid: widget.game.state != TableState.PLAYING
+              ? null
+              : widget.game.currentBid,
+          onTapExit: () {
+            // TODO exit
+            print("TODO exit");
+          },
+          onTapMessages: () {
+            // TODO messages
+            print("TODO messages");
+          },
+          score: widget.game.score,
+        )
       ],
     );
   }
