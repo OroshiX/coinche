@@ -11,6 +11,7 @@ import com.google.firebase.cloud.FirestoreClient
 import com.google.firebase.database.util.JsonMapper
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.dto.UserDto
+import fr.hornik.coinche.model.Player
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.serialization.JsonSerialize
@@ -148,7 +149,23 @@ class FireApp {
         }
         return userDto
     }
+    fun getAllUsersUnused():List<User> {
+        val list = getAllGames().map { it -> it.players.map{it -> it.uid}}.flatten()
 
+        val documentUser =
+                db.collection(COLLECTION_PLAYERS)
+        var myList = mutableListOf<User>()
+
+        for (v in documentUser.listDocuments().filter{e -> ! list.any{it == e.id}}) {
+            myList.add(User(v.id, documentUser.get().get().toObjects(UserDto::class.java).first { it.uid == v.id }.nickname))
+        }
+        return myList
+    }
+    fun deleteUser(uid:String) {
+        val future = db.collection(COLLECTION_PLAYERS).document(uid).delete()
+        debugPrintln(dbgLevel.REGULAR,"User $uid deleted at ${future.get().getUpdateTime()} : ${future.toString()}")
+
+    }
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
         val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
