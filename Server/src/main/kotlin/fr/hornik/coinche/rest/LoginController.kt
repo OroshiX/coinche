@@ -4,18 +4,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import fr.hornik.coinche.component.FireApp
 import fr.hornik.coinche.dto.UserDto
-import fr.hornik.coinche.exception.DeprecatedException
-import fr.hornik.coinche.exception.LoginFailedException
+import fr.hornik.coinche.exception.*
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @Component

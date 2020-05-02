@@ -15,7 +15,7 @@ import java.util.*
 
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
-    private final val sets: MutableList<SetOfGames> = mutableListOf()
+    final val sets: MutableList<SetOfGames> = mutableListOf()
 
     /*
         for debugging reason it can be useful to comment previous line and uncomment these 3 lines
@@ -24,8 +24,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
             final val sets: MutableList<SetOfGames> = mutableListOf()
         }
     */
-    val AUTOMATEDGAMESID = "AUTOMATED"
-    val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
+    companion object {
+        val AUTOMATEDGAMESID = "AUTOMATED"
+        val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
+    }
 
     val timeoutTask = object: TimerTask() {
         var timesRan = 0

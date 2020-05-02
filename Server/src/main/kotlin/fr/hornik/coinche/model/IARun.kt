@@ -5,26 +5,26 @@ import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.model.values.*
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
-import java.util.*
 import kotlin.math.absoluteValue
 
 data class IARun(val setOfGames: SetOfGames) {
-    val robotsPlayer:List<User> = listOf(
-            User("Jean-Sebastien96541826ghD","Jean-Seb"),
+    val robotsPlayer: List<User> = listOf(
+            User("Jean-Sebastien96541826ghD", "Jean-Seb"),
             User("Marie-Jeanne R.72hdkIkhgf", "Marie-Jeanne"),
             User("Charles-Henri9854RfGD", "Charles-Henri"),
             User("Pierre-Edouard7h263h", "Pierre-Edouard"),
-            User( "Louis-Victor872663089hJggj", "Louis-Victor"),
+            User("Louis-Victor872663089hJggj", "Louis-Victor"),
             User("Bernard-Lucien782034Hgh", "Bernard-Lucien"),
             User("Francine-Heloise88273048hhnd", "Francine-Heloise"),
-            User("Hugo-Linus55522234Gh","Hugo-Linus")
-    )
+            User("Hugo-Linus55522234Gh", "Hugo-Linus")
+    ).map { User(it.uid + DataManagement.AUTOMATEDPLAYERSID, it.nickname) }
+
     fun run(data: DataManagement, millis: Long): Boolean {
         //return true if saving is needed.
 
         // Player is rge first one automated and
 
-        val listCandidatePlayer = setOfGames.players.filter { (setOfGames.whoseTurn == it.position) && (it.uid.contains(data.AUTOMATEDPLAYERSID)) }
+        val listCandidatePlayer = setOfGames.players.filter { (setOfGames.whoseTurn == it.position) && (it.uid.contains(DataManagement.AUTOMATEDPLAYERSID)) }
         // We need to call here the function written by Sacha
         when (setOfGames.state) {
             TableState.BIDDING -> if (!listCandidatePlayer.isEmpty()) {
@@ -32,7 +32,7 @@ data class IARun(val setOfGames: SetOfGames) {
                 val p = listCandidatePlayer.first()
                 val u = User(p.uid, p.nickname)
                 val aBid = enchere(setOfGames.whoseTurn, setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
-                debugPrintln(dbgLevel.DEBUG,"ANNOUNCE AUTOMATED $aBid for player ${setOfGames.whoseTurn}")
+                debugPrintln(dbgLevel.DEBUG, "ANNOUNCE AUTOMATED $aBid for player ${setOfGames.whoseTurn}")
                 data.announceBid(setOfGames, aBid, u)
                 return false
                 // no need to save after data.announceBid
@@ -41,10 +41,10 @@ data class IARun(val setOfGames: SetOfGames) {
             TableState.PLAYING -> if (!listCandidatePlayer.isEmpty()) {
                 val p = listCandidatePlayer.first()
                 val u = User(p.uid, p.nickname)
-                var Acard = p.cardsInHand.filter { it.playable == true }.random()
-                var myCard = Card(value = Acard.value, color = Acard.color)
+                val Acard = p.cardsInHand.filter { it.playable == true }.random()
+                val myCard = Card(value = Acard.value, color = Acard.color)
                 setOfGames.whoseTurnTimeLastChg = millis
-                debugPrintln(dbgLevel.DEBUG,"${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
+                debugPrintln(dbgLevel.DEBUG, "${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
                 data.playCard(setOfGames, myCard, user = u)
                 return false
             }
@@ -57,12 +57,12 @@ data class IARun(val setOfGames: SetOfGames) {
 
                     if (setOfGames.players.size < 4) {
                         //The names means that we can add an automatic player ( probably will be done later through a preference
-                        val AutoPlayer=robotsPlayer.map{it->User(it.uid+data.getIdMiddleFix(),it.nickname)}.filterNot{e->setOfGames.players.any{it.uid == e.uid}}.random()
+                        val autoPlayer = robotsPlayer.filterNot { e -> setOfGames.players.any { it.uid == e.uid } }.random()
 
-                        data.joinGame(setOfGames, AutoPlayer,AutoPlayer.nickname)
+                        data.joinGame(setOfGames, autoPlayer, autoPlayer.nickname)
                         setOfGames.whoseTurnTimeLastChg = millis
                     }
-                    }
+                }
             }
             else -> {
             }
@@ -72,20 +72,19 @@ data class IARun(val setOfGames: SetOfGames) {
 
     companion object {
         fun enchere(myPosition: PlayerPosition = PlayerPosition.NORTH, allBids: List<Bid>, myCards: List<Card>, behaviour: Int): Bid {
-            var lastBid: Bid = whatIsTheLastSignificantBid(allBids)
-            var bidPartner: Bid
-            when {
+            val lastBid: Bid = whatIsTheLastSignificantBid(allBids)
+            val bidPartner: Bid = when {
                 // Pas d'enchere precedente
                 allBids.isEmpty() -> {
-                    bidPartner = Pass()
+                    Pass()
                 }
                 // 1 seule enchere precedente
                 allBids.size == 1 -> {
-                    bidPartner = Pass()
+                    Pass()
                 }
                 // cas classique plus d'1 encheres
                 else -> {
-                    bidPartner = allBids[allBids.size - 2]
+                    allBids[allBids.size - 2]
                 }
             }
             val minPoints = lastBid.curPoint()
@@ -95,7 +94,7 @@ data class IARun(val setOfGames: SetOfGames) {
                     CardColor.SPADE to 3)
             val listColor = listOf(CardColor.HEART, CardColor.DIAMOND, CardColor.CLUB, CardColor.SPADE)
             val valueNbTrump = listOf(-18, -18, 4, 10, 22, 34, 45, 45, 45)      // valeurs heuristiques pour le nombre d'atouts 0 atouts -> 8 atouts, a du sens pour 1 - 6 atouts
-            var enchereColor: MutableMap<CardColor, Int> = mutableMapOf() // L'enchere prevue pour chaque couleur = atout
+            val enchereColor: MutableMap<CardColor, Int> = mutableMapOf() // L'enchere prevue pour chaque couleur = atout
 
             // On estime pour chaque couleur
             for (trump in listColor) {

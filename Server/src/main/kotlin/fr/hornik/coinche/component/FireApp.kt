@@ -1,7 +1,6 @@
 package fr.hornik.coinche.component
 
 import com.google.api.core.ApiFuture
-import com.google.api.gax.rpc.InvalidArgumentException
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.Firestore
 import com.google.cloud.firestore.WriteResult
@@ -11,7 +10,6 @@ import com.google.firebase.cloud.FirestoreClient
 import com.google.firebase.database.util.JsonMapper
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.dto.UserDto
-import fr.hornik.coinche.model.Player
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.serialization.JsonSerialize
@@ -149,23 +147,30 @@ class FireApp {
         }
         return userDto
     }
-    fun getAllUsersUnused():List<User> {
-        val list = getAllGames().map { it -> it.players.map{it -> it.uid}}.flatten()
 
-        val documentUser =
-                db.collection(COLLECTION_PLAYERS)
-        var myList = mutableListOf<User>()
+    fun getAllUsersUnused(sets: MutableList<SetOfGames>): List<User> {
+        val uidUsedList = sets.map { e -> e.players.map { it.uid } }.flatten().asSequence()
 
-        for (v in documentUser.listDocuments().filter{e -> ! list.any{it == e.id}}) {
-            myList.add(User(v.id, documentUser.get().get().toObjects(UserDto::class.java).first { it.uid == v.id }.nickname))
+        val documentUsersList =
+                db.collection(COLLECTION_PLAYERS).listDocuments()
+        val allUserList = documentUsersList.mapNotNull { v -> v.get().get().toObject(UserDto::class.java) }
+
+        return allUserList.filter { e -> uidUsedList.none { it == e.uid } }.map { User(it.uid, it.nickname) }
+    }
+
+    fun deleteUnusedUsers(sets: MutableList<SetOfGames>) {
+        val unusedUsers = getAllUsersUnused(sets).filter{it.uid.contains(DataManagement.AUTOMATEDPLAYERSID)}
+        for (unusedUser in unusedUsers) {
+            deleteUser(unusedUser.uid)
         }
-        return myList
+        debugPrintln(dbgLevel.DEBUG,"All unused Users have been deleted")
     }
-    fun deleteUser(uid:String) {
+    fun deleteUser(uid: String) {
         val future = db.collection(COLLECTION_PLAYERS).document(uid).delete()
-        debugPrintln(dbgLevel.REGULAR,"User $uid deleted at ${future.get().getUpdateTime()} : ${future.toString()}")
+        debugPrintln(dbgLevel.REGULAR,"User $uid deleted at ${future.get().updateTime} : $future")
 
     }
+
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
         val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
