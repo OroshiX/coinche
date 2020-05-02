@@ -18,53 +18,62 @@ class LandscapeScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      child: IntrinsicWidth(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0, top: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  NeumorphicWidget(
-                    onTap: onTapExit,
-                    sizeShadow: SizeShadow.SMALL,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.exit_to_app,
-                        color: colorTextDark,
-                      ),
+    const iconSize = 20.0;
+    const paddingButton = 8.0;
+    const distanceButtons = 10.0;
+    const topBottomButtons = 4.0;
+    const minWidth =  paddingButton * 2 + iconSize+ distanceButtons + topBottomButtons*2;
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding:
+                const EdgeInsets.only(bottom: topBottomButtons, top: topBottomButtons, left: 4, right: 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NeumorphicWidget(
+                  onTap: onTapExit,
+                  sizeShadow: SizeShadow.SMALL,
+                  child: Padding(
+                    padding: const EdgeInsets.all(paddingButton),
+                    child: Icon(
+                      Icons.exit_to_app,
+                      size: iconSize,
+                      color: colorTextDark,
                     ),
                   ),
-                  NeumorphicWidget(
-                    onTap: onTapMessages,
-                    sizeShadow: SizeShadow.SMALL,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.message,
-                        color: colorTextDark,
-                      ),
+                ),
+                SizedBox(
+                  height: distanceButtons,
+                ),
+                NeumorphicWidget(
+                  onTap: onTapMessages,
+                  sizeShadow: SizeShadow.SMALL,
+                  child: Padding(
+                    padding: const EdgeInsets.all(paddingButton),
+                    child: Icon(
+                      Icons.message,
+                      size: iconSize,
+                      color: colorTextDark,
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: OnlyScoreWidget(
-                score: score,
-                currentBid: currentBid,
-              ),
-            )
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0, right: 4, top: 4, bottom: 4),
+            child: OnlyScoreWidget(
+              score: score,
+              currentBid: currentBid, minWidth: minWidth,
+            ),
+          )
+        ],
       ),
     );
   }

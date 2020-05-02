@@ -25,30 +25,33 @@ class _GameScreenState extends State<GameScreen> {
     myCards = [];
   }
 
+  Future _quit() {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Exit game?"),
+        actions: [
+          FlatButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text("No, stay here")),
+          FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+                SystemChrome.restoreSystemUIOverlays();
+              },
+              child: Text("Yes, exit!"))
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Material(
       child: WillPopScope(
         onWillPop: () async {
-          return (await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text("Exit game?"),
-                  actions: [
-                    FlatButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text("No, stay here")),
-                    FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                          SystemChrome.restoreSystemUIOverlays();
-                        },
-                        child: Text("Yes, exit!"))
-                  ],
-                ),
-              )) ??
-              false;
+          return (await _quit()) ?? false;
         },
         child: Container(
           color: colorLightBlue,
@@ -66,7 +69,7 @@ class _GameScreenState extends State<GameScreen> {
                   );
                 }
                 print("data has changed: ${snapshot.data}");
-                return TableWidget(snapshot.data);
+                return TableWidget(snapshot.data, quit: _quit,);
               }),
         ),
       ),

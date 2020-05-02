@@ -20,7 +20,9 @@ import 'package:flutter/material.dart';
 class TableWidget extends StatefulWidget {
   final Game game;
 
-  TableWidget(this.game);
+  final Function quit;
+
+  TableWidget(this.game, {@required this.quit});
 
   @override
   _TableWidgetState createState() => _TableWidgetState();
@@ -71,6 +73,42 @@ class _TableWidgetState extends State<TableWidget> {
         Expanded(
           child: Stack(
             children: <Widget>[
+              Align(
+                alignment: Alignment.topLeft,
+                child: OrientationBuilder(
+                  builder: (context, orientation) {
+                    if (orientation == Orientation.portrait)
+                      return PortraitScoreWidget(
+                        currentBid: widget.game.state != TableState.PLAYING
+                            ? null
+                            : widget.game.currentBid,
+                        onTapMessages: () {
+                          // TODO Messages
+                          print("TODO");
+                        },
+                        onTapExit: () async {
+                          var quit = (await widget.quit()) ?? false;
+                          if (quit) Navigator.of(context).pop();
+                        },
+                        score: widget.game.score,
+                      );
+                    return LandscapeScoreWidget(
+                      currentBid: widget.game.state != TableState.PLAYING
+                          ? null
+                          : widget.game.currentBid,
+                      onTapExit: () async {
+                        var quit = (await widget.quit()) ?? false;
+                        if (quit) Navigator.of(context).pop();
+                      },
+                      onTapMessages: () {
+                        // TODO messages
+                        print("TODO messages");
+                      },
+                      score: widget.game.score,
+                    );
+                  },
+                ),
+              ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
@@ -345,21 +383,6 @@ class _TableWidgetState extends State<TableWidget> {
             )
           ]),
         ),
-        PortraitScoreWidget(),
-        LandscapeScoreWidget(
-          currentBid: widget.game.state != TableState.PLAYING
-              ? null
-              : widget.game.currentBid,
-          onTapExit: () {
-            // TODO exit
-            print("TODO exit");
-          },
-          onTapMessages: () {
-            // TODO messages
-            print("TODO messages");
-          },
-          score: widget.game.score,
-        )
       ],
     );
   }

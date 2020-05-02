@@ -73,6 +73,7 @@ class Bid {
 
   Row getReadableBidRow(double fontSize) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           readableValueBid(),

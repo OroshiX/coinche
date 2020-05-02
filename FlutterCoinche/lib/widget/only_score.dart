@@ -9,8 +9,13 @@ class OnlyScoreWidget extends StatelessWidget {
   final Score score;
   final Bid currentBid;
 
+  final double minWidth;
+
   const OnlyScoreWidget(
-      {Key key, @required this.score, @required this.currentBid})
+      {Key key,
+      @required this.score,
+      @required this.currentBid,
+      @required this.minWidth})
       : assert(currentBid == null ||
             currentBid is SimpleBid ||
             currentBid is Capot ||
@@ -21,25 +26,81 @@ class OnlyScoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const textSize = 14.0;
+    const dotSize = 7.0;
     return NeumorphicNoStateWidget(
       borderRadius: 10,
       sizeShadow: SizeShadow.SMALL,
       pressed: false,
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          children: [
-            if (currentBid != null) currentBid.getReadableBidRow(textSize),
-            if (currentBid != null)
-              Padding(
-                padding: const EdgeInsets.only(top:4.0, bottom: 4),
-                child: Container(
-                  color: colorText,
-                  height: 1,
-                ),
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                width: minWidth,
               ),
-
-          ],
+              if (currentBid != null) currentBid.getReadableBidRow(textSize),
+              if (currentBid != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+                  child: Container(
+                    color: colorText,
+                    height: 1,
+                  ),
+                ),
+              Table(
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                columnWidths: {2: FractionColumnWidth(0.5)},
+                children: [
+                  TableRow(children: [
+                    Container(
+                      height: dotSize,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Container(
+                      height: dotSize,
+                      decoration: BoxDecoration(
+                        color: Colors.purple,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Text(
+                      score.northSouth.toString(),
+                      textAlign: TextAlign.right,
+                      style:
+                          TextStyle(color: colorTextDark, fontSize: textSize),
+                    ),
+                  ]),
+                  TableRow(children: [
+                    Container(
+                      height: dotSize,
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Container(
+                      height: dotSize,
+                      decoration: BoxDecoration(
+                        color: Colors.pink,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    Text(
+                      score.eastWest.toString(),
+                      textAlign: TextAlign.right,
+                      style:
+                          TextStyle(color: colorTextDark, fontSize: textSize),
+                    ),
+                  ])
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
