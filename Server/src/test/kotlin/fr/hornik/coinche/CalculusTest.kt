@@ -77,17 +77,15 @@ class CalculusTest {
         myCards.add(Card(CardValue.EIGHT,CardColor.SPADE,playable = null))
         myCards.add(Card(CardValue.NINE,CardColor.SPADE,playable = null))
         myCards.add(Card(CardValue.KING,CardColor.HEART,playable = null))
-        if ((dbgLevel.DEBUG and traceLevel) != 0)
-            printHand(myCards,"Mycards are ")
+        printHand(dbgLevel.DEBUG,myCards,"Mycards are ")
         val c = allValidCardsToPlay(myCardsInHand = myCards, bid = currBid, cardsOnTable = listCardPlayed)
 
-        debugPrintln(dbgLevel.DEBUG,"\nBid is $currBid\n\n")
-        if ((dbgLevel.DEBUG and traceLevel) != 0) {
+        debugPrintln(dbgLevel.DEBUG, "\nBid is $currBid\n\n")
 
-            printHand(listCardPlayed.map { it -> it.card }, "\n\nOn table")
+        printHand(dbgLevel.DEBUG, listCardPlayed.map { it -> it.card }, "\n\nOn table")
 
-            printHand(c, "\nAnd I can Play")
-        }
+        printHand(dbgLevel.DEBUG, c, "\nAnd I can Play")
+
         for (mcard in myCards) {
             mcard.playable = c.contains(mcard)
         }
@@ -124,16 +122,16 @@ class CalculusTest {
         myCards.add(Card(CardValue.JACK,CardColor.CLUB,playable = null))
         myCards.add(Card(CardValue.JACK,CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.SEVEN,CardColor.DIAMOND,playable = null))
-        if ((dbgLevel.DEBUG and traceLevel) != 0)
-            printHand(myCards,"Mycards are ")
+
+        printHand(dbgLevel.DEBUG,myCards,"Mycards are ")
         val c = allValidCardsToPlay(myCardsInHand = myCards, bid = suBid, cardsOnTable = listCardPlayed)
 
         debugPrintln(dbgLevel.DEBUG,"\nBid is $suBid\n\n")
         if ((dbgLevel.DEBUG and traceLevel) != 0) {
 
-            printHand(listCardPlayed.map { it -> it.card }, "\n\nOn table")
+            printHand(dbgLevel.DEBUG,listCardPlayed.map { it -> it.card }, "\n\nOn table")
 
-            printHand(c, "\nAnd I can Play")
+            printHand(dbgLevel.DEBUG,c, "\nAnd I can Play")
         }
         for (mcard in myCards) {
             mcard.playable = c.contains(mcard)
@@ -193,12 +191,11 @@ class CalculusTest {
             for (i in 0..3) {
                 fourHands[tHand[indexPlayer]].sortWith(Comparator { o1, o2 -> o1.color.compareTo(o2.color) })
                 if ((dbgLevel.HTML and traceLevel) != 0)
-                    printHand(fourHands[tHand[indexPlayer]], "Player ${lRand[tHand[indexPlayer]]}")
+                    printHand(dbgLevel.DEBUG,fourHands[tHand[indexPlayer]], "Player ${lRand[tHand[indexPlayer]]}")
                 val c = allValidCardsToPlay(fourHands[indexPlayer], aBid, listCardP)
                 debugPrintln(dbgLevel.HTML, "")
 
-                if ((dbgLevel.HTML and traceLevel) != 0)
-                    printHand(c, "valid cards for ${lRand[indexPlayer]}")
+                    printHand(dbgLevel.DEBUG,c, "valid cards for ${lRand[indexPlayer]}")
                 debugPrintln(dbgLevel.HTML, "<font color=#FF0000 bgcolor=0x00FFFF> ${lRand[indexPlayer]} plays  ${c[0].value}  of ${c[0].color} </font>")
                 listCardP.add(CardPlayed(c[0], BeloteValue.NONE, lRand[indexPlayer]))
                 fourHands[tHand[indexPlayer]].remove(c[0])
@@ -215,21 +212,18 @@ class CalculusTest {
             }
         }
         debugPrintln(dbgLevel.HTML, "</pre></tr><tr><td>")
-        debugPrintln(dbgLevel.SCORE, "\n\nScore = ${calculateScoreTricks(PlisNS, PlisEW, dixDer, aBid)}")
+        debugPrintln(dbgLevel.REGULAR, "\n\nScore = ${calculateScoreTricks(PlisNS, PlisEW, dixDer, aBid)}")
         debugPrintln(dbgLevel.HTML, "</table>")
         debugPrintln(dbgLevel.HTML, "<pre>")
         debugPrintln(dbgLevel.HTML, "\n\nDisplay Structure of tricks\n")
         var i = 0
         for (li in PlisEW) {
             i = i + 1
-            if ((dbgLevel.HTML and traceLevel) != 0)
-                printHand(li.map { it -> it.card }, "EastWest Pli $i")
+            printHand(dbgLevel.DEBUG,li.map { it -> it.card }, "EastWest Pli $i")
         }
         for (li in PlisNS) {
             i = i + 1
-            if ((dbgLevel.HTML and traceLevel) != 0)
-
-                printHand(li.map { it -> it.card }, "North South Pli $i")
+            printHand(dbgLevel.DEBUG, li.map { it -> it.card }, "North South Pli $i")
         }
         debugPrintln(dbgLevel.HTML, "</pre><br><br><br>")
         return (Pair(PlisEW, PlisNS))

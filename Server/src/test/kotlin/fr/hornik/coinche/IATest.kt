@@ -41,8 +41,7 @@ class IATest {
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.SEVEN, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and traceLevel) != 0)
-            printHand(myCards,"Mycards are ")
+        printHand(dbgLevel.DEBUG,myCards,"Mycards are ")
 
 
 
@@ -79,8 +78,7 @@ class IATest {
         myCards.add(Card(CardValue.TEN, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and traceLevel) != 0)
-            printHand(myCards,"Mycards are ")
+        printHand(dbgLevel.DEBUG, myCards, "Mycards are ")
 
 
 
@@ -115,8 +113,7 @@ class IATest {
         myCards.add(Card(CardValue.TEN, CardColor.DIAMOND,playable = null))
         myCards.add(Card(CardValue.JACK, CardColor.DIAMOND,playable = null))
 
-        if ((dbgLevel.DEBUG and traceLevel) != 0)
-            printHand(myCards,"Mycards are ")
+        printHand(dbgLevel.DEBUG, myCards, "Mycards are ")
 
 
         val prevBid = SimpleBid(CardColor.DIAMOND,130,PlayerPosition.NORTH)
