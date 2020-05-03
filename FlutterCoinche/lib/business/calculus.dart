@@ -1,7 +1,8 @@
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:flutter/material.dart';
 
-PlayerPosition getPlayerPositionTop(PlayerPosition myPosition) {
+PlayerPosition _getPlayerPositionTop(PlayerPosition myPosition) {
   switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.NORTH;
@@ -22,7 +23,7 @@ Bid getPlayerBid(List<Bid> bids, PlayerPosition position) {
   );
 }
 
-PlayerPosition getPlayerPositionLeft(PlayerPosition myPosition) {
+PlayerPosition _getPlayerPositionLeft(PlayerPosition myPosition) {
   switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.WEST;
@@ -36,7 +37,7 @@ PlayerPosition getPlayerPositionLeft(PlayerPosition myPosition) {
   return null;
 }
 
-PlayerPosition getPlayerPositionRight(PlayerPosition myPosition) {
+PlayerPosition _getPlayerPositionRight(PlayerPosition myPosition) {
   switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.EAST;
@@ -48,4 +49,23 @@ PlayerPosition getPlayerPositionRight(PlayerPosition myPosition) {
       return PlayerPosition.SOUTH;
   }
   return null;
+}
+
+Map<AxisDirection, PlayerPosition> getPosTableToCardinal(
+    PlayerPosition myPosition) {
+  return {
+    AxisDirection.left: _getPlayerPositionLeft(myPosition),
+    AxisDirection.right: _getPlayerPositionRight(myPosition),
+    AxisDirection.up: _getPlayerPositionTop(myPosition),
+    AxisDirection.down: myPosition
+  };
+}
+
+Map<PlayerPosition, AxisDirection> getCardinalToPosTable(PlayerPosition myPosition) {
+  return {
+    _getPlayerPositionLeft(myPosition): AxisDirection.left,
+    _getPlayerPositionRight(myPosition): AxisDirection.right,
+    _getPlayerPositionTop(myPosition): AxisDirection.up,
+    myPosition: AxisDirection.down
+  };
 }
