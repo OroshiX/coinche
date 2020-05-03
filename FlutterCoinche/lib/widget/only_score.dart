@@ -1,6 +1,7 @@
+import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/player_position.dart'
-    show PlayExtension, PlayerPosition;
+    show PlayerPosition, TablePosition;
 import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/dot_player.dart';
@@ -27,6 +28,10 @@ class OnlyScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final Score score =
         GameInherited.of(context, aspectType: Aspects.SCORE).game.score;
+    final map = getCardinalToPosTable(
+        GameInherited.of(context, aspectType: Aspects.MY_POSITION)
+            .game
+            .myPosition);
     const textSize = 14.0;
     const dotSize = 7.0;
     return NeumorphicNoStateWidget(
@@ -43,7 +48,7 @@ class OnlyScoreWidget extends StatelessWidget {
                 width: minWidth,
               ),
               if (currentBid != null)
-                currentBid.getReadableBidRow(textSize, dotSize),
+                currentBid.getReadableBidRow(textSize, dotSize, map),
               if (currentBid != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 4),
@@ -58,7 +63,7 @@ class OnlyScoreWidget extends StatelessWidget {
                 children: [
                   TableRow(children: [
                     FutureBuilder<Color>(
-                      future: PlayerPosition.NORTH.getColor(),
+                      future: map[PlayerPosition.NORTH].getColor(),
                       initialData: Colors.blue,
                       builder: (context, snapshot) => DotPlayer(
                         dotSize: dotSize,
@@ -66,7 +71,7 @@ class OnlyScoreWidget extends StatelessWidget {
                       ),
                     ),
                     FutureBuilder<Color>(
-                      future: PlayerPosition.SOUTH.getColor(),
+                      future: map[PlayerPosition.SOUTH].getColor(),
                       initialData: Colors.blue,
                       builder: (context, snapshot) => DotPlayer(
                         dotSize: dotSize,
@@ -82,7 +87,7 @@ class OnlyScoreWidget extends StatelessWidget {
                   ]),
                   TableRow(children: [
                     FutureBuilder<Color>(
-                      future: PlayerPosition.EAST.getColor(),
+                      future: map[PlayerPosition.EAST].getColor(),
                       initialData: Colors.blue,
                       builder: (context, snapshot) => DotPlayer(
                         dotSize: dotSize,
@@ -90,7 +95,7 @@ class OnlyScoreWidget extends StatelessWidget {
                       ),
                     ),
                     FutureBuilder(
-                      future: PlayerPosition.WEST.getColor(),
+                      future: map[PlayerPosition.WEST].getColor(),
                       initialData: Colors.blue,
                       builder: (context, snapshot) => DotPlayer(
                         dotSize: dotSize,

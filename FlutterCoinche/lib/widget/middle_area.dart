@@ -13,15 +13,13 @@ import 'package:flutter/material.dart';
 class MiddleArea extends StatelessWidget {
   final double cardWidth, cardHeight;
   final Size screenSize;
-  final PlayerPosition left, right, top;
+  final Map<AxisDirection, PlayerPosition> posTableToCardinal;
 
   const MiddleArea({
     @required this.cardWidth,
     @required this.cardHeight,
     @required this.screenSize,
-    @required this.left,
-    @required this.right,
-    @required this.top,
+    @required this.posTableToCardinal,
   });
 
   @override
@@ -44,12 +42,7 @@ class MiddleArea extends StatelessWidget {
         CardsOnTable(
           state: state,
           cardsOnTable: onTable,
-          posTableToCardinal: {
-            AxisDirection.left: left,
-            AxisDirection.up: top,
-            AxisDirection.right: right,
-            AxisDirection.down: myPosition
-          },
+          posTableToCardinal: posTableToCardinal,
           minPadding: 2,
         ),
         Center(

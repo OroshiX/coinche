@@ -11,8 +11,10 @@ import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
+import 'package:FlutterCoinche/widget/player_avatar.dart';
 import 'package:FlutterCoinche/widget/portrait/portrait_score_widget.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +29,19 @@ class TableWidget extends StatefulWidget {
 }
 
 class _TableWidgetState extends State<TableWidget> {
+  AutoSizeGroup autoSizeGroup;
+
+  @override
+  void initState() {
+    super.initState();
+    autoSizeGroup = AutoSizeGroup();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    double heightContainerName = 50;
-    double widthContainer = 200;
+    double widthContainerName = 65;
+    double heightContainer = 104;
     final nicknames =
         GameInherited.of(context, aspectType: Aspects.NICKNAMES).game.nicknames;
     final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
@@ -45,9 +55,10 @@ class _TableWidgetState extends State<TableWidget> {
             .game
             .nextPlayer;
     final id = GameInherited.of(context, aspectType: Aspects.ID).game.id;
-    var top = getPlayerPositionTop(me);
-    var left = getPlayerPositionLeft(me);
-    var right = getPlayerPositionRight(me);
+    final posTableToCardinal = getPosTableToCardinal(me);
+    var top = posTableToCardinal[AxisDirection.up];
+    var left = posTableToCardinal[AxisDirection.left];
+    var right = posTableToCardinal[AxisDirection.right];
 
     final double cardWidth = getCardWidth(screenSize);
     final double cardHeight = cardWidth * golden;
@@ -115,96 +126,43 @@ class _TableWidgetState extends State<TableWidget> {
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  width: widthContainer,
-                  height: heightContainerName,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        color: nextPlayer == top
-                            ? Colors.amber
-                            : Colors.transparent),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          nicknames.fromPosition(top),
-                          style: TextStyle(color: colorTextDark),
-                        ),
-                        Text(
-                          "(${top.toString().split(".").last})",
-                          style: TextStyle(color: colorTextDark),
-                        ),
-                      ],
-                    ),
+                  width: widthContainerName,
+                  height: heightContainer,
+                  child: PlayerAvatar(
+                    position: top,
+                    nick: nicknames.fromPosition(top),
+                    autoSizeGroup: autoSizeGroup,
                   ),
                 ),
               ),
-
               Align(
                 alignment: Alignment.centerRight,
-                child: RotatedBox(
-                  quarterTurns: -1,
-                  child: Container(
-                    width: widthContainer,
-                    height: heightContainerName,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: nextPlayer == right
-                              ? Colors.amber
-                              : Colors.transparent),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            nicknames.fromPosition(right),
-                            style: TextStyle(color: colorTextDark),
-                          ),
-                          Text(
-                            "(${right.toString().split(".").last})",
-                            style: TextStyle(color: colorTextDark),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: Container(
+                  width: widthContainerName,
+                  height: heightContainer,
+                  child: PlayerAvatar(
+                    nick: nicknames.fromPosition(right),
+                    autoSizeGroup: autoSizeGroup,
+                    position: right,
                   ),
                 ),
               ),
-
               Align(
                 alignment: Alignment.centerLeft,
-                child: RotatedBox(
-                  quarterTurns: 1,
-                  child: Container(
-                    width: widthContainer,
-                    height: heightContainerName,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                          color: nextPlayer == left
-                              ? Colors.amber
-                              : Colors.transparent),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            nicknames.fromPosition(left),
-                            style: TextStyle(color: colorTextDark),
-                          ),
-                          Text(
-                            "(${left.toString().split(".").last})",
-                            style: TextStyle(color: colorTextDark),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: Container(
+                  width: widthContainerName,
+                  height: heightContainer,
+                  child: PlayerAvatar(
+                    nick: nicknames.fromPosition(left),
+                    autoSizeGroup: autoSizeGroup,
+                    position: left,
                   ),
                 ),
               ),
               // The last bids of the players
               if (bidLeft != null && state == TableState.BIDDING)
                 Transform.translate(
-                  offset: Offset(heightContainerName + 4, -widthContainer / 2),
+                  offset: Offset(widthContainerName + 4, -heightContainer / 2),
                   child: Bubble(
                     color: Colors.white,
                     child: Text(bidLeft.toString()),
@@ -215,7 +173,7 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               if (bidRight != null && state == TableState.BIDDING)
                 Transform.translate(
-                  offset: Offset(-heightContainerName - 4, -widthContainer / 2),
+                  offset: Offset(-widthContainerName - 4, -heightContainer / 2),
                   child: Bubble(
                     alignment: Alignment.centerRight,
                     color: Colors.white,
@@ -226,7 +184,7 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               if (bidTop != null && state == TableState.BIDDING)
                 Transform.translate(
-                  offset: Offset(0, heightContainerName + 4),
+                  offset: Offset(0, widthContainerName + 4),
                   child: Bubble(
                     alignment: Alignment.topCenter,
                     color: Colors.white,
@@ -239,7 +197,7 @@ class _TableWidgetState extends State<TableWidget> {
                 Transform.translate(
                   offset: Offset(
                       0,
-                      -heightContainerName -
+                      -widthContainerName -
                           cardHeight -
                           marginCardsPosition -
                           paddingHeightCards * 2 -
@@ -256,25 +214,23 @@ class _TableWidgetState extends State<TableWidget> {
 
               Padding(
                 padding: EdgeInsets.only(
-                    top: heightContainerName,
+                    top: widthContainerName,
                     bottom: marginCardsPosition,
-                    left: heightContainerName,
-                    right: heightContainerName),
+                    left: widthContainerName,
+                    right: widthContainerName),
                 child: SizedBox.expand(
                   child: MiddleArea(
                     cardHeight: cardHeight,
                     cardWidth: cardWidth,
-                    left: left,
                     screenSize: screenSize,
-                    right: right,
-                    top: top,
+                    posTableToCardinal: posTableToCardinal,
                   ),
                 ),
               ),
               AnimatedPositioned(
                 bottom: getBottomOfBiddingBar(screenSize),
                 left: state == TableState.BIDDING
-                    ? heightContainerName
+                    ? widthContainerName
                     : -screenSize.width,
                 duration: Duration(milliseconds: 500),
                 child: AnimatedOpacity(
@@ -324,25 +280,12 @@ class _TableWidgetState extends State<TableWidget> {
           child: Stack(children: [
             Center(
               child: Container(
-                width: widthContainer,
-                height: heightContainerName,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      color:
-                          nextPlayer == me ? Colors.amber : Colors.transparent),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        nicknames.fromPosition(me),
-                        style: TextStyle(color: colorTextDark),
-                      ),
-                      Text(
-                        "(${me.toString().split(".").last})",
-                        style: TextStyle(color: colorTextDark),
-                      ),
-                    ],
-                  ),
+                width: widthContainerName,
+                height: heightContainer,
+                child: PlayerAvatar(
+                  nick: nicknames.fromPosition(me),
+                  autoSizeGroup: autoSizeGroup,
+                  position: me,
                 ),
               ),
             ),

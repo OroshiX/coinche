@@ -73,7 +73,18 @@ class Bid {
     return "";
   }
 
-  Row getReadableBidRow(double fontSize, double dotSize) {
+  PlayerPosition getTaker() {
+    if (this is Coinche) {
+      return (this as Coinche).annonce.position;
+    }
+    if (this is Pass) {
+      return null;
+    }
+    return position;
+  }
+
+  Row getReadableBidRow(double fontSize, double dotSize,
+      Map<PlayerPosition, AxisDirection> cardinalToPosTable) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -87,12 +98,12 @@ class Bid {
         ),
         if (this is Coinche)
           Text(
-            " coinché-d",
+            " (x${(this as Coinche).surcoinche ? 4 : 2})",
             style: TextStyle(fontSize: fontSize, color: colorTextDark),
           ),
         Text(" by "),
         FutureBuilder<Color>(
-          future: position.getColor(),
+          future: cardinalToPosTable[getTaker()].getColor(),
           initialData: Colors.blue,
           builder: (context, snapshot) => DotPlayer(
             dotSize: dotSize,

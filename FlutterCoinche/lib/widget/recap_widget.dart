@@ -13,9 +13,6 @@ class RecapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final state =
         GameInherited.of(context, aspectType: Aspects.STATE).game.state;
-    final whoseTurn = GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
-        .game
-        .nextPlayer;
     return NeumorphicNoStateWidget(
       pressed: false,
       borderRadius: 10,
@@ -25,9 +22,6 @@ class RecapWidget extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Text("Phase: ${state.toString().split(".").last.toLowerCase()}"),
-            if (state == TableState.PLAYING || state == TableState.BIDDING)
-              Text(
-                  "${whoseTurn.toString().split(".").last}'s turn to ${state == TableState.PLAYING ? "play" : state == TableState.BIDDING ? "bid" : ""}"),
           ],
         ),
       ),
