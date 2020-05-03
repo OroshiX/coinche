@@ -25,11 +25,11 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
     */
     companion object {
-        val AUTOMATEDGAMESID = "AUTOMATED"
-        val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
+        const val AUTOMATEDGAMESID = "AUTOMATED"
+        const val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
     }
 
-    val timeoutTask = object: TimerTask() {
+    private final val timeoutTask = object: TimerTask() {
         var timesRan = 0
         override fun run() = reviewTimer("Timeout timer passed ${++timesRan} time(s)")
 
@@ -81,7 +81,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
 
     }
-    val timer = java.util.Timer()
+    private final val timer = Timer()
     init {
         sets.addAll(fire.getAllGames())
 
@@ -148,7 +148,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 if (firstDeal)
                     firstDealOfCards(dealer, allSpreads.random())
                 else
-                    dealCards(setOfGames.plisCampNS.map { it -> it.value}, setOfGames.plisCampEW.map {it -> it.value}, 10,
+                    dealCards(setOfGames.plisCampNS.map { it.value}, setOfGames.plisCampEW.map {it.value}, 10,
                             allSpreads.random(), dealer)
         setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
@@ -164,7 +164,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
 
-        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map {it -> it.value}, setOfGames.plisCampEW.map {it -> it.value},
+        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map {it.value}, setOfGames.plisCampEW.map {it.value},
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
@@ -202,9 +202,9 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
 
 
-        val IABid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
-        if ((IABid.curColor()!=bid.curColor()) || (IABid.curPoint() != bid.curPoint())) {
-            debugPrintln(dbgLevel.DEBUG,"****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $IABid ")
+        val iaBid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
+        if ((iaBid.curColor()!=bid.curColor()) || (iaBid.curPoint() != bid.curPoint())) {
+            debugPrintln(dbgLevel.DEBUG,"****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $iaBid ")
         }
 
         // We dont expect the client application to fill correctly the annonce we are coinch'ing
