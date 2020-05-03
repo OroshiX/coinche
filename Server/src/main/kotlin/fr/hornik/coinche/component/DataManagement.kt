@@ -25,7 +25,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
     */
     companion object {
-        const val AUTOMATEDGAMESID = "AUTO_MATED"
+        const val AUTOMATEDGAMESID = "AUTOMATED"
         const val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
     }
 
