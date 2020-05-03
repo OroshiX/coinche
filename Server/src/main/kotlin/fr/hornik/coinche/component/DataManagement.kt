@@ -200,11 +200,20 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if (setOfGames.whoseTurn != me.position) throw NotYourTurnException()
         // Bid needs to be valid and bid.position needs to be me !!!!
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
+
+
         val IABid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
         if ((IABid.curColor()!=bid.curColor()) || (IABid.curPoint() != bid.curPoint())) {
             debugPrintln(dbgLevel.DEBUG,"****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $IABid ")
         }
-        setOfGames.bids.add(bid)
+
+        // We dont expect the client application to fill correctly the annonce we are coinch'ing
+        // and we can compute it here so .... annonce is not checked in the function isValidBid .... so we can do it either before or after.
+        if (bid is Coinche) {
+            setOfGames.bids.add (Coinche(annonce = getCurrentBid(setOfGames.bids),position = bid.position, surcoinche = bid.surcoinche))
+        } else {
+            setOfGames.bids.add (bid)
+        }
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
         if (setOfGames.onTable.size == 4) {
             // the cards on the table are from last trick, we can clear them

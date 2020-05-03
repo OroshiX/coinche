@@ -105,19 +105,26 @@ fun isValidCard(myCardsInHand: List<Card>, bid: Bid,
 
 fun isValidBid(bids: List<Bid>, myBid: Bid): Boolean {
     var counter = bids.size // nombre d'enchères (en comptant les pass)
+
     while (counter > 0) {
         val lastBid = bids[counter - 1]
         when {
-            myBid is Pass                              -> return true                        // Pass tjs ok
-            lastBid is Pass                            -> counter--                        // si last = pass on regarde celle d'avant
-            lastBid is Coinche && lastBid.surcoinche   -> return false        // si surcoinche alors rien
-            lastBid is Coinche                         -> return myBid is Coinche && myBid.surcoinche    // si coinche alors que surcoinche
-            myBid is Coinche                           -> return !myBid.surcoinche                // valeur normale, si je coinche c'est bon
-            lastBid is General                         -> return myBid is General && myBid.belote && !lastBid.belote
-            lastBid is Capot                           -> return myBid is General || myBid is Capot && myBid.belote && !lastBid.belote
-            myBid is General || myBid is Capot         -> return true            // si pas gen ou capot alors je peux
-            myBid is SimpleBid && lastBid is SimpleBid -> return myBid.points > lastBid.points                // si mon enchère plus haute que la sienne
-            else                                       -> return false
+            // PASS IS always OK
+            myBid is Pass                              -> return true
+
+            //If LAST == PASS check previous one
+            lastBid is Pass                            -> counter--
+
+            //LAST was already SURCOINCHE : Invalid Bid
+            lastBid is Coinche && lastBid.surcoinche   -> return false
+
+            // Last Bid was Coinche - This is a Surcoinche - need anyway to check original Bid comes from our team
+            lastBid is Coinche                         -> return myBid is Coinche && myBid.surcoinche && lastBid.position != myBid.position-2
+
+            // This is a Coinche and no other coinche in the stack - regular one - just check that what lastbid was is done by the other team.
+            myBid is Coinche                           -> return !myBid.surcoinche && myBid.position != lastBid.position-2
+
+            else                                       -> return myBid.curPoint() > lastBid.curPoint()
 
         }
     }
