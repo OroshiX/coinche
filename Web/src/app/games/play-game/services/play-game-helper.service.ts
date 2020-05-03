@@ -21,6 +21,10 @@ export class PlayGameHelperService {
           currentPos === PLAYER_POSITION.WEST ? nicknames.WEST : '';
   }
 
+  getNicknamesPairByPos(playerPosEast: PLAYER_POSITION, playerPosWest: PLAYER_POSITION, nicknames: PlayerPosition): string {
+    return `${this.getNicknameByPos(playerPosEast, nicknames)}/${this.getNicknameByPos(playerPosWest, nicknames)}`;
+  }
+
   getPlayersNicknameByMyPos(myPos: PLAYER_POSITION, nicknames: PlayerPosition): string[] {
     const playersPos = this.playersPositionRefOrderedByMyPosZero(myPos);
     return playersPos.map((pos) => this.getNicknameByPos(pos, nicknames));

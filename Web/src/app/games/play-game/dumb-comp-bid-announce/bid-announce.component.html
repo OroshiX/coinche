@@ -1,10 +1,15 @@
 <mat-card class="announce-bid-wrapper">
-  <div class="button-bid">
-    <button
-      [disabled]="isDisableBid"
-      color="primary"
-      mat-raised-button
-      (click)="openDialog()">Announce my bid
-    </button>
-  </div>
+  <mat-card-footer>
+    <div class="button-bid">
+      <button class="button-item" mat-raised-button color="accent" (click)="bidPass()">
+        Pass
+      </button>
+      <button class="button-item"
+        [disabled]="isDisableBid"
+        color="primary"
+        mat-raised-button
+        (click)="openDialog()">Announce my bid
+      </button>
+    </div>
+  </mat-card-footer>
 </mat-card>

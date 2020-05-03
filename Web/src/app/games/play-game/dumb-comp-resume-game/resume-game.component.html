@@ -2,7 +2,12 @@
   <div class="resume">
     <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
     <ng-container *ngIf="gameState !== 'JOINING'">
-      <div class="item">Score <span class="itemContent">E/W: {{bidData?.eastWest}} - N/S: {{bidData?.northSouth}}</span></div>
+      <div class="item">Score <span class="itemContent">
+        {{bidData?.eastWestNicknames}}: {{bidData?.eastWest}}</span>
+      </div>
+      <div class="item">Score <span class="itemContent">
+        {{bidData?.northSouthNicknames}}: {{bidData?.northSouth}}</span>
+      </div>
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
       <div class="item">CurrentBid:
@@ -10,15 +15,25 @@
           - {{bidData.currentBidPoints}} {{bidData.currentBidColor}} {{bidData.currentBidType}}</span>
       </div>
     </ng-container>
-    <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'; else joining">
-      <div class="item">Waiting for
-        <span class="nextPlayer">{{bidData.nextPlayer}}
+    <ng-container *ngIf="gameState !=='ENDED' else ended">
+      <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'; else joining">
+        <div class="item">Waiting for
+          <span class="nextPlayer">{{bidData.nextPlayer}}
           </span> to <span class="itemContent">{{playOrBid}}</span>
-      </div>
+        </div>
+      </ng-container>
+      <ng-template #joining>
+        <div class="item">Waiting for other players to join the game
+        </div>
+      </ng-template>
     </ng-container>
-    <ng-template #joining>
-      <div class="item">Waiting for other players to join the game
+    <ng-template #ended>
+      <div class="item-blink">Game over. The winners are:
+        <strong>
+        {{bidData?.eastWest-bidData?.northSouth > 0 ? bidData.eastWestNicknames : bidData.northSouthNicknames}}
+        </strong>
       </div>
     </ng-template>
+
   </div>
 </mat-card>
