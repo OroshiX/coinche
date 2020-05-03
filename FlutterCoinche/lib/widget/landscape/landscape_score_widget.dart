@@ -1,28 +1,33 @@
 import 'package:FlutterCoinche/dto/bid.dart';
-import 'package:FlutterCoinche/dto/score.dart';
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/only_score.dart';
 import 'package:flutter/material.dart';
 
 class LandscapeScoreWidget extends StatelessWidget {
   final Function onTapExit, onTapMessages;
-  final Score score;
-  final Bid currentBid;
 
-  LandscapeScoreWidget(
-      {@required this.onTapExit,
-      @required this.onTapMessages,
-      @required this.score,
-      @required this.currentBid});
+  const LandscapeScoreWidget(
+      {@required this.onTapExit, @required this.onTapMessages});
 
   @override
   Widget build(BuildContext context) {
+    final state =
+        GameInherited.of(context, aspectType: Aspects.STATE).game.state;
+    final Bid currentBidGame =
+        GameInherited.of(context, aspectType: Aspects.CURRENT_BID)
+            .game
+            .currentBid;
+    final Bid currentBid = state != TableState.PLAYING ? null : currentBidGame;
+
     const iconSize = 20.0;
     const paddingButton = 8.0;
     const distanceButtons = 10.0;
     const topBottomButtons = 4.0;
-    const minWidth =  paddingButton * 2 + iconSize+ distanceButtons + topBottomButtons*2;
+    const minWidth =
+        paddingButton * 2 + iconSize + distanceButtons + topBottomButtons * 2;
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -30,8 +35,11 @@ class LandscapeScoreWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.only(bottom: topBottomButtons, top: topBottomButtons, left: 4, right: 4),
+            padding: const EdgeInsets.only(
+                bottom: topBottomButtons,
+                top: topBottomButtons,
+                left: 4,
+                right: 4),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -67,10 +75,11 @@ class LandscapeScoreWidget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 4.0, right: 4, top: 4, bottom: 4),
+            padding:
+                const EdgeInsets.only(left: 4.0, right: 4, top: 4, bottom: 4),
             child: OnlyScoreWidget(
-              score: score,
-              currentBid: currentBid, minWidth: minWidth,
+              currentBid: currentBid,
+              minWidth: minWidth,
             ),
           )
         ],

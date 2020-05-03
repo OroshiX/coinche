@@ -26,6 +26,8 @@ export interface DialogData {
 export interface BidData {
   eastWest: number;
   northSouth: number;
+  eastWestNicknames: string;
+  northSouthNicknames: string;
   currentBidNickname: string;
   currentBidPoints: number;
   currentBidColor: CARD_COLOR;
@@ -130,7 +132,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
-    this.nextPlayerIdx = this.helper.getIdxPlayer(data.myPosition, data.nextPlayer);
+    this.nextPlayerIdx = this.gameState !== STATE.ENDED &&  this.gameState !== STATE.JOINING ?
+      this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever
     this.playersNicknameByMyPosOnTable = this.helper.getPlayersNicknameByMyPos(data.myPosition, data.nicknames);
     console.log('Players position on Table  ============',this.playersNicknameByMyPosOnTable);
     this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
@@ -159,6 +162,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     return {
       eastWest: data.score.eastWest,
       northSouth: data.score.northSouth,
+      eastWestNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.EAST, PLAYER_POSITION.WEST, data.nicknames),
+      northSouthNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.NORTH, PLAYER_POSITION.SOUTH, data.nicknames),
       currentBidColor: data?.currentBid?.color,
       currentBidNickname: this.helper.getNicknameByPos(data.currentBid.position, data.nicknames),
       currentBidPoints: data?.currentBid?.points,
@@ -168,6 +173,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   onAnnounceBid(bid: Bid) {
+    console.log('in announceBid');
+    console.log(bid);
     this.setCurrentBidding(bid);
     this.isMyTurn = false;
   }

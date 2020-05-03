@@ -1,11 +1,11 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/card.dart';
-import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_on_table.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +13,11 @@ import 'package:flutter/material.dart';
 class MiddleArea extends StatelessWidget {
   final double cardWidth, cardHeight;
   final Size screenSize;
-  final Game game;
   final PlayerPosition left, right, top, me;
 
-  MiddleArea({
+  const MiddleArea({
     @required this.cardWidth,
     @required this.cardHeight,
-    @required this.game,
     @required this.screenSize,
     @required this.left,
     @required this.right,
@@ -29,11 +27,24 @@ class MiddleArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state =
+        GameInherited.of(context, aspectType: Aspects.STATE).game.state;
+    final id = GameInherited.of(context, aspectType: Aspects.ID).game.id;
+    final myPosition =
+        GameInherited.of(context, aspectType: Aspects.MY_POSITION)
+            .game
+            .myPosition;
+    final onTable =
+        GameInherited.of(context, aspectType: Aspects.ON_TABLE).game.onTable;
+    final nextPlayer =
+        GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
+            .game
+            .nextPlayer;
     return Stack(
       children: [
         CardsOnTable(
-          state: game.state,
-          cardsOnTable: game.onTable,
+          state: state,
+          cardsOnTable: onTable,
           posTableToCardinal: {
             AxisDirection.left: left,
             AxisDirection.up: top,
@@ -46,13 +57,13 @@ class MiddleArea extends StatelessWidget {
           child: DragTarget<CardModel>(
             onWillAccept: (data) {
               // if it is my turn and the card is playable
-              return game.myPosition == game.nextPlayer &&
+              return myPosition == nextPlayer &&
                   data.playable != null &&
                   data.playable;
             },
             onAccept: (data) {
-              return ServerCommunication.playCard(data, game.id)
-                  .then((void _) {}, onError: (error) {
+              return ServerCommunication.playCard(data, id).then((void _) {},
+                  onError: (error) {
                 BlocProvider.of<GamesBloc>(context).playError();
                 return FlushbarHelper.createError(
                         message: "Error: ${error["message"]}",

@@ -1,9 +1,8 @@
 import 'package:FlutterCoinche/dto/bid.dart';
-import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 
-PlayerPosition getPlayerPositionTop(Game game) {
-  switch (game.myPosition) {
+PlayerPosition getPlayerPositionTop(PlayerPosition myPosition) {
+  switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.NORTH;
     case PlayerPosition.NORTH:
@@ -16,15 +15,15 @@ PlayerPosition getPlayerPositionTop(Game game) {
   return null;
 }
 
-Bid getPlayerBid(Game game, PlayerPosition position) {
-  return game.bids?.lastWhere(
+Bid getPlayerBid(List<Bid> bids, PlayerPosition position) {
+  return bids?.lastWhere(
     (element) => element.position == position,
     orElse: () => null,
   );
 }
 
-PlayerPosition getPlayerPositionLeft(Game game) {
-  switch (game.myPosition) {
+PlayerPosition getPlayerPositionLeft(PlayerPosition myPosition) {
+  switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.WEST;
     case PlayerPosition.NORTH:
@@ -37,8 +36,8 @@ PlayerPosition getPlayerPositionLeft(Game game) {
   return null;
 }
 
-PlayerPosition getPlayerPositionRight(Game game) {
-  switch (game.myPosition) {
+PlayerPosition getPlayerPositionRight(PlayerPosition myPosition) {
+  switch (myPosition) {
     case PlayerPosition.SOUTH:
       return PlayerPosition.EAST;
     case PlayerPosition.NORTH:

@@ -24,8 +24,12 @@
 .button-bid {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-content: center;
+}
+.button-item {
+  flex: fit-content;
+  margin-right: 10px;
 }
 .item {
   flex: 1;
@@ -54,6 +58,7 @@
   align-content: center;
   flex-direction: row;
 }
+
 
 
 

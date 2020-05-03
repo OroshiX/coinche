@@ -2,6 +2,7 @@ import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/table_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
@@ -69,7 +70,11 @@ class _GameScreenState extends State<GameScreen> {
                   );
                 }
                 print("data has changed: ${snapshot.data}");
-                return TableWidget(snapshot.data, quit: _quit,);
+                return GameInherited(
+                    game: snapshot.data,
+                    child: TableWidget(
+                      quit: _quit,
+                    ));
               }),
         ),
       ),

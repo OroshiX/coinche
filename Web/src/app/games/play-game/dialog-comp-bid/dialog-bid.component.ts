@@ -16,11 +16,6 @@ export class DialogBidComponent {
   bidColors = colorList;
   bidTypes = bidTypeList;
 
-  /*
-    get bidTypeControl(): FormControl {
-      return this.bidForm.get('bidType') as FormControl;
-    }*/
-
   constructor(public dialogRef: MatDialogRef<DialogBidComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.bidForm = new FormGroup({
