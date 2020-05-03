@@ -20,7 +20,7 @@ class IATest {
     @Test
     fun testEnchere90 () {
 
-        val nameTest = "Enchere90"
+        val nameTest = object {}.javaClass.enclosingMethod.name
 
         // North : 100 Spade
         // South : Coinche
@@ -57,7 +57,7 @@ class IATest {
 
     @Test
     fun testEnchere100 () {
-        val nameTest = "Enchere100"
+        val nameTest = object {}.javaClass.enclosingMethod.name
 
         val oldTraceLevel = traceLevel
         //traceLevel = dbgLevel.ALL
@@ -90,7 +90,7 @@ class IATest {
 
     @Test
     fun testEnchere110 () {
-        val nameTest = "Enchere110"
+        val nameTest = object {}.javaClass.enclosingMethod.name
 
         // Bid should be at minimum 120 Club
         val oldTraceLevel = traceLevel
@@ -124,7 +124,7 @@ class IATest {
 
     @Test
     fun testEnchere120() {
-        val nameTest = "Enchere120"
+        val nameTest = object {}.javaClass.enclosingMethod.name
 
         // Bid should be at minimum 110 Club
         val oldTraceLevel = traceLevel
@@ -155,7 +155,7 @@ class IATest {
 
     @Test
     fun testEnchere140() {
-        val nameTest = "Enchere140"
+        val nameTest = object {}.javaClass.enclosingMethod.name
 
         // Bid should be Generale + Belote
         val oldTraceLevel = traceLevel

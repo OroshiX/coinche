@@ -229,4 +229,83 @@ class CalculusTest {
         return (Pair(PlisEW, PlisNS))
 
     }
+
+
+    @Test
+    fun Bid001() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 160, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+
+        assert(true) { "$nameTest FAIL - ...." }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS .......")
+    }
+
+    @Test
+    fun Bid002() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 160, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+
+        assert(true) { "$nameTest FAIL - ...." }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS .......")
+
+    }
+    @Test
+    fun Bid003() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 160, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+
+        assert(true) { "$nameTest FAIL - ...." }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS .......")
+
+    }
+    @Test
+    fun Bid004() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 160, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+
+        assert(true) { "$nameTest FAIL - ...." }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS .......")
+
+    }
+    @Test
+    fun Bid005() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 160, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+
+        assert(true) { "$nameTest FAIL - ...." }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS .......")
+
+    }
+
+
 }
