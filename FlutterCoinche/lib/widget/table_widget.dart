@@ -325,15 +325,6 @@ class _TableWidgetState extends State<TableWidget> {
           ),
         ),
         // My cards
-        CardsInHandWidget(
-          inPlayMode: widget.game.state == TableState.PLAYING,
-          myTurn: widget.game.myPosition == widget.game.nextPlayer,
-          cards: widget.game.cards,
-          cardHeight: cardHeight,
-          cardWidth: cardWidth,
-          screenWidth: screenSize.width,
-          paddingVertical: paddingHeightCards,
-        ),
         SizedBox(
           width: screenSize.width,
           child: Stack(children: [
@@ -382,6 +373,15 @@ class _TableWidgetState extends State<TableWidget> {
               ),
             )
           ]),
+        ),
+        CardsInHandWidget(
+          inPlayMode: widget.game.state == TableState.PLAYING,
+          myTurn: widget.game.myPosition == widget.game.nextPlayer,
+          cards: widget.game.cards,
+          cardHeight: cardHeight,
+          cardWidth: cardWidth,
+          screenWidth: screenSize.width,
+          paddingVertical: paddingHeightCards,
         ),
       ],
     );
