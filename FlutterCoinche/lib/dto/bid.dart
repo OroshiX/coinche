@@ -1,7 +1,9 @@
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/dot_player.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'bid.g.dart';
@@ -71,7 +73,7 @@ class Bid {
     return "";
   }
 
-  Row getReadableBidRow(double fontSize) {
+  Row getReadableBidRow(double fontSize, double dotSize) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -88,6 +90,15 @@ class Bid {
             " coinché-d",
             style: TextStyle(fontSize: fontSize, color: colorTextDark),
           ),
+        Text(" by "),
+        FutureBuilder<Color>(
+          future: position.getColor(),
+          initialData: Colors.blue,
+          builder: (context, snapshot) => DotPlayer(
+            dotSize: dotSize,
+            color: snapshot.data,
+          ),
+        ),
       ],
     );
   }
