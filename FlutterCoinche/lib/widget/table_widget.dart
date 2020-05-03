@@ -264,7 +264,6 @@ class _TableWidgetState extends State<TableWidget> {
                   child: MiddleArea(
                     cardHeight: cardHeight,
                     cardWidth: cardWidth,
-                    me: me,
                     left: left,
                     screenSize: screenSize,
                     right: right,

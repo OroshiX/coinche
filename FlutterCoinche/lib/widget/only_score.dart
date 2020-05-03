@@ -1,6 +1,9 @@
 import 'package:FlutterCoinche/dto/bid.dart';
+import 'package:FlutterCoinche/dto/player_position.dart'
+    show PlayExtension, PlayerPosition;
 import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/dot_player.dart';
 import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
@@ -12,9 +15,7 @@ class OnlyScoreWidget extends StatelessWidget {
   final double minWidth;
 
   const OnlyScoreWidget(
-      {Key key,
-      @required this.currentBid,
-      @required this.minWidth})
+      {Key key, @required this.currentBid, @required this.minWidth})
       : assert(currentBid == null ||
             currentBid is SimpleBid ||
             currentBid is Capot ||
@@ -41,7 +42,8 @@ class OnlyScoreWidget extends StatelessWidget {
               SizedBox(
                 width: minWidth,
               ),
-              if (currentBid != null) currentBid.getReadableBidRow(textSize),
+              if (currentBid != null)
+                currentBid.getReadableBidRow(textSize, dotSize),
               if (currentBid != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 4),
@@ -55,18 +57,20 @@ class OnlyScoreWidget extends StatelessWidget {
                 columnWidths: {2: FractionColumnWidth(0.5)},
                 children: [
                   TableRow(children: [
-                    Container(
-                      height: dotSize,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
+                    FutureBuilder<Color>(
+                      future: PlayerPosition.NORTH.getColor(),
+                      initialData: Colors.blue,
+                      builder: (context, snapshot) => DotPlayer(
+                        dotSize: dotSize,
+                        color: snapshot.data,
                       ),
                     ),
-                    Container(
-                      height: dotSize,
-                      decoration: BoxDecoration(
-                        color: Colors.purple,
-                        shape: BoxShape.circle,
+                    FutureBuilder<Color>(
+                      future: PlayerPosition.SOUTH.getColor(),
+                      initialData: Colors.blue,
+                      builder: (context, snapshot) => DotPlayer(
+                        dotSize: dotSize,
+                        color: snapshot.data,
                       ),
                     ),
                     Text(
@@ -77,18 +81,20 @@ class OnlyScoreWidget extends StatelessWidget {
                     ),
                   ]),
                   TableRow(children: [
-                    Container(
-                      height: dotSize,
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        shape: BoxShape.circle,
+                    FutureBuilder<Color>(
+                      future: PlayerPosition.EAST.getColor(),
+                      initialData: Colors.blue,
+                      builder: (context, snapshot) => DotPlayer(
+                        dotSize: dotSize,
+                        color: snapshot.data,
                       ),
                     ),
-                    Container(
-                      height: dotSize,
-                      decoration: BoxDecoration(
-                        color: Colors.pink,
-                        shape: BoxShape.circle,
+                    FutureBuilder(
+                      future: PlayerPosition.WEST.getColor(),
+                      initialData: Colors.blue,
+                      builder: (context, snapshot) => DotPlayer(
+                        dotSize: dotSize,
+                        color: snapshot.data,
                       ),
                     ),
                     Text(
