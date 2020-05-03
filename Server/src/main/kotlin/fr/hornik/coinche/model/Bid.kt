@@ -34,8 +34,8 @@ sealed class Bid(val position: PlayerPosition = PlayerPosition.NORTH) {
     fun curPoint(): Int {
         return when (this) {
             is SimpleBid -> this.points
-            is Capot     -> 250 //TODO Use definition of CAPOT to select value
-            is General   -> 500 //TODO User definition of GENERAL to select value
+            is Capot     -> if (belote) 270 else 250 //TODO Use definition of CAPOT to select value
+            is General   -> if (belote) 520 else 500 //TODO User definition of GENERAL to select value
             is Coinche -> {
                 if (this.surcoinche) this.annonce.curPoint()*4 else { this.annonce.curPoint()*4}
             }
