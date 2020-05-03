@@ -1,19 +1,16 @@
-import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:flutter/material.dart';
 
 class CardsInHandWidget extends StatelessWidget {
   final double cardHeight, cardWidth, screenWidth;
 
-  final List<CardModel> cards;
-
   final double paddingVertical;
   final bool inPlayMode;
   final bool myTurn;
 
-  CardsInHandWidget(
+  const CardsInHandWidget(
       {@required this.cardHeight,
-      @required this.cards,
       @required this.cardWidth,
       @required this.screenWidth,
       @required this.paddingVertical,
@@ -22,6 +19,8 @@ class CardsInHandWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cards =
+        GameInherited.of(context, aspectType: Aspects.CARDS).game.cards;
     return Container(
 //        color: colorLightBlue,
 //                  padding: EdgeInsets.all(20),

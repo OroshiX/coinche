@@ -1,23 +1,29 @@
 import 'package:FlutterCoinche/dto/bid.dart';
-import 'package:FlutterCoinche/dto/score.dart';
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/only_score.dart';
 import 'package:flutter/material.dart';
 
 class PortraitScoreWidget extends StatelessWidget {
   final Function onTapExit, onTapMessages;
-  final Score score;
-  final Bid currentBid;
 
-  PortraitScoreWidget(
-      {@required this.onTapExit,
-        @required this.onTapMessages,
-        @required this.score,
-        @required this.currentBid});
+  const PortraitScoreWidget({
+    @required this.onTapExit,
+    @required this.onTapMessages,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final state =
+        GameInherited.of(context, aspectType: Aspects.STATE).game.state;
+    final Bid currentBidGame =
+        GameInherited.of(context, aspectType: Aspects.CURRENT_BID)
+            .game
+            .currentBid;
+    final Bid currentBid = state != TableState.PLAYING ? null : currentBidGame;
+
     const iconSize = 20.0;
     const paddingButton = 8.0;
     const distanceButtons = 10.0;
@@ -29,8 +35,11 @@ class PortraitScoreWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding:
-            const EdgeInsets.only(bottom: 8.0, top: 4, left: leftRightButtons, right: leftRightButtons),
+            padding: const EdgeInsets.only(
+                bottom: 8.0,
+                top: 4,
+                left: leftRightButtons,
+                right: leftRightButtons),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,8 +77,8 @@ class PortraitScoreWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 4.0, right: 4),
             child: OnlyScoreWidget(
-              score: score,
-              currentBid: currentBid, minWidth: 0,
+              currentBid: currentBid,
+              minWidth: 0,
             ),
           )
         ],

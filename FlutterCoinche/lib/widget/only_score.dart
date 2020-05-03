@@ -1,19 +1,18 @@
 import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class OnlyScoreWidget extends StatelessWidget {
-  final Score score;
   final Bid currentBid;
 
   final double minWidth;
 
   const OnlyScoreWidget(
       {Key key,
-      @required this.score,
       @required this.currentBid,
       @required this.minWidth})
       : assert(currentBid == null ||
@@ -25,6 +24,8 @@ class OnlyScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Score score =
+        GameInherited.of(context, aspectType: Aspects.SCORE).game.score;
     const textSize = 14.0;
     const dotSize = 7.0;
     return NeumorphicNoStateWidget(

@@ -1,6 +1,5 @@
 import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
-import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
@@ -8,6 +7,7 @@ import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
@@ -18,11 +18,9 @@ import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 
 class TableWidget extends StatefulWidget {
-  final Game game;
-
   final Function quit;
 
-  TableWidget(this.game, {@required this.quit});
+  TableWidget({@required this.quit});
 
   @override
   _TableWidgetState createState() => _TableWidgetState();
@@ -34,26 +32,39 @@ class _TableWidgetState extends State<TableWidget> {
     var screenSize = MediaQuery.of(context).size;
     double heightContainerName = 50;
     double widthContainer = 200;
-    var top = getPlayerPositionTop(widget.game);
-    var left = getPlayerPositionLeft(widget.game);
-    var right = getPlayerPositionRight(widget.game);
-    var me = widget.game.myPosition;
+    final nicknames =
+        GameInherited.of(context, aspectType: Aspects.NICKNAMES).game.nicknames;
+    final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
+    final me = GameInherited.of(context, aspectType: Aspects.MY_POSITION)
+        .game
+        .myPosition;
+    final state =
+        GameInherited.of(context, aspectType: Aspects.STATE).game.state;
+    final nextPlayer =
+        GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
+            .game
+            .nextPlayer;
+    final id = GameInherited.of(context, aspectType: Aspects.ID).game.id;
+    var top = getPlayerPositionTop(me);
+    var left = getPlayerPositionLeft(me);
+    var right = getPlayerPositionRight(me);
+
     final double cardWidth = getCardWidth(screenSize);
     final double cardHeight = cardWidth * golden;
     final double marginCardsPosition = getMarginCardsPosition(screenSize);
     final double heightBiddingBar = getHeightBidding(screenSize);
     final double paddingHeightCards = getPaddingHeightCard(screenSize);
-    var bidLeft = getPlayerBid(widget.game, left);
-    var bidTop = getPlayerBid(widget.game, top);
-    var bidRight = getPlayerBid(widget.game, right);
-    var myBid = getPlayerBid(widget.game, me);
-    Coinche coinche = (widget.game.bids.lastWhere(
+    var bidLeft = getPlayerBid(bids, left);
+    var bidTop = getPlayerBid(bids, top);
+    var bidRight = getPlayerBid(bids, right);
+    var myBid = getPlayerBid(bids, me);
+    Coinche coinche = (bids.lastWhere(
       (element) => element is Coinche,
       orElse: () => null,
     ) as Coinche);
-    Bid lastBidCapotGeneralOpposite = (widget.game.bids.lastWhere(
+    Bid lastBidCapotGeneralOpposite = (bids.lastWhere(
       (element) =>
-          (oppositeTeam(widget.game.myPosition).contains(element.position)) &&
+          (oppositeTeam(me).contains(element.position)) &&
           (element is SimpleBid || element is Capot || element is General),
       orElse: () => null,
     ));
@@ -79,9 +90,6 @@ class _TableWidgetState extends State<TableWidget> {
                   builder: (context, orientation) {
                     if (orientation == Orientation.portrait)
                       return PortraitScoreWidget(
-                        currentBid: widget.game.state != TableState.PLAYING
-                            ? null
-                            : widget.game.currentBid,
                         onTapMessages: () {
                           // TODO Messages
                           print("TODO");
@@ -90,12 +98,8 @@ class _TableWidgetState extends State<TableWidget> {
                           var quit = (await widget.quit()) ?? false;
                           if (quit) Navigator.of(context).pop();
                         },
-                        score: widget.game.score,
                       );
                     return LandscapeScoreWidget(
-                      currentBid: widget.game.state != TableState.PLAYING
-                          ? null
-                          : widget.game.currentBid,
                       onTapExit: () async {
                         var quit = (await widget.quit()) ?? false;
                         if (quit) Navigator.of(context).pop();
@@ -104,7 +108,6 @@ class _TableWidgetState extends State<TableWidget> {
                         // TODO messages
                         print("TODO messages");
                       },
-                      score: widget.game.score,
                     );
                   },
                 ),
@@ -116,14 +119,14 @@ class _TableWidgetState extends State<TableWidget> {
                   height: heightContainerName,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                        color: widget.game.nextPlayer == top
+                        color: nextPlayer == top
                             ? Colors.amber
                             : Colors.transparent),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          widget.game.getNickNameOf(top),
+                          nicknames.fromPosition(top),
                           style: TextStyle(color: colorTextDark),
                         ),
                         Text(
@@ -145,7 +148,7 @@ class _TableWidgetState extends State<TableWidget> {
                     height: heightContainerName,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                          color: widget.game.nextPlayer == right
+                          color: nextPlayer == right
                               ? Colors.amber
                               : Colors.transparent),
                       child: Column(
@@ -154,7 +157,7 @@ class _TableWidgetState extends State<TableWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            widget.game.getNickNameOf(right),
+                            nicknames.fromPosition(right),
                             style: TextStyle(color: colorTextDark),
                           ),
                           Text(
@@ -177,7 +180,7 @@ class _TableWidgetState extends State<TableWidget> {
                     height: heightContainerName,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                          color: widget.game.nextPlayer == left
+                          color: nextPlayer == left
                               ? Colors.amber
                               : Colors.transparent),
                       child: Column(
@@ -185,7 +188,7 @@ class _TableWidgetState extends State<TableWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            widget.game.getNickNameOf(left),
+                            nicknames.fromPosition(left),
                             style: TextStyle(color: colorTextDark),
                           ),
                           Text(
@@ -199,7 +202,7 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               ),
               // The last bids of the players
-              if (bidLeft != null && widget.game.state == TableState.BIDDING)
+              if (bidLeft != null && state == TableState.BIDDING)
                 Transform.translate(
                   offset: Offset(heightContainerName + 4, -widthContainer / 2),
                   child: Bubble(
@@ -210,7 +213,7 @@ class _TableWidgetState extends State<TableWidget> {
                     elevation: 10,
                   ),
                 ),
-              if (bidRight != null && widget.game.state == TableState.BIDDING)
+              if (bidRight != null && state == TableState.BIDDING)
                 Transform.translate(
                   offset: Offset(-heightContainerName - 4, -widthContainer / 2),
                   child: Bubble(
@@ -221,7 +224,7 @@ class _TableWidgetState extends State<TableWidget> {
                     elevation: 10,
                   ),
                 ),
-              if (bidTop != null && widget.game.state == TableState.BIDDING)
+              if (bidTop != null && state == TableState.BIDDING)
                 Transform.translate(
                   offset: Offset(0, heightContainerName + 4),
                   child: Bubble(
@@ -232,7 +235,7 @@ class _TableWidgetState extends State<TableWidget> {
                     elevation: 10,
                   ),
                 ),
-              if (myBid != null && widget.game.state == TableState.BIDDING)
+              if (myBid != null && state == TableState.BIDDING)
                 Transform.translate(
                   offset: Offset(
                       0,
@@ -261,7 +264,6 @@ class _TableWidgetState extends State<TableWidget> {
                   child: MiddleArea(
                     cardHeight: cardHeight,
                     cardWidth: cardWidth,
-                    game: widget.game,
                     me: me,
                     left: left,
                     screenSize: screenSize,
@@ -272,26 +274,24 @@ class _TableWidgetState extends State<TableWidget> {
               ),
               AnimatedPositioned(
                 bottom: getBottomOfBiddingBar(screenSize),
-                left: widget.game.state == TableState.BIDDING
+                left: state == TableState.BIDDING
                     ? heightContainerName
                     : -screenSize.width,
                 duration: Duration(milliseconds: 500),
                 child: AnimatedOpacity(
                   duration: Duration(milliseconds: 500),
-                  opacity: widget.game.state == TableState.BIDDING ? 1 : 0,
+                  opacity: state == TableState.BIDDING ? 1 : 0,
                   child: BiddingBar(
-                    minBidPoints: (widget.game.bids.lastWhere(
+                    minBidPoints: (bids.lastWhere(
                           (element) => element is SimpleBid,
                           orElse: () => SimpleBid(points: 70),
                         ) as SimpleBid)
                             .points +
                         10,
-                    enabledBid:
-                        widget.game.nextPlayer == widget.game.myPosition,
+                    enabledBid: nextPlayer == me,
 //                height: heightBiddingBar,
                     onBid: (Bid bid) {
-                      ServerCommunication.bid(bid, widget.game.id).then(
-                          (success) {
+                      ServerCommunication.bid(bid, id).then((success) {
                         print("success");
                         FlushbarHelper.createSuccess(message: "bid $bid placed")
                             .show(context);
@@ -303,7 +303,7 @@ class _TableWidgetState extends State<TableWidget> {
                       });
                     },
 //                screenWidth: screenSize.width,
-                    myPosition: widget.game.myPosition,
+                    myPosition: me,
                     enabledSurcoinche: enableSurcoinche,
                     enabledCoinche: enableCoinche,
                     lastSimpleBid: lastBidCapotGeneralOpposite,
@@ -314,12 +314,7 @@ class _TableWidgetState extends State<TableWidget> {
               Positioned(
                 top: 10,
                 right: 10,
-                child: RecapWidget(
-                  state: widget.game.state,
-                  bid: widget.game.currentBid,
-                  whoseTurn: widget.game.nextPlayer,
-                  score: widget.game.score,
-                ),
+                child: const RecapWidget(),
               ),
             ],
           ),
@@ -334,14 +329,13 @@ class _TableWidgetState extends State<TableWidget> {
                 height: heightContainerName,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                      color: widget.game.nextPlayer == me
-                          ? Colors.amber
-                          : Colors.transparent),
+                      color:
+                          nextPlayer == me ? Colors.amber : Colors.transparent),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        widget.game.getNickNameOf(me),
+                        nicknames.fromPosition(me),
                         style: TextStyle(color: colorTextDark),
                       ),
                       Text(
@@ -357,7 +351,7 @@ class _TableWidgetState extends State<TableWidget> {
               right: 2,
               bottom: 2,
               child: Visibility(
-                visible: widget.game.state == TableState.PLAYING,
+                visible: state == TableState.PLAYING,
                 child: NeumorphicWidget(
                     onTap: () {},
                     child: Container(
@@ -375,9 +369,8 @@ class _TableWidgetState extends State<TableWidget> {
           ]),
         ),
         CardsInHandWidget(
-          inPlayMode: widget.game.state == TableState.PLAYING,
-          myTurn: widget.game.myPosition == widget.game.nextPlayer,
-          cards: widget.game.cards,
+          inPlayMode: state == TableState.PLAYING,
+          myTurn: me == nextPlayer,
           cardHeight: cardHeight,
           cardWidth: cardWidth,
           screenWidth: screenSize.width,
