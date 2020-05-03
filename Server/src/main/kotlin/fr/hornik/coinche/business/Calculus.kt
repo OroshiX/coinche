@@ -419,13 +419,14 @@ fun isBelote(card:Card,myCards:List<Card>,
         if ((card.value != CardValue.QUEEN) && (card.value != CardValue.KING)) {
             return BeloteValue.NONE
         }
-        val listAll = plisEW.toList().map{it -> it.second}.flatten().filter {it.position == position}.map{it->it.card} + plisNS.toList().map{it -> it.second }.flatten().filter {it.position == position}.map { it -> it.card}
+        // list of cards played by position player
+        val listAll = plisEW.toList().map{it.second}.flatten().filter {it.position == position}.map{it.card} + plisNS.toList().map{it.second }.flatten().filter {it.position == position}.map {it.card}
         // This is trump and it's a QUEEN or a KING
         if (listAll.filter { it.color == curBid.curColor() }
                         .filter { it.value == CardValue.QUEEN || it.value == CardValue.KING }.size == 1) {
             return BeloteValue.REBELOTE
         } else {
-            if (myCards.filter { it.color == curBid.curColor() }.any { it.value == CardValue.QUEEN || it.value == CardValue.KING }) {
+            if (myCards.filter { it.color == curBid.curColor() }.any { it.value == CardValue.QUEEN} &&  myCards.filter { it.color == curBid.curColor() }.any{it.value == CardValue.KING }) {
                 return BeloteValue.BELOTE
             }
 

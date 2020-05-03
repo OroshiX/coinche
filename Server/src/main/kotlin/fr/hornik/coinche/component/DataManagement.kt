@@ -25,18 +25,19 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
     */
     companion object {
-        const val AUTOMATEDGAMESID = "AUTOMATED"
+        const val AUTOMATEDGAMESID = "AUTO_MATED"
         const val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
     }
 
-    private final val timeoutTask = object: TimerTask() {
+    private final val timeoutTask = object : TimerTask() {
         var timesRan = 0
         override fun run() = reviewTimer("Timeout timer passed ${++timesRan} time(s)")
 
     }
 
-    fun reviewTimer(Message:String) {
-        debugPrintln(dbgLevel.FUNCTION,"$Message\n")
+    fun reviewTimer(Message: String) {
+        debugPrintln(dbgLevel.FUNCTION, "$Message\n")
+
         val millis = System.currentTimeMillis()
         var action = false
         for (setOfGames in sets) {
@@ -58,7 +59,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 TableState.BETWEEN_GAMES -> if ((millis - setOfGames.whoseTurnTimeLastChg) > setOfGames.preferences.betweenGameMaxTime) {
 
                     //Going back to BIDDING
-                    debugPrintln(dbgLevel.DEBUG,"${setOfGames.name} was between GAME")
+                    debugPrintln(dbgLevel.DEBUG, "${setOfGames.name} was between GAME")
                     if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
                         // Continue playing another game
                         distribute(setOfGames)
@@ -81,11 +82,13 @@ class DataManagement(@Autowired private val fire: FireApp) {
         }
 
     }
-    private final val timer = Timer()
+
+    final val timer = java.util.Timer()
+
     init {
         sets.addAll(fire.getAllGames())
 
-        timer.schedule(timeoutTask,0,1000)
+        timer.schedule(timeoutTask, 0, 1000)
 
     }
 
@@ -148,7 +151,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 if (firstDeal)
                     firstDealOfCards(dealer, allSpreads.random())
                 else
-                    dealCards(setOfGames.plisCampNS.map { it.value}, setOfGames.plisCampEW.map {it.value}, 10,
+                    dealCards(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value }, 10,
                             allSpreads.random(), dealer)
         setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
@@ -164,7 +167,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
 
-        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map {it.value}, setOfGames.plisCampEW.map {it.value},
+        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value },
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
@@ -183,9 +186,9 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun getGameOrThrow(setId: String): SetOfGames =
             getGame(setId) ?: throw GameNotExistingException(setId)
 
-    fun deleteGame(setOfGames: SetOfGames, user: User):Boolean {
+    fun deleteGame(setOfGames: SetOfGames, user: User): Boolean {
         val me = setOfGames.players.firstOrNull { player -> player.uid == user.uid }
-        if (me != null ) {
+        if (me != null) {
             fire.deleteGame(setOfGames)
             refresh()
             return true
@@ -202,17 +205,17 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
 
 
-        val iaBid = IARun.enchere(me.position,setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand,0)
-        if ((iaBid.curColor()!=bid.curColor()) || (iaBid.curPoint() != bid.curPoint())) {
-            debugPrintln(dbgLevel.DEBUG,"****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $iaBid ")
+        val iaBid = IARun.enchere(me.position, setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
+        if ((iaBid.curColor() != bid.curColor()) || (iaBid.curPoint() != bid.curPoint())) {
+            debugPrintln(dbgLevel.DEBUG, "****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $iaBid ")
         }
 
         // We dont expect the client application to fill correctly the annonce we are coinch'ing
         // and we can compute it here so .... annonce is not checked in the function isValidBid .... so we can do it either before or after.
         if (bid is Coinche) {
-            setOfGames.bids.add (Coinche(annonce = getCurrentBid(setOfGames.bids),position = bid.position, surcoinche = bid.surcoinche))
+            setOfGames.bids.add(Coinche(annonce = getCurrentBid(setOfGames.bids), position = bid.position, surcoinche = bid.surcoinche))
         } else {
-            setOfGames.bids.add (bid)
+            setOfGames.bids.add(bid)
         }
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
         if (setOfGames.onTable.size == 4) {
@@ -220,15 +223,15 @@ class DataManagement(@Autowired private val fire: FireApp) {
             setOfGames.onTable.clear()
         }
         if (isLastBid(setOfGames.bids)) {
-            if ((setOfGames.bids.size == 4 ) && (setOfGames.bids.filterIsInstance<Pass>().size == 4 )) {
+            if ((setOfGames.bids.size == 4) && (setOfGames.bids.filterIsInstance<Pass>().size == 4)) {
                 // 4 pass means we need to redistribute
                 // First we need fill pli from camp EW and NS
                 setOfGames.bids.clear()
                 setOfGames.whoWonLastTrick = null
 
                 for (i in 0..3) {
-                    setOfGames.plisCampNS[i*2] = setOfGames.players[i].cardsInHand.take(4).map{ e -> CardPlayed(e)}
-                    setOfGames.plisCampNS[i*2+1] = setOfGames.players[i].cardsInHand.takeLast(4).map{ e -> CardPlayed(e)}
+                    setOfGames.plisCampNS[i * 2] = setOfGames.players[i].cardsInHand.take(4).map { e -> CardPlayed(e) }
+                    setOfGames.plisCampNS[i * 2 + 1] = setOfGames.players[i].cardsInHand.takeLast(4).map { e -> CardPlayed(e) }
 
                     setOfGames.players[i].cardsInHand.clear()
                 }
@@ -270,7 +273,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         sets.addAll(fire.getAllGames())
     }
 
-    fun playCard(setOfGames: SetOfGames, card: Card, user: User) {
+    fun playCard(setOfGames: SetOfGames, card: Card, user: User) : CardPlayed {
         // check if on table is full
 
         if (setOfGames.onTable.size == 4) {
@@ -278,7 +281,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
             setOfGames.onTable.clear()
         }
 
-        val myCards = setOfGames.players.first{it.uid == user.uid}.cardsInHand
+        val myCards = setOfGames.players.first { it.uid == user.uid }.cardsInHand
         val myPosition = setOfGames.players.first { it.uid == user.uid }.position
 
         // get the real object in hand
@@ -289,12 +292,13 @@ class DataManagement(@Autowired private val fire: FireApp) {
                         theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
-        val beloteValue:BeloteValue = isBelote(card,myCards,myPosition, setOfGames.currentBid,setOfGames.plisCampNS,setOfGames.plisCampEW)
+        val beloteValue: BeloteValue = isBelote(card, myCards, myPosition, setOfGames.currentBid, setOfGames.plisCampNS, setOfGames.plisCampEW)
 
-        if (beloteValue != BeloteValue.NONE)  {
-            debugPrintln(dbgLevel.DEBUG,"***********${user.nickname}($myPosition) is playing $beloteValue playing $card")
+        if (beloteValue != BeloteValue.NONE) {
+            debugPrintln(dbgLevel.DEBUG, "***********${user.nickname}($myPosition) is playing $beloteValue playing $card")
         }
-        setOfGames.onTable.add(CardPlayed(card, beloteValue, myPosition))
+        val returnValue = CardPlayed(card, beloteValue, myPosition)
+        setOfGames.onTable.add(returnValue)
         setOfGames.players.first { it.uid == user.uid }.cardsInHand.removeIf { it.isSimilar(card) }
         // there was some action on the table - we reset the timer.
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
@@ -329,6 +333,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         // Save to firebase
 
         fire.saveGame(setOfGames)
+        return returnValue
 
     }
 }

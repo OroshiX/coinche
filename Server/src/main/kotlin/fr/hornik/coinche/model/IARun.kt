@@ -1,8 +1,12 @@
 package fr.hornik.coinche.model
 
+import fr.hornik.coinche.business.isValidBid
 import fr.hornik.coinche.business.whatIsTheLastSignificantBid
 import fr.hornik.coinche.component.DataManagement
-import fr.hornik.coinche.model.values.*
+import fr.hornik.coinche.model.values.CardColor
+import fr.hornik.coinche.model.values.CardValue
+import fr.hornik.coinche.model.values.PlayerPosition
+import fr.hornik.coinche.model.values.TableState
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
 import kotlin.math.absoluteValue
@@ -27,6 +31,7 @@ data class IARun(val setOfGames: SetOfGames) {
 
         val listCandidatePlayer = setOfGames.players.filter { (setOfGames.whoseTurn == it.position) && (it.uid.contains(DataManagement.AUTOMATEDPLAYERSID)) }
         // We need to call here the function written by Sacha
+
         when (setOfGames.state) {
             TableState.BIDDING -> if (!listCandidatePlayer.isEmpty()) {
                 setOfGames.whoseTurnTimeLastChg = millis
@@ -230,7 +235,7 @@ data class IARun(val setOfGames: SetOfGames) {
 
 
                     */
-                    valEnchere = reversePoints(myCards, trump,IStart)
+                    valEnchere = reversePoints(myCards, trump, IStart)
                 }
                 enchereColor[trump] = valEnchere
             }
@@ -239,18 +244,21 @@ data class IARun(val setOfGames: SetOfGames) {
 
             //val atout = colorTrump.toSortedMap().keys.first()
             val myEnchere: Int = (enchereColor[atout]!!.absoluteValue / 10) * 10
+            val myBid: Bid
 
             if ((myEnchere >= 80) && (myEnchere > minPoints)) {
-                if (myEnchere >= 500 ) {
-                    return General(color=atout,position=myPosition,belote=(myEnchere >= 520))
-                }
-                if (myEnchere >= 250 ) {
-                    return Capot(color = atout,position = myPosition,belote = (myEnchere >= 250))
-                }
-                return SimpleBid(atout, myEnchere, myPosition)
-            } else {
-                return Pass(myPosition)
+                if (myEnchere >= 500) {
+                    myBid = General(color = atout, position = myPosition, belote = (myEnchere >= 520))
+                } else if (myEnchere >= 250) {
+                    myBid = Capot(color = atout, position = myPosition, belote = (myEnchere >= 250))
+                } else myBid = SimpleBid(atout, myEnchere, myPosition)
+
+                if (isValidBid(allBids, myBid))
+                    return myBid
             }
+            return Pass(myPosition)
+
+
             // Pour un mode prudent on retire 10 points à l'enchere proposee
             // Apres avoir estime chaque couleur, on estime la couleur du partenaire si elle existe
             // (ne faire cette estimation que si le partenaire a originellement pris

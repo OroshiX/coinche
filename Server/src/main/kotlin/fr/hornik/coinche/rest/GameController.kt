@@ -45,16 +45,18 @@ class GameController(@Autowired val data: DataManagement,
         return set.toTable(user.uid)
     }
 
-    @PostMapping("/{gameId}/playCard")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun playCard(@PathVariable gameId: String, @RequestBody card: Card) {
+    @PostMapping("/{gameId}/playCard",
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun playCard(@PathVariable gameId: String, @RequestBody card: Card) : CardPlayed {
         val game = data.getGameOrThrow(gameId)
         if (!inGame(game, user)) throw NotInGameException(gameId)
         if (game.state != TableState.PLAYING) throw NotValidStateException(
                 game.state, TableState.PLAYING)
         if (game.players.first { it.uid == user.uid }.position != game.whoseTurn) throw NotYourTurnException()
         game.whoseTurnTimeLastChg = System.currentTimeMillis()
-        data.playCard(game, card, user)
+
+        return data.playCard(game, card, user)
+
     }
 
     @PostMapping("/{gameId}/announceBid")
