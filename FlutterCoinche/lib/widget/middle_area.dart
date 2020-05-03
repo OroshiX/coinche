@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 class MiddleArea extends StatelessWidget {
   final double cardWidth, cardHeight;
   final Size screenSize;
-  final PlayerPosition left, right, top, me;
+  final PlayerPosition left, right, top;
 
   const MiddleArea({
     @required this.cardWidth,
@@ -22,7 +22,6 @@ class MiddleArea extends StatelessWidget {
     @required this.left,
     @required this.right,
     @required this.top,
-    @required this.me,
   });
 
   @override
@@ -49,7 +48,7 @@ class MiddleArea extends StatelessWidget {
             AxisDirection.left: left,
             AxisDirection.up: top,
             AxisDirection.right: right,
-            AxisDirection.down: me
+            AxisDirection.down: myPosition
           },
           minPadding: 2,
         ),
