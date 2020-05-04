@@ -17,6 +17,7 @@ import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TableWidget extends StatefulWidget {
@@ -125,38 +126,32 @@ class _TableWidgetState extends State<TableWidget> {
               ),
               Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  width: widthContainerName,
+                child: PlayerAvatar(
+                  position: top,
+                  nick: nicknames.fromPosition(top),
+                  autoSizeGroup: autoSizeGroup,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    position: top,
-                    nick: nicknames.fromPosition(top),
-                    autoSizeGroup: autoSizeGroup,
-                  ),
+                  width: widthContainerName,
                 ),
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Container(
+                child: PlayerAvatar(
+                  nick: nicknames.fromPosition(right),
+                  autoSizeGroup: autoSizeGroup,
+                  position: right,
                   width: widthContainerName,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    nick: nicknames.fromPosition(right),
-                    autoSizeGroup: autoSizeGroup,
-                    position: right,
-                  ),
                 ),
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: PlayerAvatar(
+                  nick: nicknames.fromPosition(left),
+                  autoSizeGroup: autoSizeGroup,
+                  position: left,
                   width: widthContainerName,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    nick: nicknames.fromPosition(left),
-                    autoSizeGroup: autoSizeGroup,
-                    position: left,
-                  ),
                 ),
               ),
               // The last bids of the players
@@ -271,45 +266,61 @@ class _TableWidgetState extends State<TableWidget> {
                 right: 10,
                 child: const RecapWidget(),
               ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 3.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Visibility(
+                        visible: state == TableState.PLAYING,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: NeumorphicWidget(
+                              onTap: () {},
+                              child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  child: Text(
+                                    "Last Trick",
+                                    style: TextStyle(color: colorTextDark),
+                                  )),
+                              sizeShadow: SizeShadow.SMALL,
+                              borderRadius: 10,
+                              interactable: true),
+                        ),
+                      ),
+                      PlayerAvatar(
+                          nick: nicknames.fromPosition(me),
+                          autoSizeGroup: autoSizeGroup,
+                          width: widthContainerName,
+                          position: me,
+                          height: heightContainer),
+                    ],
+                  ),
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: state == TableState.JOINING ? 1 : 0,
+                duration: Duration(milliseconds: 400),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Players are joining this game..."),
+                      SizedBox(height: 10,),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
         // My cards
-        SizedBox(
-          width: screenSize.width,
-          child: Stack(children: [
-            Center(
-              child: Container(
-                width: widthContainerName,
-                height: heightContainer,
-                child: PlayerAvatar(
-                  nick: nicknames.fromPosition(me),
-                  autoSizeGroup: autoSizeGroup,
-                  position: me,
-                ),
-              ),
-            ),
-            Positioned(
-              right: 2,
-              bottom: 2,
-              child: Visibility(
-                visible: state == TableState.PLAYING,
-                child: NeumorphicWidget(
-                    onTap: () {},
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: Text(
-                          "Last Trick",
-                          style: TextStyle(color: colorTextDark),
-                        )),
-                    sizeShadow: SizeShadow.SMALL,
-                    borderRadius: 10,
-                    interactable: true),
-              ),
-            )
-          ]),
-        ),
         CardsInHandWidget(
           inPlayMode: state == TableState.PLAYING,
           myTurn: me == nextPlayer,
