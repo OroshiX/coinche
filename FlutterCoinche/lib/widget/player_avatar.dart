@@ -202,10 +202,24 @@ class _RoundAvatar extends StatelessWidget {
       height: 58,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
       padding: EdgeInsets.all(4),
-      child: ClipOval(
-        child: SvgPicture.asset(
-          pictureSvg,
-          fit: BoxFit.contain,
+      child: InnerShadow(
+        offset: Offset(2, 2),
+        blur: 3,
+        color: Colors.black45,
+        child: InnerShadow(
+          offset: Offset(-2, -1),
+          blur: 2,
+          color: Colors.white,
+          child: Container(
+            decoration:
+                BoxDecoration(color: colorLightBlue, shape: BoxShape.circle),
+            child: ClipOval(
+              child: SvgPicture.asset(
+                pictureSvg,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
         ),
       ),
     );

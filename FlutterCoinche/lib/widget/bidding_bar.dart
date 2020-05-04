@@ -210,7 +210,7 @@ class _BiddingBarState extends State<BiddingBar> {
                 _passWidget()
               ],
             ),
-            SizedBox(height: isLargeScreen(screenSize) ? 20 : 10,),
+            SizedBox(height: isLargeScreen(screenSize) ? 10 : 5,),
             _mainWidget(screenSize)
           ],
         ),
