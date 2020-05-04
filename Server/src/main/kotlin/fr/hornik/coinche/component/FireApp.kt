@@ -76,34 +76,48 @@ class FireApp {
     }
 
     private fun saveTable(table: Table, userUID: String): String {
-        val future: ApiFuture<WriteResult> = db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
-                .collection(COLLECTION_PLAYERS).document(userUID)
-                .set(table.toFirebase())
-        // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
-        val arg = table.toFirebase().toString()
-        debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
+        val nameFunction = object {}.javaClass.enclosingMethod.name
+
+        if (DataManagement.productionAction) {
+            val future: ApiFuture<WriteResult> = db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
+                    .collection(COLLECTION_PLAYERS).document(userUID)
+                    .set(table.toFirebase())
+            // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
+            val arg = table.toFirebase().toString()
+            debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
+
+        } else {
+            debugPrintln(dbgLevel.REGULAR, "Debug mode - $nameFunction no saving")
+        }
         return userUID
     }
 
     private fun updateGame(table: SetOfGames) {
-        val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
+        val nameFunction = object {}.javaClass.enclosingMethod.name
 
-        val future: ApiFuture<WriteResult> = db.collection(
-                COLLECTION_SETS).document(table.id)
-                .set(JsonMapper.parseJson(jsonTable))
+        if (DataManagement.productionAction) {
+
+            val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
+
+            val future: ApiFuture<WriteResult> = db.collection(
+                    COLLECTION_SETS).document(table.id)
+                    .set(JsonMapper.parseJson(jsonTable))
 
 
-        // For debugging purpose only.
-        val arg = JsonMapper.parseJson(jsonTable).toString()
-        debugPrintln(dbgLevel.DEBUG, "JSON from updateGame $arg")
+            // For debugging purpose only.
+            val arg = JsonMapper.parseJson(jsonTable).toString()
+            debugPrintln(dbgLevel.DEBUG, "JSON from updateGame $arg")
 
-        /*
+            /*
           try {
              println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
          } catch (e: InvalidArgumentException) {
          println("********Exception $e with $arg")
      }
       */
+        } else {
+            debugPrintln(dbgLevel.REGULAR, "Debug mode - $nameFunction no saving")
+        }
     }
 
     fun getOrSetUsername(user: User): String {

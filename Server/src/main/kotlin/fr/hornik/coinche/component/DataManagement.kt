@@ -27,6 +27,21 @@ class DataManagement(@Autowired private val fire: FireApp) {
     companion object {
         const val AUTOMATEDGAMESID = "AUTOMATED"
         const val AUTOMATEDPLAYERSID = "PLAYERSPLAYERS47"
+
+        // This variable permits to do some testing without saving data on the server
+        // this type of testing is very limited , you cannot interact with a third party client
+        // reserved for server internal testing
+
+        // warning this variable does not prevent to log / or set a new nickname,
+        // does not prevent to play or to join a game.
+        // it just prevent to save on firebase, and to inform other applications
+
+        // typically used when the automated players have an issue  / or to test a 4 automated player table
+
+        // you should keep its value to true for normal behaviour
+
+        val productionAction = true
+
     }
 
     private final val timeoutTask = object : TimerTask() {
@@ -37,16 +52,16 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     fun reviewTimer(Message: String) {
         debugPrintln(dbgLevel.FUNCTION, "$Message\n")
-
         val millis = System.currentTimeMillis()
         var action = false
         for (setOfGames in sets) {
             if (setOfGames.name.contains(AUTOMATEDGAMESID)) {
                 //The names means that we can add an automatic player ( probably will be done later through a preference
 
-                if (IARun(setOfGames).run(this, millis))
-                // in most case you dont need to save since announce/joining/bidding do the saving ... but IF we have to save something IARUN returns true
+                if (IARun(setOfGames).run(this, millis)) {
+                    // in most case you dont need to save since announce/joining/bidding do the saving ... but IF we have to save something IARUN returns true
                     fire.saveGame(setOfGames)
+                }
             }
             // TODO this sequence treat the timeout case like late bidding / leaving etc ...
             when (setOfGames.state) {
@@ -162,7 +177,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
         setOfGames.players.first { it.position == PlayerPosition.WEST }.cardsInHand =
                 hands[3].toMutableList()
         setOfGames.state = TableState.BIDDING
-//        fire.saveGame(set)
     }
 
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
@@ -257,7 +271,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
 
         setOfGames.currentBid = whatIsTheLastSignificantBid(setOfGames.bids)
-
         fire.saveGame(setOfGames)
 
     }
@@ -330,7 +343,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
         }
         // Save to firebase
-
         fire.saveGame(setOfGames)
         return returnValue
 
