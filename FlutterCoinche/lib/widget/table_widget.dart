@@ -1,12 +1,15 @@
 import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
+import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/dot_player.dart';
 import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
@@ -41,8 +44,9 @@ class _TableWidgetState extends State<TableWidget> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    double widthContainerName = 65;
-    double heightContainer = 104;
+    final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    const double widthContainerName = 65;
+    const double heightContainer = 104;
     final nicknames =
         GameInherited.of(context, aspectType: Aspects.NICKNAMES).game.nicknames;
     final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
@@ -266,43 +270,30 @@ class _TableWidgetState extends State<TableWidget> {
                 right: 10,
                 child: const RecapWidget(),
               ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 3.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Visibility(
-                        visible: state == TableState.PLAYING,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: NeumorphicWidget(
-                              onTap: () {},
-                              child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  child: Text(
-                                    "Last Trick",
-                                    style: TextStyle(color: colorTextDark),
-                                  )),
-                              sizeShadow: SizeShadow.SMALL,
-                              borderRadius: 10,
-                              interactable: true),
+              if (portrait)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 3.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _LastTrick(
+                          state: state,
+                          me: me,
                         ),
-                      ),
-                      PlayerAvatar(
-                          nick: nicknames.fromPosition(me),
-                          autoSizeGroup: autoSizeGroup,
-                          width: widthContainerName,
-                          position: me,
-                          height: heightContainer),
-                    ],
+                        PlayerAvatar(
+                            nick: nicknames.fromPosition(me),
+                            autoSizeGroup: autoSizeGroup,
+                            width: widthContainerName,
+                            position: me,
+                            height: heightContainer),
+                      ],
+                    ),
                   ),
                 ),
-              ),
               AnimatedOpacity(
                 opacity: state == TableState.JOINING ? 1 : 0,
                 duration: Duration(milliseconds: 400),
@@ -311,7 +302,9 @@ class _TableWidgetState extends State<TableWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Players are joining this game..."),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       CircularProgressIndicator(),
                     ],
                   ),
@@ -321,14 +314,42 @@ class _TableWidgetState extends State<TableWidget> {
           ),
         ),
         // My cards
-        CardsInHandWidget(
-          inPlayMode: state == TableState.PLAYING,
-          myTurn: me == nextPlayer,
-          cardHeight: cardHeight,
-          cardWidth: cardWidth,
-          screenWidth: screenSize.width,
-          paddingVertical: paddingHeightCards,
-        ),
+        Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (!portrait)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _LastTrick(
+                    state: state,
+                    me: me,
+                  ),
+                ),
+              Expanded(
+                child: CardsInHandWidget(
+                  inPlayMode: state == TableState.PLAYING,
+                  myTurn: me == nextPlayer,
+                  cardHeight: cardHeight,
+                  cardWidth: cardWidth,
+                  screenWidth: screenSize.width,
+                  paddingVertical: paddingHeightCards,
+                ),
+              ),
+              if (!portrait)
+                Positioned(
+                  right: 4,
+                  bottom: 4,
+                  child: PlayerAvatar(
+                    nick: nicknames.fromPosition(me),
+                    autoSizeGroup: autoSizeGroup,
+                    width: widthContainerName,
+                    position: me,
+                    height: heightContainer,
+                  ),
+                )
+            ]),
       ],
     );
   }
@@ -343,5 +364,90 @@ class _TableWidgetState extends State<TableWidget> {
         return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
     }
     return [];
+  }
+}
+
+class _LastTrick extends StatelessWidget {
+  final TableState state;
+  final PlayerPosition me;
+
+  const _LastTrick({
+    Key key,
+    @required this.state,
+    @required this.me,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final game = GameInherited.of(context, aspectType: Aspects.LAST_TRICK).game;
+    final cardinalToPosTable = getCardinalToPosTable(me);
+    final List<CardPlayed> lastTrick = game.lastTrick;
+    final winner = game.winnerLastTrick;
+    return Visibility(
+      visible: state == TableState.PLAYING,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: NeumorphicWidget(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FutureBuilder<Color>(
+                              future: cardinalToPosTable[winner].getColor(),
+                              builder: (context, snapshot) {
+                                return DotPlayer(
+                                  dotSize: 20,
+                                  color: snapshot.data,
+                                );
+                              }),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: lastTrick
+                              .map((e) => FutureBuilder<Color>(
+                                  future:
+                                      cardinalToPosTable[e.position].getColor(),
+                                  builder: (context, snapshot) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: snapshot.data,
+                                          ),
+                                          padding: EdgeInsets.all(8),
+                                          child: CardWidget(
+                                              card: e.card..playable = null,
+                                              width: 40,
+                                              height: 60)),
+                                    );
+                                  }))
+                              .toList(),
+                        ),
+                      ]);
+                },
+              );
+            },
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Text(
+                  "Last Trick",
+                  style: TextStyle(color: colorTextDark),
+                )),
+            sizeShadow: SizeShadow.SMALL,
+            borderRadius: 10,
+            interactable: true),
+      ),
+    );
   }
 }

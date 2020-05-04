@@ -18,6 +18,7 @@ class GameInherited extends InheritedModel<Aspects> {
         game.onTable != old.game.onTable ||
         game.nextPlayer != old.game.nextPlayer ||
         game.myPosition != old.game.myPosition ||
+        game.lastTrick != old.game.lastTrick ||
         game.currentBid != old.game.currentBid;
   }
 
@@ -36,6 +37,9 @@ class GameInherited extends InheritedModel<Aspects> {
             old.game.nextPlayer != game.nextPlayer) ||
         (aspects.contains(Aspects.MY_POSITION) &&
             old.game.myPosition != game.myPosition) ||
+        (aspects.contains(Aspects.LAST_TRICK) &&
+            (old.game.lastTrick != game.lastTrick ||
+                old.game.winnerLastTrick != game.winnerLastTrick)) ||
         (aspects.contains(Aspects.CURRENT_BID) &&
             old.game.currentBid != game.currentBid);
   }
@@ -56,5 +60,6 @@ enum Aspects {
   ON_TABLE,
   NEXT_PLAYER,
   MY_POSITION,
-  CURRENT_BID
+  CURRENT_BID,
+  LAST_TRICK,
 }
