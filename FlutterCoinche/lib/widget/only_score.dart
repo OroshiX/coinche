@@ -59,7 +59,7 @@ class OnlyScoreWidget extends StatelessWidget {
                 ),
               Table(
                 defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                columnWidths: {2: FractionColumnWidth(0.5)},
+                columnWidths: {2: FractionColumnWidth(0.55)},
                 children: [
                   TableRow(children: [
                     FutureBuilder<Color>(
