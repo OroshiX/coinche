@@ -7,6 +7,7 @@ import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';
 import 'package:bloc_provider/bloc_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BiddingBar extends StatefulWidget {
@@ -22,18 +23,17 @@ class BiddingBar extends StatefulWidget {
 
   final Bid lastSimpleBid;
 
-  const BiddingBar(
-      {Key key,
+  const BiddingBar({Key key,
 //      @required this.screenWidth,
-      this.onBid,
-      this.minBidPoints = 80,
-      @required this.myPosition,
+    this.onBid,
+    this.minBidPoints = 80,
+    @required this.myPosition,
 //      this.height = 200,
-      @required this.enabledBid,
-      @required this.enabledCoinche,
-      @required this.enabledSurcoinche,
-      @required this.lastSimpleBid,
-      this.initialBidType = BidType.Simple})
+    @required this.enabledBid,
+    @required this.enabledCoinche,
+    @required this.enabledSurcoinche,
+    @required this.lastSimpleBid,
+    this.initialBidType = BidType.Simple})
       : assert(enabledCoinche != null && enabledSurcoinche != null),
         assert(!(enabledSurcoinche && enabledCoinche)),
         super(key: key);
@@ -66,7 +66,8 @@ class _BiddingBarState extends State<BiddingBar> {
       child: DropdownButton<cardModel.CardColor>(
           value: _cardColor,
           items: cardModel.CardColor.values
-              .map((e) => DropdownMenuItem<cardModel.CardColor>(
+              .map((e) =>
+              DropdownMenuItem<cardModel.CardColor>(
                   value: e,
                   child: Container(
                     width: isLargeScreen(screenSize) ? 50 : 30,
@@ -184,137 +185,42 @@ class _BiddingBarState extends State<BiddingBar> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
+    final screenSize = MediaQuery
+        .of(context)
+        .size;
+    final portrait = MediaQuery
+        .of(context)
+        .orientation == Orientation.portrait;
     return Container(
       padding: const EdgeInsets.only(left: 2),
-      child: Row(
+      child: portrait ?
+      IntrinsicWidth(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _coincheWidget(),
+                _surcoincheWidget(),
+                _passWidget()
+              ],
+            ),
+            SizedBox(height: isLargeScreen(screenSize) ? 20 : 10,),
+            _mainWidget(screenSize)
+          ],
+        ),
+      )
+          : Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          NeumorphicNoStateWidget(
-            borderRadius: getBorderRadiusBidding(screenSize),
-            sizeShadow: isLargeScreen(screenSize)
-                ? SizeShadow.LARGE
-                : SizeShadow.MEDIUM,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IntrinsicWidth(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        GestureDetector(
-                          onTap: () {
-                            gamesBloc.playSoftButton();
-                            setState(() {
-                              bidType = BidType.Simple;
-                            });
-                          },
-                          child: Padding(
-                            padding:
-                                getPaddingBetweenButtonsTypeBid(screenSize),
-                            child: NeumorphicNoStateWidget(
-                              sizeShadow: SizeShadow.SMALL,
-                              pressed: bidType == BidType.Simple,
-                              child: Container(
-                                padding: getPaddingButtonTypeBid(screenSize),
-                                child: Text(
-                                  "Normal",
-                                  style: TextStyle(color: colorText),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            gamesBloc.playSoftButton();
-                            setState(() {
-                              bidType = BidType.Capot;
-                            });
-                          },
-                          child: Padding(
-                            padding:
-                                getPaddingBetweenButtonsTypeBid(screenSize),
-                            child: NeumorphicNoStateWidget(
-                              sizeShadow: SizeShadow.SMALL,
-                              pressed: bidType == BidType.Capot,
-                              child: Container(
-                                padding: getPaddingButtonTypeBid(screenSize),
-                                child: Text("Capot",
-                                    style: TextStyle(color: colorText)),
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            gamesBloc.playSoftButton();
-                            setState(() {
-                              bidType = BidType.Generale;
-                            });
-                          },
-                          child: Padding(
-                            padding:
-                                getPaddingBetweenButtonsTypeBid(screenSize),
-                            child: NeumorphicNoStateWidget(
-                              sizeShadow: SizeShadow.SMALL,
-                              pressed: bidType == BidType.Generale,
-                              child: Container(
-                                padding: getPaddingButtonTypeBid(screenSize),
-                                child: Text("General",
-                                    style: TextStyle(color: colorText)),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    _getTab(bidType, screenSize),
-                    NeumorphicWidget(
-                      onTap: () {
-                        Bid bid;
-                        gamesBloc.playPlop();
-                        switch (bidType) {
-                          case BidType.Simple:
-                            bid = SimpleBid(
-                                points: points,
-                                color: _cardColor,
-                                position: widget.myPosition);
-                            break;
-                          case BidType.Capot:
-                            bid = Capot(
-                                color: _cardColor,
-                                position: widget.myPosition,
-                                belote: _belote);
-                            break;
-                          case BidType.Generale:
-                            bid = General(
-                                color: _cardColor,
-                                position: widget.myPosition,
-                                belote: _belote);
-                            break;
-                        }
-                        widget.onBid(bid);
-                      },
-                      borderRadius: 3,
-                      interactable: widget.enabledBid,
-                      sizeShadow: SizeShadow.SMALL,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Bid", style: TextStyle(color: colorText)),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          _mainWidget(screenSize),
           SizedBox(
             width: isLargeScreen(screenSize) ? 20 : 10,
           ),
@@ -324,83 +230,221 @@ class _BiddingBarState extends State<BiddingBar> {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Visibility(
-                  visible: widget.enabledCoinche,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicWidget(
-                      sizeShadow: SizeShadow.SMALL,
-                      onTap: () {
-                        gamesBloc.playPlop();
-                        widget.onBid(Coinche(
-                            position: widget.myPosition,
-                            surcoinche: false,
-                            annonce: widget.lastSimpleBid));
-                      },
-                      borderRadius: 5,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          "Coinche",
-                          style: TextStyle(color: colorText),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: widget.enabledSurcoinche,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicWidget(
-                      sizeShadow: SizeShadow.SMALL,
-                      onTap: () {
-                        gamesBloc.playPlop();
-                        widget.onBid(Coinche(
-                            position: widget.myPosition,
-                            surcoinche: true,
-                            annonce: widget.lastSimpleBid));
-                      },
-                      borderRadius: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          "Surcoinche",
-                          style: TextStyle(color: colorText),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Visibility(
-                    visible: widget.enabledBid,
-                    child: NeumorphicWidget(
-                      interactable: widget.enabledBid,
-                      sizeShadow: SizeShadow.SMALL,
-                      borderRadius: 5,
-                      onTap: () {
-                        gamesBloc.playPlop();
-                        widget.onBid(Pass(position: widget.myPosition));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Pass",
-                          style: TextStyle(color: colorText),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                _coincheWidget(),
+                _surcoincheWidget(),
+                _passWidget(),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _coincheWidget() {
+    return Visibility(
+      visible: widget.enabledCoinche,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: NeumorphicWidget(
+          sizeShadow: SizeShadow.SMALL,
+          onTap: () {
+            gamesBloc.playPlop();
+            widget.onBid(Coinche(
+                position: widget.myPosition,
+                surcoinche: false,
+                annonce: widget.lastSimpleBid));
+          },
+          borderRadius: 5,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              "Coinche",
+              style: TextStyle(color: colorText),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _surcoincheWidget() {
+    return Visibility(
+      visible: widget.enabledSurcoinche,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: NeumorphicWidget(
+          sizeShadow: SizeShadow.SMALL,
+          onTap: () {
+            gamesBloc.playPlop();
+            widget.onBid(Coinche(
+                position: widget.myPosition,
+                surcoinche: true,
+                annonce: widget.lastSimpleBid));
+          },
+          borderRadius: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              "Surcoinche",
+              style: TextStyle(color: colorText),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _passWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Visibility(
+        visible: widget.enabledBid,
+        child: NeumorphicWidget(
+          interactable: widget.enabledBid,
+          sizeShadow: SizeShadow.SMALL,
+          borderRadius: 5,
+          onTap: () {
+            gamesBloc.playPlop();
+            widget.onBid(Pass(position: widget.myPosition));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Pass",
+              style: TextStyle(color: colorText),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mainWidget(Size screenSize) {
+    return NeumorphicNoStateWidget(
+      borderRadius: getBorderRadiusBidding(screenSize),
+      sizeShadow: isLargeScreen(screenSize)
+          ? SizeShadow.LARGE
+          : SizeShadow.MEDIUM,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: IntrinsicWidth(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      gamesBloc.playSoftButton();
+                      setState(() {
+                        bidType = BidType.Simple;
+                      });
+                    },
+                    child: Padding(
+                      padding:
+                      getPaddingBetweenButtonsTypeBid(screenSize),
+                      child: NeumorphicNoStateWidget(
+                        sizeShadow: SizeShadow.SMALL,
+                        pressed: bidType == BidType.Simple,
+                        child: Container(
+                          padding: getPaddingButtonTypeBid(screenSize),
+                          child: Text(
+                            "Normal",
+                            style: TextStyle(color: colorText),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      gamesBloc.playSoftButton();
+                      setState(() {
+                        bidType = BidType.Capot;
+                      });
+                    },
+                    child: Padding(
+                      padding:
+                      getPaddingBetweenButtonsTypeBid(screenSize),
+                      child: NeumorphicNoStateWidget(
+                        sizeShadow: SizeShadow.SMALL,
+                        pressed: bidType == BidType.Capot,
+                        child: Container(
+                          padding: getPaddingButtonTypeBid(screenSize),
+                          child: Text("Capot",
+                              style: TextStyle(color: colorText)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      gamesBloc.playSoftButton();
+                      setState(() {
+                        bidType = BidType.Generale;
+                      });
+                    },
+                    child: Padding(
+                      padding:
+                      getPaddingBetweenButtonsTypeBid(screenSize),
+                      child: NeumorphicNoStateWidget(
+                        sizeShadow: SizeShadow.SMALL,
+                        pressed: bidType == BidType.Generale,
+                        child: Container(
+                          padding: getPaddingButtonTypeBid(screenSize),
+                          child: Text("General",
+                              style: TextStyle(color: colorText)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              _getTab(bidType, screenSize),
+              NeumorphicWidget(
+                onTap: () {
+                  Bid bid;
+                  gamesBloc.playPlop();
+                  switch (bidType) {
+                    case BidType.Simple:
+                      bid = SimpleBid(
+                          points: points,
+                          color: _cardColor,
+                          position: widget.myPosition);
+                      break;
+                    case BidType.Capot:
+                      bid = Capot(
+                          color: _cardColor,
+                          position: widget.myPosition,
+                          belote: _belote);
+                      break;
+                    case BidType.Generale:
+                      bid = General(
+                          color: _cardColor,
+                          position: widget.myPosition,
+                          belote: _belote);
+                      break;
+                  }
+                  widget.onBid(bid);
+                },
+                borderRadius: 3,
+                interactable: widget.enabledBid,
+                sizeShadow: SizeShadow.SMALL,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Bid", style: TextStyle(color: colorText)),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -13,31 +13,34 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tuple/tuple.dart';
 
 class PlayerAvatar extends StatelessWidget {
-  final PlayerPosition position;
-  final String nick;
   final AutoSizeGroup autoSizeGroup;
   final double width, height;
+  final AxisDirection posTable;
 
   const PlayerAvatar(
       {Key key,
-      this.position,
-      @required this.nick,
       @required this.autoSizeGroup,
       @required this.width,
-      @required this.height})
+      @required this.height,
+      @required this.posTable})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final PlayerPosition me =
+        GameInherited.of(context, aspectType: Aspects.MY_POSITION)
+            .game
+            .myPosition;
+    final map = getPosTableToCardinal(me);
     final bool myTurn =
         GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
                 .game
                 .nextPlayer ==
-            position;
-    var posTable = getCardinalToPosTable(
-        GameInherited.of(context, aspectType: Aspects.MY_POSITION)
-            .game
-            .myPosition)[position];
+            map[posTable];
+    final nick = GameInherited.of(context, aspectType: Aspects.NICKNAMES)
+        .game
+        .nicknames
+        .fromPosition(map[posTable]);
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return Container(
         width: portrait ? width : 130,

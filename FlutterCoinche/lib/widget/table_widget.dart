@@ -3,6 +3,7 @@ import 'package:FlutterCoinche/dto/bid.dart';
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
+import 'package:FlutterCoinche/extensions/bid_extension.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
@@ -33,12 +34,11 @@ class TableWidget extends StatefulWidget {
 }
 
 class _TableWidgetState extends State<TableWidget> {
-  AutoSizeGroup autoSizeGroup;
+  final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
     super.initState();
-    autoSizeGroup = AutoSizeGroup();
   }
 
   @override
@@ -47,8 +47,6 @@ class _TableWidgetState extends State<TableWidget> {
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     const double widthContainerName = 65;
     const double heightContainer = 104;
-    final nicknames =
-        GameInherited.of(context, aspectType: Aspects.NICKNAMES).game.nicknames;
     final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
     final me = GameInherited.of(context, aspectType: Aspects.MY_POSITION)
         .game
@@ -74,23 +72,10 @@ class _TableWidgetState extends State<TableWidget> {
     var bidTop = getPlayerBid(bids, top);
     var bidRight = getPlayerBid(bids, right);
     var myBid = getPlayerBid(bids, me);
-    Coinche coinche = (bids.lastWhere(
-      (element) => element is Coinche,
-      orElse: () => null,
-    ) as Coinche);
-    Bid lastBidCapotGeneralOpposite = (bids.lastWhere(
-      (element) =>
-          (oppositeTeam(me).contains(element.position)) &&
-          (element is SimpleBid || element is Capot || element is General),
-      orElse: () => null,
-    ));
-    bool enableSurcoinche = false;
-    bool enableCoinche = false;
-    if (coinche != null && !coinche.surcoinche) {
-      enableSurcoinche = true;
-    } else if (coinche == null && lastBidCapotGeneralOpposite != null) {
-      enableCoinche = true;
-    }
+
+    bool enableSurcoinche = bids.canSurcoinche(me);
+    bool enableCoinche = bids.canCoinche(me);
+    final lastBid = bids.lastBidCapotGeneral();
     print(screenSize);
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -131,8 +116,7 @@ class _TableWidgetState extends State<TableWidget> {
               Align(
                 alignment: Alignment.topCenter,
                 child: PlayerAvatar(
-                  position: top,
-                  nick: nicknames.fromPosition(top),
+                  posTable: AxisDirection.up,
                   autoSizeGroup: autoSizeGroup,
                   height: heightContainer,
                   width: widthContainerName,
@@ -141,9 +125,8 @@ class _TableWidgetState extends State<TableWidget> {
               Align(
                 alignment: Alignment.centerRight,
                 child: PlayerAvatar(
-                  nick: nicknames.fromPosition(right),
                   autoSizeGroup: autoSizeGroup,
-                  position: right,
+                  posTable: AxisDirection.right,
                   width: widthContainerName,
                   height: heightContainer,
                 ),
@@ -151,9 +134,8 @@ class _TableWidgetState extends State<TableWidget> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: PlayerAvatar(
-                  nick: nicknames.fromPosition(left),
                   autoSizeGroup: autoSizeGroup,
-                  position: left,
+                  posTable: AxisDirection.left,
                   width: widthContainerName,
                   height: heightContainer,
                 ),
@@ -229,7 +211,7 @@ class _TableWidgetState extends State<TableWidget> {
               AnimatedPositioned(
                 bottom: getBottomOfBiddingBar(screenSize),
                 left: state == TableState.BIDDING
-                    ? widthContainerName
+                    ? screenSize.width/2 -widthContainerName*2
                     : -screenSize.width,
                 duration: Duration(milliseconds: 500),
                 child: AnimatedOpacity(
@@ -260,7 +242,7 @@ class _TableWidgetState extends State<TableWidget> {
                     myPosition: me,
                     enabledSurcoinche: enableSurcoinche,
                     enabledCoinche: enableCoinche,
-                    lastSimpleBid: lastBidCapotGeneralOpposite,
+                    lastSimpleBid: lastBid,
                   ),
                 ),
               ),
@@ -285,10 +267,9 @@ class _TableWidgetState extends State<TableWidget> {
                           me: me,
                         ),
                         PlayerAvatar(
-                            nick: nicknames.fromPosition(me),
                             autoSizeGroup: autoSizeGroup,
                             width: widthContainerName,
-                            position: me,
+                            posTable: AxisDirection.down,
                             height: heightContainer),
                       ],
                     ),
@@ -338,32 +319,15 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               ),
               if (!portrait)
-                Positioned(
-                  right: 4,
-                  bottom: 4,
-                  child: PlayerAvatar(
-                    nick: nicknames.fromPosition(me),
-                    autoSizeGroup: autoSizeGroup,
-                    width: widthContainerName,
-                    position: me,
-                    height: heightContainer,
-                  ),
+                PlayerAvatar(
+                  autoSizeGroup: autoSizeGroup,
+                  width: widthContainerName,
+                  posTable: AxisDirection.down,
+                  height: heightContainer,
                 )
             ]),
       ],
     );
-  }
-
-  List<PlayerPosition> oppositeTeam(PlayerPosition myPosition) {
-    switch (myPosition) {
-      case PlayerPosition.NORTH:
-      case PlayerPosition.SOUTH:
-        return [PlayerPosition.EAST, PlayerPosition.WEST];
-      case PlayerPosition.EAST:
-      case PlayerPosition.WEST:
-        return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
-    }
-    return [];
   }
 }
 
@@ -384,7 +348,7 @@ class _LastTrick extends StatelessWidget {
     final List<CardPlayed> lastTrick = game.lastTrick;
     final winner = game.winnerLastTrick;
     return Visibility(
-      visible: state == TableState.PLAYING,
+      visible: state == TableState.PLAYING && winner != null,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8.0),
         child: NeumorphicWidget(
