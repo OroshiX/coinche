@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CardsOnTable extends StatelessWidget {
+  static var built = 0;
   final List<CardPlayed> cardsOnTable;
   final Map<AxisDirection, PlayerPosition> posTableToCardinal;
   final CardPlayed cardLeft, cardTop, cardRight, cardMe;
@@ -77,6 +78,7 @@ class CardsOnTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("[CardsOnTable] build nb: ${built++}");
     if (state != TableState.PLAYING) {
       return SizedBox();
     }

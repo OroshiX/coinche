@@ -1,18 +1,19 @@
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'nicknames.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Nicknames {
+class Nicknames extends Equatable {
   @JsonKey(name: "NORTH")
-  String north;
+  final String north;
   @JsonKey(name: "SOUTH")
-  String south;
+  final String south;
   @JsonKey(name: "EAST")
-  String east;
+  final String east;
   @JsonKey(name: "WEST")
-  String west;
+  final String west;
 
   Nicknames({this.north, this.south, this.east, this.west});
 
@@ -34,4 +35,7 @@ class Nicknames {
     }
     return "<empty>";
   }
+
+  @override
+  List<Object> get props => [north, south, east, west];
 }

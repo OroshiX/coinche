@@ -13,23 +13,13 @@ class GameInherited extends InheritedModel<Aspects> {
 
   @override
   bool updateShouldNotify(GameInherited old) {
-    return game.id != old.game.id ||
-        game.cards != old.game.cards ||
-        game.score != old.game.score ||
-        game.state != old.game.state ||
-        game.bids != old.game.bids ||
-        game.nicknames != old.game.nicknames ||
-        game.onTable != old.game.onTable ||
-        game.nextPlayer != old.game.nextPlayer ||
-        game.myPosition != old.game.myPosition ||
-        game.lastTrick != old.game.lastTrick ||
-        game.currentBid != old.game.currentBid ||
-        !mapEquals(map, old.map);
+    print("changed: ${old.game} -> $game NO ASPECTS");
+    return game != old.game || !mapEquals(map, old.map);
   }
 
   @override
   bool updateShouldNotifyDependent(GameInherited old, Set<Aspects> aspects) {
-    return (aspects.contains(Aspects.ID) && old.game.id != game.id) ||
+    final res = (aspects.contains(Aspects.ID) && old.game.id != game.id) ||
         (aspects.contains(Aspects.CARDS) && old.game.cards != game.cards) ||
         (aspects.contains(Aspects.SCORE) && old.game.score != game.score) ||
         (aspects.contains(Aspects.STATE) && old.game.state != game.state) ||
@@ -37,7 +27,7 @@ class GameInherited extends InheritedModel<Aspects> {
         (aspects.contains(Aspects.NICKNAMES) &&
             old.game.nicknames != game.nicknames) ||
         (aspects.contains(Aspects.ON_TABLE) &&
-            old.game.onTable != game.onTable) ||
+            !listEquals(old.game.onTable, game.onTable)) ||
         (aspects.contains(Aspects.NEXT_PLAYER) &&
             old.game.nextPlayer != game.nextPlayer) ||
         (aspects.contains(Aspects.MY_POSITION) &&
@@ -48,6 +38,8 @@ class GameInherited extends InheritedModel<Aspects> {
         (aspects.contains(Aspects.CURRENT_BID) &&
             old.game.currentBid != game.currentBid) ||
         (aspects.contains(Aspects.COLORS) && !mapEquals(old.map, map));
+    print("-> ${res ? "================\n\nchanged: ${old.game} -> $game [aspects: $aspects]" : "same"}");
+    return res;
   }
 
   static GameInherited of(BuildContext context, {Aspects aspectType}) {

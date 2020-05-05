@@ -1,14 +1,15 @@
 import 'package:FlutterCoinche/dto/belote.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'card.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class CardModel {
-  CardValue value;
-  CardColor color;
-  bool playable;
+class CardModel extends Equatable {
+  final CardValue value;
+  final CardColor color;
+  final bool playable;
 
   CardModel({this.value, this.color, this.playable});
 
@@ -23,6 +24,9 @@ class CardModel {
         " of ${color.toString().split(".").last}"
         "${playable != null && playable ? " (playable)" : ""}";
   }
+
+  @override
+  List<Object> get props => [value, color, playable];
 }
 
 enum CardValue {
@@ -105,10 +109,10 @@ enum CardColor {
 }
 
 @JsonSerializable(explicitToJson: true)
-class CardPlayed {
-  CardModel card;
-  BeloteValue belote;
-  PlayerPosition position;
+class CardPlayed extends Equatable {
+  final CardModel card;
+  final BeloteValue belote;
+  final PlayerPosition position;
 
   CardPlayed({this.card, this.belote, this.position});
 
@@ -116,6 +120,9 @@ class CardPlayed {
       _$CardPlayedFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardPlayedToJson(this);
+
+  @override
+  List<Object> get props => [card, belote, position];
 }
 
 String getAssetImageFromColor(CardColor e) {

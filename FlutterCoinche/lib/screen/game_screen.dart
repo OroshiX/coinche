@@ -73,7 +73,6 @@ class _GameScreenState extends State<GameScreen> {
                       child: Text("No data"),
                     );
                   }
-                  print("data has changed: ${snapshot.data}");
                   return GameInherited(
                     game: snapshot.data,
                     map: snapshotMap.data,

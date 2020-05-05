@@ -5,6 +5,7 @@ import 'package:FlutterCoinche/widget/dot_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:quiver/core.dart';
 
 part 'bid.g.dart';
 
@@ -19,7 +20,6 @@ class Bid {
   Bid({this.position, @required this.type});
 
   factory Bid.fromJson(Map<String, dynamic> json) {
-    print("trying to change bid $json to Bid");
     var type = json['type'];
     switch (type) {
       case "SimpleBid":
@@ -109,6 +109,30 @@ class Bid {
       ],
     );
   }
+
+  @override
+  bool operator ==(other) {
+    if (identical(this, other)) return true;
+    if (runtimeType != other.runtimeType || other is! Bid) return false;
+    var bid = other as Bid;
+    if (bid.type != this.type) return false;
+    if (this is SimpleBid) return this as SimpleBid == bid;
+    if (this is General) return this as General == bid;
+    if (this is Capot) return this as Capot == bid;
+    if (this is Coinche) return this as Coinche == bid;
+    if (this is Pass) return this as Pass == bid;
+    return false;
+  }
+
+  @override
+  int get hashCode {
+    if (this is SimpleBid) return (this as SimpleBid).hashCode;
+    if (this is General) return (this as General).hashCode;
+    if (this is Capot) return (this as Capot).hashCode;
+    if (this is Coinche) return (this as Coinche).hashCode;
+    if (this is Pass) return (this as Pass).hashCode;
+    return hash2(position, type);
+  }
 }
 
 @JsonSerializable()
@@ -131,6 +155,19 @@ class SimpleBid extends Bid {
   String toString() {
     return "$points ${color.toString().split(".").last}";
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is SimpleBid &&
+          runtimeType == other.runtimeType &&
+          position == other.position &&
+          points == other.points &&
+          type == other.type &&
+          color == other.color);
+
+  @override
+  int get hashCode => hash4(points, position, color, type);
 }
 
 @JsonSerializable()
@@ -150,6 +187,19 @@ class General extends Bid {
   String toString() {
     return "Generale ${belote ? "belote " : ""}${color.toString().split(".").last}";
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is General &&
+          runtimeType == other.runtimeType &&
+          position == other.position &&
+          color == other.color &&
+          type == other.type &&
+          belote == other.belote);
+
+  @override
+  int get hashCode => hash4(position, color, type, belote);
 }
 
 @JsonSerializable()
@@ -168,6 +218,19 @@ class Capot extends Bid {
   String toString() {
     return "Capot ${belote ? "belote " : ""}${color.toString().split(".").last}";
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is Capot &&
+          runtimeType == other.runtimeType &&
+          position == other.position &&
+          color == other.color &&
+          type == other.type &&
+          belote == other.belote);
+
+  @override
+  int get hashCode => hash4(position, color, type, belote);
 }
 
 @JsonSerializable()
@@ -187,6 +250,19 @@ class Coinche extends Bid {
   String toString() {
     return "${surcoinche ? "sur" : ""}coinche";
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is Coinche &&
+          runtimeType == other.runtimeType &&
+          position == other.position &&
+          annonce == other.annonce &&
+          type == other.type &&
+          surcoinche == other.surcoinche);
+
+  @override
+  int get hashCode => hash4(position, annonce, type, surcoinche);
 }
 
 @JsonSerializable()
@@ -201,4 +277,15 @@ class Pass extends Bid {
   String toString() {
     return "Pass";
   }
+
+  @override
+  bool operator ==(other) =>
+      identical(this, other) ||
+      (other is Pass &&
+          runtimeType == other.runtimeType &&
+          type == other.type &&
+          position == other.position);
+
+  @override
+  int get hashCode => hash2(type, position);
 }

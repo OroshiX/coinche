@@ -1,4 +1,5 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
+import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
@@ -13,13 +14,11 @@ import 'package:flutter/material.dart';
 class MiddleArea extends StatelessWidget {
   final double cardWidth, cardHeight;
   final Size screenSize;
-  final Map<AxisDirection, PlayerPosition> posTableToCardinal;
 
   const MiddleArea({
     @required this.cardWidth,
     @required this.cardHeight,
     @required this.screenSize,
-    @required this.posTableToCardinal,
   });
 
   @override
@@ -31,6 +30,7 @@ class MiddleArea extends StatelessWidget {
         GameInherited.of(context, aspectType: Aspects.MY_POSITION)
             .game
             .myPosition;
+    final posTableToCardinal = getPosTableToCardinal(myPosition);
     final onTable =
         GameInherited.of(context, aspectType: Aspects.ON_TABLE).game.onTable;
     final nextPlayer =

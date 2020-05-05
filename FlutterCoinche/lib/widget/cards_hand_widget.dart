@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:flutter/material.dart';
@@ -6,21 +7,29 @@ class CardsInHandWidget extends StatelessWidget {
   final double cardHeight, cardWidth, screenWidth;
 
   final double paddingVertical;
-  final bool inPlayMode;
-  final bool myTurn;
 
-  const CardsInHandWidget(
-      {@required this.cardHeight,
-      @required this.cardWidth,
-      @required this.screenWidth,
-      @required this.paddingVertical,
-      this.inPlayMode = false,
-      this.myTurn = false});
+  const CardsInHandWidget({
+    @required this.cardHeight,
+    @required this.cardWidth,
+    @required this.screenWidth,
+    @required this.paddingVertical,
+  });
 
   @override
   Widget build(BuildContext context) {
     final cards =
         GameInherited.of(context, aspectType: Aspects.CARDS).game.cards;
+    final me = GameInherited.of(context, aspectType: Aspects.MY_POSITION)
+        .game
+        .myPosition;
+    final nextPlayer =
+        GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
+            .game
+            .nextPlayer;
+    final myTurn = me == nextPlayer;
+    final inPlayMode =
+        GameInherited.of(context, aspectType: Aspects.STATE).game.state ==
+            TableState.PLAYING;
     return Container(
 //        color: colorLightBlue,
 //                  padding: EdgeInsets.all(20),

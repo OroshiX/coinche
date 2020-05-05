@@ -4,25 +4,26 @@ import 'package:FlutterCoinche/dto/nicknames.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Game {
-  String id;
-  Nicknames nicknames;
-  List<CardModel> cards;
-  List<CardPlayed> onTable;
-  TableState state;
-  PlayerPosition nextPlayer;
-  PlayerPosition myPosition;
-  List<Bid> bids;
-  Bid currentBid;
-  Score score;
+class Game extends Equatable {
+  final String id;
+  final Nicknames nicknames;
+  final List<CardModel> cards;
+  final List<CardPlayed> onTable;
+  final TableState state;
+  final PlayerPosition nextPlayer;
+  final PlayerPosition myPosition;
+  final List<Bid> bids;
+  final Bid currentBid;
+  final Score score;
   @JsonKey(nullable: true)
-  PlayerPosition winnerLastTrick;
-  List<CardPlayed> lastTrick;
+  final PlayerPosition winnerLastTrick;
+  final List<CardPlayed> lastTrick;
 
   Game(
       {this.id,
@@ -46,4 +47,20 @@ class Game {
   String toString() {
     return "game: $id, myCards: $cards";
   }
+
+  @override
+  List<Object> get props => [
+        id,
+        nicknames,
+        cards,
+        onTable,
+        state,
+        nextPlayer,
+        myPosition,
+        bids,
+        currentBid,
+        score,
+        winnerLastTrick,
+        lastTrick
+      ];
 }
