@@ -276,6 +276,7 @@ data class IARun(val setOfGames: SetOfGames) {
                     myBid = Capot(color = atout, position = myPosition, belote = (myEnchere > 250))
                 } else myBid = SimpleBid(atout, myEnchere, myPosition)
 
+                // This test permits to eliminate case where somebody did coinche etc .....
                 if (isValidBid(allBids, myBid))
                     return myBid
             }
@@ -326,13 +327,17 @@ data class IARun(val setOfGames: SetOfGames) {
 
                 }
                 debugPrintln(dbgLevel.DEBUG,"bid at $color is ${tableBids[color]} before belote and minoration ")
-
+                var maxValue = 130
+                if (atouts.any { it.value == CardValue.QUEEN } ||  atouts.any { it.value == CardValue.KING }) {
+                    //it means that our partner has no belote .... so his numbers are "real"
+                    maxValue = 250
+                }
                 // Make sure we dont have a bid impossible to do ....
                 // if this is higher than 130 we limit to 130 except if it's higher than 152
                 if ((tableBids[color]!! >= 130) && (tableBids[color]!! <150)) {
                     tableBids[color] = 130
                 }
-                if (tableBids[color]!! >= 150) tableBids[color] = 250
+                if (tableBids[color]!! >= 150)  tableBids[color] = maxValue
 
                 if (atouts.any { it.value == CardValue.QUEEN } && atouts.any { it.value == CardValue.KING }) {
                     tableBids[color] = tableBids[color]!! + 20
