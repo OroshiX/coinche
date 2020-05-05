@@ -84,9 +84,11 @@ class Bid {
   }
 
   Row getReadableBidRow(double fontSize, double dotSize,
-      Map<PlayerPosition, Color> cardinalToPosTable) {
+      Map<PlayerPosition, Color> cardinalToPosTable,
+      {bool displayBy = true}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: displayBy ? MainAxisSize.max : MainAxisSize.min,
       children: [
         Text(
           readableValueBid(),
@@ -99,13 +101,24 @@ class Bid {
         if (this is Coinche)
           Text(
             " (x${(this as Coinche).surcoinche ? 4 : 2})",
-            style: TextStyle(fontSize: fontSize, color: colorTextDark),
+            style: TextStyle(
+              fontSize: fontSize,
+              color: colorTextDark,
+            ),
           ),
-        Text(" by "),
-        DotPlayer(
-          dotSize: dotSize,
-          color: cardinalToPosTable[getTaker()],
-        ),
+        if (displayBy)
+          Text(
+            " by ",
+            style: TextStyle(
+              fontSize: fontSize,
+              color: colorTextDark,
+            ),
+          ),
+        if (displayBy)
+          DotPlayer(
+            dotSize: dotSize,
+            color: cardinalToPosTable[getTaker()],
+          ),
       ],
     );
   }
