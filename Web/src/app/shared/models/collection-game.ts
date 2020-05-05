@@ -12,7 +12,7 @@ export interface TableGame {
   bids: Bid[];
   currentBid: Bid;
   score: Score;
-  winnerLastTrick: PlayerPosition;
+  winnerLastTrick: PLAYER_POSITION;
   lastTrick: Play[];
 }
 

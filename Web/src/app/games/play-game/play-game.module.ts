@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { SharedCommonModule } from '../../shared-common/shared-common.module';
 import { BidAnnounceComponent } from './dumb-comp-bid-announce/bid-announce.component';
 import { BidComponent } from './dumb-comp-bid/bid.component';
 import { CardComponent } from './dumb-comp-card/card.component';
@@ -48,7 +49,8 @@ import { PlayGameComponent } from './play-game/play-game.component';
     MatGridListModule,
     MatChipsModule,
     MatSelectModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedCommonModule,
   ],
   providers: [
     {

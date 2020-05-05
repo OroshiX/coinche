@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
@@ -26,8 +26,10 @@ export interface DialogData {
 export interface BidData {
   eastWest: number;
   northSouth: number;
-  eastWestNicknames: string;
-  northSouthNicknames: string;
+  eastNicknames: string;
+  westNicknames: string;
+  northNicknames: string;
+  southNicknames: string;
   currentBidNickname: string;
   currentBidPoints: number;
   currentBidColor: string;
@@ -98,17 +100,14 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.gameId = this.route.snapshot.params.id;
     this.cd.detectChanges();
     this.breakpointService.layoutChanges$()
-      .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId))
-        // , debounceTime(100)
-        )
+      .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId)),
+        debounceTime(100)
+      )
       .subscribe((data: TableGame) => {
-        console.log(this.cardsPlayed );
         console.log('table game *********************');
         console.log(JSON.stringify(data));
         this.setTableGame(data);
-        // if (this.gameState !== STATE.JOINING && data.cards !== []) {
         this.updateLayoutForScreenChange();
-        // }
       });
   }
 
@@ -134,6 +133,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.isDisableBid = this.gameState !== STATE.BIDDING;
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
+
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.nextPlayerIdx = this.gameState !== STATE.ENDED && this.gameState !== STATE.JOINING ?
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever
@@ -147,6 +147,9 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     console.log('lastTrick', JSON.stringify(data.lastTrick));
     this.myCardMap = this.service.buildMyDeck(data.cards);
     this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
+    if (this.isMyTurn && data.winnerLastTrick === data.myPosition) {
+      console.log('must reset cards on table', this.cardsPlayed);
+    }
     this.mustHideOnTable = this.helper.mustHideCardsOntable(data);
     this.cd.detectChanges();
   }
@@ -169,8 +172,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     return {
       eastWest: data.score.eastWest,
       northSouth: data.score.northSouth,
-      eastWestNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.EAST, PLAYER_POSITION.WEST, data.nicknames),
-      northSouthNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.NORTH, PLAYER_POSITION.SOUTH, data.nicknames),
+      eastNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.EAST, data.nicknames),
+      westNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.WEST, data.nicknames),
+      northNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.NORTH, data.nicknames),
+      southNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.SOUTH, data.nicknames),
       currentBidColor: data?.currentBid?.color,
       currentBidNickname: this.helper.getNicknameByPos(data.currentBid.position, data.nicknames),
       currentBidPoints: data?.currentBid?.points,
