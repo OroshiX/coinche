@@ -8,6 +8,9 @@ export const backCardImg = `url("../../assets/images/back-card-120X174.png") no-
 const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
 
 export const iconClub = `url("../../assets/images/club.png") no-repeat`;
+export const iconSpade = `url("../../assets/images/spade.png") no-repeat`;
+export const iconHeart =`url("../../assets/images/heart.png") no-repeat`;
+export const iconDiamond =`url("../../assets/images/diamond.png") no-repeat`;
 
 
 @Injectable({

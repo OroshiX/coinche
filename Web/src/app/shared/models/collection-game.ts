@@ -31,6 +31,15 @@ export enum TYPE_BID {
   COINCHE = 'Coinche',
 }
 
+export class BidIdxValue {
+  label: string;
+  value: number;
+  idx: number;
+  constructor(obj: Partial<BidIdxValue>) {
+    Object.assign(this, obj);
+  }
+}
+
 export const bidTypeList = enumToValues(TYPE_BID);
 
 export enum BID_POINTS {
@@ -47,7 +56,15 @@ export enum BID_POINTS {
   HUNDRED_AND_EIGHTY = EIGHTY + 10 * 10,
 }
 
-export const bidPointList = enumToValues(BID_POINTS);
+export const bidPointList: number[] = enumToValues(BID_POINTS);
+
+const capot =  new BidIdxValue({label: TYPE_BID.CAPOT, value: 200, idx: 11});
+const general =  new BidIdxValue({label: TYPE_BID.GENERAL, value: 220, idx: 12});
+export const bidPointListWithCapotNGeneral: BidIdxValue[] = bidPointList.map((v, i) =>
+  new BidIdxValue({label: v.toString(), idx: i, value: v}));
+bidPointListWithCapotNGeneral.push(capot);
+bidPointListWithCapotNGeneral.push(general);
+
 
 /*export interface CardPlayed {
   color: string;

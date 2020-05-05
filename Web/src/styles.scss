@@ -10,6 +10,10 @@
 .custom-shadow {
   @include mat-elevation(8, #0a0d0b, 8.0);
 }
+.mat-dialog-container {
+  background-color: #89988a;
+}
+
 
 /*
 @import '~@angular/material/theming';

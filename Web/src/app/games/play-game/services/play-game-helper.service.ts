@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Bid, PLAYER_POSITION, PlayerPosition, playersPositionRef } from '../../../shared/models/collection-game';
+import { Bid, PLAYER_POSITION, PlayerPosition, playersPositionRef, STATE, TableGame } from '../../../shared/models/collection-game';
 import { CardView, Play } from '../../../shared/models/play';
 import { CardImageService } from './card-image.service';
 
@@ -35,9 +35,23 @@ export class PlayGameHelperService {
       .indexOf(playerPos === undefined || playerPos === null ? myPos : playerPos);
   }
 
+  mustHideCardsOntable(data: TableGame): boolean {
+    const ret = (data.state === STATE.PLAYING && data.onTable !== [] &&
+      // data.lastTrick !== [] &&
+      // data.onTable.length === 4 &&
+      // data.nextPlayer === data.myPosition &&
+      data.onTable.map(e => `${e?.card?.color}${e?.card?.value}`)
+        .every(c => data.lastTrick.map(e => `${e?.card?.color}${e?.card?.value}`).includes(c))
+    );
+    console.log(data.onTable.map(e => `${e?.card?.color}${e?.card?.value}`)
+      .every(c => data.lastTrick.map(e => `${e?.card?.color}${e?.card?.value}`).includes(c)));
+    console.log(ret);
+    return ret;
+  }
+
   onTableCardsOrdered(myPos: PLAYER_POSITION, onTable: Play[]): CardView[] {
     const playersPos = this.playersPositionRefOrderedByMyPosZero(myPos);
-    return playersPos.map(pos => onTable.find((p: Play) => p.position===pos))
+    return playersPos.map(pos => onTable.find((p: Play) => p.position === pos))
       .map(pl => !!pl ? this.imgService.buildCardView(pl?.card?.color, pl?.card?.value, pl?.card?.playable) : new CardView(null));
   }
 

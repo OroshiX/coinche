@@ -3,22 +3,26 @@
     <div class="row1">
       <app-card [card]="cardsPlayed[2]"
                 [isSmallScreen]="isSmallScreen"
+                [mustHideOnTable]="mustHideOnTable"
                 [isOnTable]="true"
                 [isDisable]="true"></app-card> <!-- Player at 90°-->
     </div>
     <div class="row2">
       <app-card [card]="cardsPlayed[1]"
                 [isSmallScreen]="isSmallScreen"
+                [mustHideOnTable]="mustHideOnTable"
                 [isOnTable]="true"
                 [isDisable]="true"></app-card> <!-- Player at 0°-->
       <app-card [card]="cardsPlayed[3]"
                 [isSmallScreen]="isSmallScreen"
+                [mustHideOnTable]="mustHideOnTable"
                 [isOnTable]="true"
                 [isDisable]="true"></app-card> <!-- Player at 270°-->
     </div>
     <div class="row2">
       <app-card [card]="cardsPlayed[0]"
                 [isSmallScreen]="isSmallScreen"
+                [mustHideOnTable]="mustHideOnTable"
                 [isOnTable]="true"
                 [isDisable]="true"></app-card> <!-- Me: 180°-->
     </div>

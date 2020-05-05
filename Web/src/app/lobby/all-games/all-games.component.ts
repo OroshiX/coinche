@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AgGridAngular } from 'ag-grid-angular';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ApiLobbyService } from '../../services/apis/api-lobby.service';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
@@ -128,8 +128,11 @@ export class AllGamesComponent implements OnInit {
 
   private processCreateGame(data: Game) {
     console.log('The dialog was closed');
-    this.newGame.name = data.name;
-    this.newGame.nicknameCreator = data.nicknameCreator;
-    return this.apiService.createGame(this.newGame);
+    if (!!data) {
+      this.newGame.name = data.name;
+      this.newGame.nicknameCreator = data.nicknameCreator;
+      return this.apiService.createGame(this.newGame);
+    }
+    return of(null);
   }
 }

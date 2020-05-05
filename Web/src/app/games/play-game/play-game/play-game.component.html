@@ -36,6 +36,7 @@
     <ng-container *ngIf="gameState==='PLAYING'; else bidding">
       <app-on-table-playing
         [cardsPlayed]="cardsPlayed"
+        [mustHideOnTable]="mustHideOnTable"
         [isSmallScreen]="isSmallScreen">
       </app-on-table-playing>
     </ng-container>
@@ -71,7 +72,7 @@
     [style.background]="tiles[8].color">
     <ng-container *ngIf="isMyTurn && !isDisableBid">
       <app-bid-announce
-        [isDisableBid]="isDisableBid"
+        [isDisableBid]="false"
         [myPosition]="myPosition"
         [gameId]="gameId"
         (announceBidData)="onAnnounceBid($event)">
