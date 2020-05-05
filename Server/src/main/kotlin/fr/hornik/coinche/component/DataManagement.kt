@@ -190,7 +190,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
-        setOfGames.whoWonLastTrick = null
 
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
 
