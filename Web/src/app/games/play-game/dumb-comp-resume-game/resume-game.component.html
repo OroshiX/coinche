@@ -8,16 +8,18 @@
           {{bidData?.eastWest}}
         </span>
         <span>vs</span>
-        <span class="itemContent">
-          {{bidData?.northNicknames | shorterName: 8}}/{{bidData?.southNicknames | shorterName: 8}}:
-          {{bidData?.northSouth}}
-        </span>
+
+      </div>
+      <div class="itemScores">
+        {{bidData?.northNicknames | shorterName: 8}}/{{bidData?.southNicknames | shorterName: 8}}:
+        {{bidData?.northSouth}}
       </div>
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
       <div class="item">CurrentBid:
         <span class="itemContent">{{bidData?.currentBidNickname | shorterName: 8}}
-          - {{bidData.currentBidPoints}} {{bidData.currentBidColor}} {{bidData.currentBidType}}</span>
+          - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
+          {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}</span>
       </div>
     </ng-container>
     <ng-container *ngIf="gameState !=='ENDED' else ended">

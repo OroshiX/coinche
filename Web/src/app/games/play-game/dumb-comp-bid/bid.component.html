@@ -1,5 +1,5 @@
 <mat-card class="bid">
   <mat-card-footer class="footer">
-    <small>{{bid?.points}} {{bid?.color}} {{bid?.type}}</small>
+    <small>{{bid?.points}} {{bid?.color}} {{bid?.type === 'SimpleBid' ? '' : bid?.type}}</small>
   </mat-card-footer>
 </mat-card>
