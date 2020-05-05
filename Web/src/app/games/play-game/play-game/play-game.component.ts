@@ -5,8 +5,8 @@ import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
-import { Bid, BID_POINTS, PLAYER_POSITION, STATE, TableGame, TYPE_BID } from '../../../shared/models/collection-game';
-import { CARD_COLOR, CardView, PlayCard } from '../../../shared/models/play';
+import { Bid, PLAYER_POSITION, STATE, TableGame } from '../../../shared/models/collection-game';
+import { CardView, PlayCard } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -18,9 +18,9 @@ interface Tile {
 }
 
 export interface DialogData {
-  points: BID_POINTS;
-  color: CARD_COLOR;
-  type: TYPE_BID
+  points: number;
+  color: string;
+  type: string
 }
 
 export interface BidData {
@@ -30,8 +30,8 @@ export interface BidData {
   northSouthNicknames: string;
   currentBidNickname: string;
   currentBidPoints: number;
-  currentBidColor: CARD_COLOR;
-  currentBidType: TYPE_BID;
+  currentBidColor: string;
+  currentBidType: string;
   nextPlayer: string;
 }
 
@@ -51,7 +51,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   rowHeight: number;
 
   gameState: STATE;
-
+  mustHideOnTable: boolean;
   bidData: BidData;
   currentBidColor: string;
   currentBidPoints: number;
@@ -98,8 +98,11 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.gameId = this.route.snapshot.params.id;
     this.cd.detectChanges();
     this.breakpointService.layoutChanges$()
-      .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId)))
+      .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId))
+        // , debounceTime(100)
+        )
       .subscribe((data: TableGame) => {
+        console.log(this.cardsPlayed );
         console.log('table game *********************');
         console.log(JSON.stringify(data));
         this.setTableGame(data);
@@ -132,25 +135,29 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
-    this.nextPlayerIdx = this.gameState !== STATE.ENDED &&  this.gameState !== STATE.JOINING ?
+    this.nextPlayerIdx = this.gameState !== STATE.ENDED && this.gameState !== STATE.JOINING ?
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever
     this.playersNicknameByMyPosOnTable = this.helper.getPlayersNicknameByMyPos(data.myPosition, data.nicknames);
-    console.log('Players position on Table  ============',this.playersNicknameByMyPosOnTable);
+    console.log('Players position on Table  ============', this.playersNicknameByMyPosOnTable);
     this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
+    console.log('bidListOrdered', this.bidListOrdered);
     this.bidData = this.buildBidData(data);
-    console.log(this.bidData);
     console.log('nextPlayer', JSON.stringify(data.nextPlayer));
     console.log('onTable', JSON.stringify(data.onTable));
     console.log('lastTrick', JSON.stringify(data.lastTrick));
     this.myCardMap = this.service.buildMyDeck(data.cards);
     this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
+    this.mustHideOnTable = this.helper.mustHideCardsOntable(data);
     this.cd.detectChanges();
   }
 
   private setCurrentBidding(currentBid: Bid) {
-    this.currentBidPoints = currentBid.points;
-    this.currentBidColor = currentBid.color;
-    this.currentBidType = currentBid.type;
+    if (!!currentBid) {
+      this.currentBidPoints = currentBid.points;
+      this.currentBidColor = currentBid.color;
+      this.currentBidType = currentBid.type;
+      this.bidListOrdered[0] = currentBid;
+    }
     this.cd.detectChanges();
   }
 
@@ -174,7 +181,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   onAnnounceBid(bid: Bid) {
     console.log('in announceBid');
-    console.log(bid);
     this.setCurrentBidding(bid);
     this.isMyTurn = false;
   }
@@ -184,7 +190,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.cardsPlayed[0] = cardChosen;
     this.apiService.playCard(this.gameId,
       new PlayCard({color: cardChosen.color, value: cardChosen.value, belote: null}))
-      .subscribe(res => {
+      .subscribe(() => {
         console.log('Card played');
         this.cd.detectChanges();
       });

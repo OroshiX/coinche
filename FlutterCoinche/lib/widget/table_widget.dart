@@ -1,12 +1,16 @@
 import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
+import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/player_position.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
+import 'package:FlutterCoinche/extensions/bid_extension.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
+import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
+import 'package:FlutterCoinche/widget/dot_player.dart';
 import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/widget/middle_area.dart';
@@ -17,6 +21,7 @@ import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TableWidget extends StatefulWidget {
@@ -29,21 +34,19 @@ class TableWidget extends StatefulWidget {
 }
 
 class _TableWidgetState extends State<TableWidget> {
-  AutoSizeGroup autoSizeGroup;
+  final AutoSizeGroup autoSizeGroup = AutoSizeGroup();
 
   @override
   void initState() {
     super.initState();
-    autoSizeGroup = AutoSizeGroup();
   }
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    double widthContainerName = 65;
-    double heightContainer = 104;
-    final nicknames =
-        GameInherited.of(context, aspectType: Aspects.NICKNAMES).game.nicknames;
+    final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    const double widthContainerName = 65;
+    const double heightContainer = 104;
     final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
     final me = GameInherited.of(context, aspectType: Aspects.MY_POSITION)
         .game
@@ -69,23 +72,10 @@ class _TableWidgetState extends State<TableWidget> {
     var bidTop = getPlayerBid(bids, top);
     var bidRight = getPlayerBid(bids, right);
     var myBid = getPlayerBid(bids, me);
-    Coinche coinche = (bids.lastWhere(
-      (element) => element is Coinche,
-      orElse: () => null,
-    ) as Coinche);
-    Bid lastBidCapotGeneralOpposite = (bids.lastWhere(
-      (element) =>
-          (oppositeTeam(me).contains(element.position)) &&
-          (element is SimpleBid || element is Capot || element is General),
-      orElse: () => null,
-    ));
-    bool enableSurcoinche = false;
-    bool enableCoinche = false;
-    if (coinche != null && !coinche.surcoinche) {
-      enableSurcoinche = true;
-    } else if (coinche == null && lastBidCapotGeneralOpposite != null) {
-      enableCoinche = true;
-    }
+
+    bool enableSurcoinche = bids.canSurcoinche(me);
+    bool enableCoinche = bids.canCoinche(me);
+    final lastBid = bids.lastBidCapotGeneral();
     print(screenSize);
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -125,38 +115,29 @@ class _TableWidgetState extends State<TableWidget> {
               ),
               Align(
                 alignment: Alignment.topCenter,
-                child: Container(
-                  width: widthContainerName,
+                child: PlayerAvatar(
+                  posTable: AxisDirection.up,
+                  autoSizeGroup: autoSizeGroup,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    position: top,
-                    nick: nicknames.fromPosition(top),
-                    autoSizeGroup: autoSizeGroup,
-                  ),
+                  width: widthContainerName,
                 ),
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Container(
+                child: PlayerAvatar(
+                  autoSizeGroup: autoSizeGroup,
+                  posTable: AxisDirection.right,
                   width: widthContainerName,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    nick: nicknames.fromPosition(right),
-                    autoSizeGroup: autoSizeGroup,
-                    position: right,
-                  ),
                 ),
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: PlayerAvatar(
+                  autoSizeGroup: autoSizeGroup,
+                  posTable: AxisDirection.left,
                   width: widthContainerName,
                   height: heightContainer,
-                  child: PlayerAvatar(
-                    nick: nicknames.fromPosition(left),
-                    autoSizeGroup: autoSizeGroup,
-                    position: left,
-                  ),
                 ),
               ),
               // The last bids of the players
@@ -230,7 +211,7 @@ class _TableWidgetState extends State<TableWidget> {
               AnimatedPositioned(
                 bottom: getBottomOfBiddingBar(screenSize),
                 left: state == TableState.BIDDING
-                    ? widthContainerName
+                    ? screenSize.width/2 -widthContainerName*2
                     : -screenSize.width,
                 duration: Duration(milliseconds: 500),
                 child: AnimatedOpacity(
@@ -261,7 +242,7 @@ class _TableWidgetState extends State<TableWidget> {
                     myPosition: me,
                     enabledSurcoinche: enableSurcoinche,
                     enabledCoinche: enableCoinche,
-                    lastSimpleBid: lastBidCapotGeneralOpposite,
+                    lastSimpleBid: lastBid,
                   ),
                 ),
               ),
@@ -271,66 +252,166 @@ class _TableWidgetState extends State<TableWidget> {
                 right: 10,
                 child: const RecapWidget(),
               ),
+              if (portrait)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 3.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _LastTrick(
+                          state: state,
+                          me: me,
+                        ),
+                        PlayerAvatar(
+                            autoSizeGroup: autoSizeGroup,
+                            width: widthContainerName,
+                            posTable: AxisDirection.down,
+                            height: heightContainer),
+                      ],
+                    ),
+                  ),
+                ),
+              AnimatedOpacity(
+                opacity: state == TableState.JOINING ? 1 : 0,
+                duration: Duration(milliseconds: 400),
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Players are joining this game..."),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
         // My cards
-        SizedBox(
-          width: screenSize.width,
-          child: Stack(children: [
-            Center(
-              child: Container(
-                width: widthContainerName,
-                height: heightContainer,
-                child: PlayerAvatar(
-                  nick: nicknames.fromPosition(me),
-                  autoSizeGroup: autoSizeGroup,
-                  position: me,
+        Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (!portrait)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: _LastTrick(
+                    state: state,
+                    me: me,
+                  ),
+                ),
+              Expanded(
+                child: CardsInHandWidget(
+                  inPlayMode: state == TableState.PLAYING,
+                  myTurn: me == nextPlayer,
+                  cardHeight: cardHeight,
+                  cardWidth: cardWidth,
+                  screenWidth: screenSize.width,
+                  paddingVertical: paddingHeightCards,
                 ),
               ),
-            ),
-            Positioned(
-              right: 2,
-              bottom: 2,
-              child: Visibility(
-                visible: state == TableState.PLAYING,
-                child: NeumorphicWidget(
-                    onTap: () {},
-                    child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: Text(
-                          "Last Trick",
-                          style: TextStyle(color: colorTextDark),
-                        )),
-                    sizeShadow: SizeShadow.SMALL,
-                    borderRadius: 10,
-                    interactable: true),
-              ),
-            )
-          ]),
-        ),
-        CardsInHandWidget(
-          inPlayMode: state == TableState.PLAYING,
-          myTurn: me == nextPlayer,
-          cardHeight: cardHeight,
-          cardWidth: cardWidth,
-          screenWidth: screenSize.width,
-          paddingVertical: paddingHeightCards,
-        ),
+              if (!portrait)
+                PlayerAvatar(
+                  autoSizeGroup: autoSizeGroup,
+                  width: widthContainerName,
+                  posTable: AxisDirection.down,
+                  height: heightContainer,
+                )
+            ]),
       ],
     );
   }
+}
 
-  List<PlayerPosition> oppositeTeam(PlayerPosition myPosition) {
-    switch (myPosition) {
-      case PlayerPosition.NORTH:
-      case PlayerPosition.SOUTH:
-        return [PlayerPosition.EAST, PlayerPosition.WEST];
-      case PlayerPosition.EAST:
-      case PlayerPosition.WEST:
-        return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
-    }
-    return [];
+class _LastTrick extends StatelessWidget {
+  final TableState state;
+  final PlayerPosition me;
+
+  const _LastTrick({
+    Key key,
+    @required this.state,
+    @required this.me,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final game = GameInherited.of(context, aspectType: Aspects.LAST_TRICK).game;
+    final cardinalToPosTable = getCardinalToPosTable(me);
+    final List<CardPlayed> lastTrick = game.lastTrick;
+    final winner = game.winnerLastTrick;
+    return Visibility(
+      visible: state == TableState.PLAYING && winner != null,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: NeumorphicWidget(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FutureBuilder<Color>(
+                              future: cardinalToPosTable[winner].getColor(),
+                              builder: (context, snapshot) {
+                                return DotPlayer(
+                                  dotSize: 20,
+                                  color: snapshot.data,
+                                );
+                              }),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: lastTrick
+                              .map((e) => FutureBuilder<Color>(
+                                  future:
+                                      cardinalToPosTable[e.position].getColor(),
+                                  builder: (context, snapshot) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: snapshot.data,
+                                          ),
+                                          padding: EdgeInsets.all(8),
+                                          child: CardWidget(
+                                              card: e.card..playable = null,
+                                              width: 40,
+                                              height: 60)),
+                                    );
+                                  }))
+                              .toList(),
+                        ),
+                      ]);
+                },
+              );
+            },
+            child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Text(
+                  "Last Trick",
+                  style: TextStyle(color: colorTextDark),
+                )),
+            sizeShadow: SizeShadow.SMALL,
+            borderRadius: 10,
+            interactable: true),
+      ),
+    );
   }
 }

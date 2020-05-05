@@ -1,23 +1,24 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
-const threshold = 800;
+const threshold = 600;
 const golden = 1.6180339887;
 const bigCardWidth = 70;
 
-double getCardWidth(Size screenSize) =>
-    screenSize.height < threshold ? 50 : 100;
+double getCardWidth(Size screenSize) => isLargeScreen(screenSize) ? 100 : 50;
 
 double getMarginCardsPosition(Size screenSize) =>
-    screenSize.height < threshold ? 8 : 16;
+    isLargeScreen(screenSize) ? 16 : 8;
 
 double getHeightBidding(Size screenSize) =>
-    screenSize.height < threshold ? 100 : 200;
+    isLargeScreen(screenSize) ? 200 : 100;
 
 double getPaddingHeightCard(Size screenSize) =>
-    screenSize.height < threshold ? 5 : 10;
+    isLargeScreen(screenSize) ? 10 : 5;
 
 double getBorderRadiusBidding(Size screenSize) =>
-    screenSize.height < threshold ? 15 : 30;
+    isLargeScreen(screenSize) ? 30 : 15;
 
 EdgeInsets getPaddingButtonTypeBid(Size screenSize) => isLargeScreen(screenSize)
     ? EdgeInsets.all(8)
@@ -35,7 +36,8 @@ EdgeInsets getPaddingCapot(Size screenSize) => isLargeScreen(screenSize)
 double getBottomOfBiddingBar(Size screenSize) =>
     isLargeScreen(screenSize) ? 20 : 10;
 
-bool isLargeScreen(Size screenSize) => screenSize.height >= threshold;
+bool isLargeScreen(Size screenSize) =>
+    min(screenSize.height, screenSize.width) >= threshold;
 
 double getSizeSuitIcon({@required double cardWidth}) => cardWidth / 1.5;
 

@@ -27,7 +27,7 @@ class LandscapeScoreWidget extends StatelessWidget {
     const distanceButtons = 10.0;
     const topBottomButtons = 4.0;
     const minWidth =
-        paddingButton * 2 + iconSize + distanceButtons + topBottomButtons * 2;
+        paddingButton * 2 + iconSize * 2 + distanceButtons + topBottomButtons * 2;
     return IntrinsicHeight(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,

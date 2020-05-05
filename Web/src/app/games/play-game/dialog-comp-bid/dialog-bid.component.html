@@ -1,34 +1,32 @@
-<!--<h1 mat-dialog-title>Hi {{data.name}}</h1>-->
-<div mat-dialog-content>
-  <form [formGroup]="bidForm" class="bid-form">
-    <mat-form-field class="bid-width">
-      <mat-label>Bid points</mat-label>
-      <mat-select formControlName="points">
-        <mat-option *ngFor="let bidPoint of bidPoints" [value]="bidPoint">
-          {{bidPoint}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="bid-width">
-      <mat-label>Bid color</mat-label>
-      <mat-select formControlName="color">
-        <mat-option *ngFor="let bidColor of bidColors" [value]="bidColor">
-          {{bidColor}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="bid-width">
-      <mat-label>Bid type</mat-label>
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let bidType of bidTypes" [value]="bidType">
-          {{bidType}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-  </form>
-</div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Validate</button>
+<div>
+  <div class="bid-wrapper-1">
+    <div class="fabBtns">
+      <button class="fab" mat-mini-fab color="primary" (click)="clickMinus()"><span class="sign">-</span></button>
+      <span class="score">{{points}}</span>
+      <button class="fab" mat-mini-fab color="primary" (click)="clickPlus()"><span class="sign">+</span></button>
+    </div>
+    <div class="colors">
+      <button mat-mini-fab class="btn" [ngStyle]="{'background': clubImg}" (click)="clickClub()">
+      </button>
+      <button mat-mini-fab class="btn" [ngStyle]="{'background': diamondImg}" (click)="clickDiamond()">
+      </button>
+      <button mat-mini-fab class="btn" [ngStyle]="{'background': spadeImg}" (click)="clickSpade()">
+      </button>
+      <button mat-mini-fab class="btn" [ngStyle]="{'background': heartImg}" (click)="clickHeart()">
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="score">
+      {{pointsLabel}} {{color}}
+    </div>
+    <div class="validateBtn">
+      <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Validate</button>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="bid-wrapper-2">
+    <button class="fab" mat-raised-button color="accent" (click)="onNoClick()">Cancel</button>
+    <button class="fab" mat-raised-button color="accent" (click)="clickPass()">Pass</button>
+    <button class="fab" mat-raised-button color="accent" (click)="clickCoinche()">Coinche</button>
+  </div>
 </div>

@@ -1,4 +1,3 @@
-import 'package:FlutterCoinche/dto/table_state.dart';
 import 'package:FlutterCoinche/widget/game_inherited.dart';
 import 'package:FlutterCoinche/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/widget/neumorphic_no_state.dart';

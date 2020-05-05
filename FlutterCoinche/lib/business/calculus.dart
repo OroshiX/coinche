@@ -69,3 +69,26 @@ Map<PlayerPosition, AxisDirection> getCardinalToPosTable(PlayerPosition myPositi
     myPosition: AxisDirection.down
   };
 }
+
+List<PlayerPosition> oppositeTeam(PlayerPosition myPosition) {
+  switch (myPosition) {
+    case PlayerPosition.NORTH:
+    case PlayerPosition.SOUTH:
+      return [PlayerPosition.EAST, PlayerPosition.WEST];
+    case PlayerPosition.EAST:
+    case PlayerPosition.WEST:
+      return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
+  }
+  return [];
+}
+List<PlayerPosition> myTeam(PlayerPosition myPosition) {
+  switch (myPosition) {
+    case PlayerPosition.NORTH:
+    case PlayerPosition.SOUTH:
+      return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
+    case PlayerPosition.EAST:
+    case PlayerPosition.WEST:
+      return [PlayerPosition.EAST, PlayerPosition.WEST];
+  }
+  return [];
+}
