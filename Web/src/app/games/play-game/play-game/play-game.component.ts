@@ -26,8 +26,10 @@ export interface DialogData {
 export interface BidData {
   eastWest: number;
   northSouth: number;
-  eastWestNicknames: string;
-  northSouthNicknames: string;
+  eastNicknames: string;
+  westNicknames: string;
+  northNicknames: string;
+  southNicknames: string;
   currentBidNickname: string;
   currentBidPoints: number;
   currentBidColor: string;
@@ -169,8 +171,10 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     return {
       eastWest: data.score.eastWest,
       northSouth: data.score.northSouth,
-      eastWestNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.EAST, PLAYER_POSITION.WEST, data.nicknames),
-      northSouthNicknames: this.helper.getNicknamesPairByPos(PLAYER_POSITION.NORTH, PLAYER_POSITION.SOUTH, data.nicknames),
+      eastNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.EAST, data.nicknames),
+      westNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.WEST, data.nicknames),
+      northNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.NORTH, data.nicknames),
+      southNicknames: this.helper.getNicknameByPos(PLAYER_POSITION.SOUTH, data.nicknames),
       currentBidColor: data?.currentBid?.color,
       currentBidNickname: this.helper.getNicknameByPos(data.currentBid.position, data.nicknames),
       currentBidPoints: data?.currentBid?.points,

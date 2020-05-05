@@ -27,6 +27,7 @@ import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
 import { LoggingInterceptor } from './services/http-interceptors/logging-interceptor';
+import { SharedCommonModule } from './shared-common/shared-common.module';
 import { AlertComponent } from './shared/alert/alert.component';
 import { CreateNicknameDialogComponent } from './side-nav/create-nickname-dialog/create-nickname-dialog.component';
 import { SideNavComponent } from './side-nav/side-nav.component';
@@ -71,6 +72,10 @@ export const httpInterceptorProviders = [
     HttpClientModule,
     MatDialogModule,
     MatTooltipModule,
+    SharedCommonModule,
+  ],
+  exports: [
+    SharedCommonModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

@@ -13,6 +13,8 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   @Input() bidData: BidData;
 
   playOrBid: string;
+  winner1: string;
+  winner2: string;
 
   constructor() {
   }
@@ -23,6 +25,12 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.playOrBid = this.gameState === STATE.BIDDING ?
       'bid' : this.gameState === STATE.PLAYING ? 'play' : '';
+    if (!!this.bidData) {
+      this.winner1 = (this.bidData.eastWest) - (this.bidData.northSouth) > 0 ?
+        this.bidData.eastNicknames : this.bidData.northNicknames;
+      this.winner2 = (this.bidData.eastWest) - (this.bidData?.northSouth) > 0 ?
+        this.bidData.westNicknames : this.bidData.southNicknames;
+    }
   }
 
 }
