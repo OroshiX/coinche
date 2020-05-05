@@ -110,8 +110,8 @@ class IATest {
         printHand(dbgLevel.DEBUG, myCards, "$nameTest:Mycards are ")
 
 
-        val prevBid = SimpleBid(CardColor.DIAMOND, 120, PlayerPosition.NORTH)
-        val listBids = listOf(Pass(), prevBid, Pass())
+        val prevBid = SimpleBid(CardColor.DIAMOND, 120, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(PlayerPosition.EAST), prevBid, Pass(PlayerPosition.WEST))
 
         val testBid1 = IARun.enchere(PlayerPosition.NORTH, listBids, myCards, 0)
 
@@ -159,7 +159,7 @@ class IATest {
 
         // Bid should be Generale + Belote
         val oldTraceLevel = traceLevel
-        //traceLevel = dbgLevel.ALL
+        // traceLevel = dbgLevel.ALL
         var myCards: MutableList<Card> = mutableListOf<Card>()
 
         myCards.add(Card(CardValue.JACK, CardColor.HEART, playable = null))
@@ -180,6 +180,107 @@ class IATest {
         val testBid1 = IARun.enchere(PlayerPosition.NORTH, listBids, myCards, 0)
         traceLevel = oldTraceLevel
         assert(((testBid1.curPoint() >= 520 ))) { "$nameTest FAIL - $testBid1 is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Bid $testBid1")
+
+    }
+    @Test
+    fun testEnchere150() {
+        // Test ou l'on doit prendre l'enchere du partenaire
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        // Bid should be Generale + Belote
+        val oldTraceLevel = traceLevel
+        // traceLevel = dbgLevel.ALL
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+
+        myCards.add(Card(CardValue.JACK, CardColor.HEART, playable = null))
+        myCards.add(Card(CardValue.NINE, CardColor.HEART, playable = null))
+
+        myCards.add(Card(CardValue.NINE, CardColor.DIAMOND, playable = null))
+        myCards.add(Card(CardValue.SEVEN, CardColor.DIAMOND, playable = null))
+        myCards.add(Card(CardValue.ACE, CardColor.DIAMOND, playable = null))
+
+        myCards.add(Card(CardValue.ACE, CardColor.SPADE, playable = null))
+
+        myCards.add(Card(CardValue.TEN, CardColor.CLUB, playable = null))
+        myCards.add(Card(CardValue.ACE, CardColor.CLUB, playable = null))
+
+        printHand(dbgLevel.DEBUG, myCards, "$nameTest:Mycards are ")
+
+
+        val prevBid = SimpleBid(CardColor.DIAMOND, 140, PlayerPosition.SOUTH)
+        val listBids = listOf(Pass(), prevBid, Pass())
+
+        val testBid1 = IARun.enchere(PlayerPosition.NORTH, listBids, myCards, 0)
+        traceLevel = oldTraceLevel
+        assert(((testBid1.curPoint() >= 160 ))) { "$nameTest FAIL - $testBid1 is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Bid $testBid1")
+
+    }
+    @Test
+    fun testEnchere160() {
+        // Test ou l'on doit prendre l'enchere du partenaire
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+
+        myCards.add(Card(CardValue.JACK, CardColor.HEART, playable = null))
+
+        myCards.add(Card(CardValue.NINE, CardColor.CLUB, playable = null))
+        myCards.add(Card(CardValue.JACK, CardColor.CLUB, playable = null))
+        myCards.add(Card(CardValue.ACE, CardColor.CLUB, playable = null))
+
+        myCards.add(Card(CardValue.TEN, CardColor.SPADE, playable = null))
+        myCards.add(Card(CardValue.ACE, CardColor.SPADE, playable = null))
+
+        myCards.add(Card(CardValue.TEN, CardColor.DIAMOND, playable = null))
+        myCards.add(Card(CardValue.SEVEN, CardColor.DIAMOND, playable = null))
+
+        printHand(dbgLevel.DEBUG, myCards, "$nameTest:Mycards are ")
+
+
+        val prevBid = SimpleBid(CardColor.HEART, 80, PlayerPosition.EAST)
+        val listBids = listOf(Pass(PlayerPosition.NORTH), prevBid, Pass(PlayerPosition.SOUTH))
+
+        val testBid1 = IARun.enchere(PlayerPosition.WEST, listBids, myCards, 0)
+        traceLevel = oldTraceLevel
+        assert(((testBid1.curPoint() >= 130 ) && testBid1.curColor() == CardColor.HEART)) { "$nameTest FAIL - $testBid1 is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Bid $testBid1")
+
+    }
+
+    @Test
+    fun testEnchere170() {
+        // Test ou l'on doit prendre l'enchere du partenaire
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+         traceLevel = dbgLevel.ALL
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+
+        myCards.add(Card(CardValue.ACE, CardColor.HEART, playable = null))
+
+        myCards.add(Card(CardValue.NINE, CardColor.CLUB, playable = null))
+        myCards.add(Card(CardValue.JACK, CardColor.CLUB, playable = null))
+        myCards.add(Card(CardValue.SEVEN, CardColor.CLUB, playable = null))
+
+        myCards.add(Card(CardValue.TEN, CardColor.SPADE, playable = null))
+        myCards.add(Card(CardValue.ACE, CardColor.SPADE, playable = null))
+
+        myCards.add(Card(CardValue.TEN, CardColor.DIAMOND, playable = null))
+        myCards.add(Card(CardValue.SEVEN, CardColor.DIAMOND, playable = null))
+
+        printHand(dbgLevel.DEBUG, myCards, "$nameTest:Mycards are ")
+
+
+        val prevBid = SimpleBid(CardColor.CLUB, 80, PlayerPosition.EAST)
+        val listBids = listOf(Pass(PlayerPosition.NORTH), prevBid, Pass(PlayerPosition.SOUTH))
+
+        val testBid1 = IARun.enchere(PlayerPosition.WEST, listBids, myCards, 0)
+        traceLevel = oldTraceLevel
+        assert(((testBid1.curPoint() >= 130 ) && testBid1.curColor() == CardColor.CLUB)) { "$nameTest FAIL - $testBid1 is not accurate" }
         debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Bid $testBid1")
 
     }
