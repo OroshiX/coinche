@@ -30,8 +30,9 @@ class BidsWidget extends StatelessWidget {
         [];
     final state =
         GameInherited.of(context, aspectType: Aspects.STATE).game.state;
+    final mapToColor =
+        GameInherited.of(context, aspectType: Aspects.COLORS).map;
     if (state != TableState.BIDDING || theBids.isEmpty) return SizedBox();
-
     Alignment alignment;
     BubbleNip bubbleNip;
     double dx = 0, dy = 0;
@@ -58,11 +59,19 @@ class BidsWidget extends StatelessWidget {
         dx = widthAvatar;
         break;
     }
+
+    Map<PlayerPosition, Color> cardinalToPosTable = getCardinalToPosTable(me)
+        .map((key, value) => MapEntry(key, mapToColor[value].item1));
     return Transform.translate(
       offset: Offset(dx, dy),
       child: Bubble(
         color: colorLightBlue,
-        child: Text(theBids.map((e) => e.toString()).join("\n")),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: theBids
+              .map((e) => e.getReadableBidRow(12, 7, cardinalToPosTable, displayBy: false))
+              .toList(),
+        ),
         alignment: alignment,
         nip: bubbleNip,
         elevation: 4,
