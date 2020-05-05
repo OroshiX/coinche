@@ -1,10 +1,14 @@
 import 'package:FlutterCoinche/dto/game.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 class GameInherited extends InheritedModel<Aspects> {
   final Game game;
+  final Map<AxisDirection, Tuple2<Color, String>> map;
 
-  GameInherited({@required this.game, @required Widget child})
+  const GameInherited(
+      {@required this.game, @required this.map, @required Widget child})
       : super(child: child);
 
   @override
@@ -19,7 +23,8 @@ class GameInherited extends InheritedModel<Aspects> {
         game.nextPlayer != old.game.nextPlayer ||
         game.myPosition != old.game.myPosition ||
         game.lastTrick != old.game.lastTrick ||
-        game.currentBid != old.game.currentBid;
+        game.currentBid != old.game.currentBid ||
+        !mapEquals(map, old.map);
   }
 
   @override
@@ -41,7 +46,8 @@ class GameInherited extends InheritedModel<Aspects> {
             (old.game.lastTrick != game.lastTrick ||
                 old.game.winnerLastTrick != game.winnerLastTrick)) ||
         (aspects.contains(Aspects.CURRENT_BID) &&
-            old.game.currentBid != game.currentBid);
+            old.game.currentBid != game.currentBid) ||
+        (aspects.contains(Aspects.COLORS) && !mapEquals(old.map, map));
   }
 
   static GameInherited of(BuildContext context, {Aspects aspectType}) {
@@ -62,4 +68,5 @@ enum Aspects {
   MY_POSITION,
   CURRENT_BID,
   LAST_TRICK,
+  COLORS,
 }

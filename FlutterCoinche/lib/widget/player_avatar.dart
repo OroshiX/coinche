@@ -10,7 +10,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:tuple/tuple.dart';
 
 class PlayerAvatar extends StatelessWidget {
   final AutoSizeGroup autoSizeGroup;
@@ -41,88 +40,87 @@ class PlayerAvatar extends StatelessWidget {
         .game
         .nicknames
         .fromPosition(map[posTable]);
+    final mapColorAvatar =
+        GameInherited.of(context, aspectType: Aspects.COLORS).map;
+    final color = mapColorAvatar[posTable].item1;
+    final avatar = mapColorAvatar[posTable].item2;
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return Container(
-        width: portrait ? width : 130,
-        height: portrait ? height : width,
-        child: FutureBuilder<Tuple2<Color, String>>(
-          initialData: Tuple2(Colors.blue, "images/chicken.svg"),
-          future: posTable.getColorAndAvatar(),
-          builder: (context, snapshot) => NeumorphicNoStateWidget(
-            sizeShadow: SizeShadow.SMALL,
-            borderRadius: 2,
-            pressed: true,
-            child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 4.0, bottom: 4, left: 2, right: 2),
-                child: portrait
-                    ? Stack(children: [
-                        Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _RoundAvatar(
-                                color: snapshot.data.item1,
-                                pictureSvg: snapshot.data.item2,
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              _BoxName(
-                                autoSizeGroup: autoSizeGroup,
-                                nick: nick,
-                                color: snapshot.data.item1,
-                              )
-                            ]),
-                        Positioned(
-                            right: 0,
-                            top: 0,
-                            child: AnimatedOpacity(
-                              opacity: myTurn ? 1 : 0,
-                              duration: Duration(milliseconds: 400),
-                              child: DotPlayer(
-                                color: snapshot.data.item1,
-                                dotSize: 5,
-                              ),
-                            ))
-                      ])
-                    : Stack(
+      width: portrait ? width : 130,
+      height: portrait ? height : width,
+      child: NeumorphicNoStateWidget(
+        sizeShadow: SizeShadow.SMALL,
+        borderRadius: 2,
+        pressed: true,
+        child: Padding(
+            padding:
+                const EdgeInsets.only(top: 4.0, bottom: 4, left: 2, right: 2),
+            child: portrait
+                ? Stack(children: [
+                    Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _RoundAvatar(
-                                  color: snapshot.data.item1,
-                                  pictureSvg: snapshot.data.item2),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              _BoxName(
-                                  nick: nick,
-                                  autoSizeGroup: autoSizeGroup,
-                                  color: snapshot.data.item1),
-                            ],
+                          _RoundAvatar(
+                            color: color,
+                            pictureSvg: avatar,
                           ),
-                          Positioned(
-                              left: 0,
-                              top: 0,
-                              child: AnimatedOpacity(
-                                opacity: myTurn ? 1 : 0,
-                                duration: Duration(
-                                  milliseconds: 400,
-                                ),
-                                child: DotPlayer(
-                                  color: snapshot.data.item1,
-                                  dotSize: 5,
-                                ),
-                              ))
+                          SizedBox(
+                            height: 3,
+                          ),
+                          _BoxName(
+                            autoSizeGroup: autoSizeGroup,
+                            nick: nick,
+                            color: color,
+                          )
+                        ]),
+                    Positioned(
+                        right: 0,
+                        top: 0,
+                        child: AnimatedOpacity(
+                          opacity: myTurn ? 1 : 0,
+                          duration: Duration(milliseconds: 400),
+                          child: DotPlayer(
+                            color: color,
+                            dotSize: 5,
+                          ),
+                        ))
+                  ])
+                : Stack(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _RoundAvatar(color: color, pictureSvg: avatar),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          _BoxName(
+                              nick: nick,
+                              autoSizeGroup: autoSizeGroup,
+                              color: color),
                         ],
-                      )),
-          ),
-        ));
+                      ),
+                      Positioned(
+                          left: 0,
+                          top: 0,
+                          child: AnimatedOpacity(
+                            opacity: myTurn ? 1 : 0,
+                            duration: Duration(
+                              milliseconds: 400,
+                            ),
+                            child: DotPlayer(
+                              color: color,
+                              dotSize: 5,
+                            ),
+                          ))
+                    ],
+                  )),
+      ),
+    );
   }
 }
 

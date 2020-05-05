@@ -19,11 +19,6 @@ extension TablePosition on AxisDirection {
 
   String get avatar => "avatar-${toString()}";
 
-  Future<Color> getColor() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return _getColor(preferences);
-  }
-
   Color _getColor(SharedPreferences preferences) {
     final int colorPref = preferences.getInt(prefColor) ?? -1;
     if (colorPref == -1) {
@@ -53,11 +48,6 @@ extension TablePosition on AxisDirection {
     preferences.setInt(prefColor, color.value);
   }
 
-  Future<String> getAvatarFile() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return _getAvatar(preferences);
-  }
-
   String _getAvatar(SharedPreferences preferences) {
     var file = preferences.getString(avatar) ?? null;
     if (file == null) {
@@ -81,8 +71,18 @@ extension TablePosition on AxisDirection {
     return file;
   }
 
-  Future<Tuple2<Color, String>> getColorAndAvatar() async {
+  setAvatar(String file) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    return Tuple2(_getColor(preferences), _getAvatar(preferences));
+    preferences.setString(avatar, file);
   }
+}
+
+Future<Map<AxisDirection, Tuple2<Color, String>>> getPosTableToColors() async {
+  var preferences = await SharedPreferences.getInstance();
+  Map<AxisDirection, Tuple2<Color, String>> res = {};
+  AxisDirection.values.forEach((element) {
+    res[element] =
+        Tuple2(element._getColor(preferences), element._getAvatar(preferences));
+  });
+  return res;
 }

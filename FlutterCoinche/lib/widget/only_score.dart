@@ -1,7 +1,6 @@
 import 'package:FlutterCoinche/business/calculus.dart';
 import 'package:FlutterCoinche/dto/bid.dart';
-import 'package:FlutterCoinche/dto/player_position.dart'
-    show PlayerPosition, TablePosition;
+import 'package:FlutterCoinche/dto/player_position.dart' show PlayerPosition;
 import 'package:FlutterCoinche/dto/score.dart';
 import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/widget/dot_player.dart';
@@ -28,10 +27,15 @@ class OnlyScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final Score score =
         GameInherited.of(context, aspectType: Aspects.SCORE).game.score;
-    final map = getCardinalToPosTable(
+    final Map<AxisDirection, Color> mapColor =
+        GameInherited.of(context, aspectType: Aspects.COLORS)
+            .map
+            .map((key, value) => MapEntry(key, value.item1));
+    Map<PlayerPosition, Color> playerPosToColor =
+    getCardinalToPosTable(
         GameInherited.of(context, aspectType: Aspects.MY_POSITION)
             .game
-            .myPosition);
+            .myPosition).map((key, value) => MapEntry(key, mapColor[value]));
     const textSize = 14.0;
     const dotSize = 7.0;
     return NeumorphicNoStateWidget(
@@ -48,7 +52,7 @@ class OnlyScoreWidget extends StatelessWidget {
                 width: minWidth,
               ),
               if (currentBid != null)
-                currentBid.getReadableBidRow(textSize, dotSize, map),
+                currentBid.getReadableBidRow(textSize, dotSize, playerPosToColor),
               if (currentBid != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 4),
@@ -62,21 +66,13 @@ class OnlyScoreWidget extends StatelessWidget {
                 columnWidths: {2: FractionColumnWidth(0.55)},
                 children: [
                   TableRow(children: [
-                    FutureBuilder<Color>(
-                      future: map[PlayerPosition.NORTH].getColor(),
-                      initialData: Colors.blue,
-                      builder: (context, snapshot) => DotPlayer(
-                        dotSize: dotSize,
-                        color: snapshot.data,
-                      ),
+                    DotPlayer(
+                      dotSize: dotSize,
+                      color: playerPosToColor[PlayerPosition.NORTH],
                     ),
-                    FutureBuilder<Color>(
-                      future: map[PlayerPosition.SOUTH].getColor(),
-                      initialData: Colors.blue,
-                      builder: (context, snapshot) => DotPlayer(
-                        dotSize: dotSize,
-                        color: snapshot.data,
-                      ),
+                    DotPlayer(
+                      dotSize: dotSize,
+                      color: playerPosToColor[PlayerPosition.SOUTH],
                     ),
                     Text(
                       score.northSouth.toString(),
@@ -86,21 +82,13 @@ class OnlyScoreWidget extends StatelessWidget {
                     ),
                   ]),
                   TableRow(children: [
-                    FutureBuilder<Color>(
-                      future: map[PlayerPosition.EAST].getColor(),
-                      initialData: Colors.blue,
-                      builder: (context, snapshot) => DotPlayer(
-                        dotSize: dotSize,
-                        color: snapshot.data,
-                      ),
+                    DotPlayer(
+                      dotSize: dotSize,
+                      color: playerPosToColor[PlayerPosition.EAST],
                     ),
-                    FutureBuilder(
-                      future: map[PlayerPosition.WEST].getColor(),
-                      initialData: Colors.blue,
-                      builder: (context, snapshot) => DotPlayer(
-                        dotSize: dotSize,
-                        color: snapshot.data,
-                      ),
+                    DotPlayer(
+                      dotSize: dotSize,
+                      color: playerPosToColor[PlayerPosition.WEST],
                     ),
                     Text(
                       score.eastWest.toString(),

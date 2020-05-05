@@ -8,6 +8,7 @@ import 'package:FlutterCoinche/resources/colors.dart';
 import 'package:FlutterCoinche/resources/dimens.dart';
 import 'package:FlutterCoinche/rest/server_communication.dart';
 import 'package:FlutterCoinche/widget/bidding_bar.dart';
+import 'package:FlutterCoinche/widget/bids_widget.dart';
 import 'package:FlutterCoinche/widget/card_widget.dart';
 import 'package:FlutterCoinche/widget/cards_hand_widget.dart';
 import 'package:FlutterCoinche/widget/dot_player.dart';
@@ -19,7 +20,6 @@ import 'package:FlutterCoinche/widget/player_avatar.dart';
 import 'package:FlutterCoinche/widget/portrait/portrait_score_widget.dart';
 import 'package:FlutterCoinche/widget/recap_widget.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:bubble/bubble.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -59,23 +59,16 @@ class _TableWidgetState extends State<TableWidget> {
             .nextPlayer;
     final id = GameInherited.of(context, aspectType: Aspects.ID).game.id;
     final posTableToCardinal = getPosTableToCardinal(me);
-    var top = posTableToCardinal[AxisDirection.up];
-    var left = posTableToCardinal[AxisDirection.left];
-    var right = posTableToCardinal[AxisDirection.right];
 
     final double cardWidth = getCardWidth(screenSize);
     final double cardHeight = cardWidth * golden;
     final double marginCardsPosition = getMarginCardsPosition(screenSize);
-    final double heightBiddingBar = getHeightBidding(screenSize);
+//    final double heightBiddingBar = getHeightBidding(screenSize);
     final double paddingHeightCards = getPaddingHeightCard(screenSize);
-    var bidLeft = getPlayerBid(bids, left);
-    var bidTop = getPlayerBid(bids, top);
-    var bidRight = getPlayerBid(bids, right);
-    var myBid = getPlayerBid(bids, me);
 
-    bool enableSurcoinche = bids.canSurcoinche(me);
-    bool enableCoinche = bids.canCoinche(me);
-    final lastBid = bids.lastBidCapotGeneral();
+    bool enableSurcoinche = bids?.canSurcoinche(me) ?? false;
+    bool enableCoinche = bids?.canCoinche(me) ?? false;
+    final lastBid = bids?.lastBidCapotGeneral();
     print(screenSize);
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -86,33 +79,28 @@ class _TableWidgetState extends State<TableWidget> {
           child: Stack(
             children: <Widget>[
               Align(
-                alignment: Alignment.topLeft,
-                child: OrientationBuilder(
-                  builder: (context, orientation) {
-                    if (orientation == Orientation.portrait)
-                      return PortraitScoreWidget(
-                        onTapMessages: () {
-                          // TODO Messages
-                          print("TODO");
-                        },
-                        onTapExit: () async {
-                          var quit = (await widget.quit()) ?? false;
-                          if (quit) Navigator.of(context).pop();
-                        },
-                      );
-                    return LandscapeScoreWidget(
-                      onTapExit: () async {
-                        var quit = (await widget.quit()) ?? false;
-                        if (quit) Navigator.of(context).pop();
-                      },
-                      onTapMessages: () {
-                        // TODO messages
-                        print("TODO messages");
-                      },
-                    );
-                  },
-                ),
-              ),
+                  alignment: Alignment.topLeft,
+                  child: portrait
+                      ? PortraitScoreWidget(
+                          onTapMessages: () {
+                            // TODO Messages
+                            print("TODO");
+                          },
+                          onTapExit: () async {
+                            var quit = (await widget.quit()) ?? false;
+                            if (quit) Navigator.of(context).pop();
+                          },
+                        )
+                      : LandscapeScoreWidget(
+                          onTapExit: () async {
+                            var quit = (await widget.quit()) ?? false;
+                            if (quit) Navigator.of(context).pop();
+                          },
+                          onTapMessages: () {
+                            // TODO messages
+                            print("TODO messages");
+                          },
+                        )),
               Align(
                 alignment: Alignment.topCenter,
                 child: PlayerAvatar(
@@ -140,58 +128,63 @@ class _TableWidgetState extends State<TableWidget> {
                   height: heightContainer,
                 ),
               ),
-              // The last bids of the players
-              if (bidLeft != null && state == TableState.BIDDING)
-                Transform.translate(
-                  offset: Offset(widthContainerName + 4, -heightContainer / 2),
-                  child: Bubble(
-                    color: Colors.white,
-                    child: Text(bidLeft.toString()),
-                    alignment: Alignment.centerLeft,
-                    nip: BubbleNip.leftTop,
-                    elevation: 10,
-                  ),
-                ),
-              if (bidRight != null && state == TableState.BIDDING)
-                Transform.translate(
-                  offset: Offset(-widthContainerName - 4, -heightContainer / 2),
-                  child: Bubble(
-                    alignment: Alignment.centerRight,
-                    color: Colors.white,
-                    child: Text(bidRight.toString()),
-                    nip: BubbleNip.rightTop,
-                    elevation: 10,
-                  ),
-                ),
-              if (bidTop != null && state == TableState.BIDDING)
-                Transform.translate(
-                  offset: Offset(0, widthContainerName + 4),
-                  child: Bubble(
-                    alignment: Alignment.topCenter,
-                    color: Colors.white,
-                    child: Text(bidTop.toString()),
-                    nip: BubbleNip.no,
-                    elevation: 10,
-                  ),
-                ),
-              if (myBid != null && state == TableState.BIDDING)
-                Transform.translate(
-                  offset: Offset(
-                      0,
-                      -widthContainerName -
-                          cardHeight -
-                          marginCardsPosition -
-                          paddingHeightCards * 2 -
-                          heightBiddingBar -
-                          10),
-                  child: Bubble(
-                    alignment: Alignment.bottomCenter,
-                    color: Colors.white,
-                    child: Text(myBid.toString()),
-                    nip: BubbleNip.no,
-                    elevation: 10,
-                  ),
-                ),
+              // The bids of the players
+              const BidsWidget(posTable: AxisDirection.left),
+              const BidsWidget(posTable: AxisDirection.right),
+              const BidsWidget(posTable: AxisDirection.up),
+              const BidsWidget(posTable: AxisDirection.down),
+
+//              if (bidLeft != null && state == TableState.BIDDING)
+//                Transform.translate(
+//                  offset: Offset(widthContainerName + 4, -heightContainer / 2),
+//                  child: Bubble(
+//                    color: Colors.white,
+//                    child: Text(bidLeft.toString()),
+//                    alignment: Alignment.centerLeft,
+//                    nip: BubbleNip.leftTop,
+//                    elevation: 10,
+//                  ),
+//                ),
+//              if (bidRight != null && state == TableState.BIDDING)
+//                Transform.translate(
+//                  offset: Offset(-widthContainerName - 4, -heightContainer / 2),
+//                  child: Bubble(
+//                    alignment: Alignment.centerRight,
+//                    color: Colors.white,
+//                    child: Text(bidRight.toString()),
+//                    nip: BubbleNip.rightTop,
+//                    elevation: 10,
+//                  ),
+//                ),
+//              if (bidTop != null && state == TableState.BIDDING)
+//                Transform.translate(
+//                  offset: Offset(0, widthContainerName + 4),
+//                  child: Bubble(
+//                    alignment: Alignment.topCenter,
+//                    color: Colors.white,
+//                    child: Text(bidTop.toString()),
+//                    nip: BubbleNip.no,
+//                    elevation: 10,
+//                  ),
+//                ),
+//              if (myBid != null && state == TableState.BIDDING)
+//                Transform.translate(
+//                  offset: Offset(
+//                      0,
+//                      -widthContainerName -
+//                          cardHeight -
+//                          marginCardsPosition -
+//                          paddingHeightCards * 2 -
+//                          heightBiddingBar -
+//                          10),
+//                  child: Bubble(
+//                    alignment: Alignment.bottomCenter,
+//                    color: Colors.white,
+//                    child: Text(myBid.toString()),
+//                    nip: BubbleNip.no,
+//                    elevation: 10,
+//                  ),
+//                ),
 
               Padding(
                 padding: EdgeInsets.only(
@@ -211,7 +204,7 @@ class _TableWidgetState extends State<TableWidget> {
               AnimatedPositioned(
                 bottom: getBottomOfBiddingBar(screenSize),
                 left: state == TableState.BIDDING
-                    ? screenSize.width/2 -widthContainerName*2
+                    ? screenSize.width / 2 - widthContainerName * 2
                     : -screenSize.width,
                 duration: Duration(milliseconds: 500),
                 child: AnimatedOpacity(
@@ -345,6 +338,9 @@ class _LastTrick extends StatelessWidget {
   Widget build(BuildContext context) {
     final game = GameInherited.of(context, aspectType: Aspects.LAST_TRICK).game;
     final cardinalToPosTable = getCardinalToPosTable(me);
+    final mapColor = GameInherited.of(context, aspectType: Aspects.COLORS)
+        .map
+        .map((key, value) => MapEntry(key, value.item1));
     final List<CardPlayed> lastTrick = game.lastTrick;
     final winner = game.winnerLastTrick;
     return Visibility(
@@ -363,39 +359,31 @@ class _LastTrick extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: FutureBuilder<Color>(
-                              future: cardinalToPosTable[winner].getColor(),
-                              builder: (context, snapshot) {
-                                return DotPlayer(
-                                  dotSize: 20,
-                                  color: snapshot.data,
-                                );
-                              }),
+                          child: DotPlayer(
+                            dotSize: 20,
+                            color: mapColor[cardinalToPosTable[winner]],
+                          ),
                         ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: lastTrick
-                              .map((e) => FutureBuilder<Color>(
-                                  future:
-                                      cardinalToPosTable[e.position].getColor(),
-                                  builder: (context, snapshot) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: snapshot.data,
-                                          ),
-                                          padding: EdgeInsets.all(8),
-                                          child: CardWidget(
-                                              card: e.card..playable = null,
-                                              width: 40,
-                                              height: 60)),
-                                    );
-                                  }))
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: mapColor[
+                                              cardinalToPosTable[e.position]],
+                                        ),
+                                        padding: EdgeInsets.all(8),
+                                        child: CardWidget(
+                                            card: e.card..playable = null,
+                                            width: 40,
+                                            height: 60)),
+                                  ))
                               .toList(),
                         ),
                       ]);

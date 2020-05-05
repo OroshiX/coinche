@@ -84,7 +84,7 @@ class Bid {
   }
 
   Row getReadableBidRow(double fontSize, double dotSize,
-      Map<PlayerPosition, AxisDirection> cardinalToPosTable) {
+      Map<PlayerPosition, Color> cardinalToPosTable) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -102,13 +102,9 @@ class Bid {
             style: TextStyle(fontSize: fontSize, color: colorTextDark),
           ),
         Text(" by "),
-        FutureBuilder<Color>(
-          future: cardinalToPosTable[getTaker()].getColor(),
-          initialData: Colors.blue,
-          builder: (context, snapshot) => DotPlayer(
-            dotSize: dotSize,
-            color: snapshot.data,
-          ),
+        DotPlayer(
+          dotSize: dotSize,
+          color: cardinalToPosTable[getTaker()],
         ),
       ],
     );
