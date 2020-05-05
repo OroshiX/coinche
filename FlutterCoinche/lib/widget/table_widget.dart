@@ -102,10 +102,26 @@ class _TableWidgetState extends State<TableWidget> {
                 ),
               ),
               // The bids of the players
-              const BidsWidget(posTable: AxisDirection.left),
-              const BidsWidget(posTable: AxisDirection.right),
-              const BidsWidget(posTable: AxisDirection.up),
-              const BidsWidget(posTable: AxisDirection.down),
+              const BidsWidget(
+                posTable: AxisDirection.left,
+                widthAvatar: widthContainerName,
+                heightAvatar: heightContainer,
+              ),
+              const BidsWidget(
+                posTable: AxisDirection.right,
+                widthAvatar: widthContainerName,
+                heightAvatar: heightContainer,
+              ),
+              const BidsWidget(
+                posTable: AxisDirection.up,
+                widthAvatar: widthContainerName,
+                heightAvatar: heightContainer,
+              ),
+              const BidsWidget(
+                posTable: AxisDirection.down,
+                widthAvatar: widthContainerName,
+                heightAvatar: heightContainer,
+              ),
 
 //              if (bidLeft != null && state == TableState.BIDDING)
 //                Transform.translate(

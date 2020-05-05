@@ -75,7 +75,7 @@ class OnlyScoreWidget extends StatelessWidget {
                       color: playerPosToColor[PlayerPosition.SOUTH],
                     ),
                     Text(
-                      score.northSouth.toString(),
+                      score?.northSouth?.toString() ?? "",
                       textAlign: TextAlign.right,
                       style:
                           TextStyle(color: colorTextDark, fontSize: textSize),
@@ -91,7 +91,7 @@ class OnlyScoreWidget extends StatelessWidget {
                       color: playerPosToColor[PlayerPosition.WEST],
                     ),
                     Text(
-                      score.eastWest.toString(),
+                      score?.eastWest?.toString() ?? "",
                       textAlign: TextAlign.right,
                       style:
                           TextStyle(color: colorTextDark, fontSize: textSize),
