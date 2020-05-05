@@ -10,6 +10,7 @@ import fr.hornik.coinche.model.values.TableState
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
 import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlin.math.min
 
 data class IARun(val setOfGames: SetOfGames) {
@@ -240,7 +241,29 @@ data class IARun(val setOfGames: SetOfGames) {
                 enchereColor[trump] = valEnchere
             }
 
+
+            // Pour un mode prudent on retire 10 points à l'enchere proposee
+            // Apres avoir estime chaque couleur, on estime la couleur du partenaire si elle existe
+            // (ne faire cette estimation que si le partenaire a originellement pris
+            // Pas si le partenaire est remonte sur nous
+
+            val myPartner = surEncherePartner(allBids, myPosition, myCards)
+            debugPrintln(dbgLevel.DEBUG, "Enchere Origine $enchereColor")
+            debugPrintln(dbgLevel.DEBUG, "surEnchere for my partner $myPartner")
+
+
+            // Apres cette estimation on compare le meilleur my bid et le bid couleur partenaire
+            // Pour que my bid prevale sur le bid couleur partenaire il faut au moins + 20
+            // Ensuite si le gagnant des 2 orecedents est superieur au lastbid +10 c'est bon
+            // Actuellement on prends juste le max TODO("Implementer le +20")
+
+            for (color in CardColor.values()) {
+                enchereColor[color] = max(enchereColor[color]!!, myPartner[color]!!)
+            }
+            debugPrintln(dbgLevel.DEBUG, "Resultat $enchereColor")
+
             val atout = enchereColor.toList().sortedBy { (_, value) -> value }.toMap().keys.last()
+
 
             //val atout = colorTrump.toSortedMap().keys.first()
             val myEnchere: Int = (enchereColor[atout]!!.absoluteValue / 10) * 10
@@ -248,9 +271,9 @@ data class IARun(val setOfGames: SetOfGames) {
 
             if ((myEnchere >= 80) && (myEnchere > minPoints)) {
                 if (myEnchere >= 500) {
-                    myBid = General(color = atout, position = myPosition, belote = (myEnchere >= 520))
+                    myBid = General(color = atout, position = myPosition, belote = (myEnchere > 500))
                 } else if (myEnchere >= 250) {
-                    myBid = Capot(color = atout, position = myPosition, belote = (myEnchere >= 250))
+                    myBid = Capot(color = atout, position = myPosition, belote = (myEnchere > 250))
                 } else myBid = SimpleBid(atout, myEnchere, myPosition)
 
                 if (isValidBid(allBids, myBid))
@@ -259,28 +282,66 @@ data class IARun(val setOfGames: SetOfGames) {
             return Pass(myPosition)
 
 
-            // Pour un mode prudent on retire 10 points à l'enchere proposee
-            // Apres avoir estime chaque couleur, on estime la couleur du partenaire si elle existe
-            // (ne faire cette estimation que si le partenaire a originellement pris
-            // Pas si le partenaire est remonte sur nous
-            /*
-            TODO(
-                    "Si valet -> + 20" +
-                            "Si 9 + 1 atout -> + 10" +
-                            "Si 3 atouts -> + 10 sauf si lannonce est audedsus ou egale a 120" +
-                            "si belote -> + 20" +
-                            "si As de moins de 3 cartes ou moins dans la couleur + 10 (As + 10 = 20)"
-
-            )
-
-             */
-
-            // Apres cette estimation on compare le meilleur my bid et le bid couleur partenaire
-            // Pour que my bid prevale sur le bid couleur partenaire il faut au moins + 20
-            // Ensuite si le gagnant des 2 orecedents est superieur au lastbid +10 c'est bon
-
         }
+        //let find the first time where our partner choose a color
+        //This is the only time we will take this value into account, and only if we did not bid it first
 
+        fun surEncherePartner(listBid: List<Bid>, myPosition: PlayerPosition, myCards: List<Card>): MutableMap<CardColor, Int> {
+            val partner = myPosition + 2
+            val bidPartner = listBid.filter { it.position == partner }
+            val myBids = listBid.filter { it.position == myPosition }
+
+            val tableBids: MutableMap<CardColor, Int> = CardColor.values().map { Pair(it, -30) }.toMap().toMutableMap()
+
+            for (color in CardColor.values()) {
+                val bids = bidPartner.filter { e -> (e.curColor() == color) && (myBids.filter { f -> (f.curColor() == color) && (f.curPoint() < e.curPoint()) }.isEmpty()) }
+                if (bids.any()) {
+                    tableBids[color] = bids.first().curPoint()
+                }
+            }
+            var nbColors: MutableMap<CardColor, Int> = mutableMapOf()
+
+            for (color in CardColor.values()) {
+                nbColors[color] = myCards.filter { it.color == color }.size
+            }
+            /*
+                        "Si valet -> + 20"
+                        "Si 9 + 1 atout -> + 10"
+                        "Si 3 atouts -> + 10 sauf si lannonce est audedsus ou egale a 120"
+                        "si belote -> + 20"
+                        "si As de moins de 3 cartes ou moins dans la couleur + 10 (As + 10 = 20)"
+            */
+            for (color in tableBids.keys) {
+                val atouts = myCards.filter { it.color == color }
+                val aces = myCards.filter { (it.value == CardValue.ACE) && (it.color != color) }
+                if (atouts.any { it.value == CardValue.JACK }) tableBids[color] = tableBids[color]!! + 20
+                if (atouts.any { it.value == CardValue.NINE } && nbColors[color]!! >= 1) tableBids[color] = tableBids[color]!! + 10
+                if (tableBids[color]!! < 120 && nbColors[color]!! >= 3) tableBids[color] = tableBids[color]!! + 10
+                for (ace in aces) {
+                    if (nbColors[ace.color]!! <= 3) {
+                        tableBids[color] = tableBids[color]!! + 10
+                        if (myCards.any { (it.color == ace.color && it.value == CardValue.TEN) })
+                            tableBids[color] = tableBids[color]!! + 10
+                    }
+
+                }
+                debugPrintln(dbgLevel.DEBUG,"bid at $color is ${tableBids[color]} before belote and minoration ")
+
+                // Make sure we dont have a bid impossible to do ....
+                // if this is higher than 130 we limit to 130 except if it's higher than 152
+                if ((tableBids[color]!! >= 130) && (tableBids[color]!! <150)) {
+                    tableBids[color] = 130
+                }
+                if (tableBids[color]!! >= 150) tableBids[color] = 250
+
+                if (atouts.any { it.value == CardValue.QUEEN } && atouts.any { it.value == CardValue.KING }) {
+                    tableBids[color] = tableBids[color]!! + 20
+
+                }
+
+            }
+            return tableBids
+        }
         fun reversePoints(myCards: List<Card>, color: CardColor, IStart:Boolean): Int {
             var Value = TOTALPOINT
             val pointAtoutRev = mapOf<CardValue, Int>(
