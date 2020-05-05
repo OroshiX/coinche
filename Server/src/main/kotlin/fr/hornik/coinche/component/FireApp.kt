@@ -11,10 +11,12 @@ import com.google.firebase.database.util.JsonMapper
 import fr.hornik.coinche.dto.Table
 import fr.hornik.coinche.dto.UserDto
 import fr.hornik.coinche.model.SetOfGames
+import fr.hornik.coinche.model.Statistic
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.serialization.JsonSerialize
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
+import fr.hornik.coinche.util.traceLevel
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -27,6 +29,8 @@ class FireApp {
         const val COLLECTION_SETS = "sets"
         const val COLLECTION_PLAYERS_SETS = "playersSets"
         const val COLLECTION_PLAYERS = "players"
+        const val COLLECTION_STATISTIQUES = "statistics"
+        var statisticLocale = true
     }
 
     init {
@@ -51,6 +55,39 @@ class FireApp {
         val addedDocRef =
                 db.collection(COLLECTION_SETS).add(JsonMapper.parseJson(jsonSet))
         return addedDocRef.get().id
+    }
+    fun getStatistic(uid: String = ""): Statistic {
+        if (statisticLocale) {
+            //emulation of firebase
+            return Statistic("uid", 0, 0, 0, 0)
+        } else {
+            // we need to look in firebase
+            return Statistic()
+        }
+    }
+    fun saveStatistics(setOfGames: SetOfGames) {
+        val nameFunction = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+        // we should call this function everytime we end a game
+
+        for (uid in setOfGames.players.map {it.uid}) {
+            val aStatistic = getStatistic(uid)
+            // update statistic with the right value
+
+            // write statistics in the DB
+            if (DataManagement.productionAction) {
+                val future: ApiFuture<WriteResult> = db.collection(COLLECTION_STATISTIQUES).document(uid)
+                        .set(aStatistic.toString())
+                // println("saveStatistique : " + future.get().getUpdateTime() + "future:" +future.toString())
+                val arg = aStatistic.toString()
+                debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
+
+            } else {
+                debugPrintln(dbgLevel.REGULAR, "$nameFunction no saving mode")
+            }
+        }
+        traceLevel = oldTraceLevel
     }
     fun deleteGame(setOfGames: SetOfGames) {
         for (uid in setOfGames.players.map { it.uid }) {
@@ -87,7 +124,7 @@ class FireApp {
             debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
 
         } else {
-            debugPrintln(dbgLevel.REGULAR, "Debug mode - $nameFunction no saving")
+            debugPrintln(dbgLevel.REGULAR, "$nameFunction no saving mode")
         }
         return userUID
     }

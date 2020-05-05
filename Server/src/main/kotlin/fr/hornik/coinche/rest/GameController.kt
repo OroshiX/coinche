@@ -9,6 +9,8 @@ import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.model.values.TableState
+import fr.hornik.coinche.util.dbgLevel
+import fr.hornik.coinche.util.debugPrintln
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -106,6 +108,13 @@ class GameController(@Autowired val data: DataManagement,
     fun getScore(@PathVariable gameId: String): Score {
         val game = data.getGameOrThrow(gameId)
         return game.score
+    }
+
+    @GetMapping("/{gameId}/checkCoherency",
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun checkCoherency(@PathVariable gameId: String) {
+        val gameOK = data.checkCoherency(data.getGameOrThrow(gameId))
+        debugPrintln(dbgLevel.REGULAR,"Game $gameId coherency os $gameOK")
     }
 
     @GetMapping("/{gameId}/showAllTricks",
