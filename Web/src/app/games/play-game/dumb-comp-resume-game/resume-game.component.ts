@@ -15,6 +15,7 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   playOrBid: string;
   winner1: string;
   winner2: string;
+  limit: 8;
 
   constructor() {
   }

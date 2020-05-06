@@ -77,6 +77,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                     debugPrintln(dbgLevel.DEBUG, "${setOfGames.name} was between GAME")
                     if (setOfGames.score.northSouth < 1000 && setOfGames.score.eastWest < 1000) {
                         // Continue playing another game
+                        setOfGames.whoWonLastTrick = null
                         distribute(setOfGames)
                         setOfGames.plisCampEW.clear()
                         setOfGames.plisCampNS.clear()
@@ -125,6 +126,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
         fire.saveGame(setOfGames, true)
         sets.add(setOfGames)
         return setOfGames
+    }
+
+    fun updateStat(setOfGames: SetOfGames) {
+        fire.saveStatistics(setOfGames)
     }
 
     /**
@@ -185,7 +190,6 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
         setOfGames.players.onEach { it.cardsInHand.clear() }
-        setOfGames.whoWonLastTrick = null
 
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
 
@@ -285,7 +289,61 @@ class DataManagement(@Autowired private val fire: FireApp) {
         sets.addAll(fire.getAllGames())
     }
 
-    fun playCard(setOfGames: SetOfGames, card: Card, user: User) : CardPlayed {
+    // This function is designed to help debug the server
+    // we should add in it anything which can help to check a game is OK
+    // if the function detect an incoherency it trace it.
+
+
+    fun checkCoherency(setOfGames: SetOfGames): Boolean {
+        var returnValue: Boolean = true
+
+        when (setOfGames.state) {
+
+            TableState.ENDED -> {
+            }
+            TableState.JOINING -> {
+            }
+            TableState.BETWEEN_GAMES -> {
+            }
+            TableState.DISTRIBUTING -> {
+            }
+            TableState.BIDDING,
+            TableState.PLAYING -> {
+                // First check there are 32 cards ( pli / hands ) 8 belongs to each players
+                val nbCards: MutableMap<PlayerPosition, Int> = mutableMapOf()
+
+                for (position in PlayerPosition.values()) {
+                    val player = setOfGames.players.firstOrNull() { it.position == PlayerPosition.NORTH }
+                    if (player == null ) {
+                        debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id}")
+                        returnValue = false
+                    }
+                    nbCards[position] = setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand.size
+                    for (i in 0 until setOfGames.plisCampNS.size) {
+                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampNS[i]!!.filter { it.position == position }.size
+                    }
+                    for (i in 0 until setOfGames.plisCampEW.size) {
+                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampNS[i]!!.filter { it.position == position }.size
+                    }
+                    if (nbCards.any{it.value != 8}) {
+                        debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id}\n Players dont have 8 cards $nbCards")
+                    }
+                }
+            }
+        }
+        return returnValue
+    }
+
+    fun allCheckCoherency() :Boolean {
+        for (setOfGames in sets)
+            if (!checkCoherency(setOfGames)) {
+                debugPrintln(dbgLevel.REGULAR,"Coherency error on $setOfGames detected stopping check")
+                return false
+            }
+        return true
+    }
+
+    fun playCard(setOfGames: SetOfGames, card: Card, user: User): CardPlayed {
         // check if on table is full
 
         if (setOfGames.onTable.size == 4) {

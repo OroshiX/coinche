@@ -1,23 +1,22 @@
 <mat-card class="resume-wrapper">
   <div class="resume">
-    <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
+    <div class="item">Game state : <span class="itemContent">{{gameState}}</span></div>
     <ng-container *ngIf="gameState !== 'JOINING'">
-      <div class="item">Scores:
+      <div class="item">Scores :
         <span class="itemContent">
-            {{bidData?.eastNicknames | shorterName: 8}}/{{bidData?.westNicknames | shorterName: 8}}:
+            {{bidData?.eastNicknames | shorterName: 9}}/{{bidData?.westNicknames | shorterName: 9}}:
           {{bidData?.eastWest}}
         </span>
         <span>vs</span>
-
       </div>
       <div class="itemScores">
-        {{bidData?.northNicknames | shorterName: 8}}/{{bidData?.southNicknames | shorterName: 8}}:
+        {{bidData?.northNicknames | shorterName: 9}}/{{bidData?.southNicknames | shorterName: 9}}:
         {{bidData?.northSouth}}
       </div>
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
-      <div class="item">CurrentBid:
-        <span class="itemContent">{{bidData?.currentBidNickname | shorterName: 8}}
+      <div class="item">Current bid :
+        <span class="itemContent">{{bidData?.currentBidNickname | shorterName: 9}}
           - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
           {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}</span>
       </div>
@@ -25,7 +24,7 @@
     <ng-container *ngIf="gameState !=='ENDED' else ended">
       <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'; else joining">
         <div class="item">Waiting for
-          <span class="nextPlayer">{{bidData.nextPlayer | shorterName: 8}}
+          <span class="nextPlayer">{{bidData.nextPlayer | shorterName: 9}}
           </span> to <span class="itemContent">{{playOrBid}}</span>
         </div>
       </ng-container>
@@ -37,7 +36,7 @@
     <ng-template #ended>
       <div class="item-blink">Game over. The winners are:
         <strong>
-          {{winner1 | shorterName: 8}}/{{winner2 | shorterName: 8}}
+          {{winner1 | shorterName: 9}}/{{winner2 | shorterName: 9}}
         </strong>
       </div>
     </ng-template>

@@ -40,6 +40,22 @@ class DataTest {
     }
 
     @Test
+    fun testSaveStat() {
+        val ArmandH: User = User("AHID", "Armand")
+        val Toto: User = User("ToId", "TOTO")
+        val Tata: User = User("TaId", "TATA")
+        val Tutu: User = User("TuId", "TUTU")
+        var set = SetOfGames(id = "testGAMEID", name = "testGAME")
+        dataManagement.joinGame(set, ArmandH, "firstnameArm")
+
+        dataManagement.joinGame(set, Toto, "firstnameToto")
+        dataManagement.joinGame(set, Tutu, "firstnameTutu")
+        dataManagement.joinGame(set, Tata, "firstnameTata")
+        dataManagement.updateStat(set)
+    }
+
+
+    @Test
     fun testPlayCard() {
         debugPrintln(dbgLevel.MISC,"**************************************************************")
         val ptsRand = listOf(80, 90, 100, 110, 120, 130, 140, 150, 160)
@@ -52,11 +68,11 @@ class DataTest {
 
 
         dataManagement.createGame(set, ArmandH)
-        dataManagement.joinGame(set, ArmandH, "NickArm")
+        dataManagement.joinGame(set, ArmandH, "firstnameArm")
 
-        dataManagement.joinGame(set, Toto, "NickToto")
-        dataManagement.joinGame(set, Tutu, "NickTutu")
-        dataManagement.joinGame(set, Tata, "NickTata")
+        dataManagement.joinGame(set, Toto, "firstnameToto")
+        dataManagement.joinGame(set, Tutu, "firstnameTutu")
+        dataManagement.joinGame(set, Tata, "firstnameTata")
 
         var mylplayer = mutableListOf(Pair(ArmandH, PlayerPosition.NORTH), Pair(Toto, PlayerPosition.EAST), Pair(Tutu, PlayerPosition.SOUTH), Pair(Tata, PlayerPosition.WEST))
         var newlist: MutableList<Pair<User, PlayerPosition>> = mutableListOf()
