@@ -114,7 +114,14 @@ class GameController(@Autowired val data: DataManagement,
             produces = [MediaType.APPLICATION_JSON_VALUE])
     fun checkCoherency(@PathVariable gameId: String) {
         val gameOK = data.checkCoherency(data.getGameOrThrow(gameId))
-        debugPrintln(dbgLevel.REGULAR,"Game $gameId coherency os $gameOK")
+        debugPrintln(dbgLevel.REGULAR,"Game $gameId coherency is $gameOK")
+    }
+
+    @GetMapping("/checkAllGames",
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun checkAllGames() {
+        val gameOK = data.allCheckCoherency()
+        debugPrintln(dbgLevel.REGULAR,"All Games coherency is $gameOK")
     }
 
     @GetMapping("/{gameId}/showAllTricks",

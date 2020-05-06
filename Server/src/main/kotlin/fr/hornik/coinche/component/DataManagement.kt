@@ -334,6 +334,15 @@ class DataManagement(@Autowired private val fire: FireApp) {
         return returnValue
     }
 
+    fun allCheckCoherency() :Boolean {
+        for (setOfGames in sets)
+            if (!checkCoherency(setOfGames)) {
+                debugPrintln(dbgLevel.REGULAR,"Coherency error on $setOfGames detected stopping check")
+                return false
+            }
+        return true
+    }
+
     fun playCard(setOfGames: SetOfGames, card: Card, user: User): CardPlayed {
         // check if on table is full
 
