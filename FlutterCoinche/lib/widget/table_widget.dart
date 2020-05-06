@@ -123,58 +123,6 @@ class _TableWidgetState extends State<TableWidget> {
                 heightAvatar: heightContainer,
               ),
 
-//              if (bidLeft != null && state == TableState.BIDDING)
-//                Transform.translate(
-//                  offset: Offset(widthContainerName + 4, -heightContainer / 2),
-//                  child: Bubble(
-//                    color: Colors.white,
-//                    child: Text(bidLeft.toString()),
-//                    alignment: Alignment.centerLeft,
-//                    nip: BubbleNip.leftTop,
-//                    elevation: 10,
-//                  ),
-//                ),
-//              if (bidRight != null && state == TableState.BIDDING)
-//                Transform.translate(
-//                  offset: Offset(-widthContainerName - 4, -heightContainer / 2),
-//                  child: Bubble(
-//                    alignment: Alignment.centerRight,
-//                    color: Colors.white,
-//                    child: Text(bidRight.toString()),
-//                    nip: BubbleNip.rightTop,
-//                    elevation: 10,
-//                  ),
-//                ),
-//              if (bidTop != null && state == TableState.BIDDING)
-//                Transform.translate(
-//                  offset: Offset(0, widthContainerName + 4),
-//                  child: Bubble(
-//                    alignment: Alignment.topCenter,
-//                    color: Colors.white,
-//                    child: Text(bidTop.toString()),
-//                    nip: BubbleNip.no,
-//                    elevation: 10,
-//                  ),
-//                ),
-//              if (myBid != null && state == TableState.BIDDING)
-//                Transform.translate(
-//                  offset: Offset(
-//                      0,
-//                      -widthContainerName -
-//                          cardHeight -
-//                          marginCardsPosition -
-//                          paddingHeightCards * 2 -
-//                          heightBiddingBar -
-//                          10),
-//                  child: Bubble(
-//                    alignment: Alignment.bottomCenter,
-//                    color: Colors.white,
-//                    child: Text(myBid.toString()),
-//                    nip: BubbleNip.no,
-//                    elevation: 10,
-//                  ),
-//                ),
-
               Padding(
                 padding: EdgeInsets.only(
                     top: widthContainerName,

@@ -70,7 +70,7 @@ class Bid {
     if (this is Coinche) {
       return "${(this as Coinche).annonce.readableValueBid()}";
     }
-    return "";
+    return "Pass";
   }
 
   PlayerPosition getTaker() {
