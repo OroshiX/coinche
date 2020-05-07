@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-chip-player',
   templateUrl: './chip-player.component.html',
   styleUrls: ['./chip-player.component.scss']
 })
-export class ChipPlayerComponent implements OnInit, AfterViewInit {
+export class ChipPlayerComponent implements OnInit {
   @Input() nextPlayerIdx: number;
   @Input() idx: number;
   @Input() nickname: string;
@@ -15,10 +15,6 @@ export class ChipPlayerComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
-    console.log(this.isSmallScreen);
   }
 
 }

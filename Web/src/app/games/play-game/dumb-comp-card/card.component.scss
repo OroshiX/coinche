@@ -13,7 +13,7 @@
   .card-inactive {
     @include width-height-card(60px, 87px);
     margin: 10px -15px;
-    filter: blur(2px);
+    filter: blur(1px);
   }
   .card-played {
     @include width-height-card(60px, 87px);
@@ -32,7 +32,7 @@
   .card-inactive {
     @include width-height-card(120px, 174px);
     margin: 30px -30px;
-    filter: blur(2px);
+    filter: blur(1px);
   }
 
   .card-played {

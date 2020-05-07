@@ -36,16 +36,11 @@ export class PlayGameHelperService {
   }
 
   mustHideCardsOntable(data: TableGame): boolean {
-    const ret = (data.state === STATE.PLAYING && data.onTable !== [] &&
-      // data.lastTrick !== [] &&
-      // data.onTable.length === 4 &&
-      // data.nextPlayer === data.myPosition &&
+    const ret = (data.state === STATE.PLAYING && data.onTable.length > 0 &&
       data.onTable.map(e => `${e?.card?.color}${e?.card?.value}`)
         .every(c => data.lastTrick.map(e => `${e?.card?.color}${e?.card?.value}`).includes(c))
     );
-    console.log(data.onTable.map(e => `${e?.card?.color}${e?.card?.value}`)
-      .every(c => data.lastTrick.map(e => `${e?.card?.color}${e?.card?.value}`).includes(c)));
-    console.log(ret);
+
     return ret;
   }
 
