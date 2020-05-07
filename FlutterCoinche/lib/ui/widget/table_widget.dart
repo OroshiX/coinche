@@ -7,7 +7,6 @@ import 'package:FlutterCoinche/ui/widget/landscape/landscape_score_widget.dart';
 import 'package:FlutterCoinche/ui/widget/middle_area.dart';
 import 'package:FlutterCoinche/ui/widget/player_avatar.dart';
 import 'package:FlutterCoinche/ui/widget/portrait/portrait_score_widget.dart';
-import 'package:FlutterCoinche/ui/widget/recap_widget.dart';
 import 'package:FlutterCoinche/ui/widget/waiting_players.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';

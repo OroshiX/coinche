@@ -83,21 +83,25 @@ class Bid {
     return position;
   }
 
-  Row getReadableBidRow(double fontSize, double dotSize,
+  Row getReadableBidRow(double fontSize,
+      {double dotSize,
       Map<PlayerPosition, Color> cardinalToPosTable,
-      {bool displayBy = true}) {
+      bool displayBy = true}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: displayBy ? MainAxisSize.max : MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           readableValueBid(),
           style: TextStyle(fontSize: fontSize, color: colorTextDark),
         ),
-        if(this is! Pass) Image.asset(
-          getAssetImageFromColor(cardColor()),
-          width: fontSize,
-        ),
+        if (this is! Pass)
+          Image.asset(
+            getAssetImageFromColor(cardColor()),
+            width: fontSize,
+            height: fontSize,
+          ),
         if (this is Coinche)
           Text(
             " (x${(this as Coinche).surcoinche ? 4 : 2})",

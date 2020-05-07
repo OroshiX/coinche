@@ -29,8 +29,7 @@ class OnlyScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<AxisDirection, Color> mapColor = Injector
-        .get<PosTableToColor>()
+    final Map<AxisDirection, Color> mapColor = Injector.get<PosTableToColor>()
         .value
         .map((key, value) => MapEntry(key, value.item1));
     const textSize = 14.0;
@@ -57,8 +56,8 @@ class OnlyScoreWidget extends StatelessWidget {
                     width: minWidth,
                   ),
                   if (currentBid != null)
-                    currentBid.getReadableBidRow(
-                        textSize, dotSize, playerPosToColor),
+                    currentBid.getReadableBidRow(textSize,
+                        dotSize: dotSize, cardinalToPosTable: playerPosToColor),
                   if (currentBid != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 4.0, bottom: 4),

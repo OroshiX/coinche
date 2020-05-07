@@ -1,11 +1,12 @@
+import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:bubble/bubble.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
@@ -22,19 +23,35 @@ class BidsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<AnimatedListState> key = GlobalKey();
+    final List<Bid> currentBids = [];
     return StateBuilder<Game>(
       tag: [Aspects.MY_POSITION, Aspects.BIDS, Aspects.STATE],
       models: [RM.get<Game>()],
+      onSetState: (context, model) {
+        var changeBids = model.state.getChangeBid(currentBids, posTable);
+        if (changeBids == null) return;
+        if (changeBids.typeChange == TypeChange.INSERT) {
+          key.currentState.insertItem(changeBids.position);
+        } else {
+          key.currentState.removeItem(
+              changeBids.position,
+              (context, animation) => Container(
+                    width: 30,
+                    height: 30,
+                    color: Colors.blue,
+                  ));
+        }
+      },
       builder: (context, model) {
         final me = model.state.myPosition;
         final PlayerPosition cardinalPosition =
             getPosTableToCardinal(me)[posTable];
-        final theBids = model.state.bids
+        currentBids.clear();
+        currentBids.addAll(model.state.bids
                 ?.where((element) => element.position == cardinalPosition) ??
-            [];
+            []);
         final state = model.state.state;
-        final mapToColor = Injector.get<PosTableToColor>().value;
-        if (state != TableState.BIDDING || theBids.isEmpty) return SizedBox();
         Alignment alignment;
         BubbleNip bubbleNip;
         double dx = 0, dy = 0;
@@ -48,7 +65,8 @@ class BidsWidget extends StatelessWidget {
           case AxisDirection.right:
             alignment = Alignment.centerRight;
             bubbleNip = BubbleNip.rightTop;
-            dx = -widthAvatar;
+//            dx = -widthAvatar;
+            dy = -heightAvatar;
             break;
           case AxisDirection.down:
             alignment = Alignment.bottomRight;
@@ -58,27 +76,62 @@ class BidsWidget extends StatelessWidget {
           case AxisDirection.left:
             alignment = Alignment.centerLeft;
             bubbleNip = BubbleNip.leftTop;
-            dx = widthAvatar;
+//            dx = widthAvatar;
+            dy = -heightAvatar;
             break;
         }
-
-        Map<PlayerPosition, Color> cardinalToPosTable =
-            getCardinalToPosTable(me)
-                .map((key, value) => MapEntry(key, mapToColor[value].item1));
         return Transform.translate(
           offset: Offset(dx, dy),
-          child: Bubble(
-            color: colorLightBlue,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: theBids
-                  .map((e) => e.getReadableBidRow(12, 7, cardinalToPosTable,
-                      displayBy: false))
-                  .toList(),
+          child: Align(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 170, maxHeight: 80),
+              child: AnimatedOpacity(
+                opacity: (state != TableState.BIDDING || currentBids.isEmpty)
+                    ? 0
+                    : 1,
+                duration: Duration(milliseconds: 200),
+                child: Container(
+                  decoration: BoxDecoration(color: colorLightBlue, boxShadow: [
+                    BoxShadow(
+                        offset: Offset(2, 2),
+                        color: colorShadow,
+                        spreadRadius: 2,
+                        blurRadius: 4),
+                    BoxShadow(
+                        offset: Offset(-2, -2),
+                        color: Colors.white,
+                        spreadRadius: 2,
+                        blurRadius: 3),
+                  ]),
+                  child: AnimatedList(
+                    scrollDirection: Axis.vertical,
+                    key: key,
+                    initialItemCount: currentBids.length,
+                    itemBuilder: (context, index, animation) {
+                      return SlideTransition(
+                        position: animation.drive(
+                            Tween(begin: Offset(-1, -1), end: Offset(0, 0))),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 2.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            color: Colors.lightGreen,
+                            child: LimitedBox(
+                              maxWidth: 80,
+                              maxHeight: 40,
+                              child: currentBids
+                                  .toList()[index]
+                                  .getReadableBidRow(16, displayBy: false),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
             alignment: alignment,
-            nip: bubbleNip,
-            elevation: 4,
           ),
         );
       },
