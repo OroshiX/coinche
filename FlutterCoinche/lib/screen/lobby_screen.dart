@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/bloc/games_bloc.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/table_state.dart';
-import 'package:FlutterCoinche/screen/game_screen.dart';
+import 'package:FlutterCoinche/screen/StatedGameScreen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class LobbyScreen extends StatelessWidget {
           FlatButton(
               onPressed: () {
                 Navigator.of(context)
-                    .pushReplacementNamed(GameScreen.routeName);
+                    .pushReplacementNamed(StatedGameScreen.routeName);
               },
               child: Text("Play"))
         ],
@@ -36,7 +36,7 @@ class LobbyScreen extends StatelessWidget {
             if (snapshot.data.state != TableState.JOINING) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context)
-                    .pushReplacementNamed(GameScreen.routeName);
+                    .pushReplacementNamed(StatedGameScreen.routeName);
               });
               return SizedBox();
             }

@@ -38,4 +38,9 @@ class Nicknames extends Equatable {
 
   @override
   List<Object> get props => [north, south, east, west];
+
+  @override
+  String toString() {
+    return "north: $north, east: $east, south: $south, west: $west";
+  }
 }
