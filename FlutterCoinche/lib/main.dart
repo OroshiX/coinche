@@ -1,9 +1,9 @@
-import 'package:FlutterCoinche/bloc/games_bloc.dart';
-import 'package:FlutterCoinche/screen/StatedGameScreen.dart';
-import 'package:FlutterCoinche/screen/all_games_screen.dart';
-import 'package:FlutterCoinche/screen/game_screen.dart';
-import 'package:FlutterCoinche/screen/lobby_screen.dart';
-import 'package:FlutterCoinche/screen/login_screen.dart';
+import 'package:FlutterCoinche/state/games_bloc.dart';
+import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/all_games_screen.dart';
+import 'package:FlutterCoinche/ui/screen/game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/ui/screen/login_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
