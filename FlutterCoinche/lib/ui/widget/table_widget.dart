@@ -141,12 +141,6 @@ class _TableWidgetState extends State<TableWidget> {
                 screenSize: screenSize,
                 widthContainerName: widthContainerName,
               ),
-              // Top right recap widget
-              Positioned(
-                top: 10,
-                right: 10,
-                child: const RecapWidget(),
-              ),
               if (portrait)
                 Align(
                   alignment: Alignment.bottomRight,

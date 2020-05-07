@@ -30,7 +30,7 @@ class PlayerAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    var modelColor = RM.get<PosTableToColor>();
+    var modelColor = Injector.get<PosTableToColor>();
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
       tag: [
@@ -46,7 +46,7 @@ class PlayerAvatar extends StatelessWidget {
         final map = getPosTableToCardinal(me);
         final bool myTurn = model.state.nextPlayer == map[posTable];
         final nick = model.state.nicknames.fromPosition(map[posTable]);
-        final mapColorAvatar = modelColor.state.value;
+        final mapColorAvatar = modelColor.value;
         final color = mapColorAvatar[posTable].item1;
         final avatar = mapColorAvatar[posTable].item2;
         return Container(

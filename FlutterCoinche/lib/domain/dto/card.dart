@@ -126,7 +126,7 @@ class CardPlayed extends Equatable {
 }
 
 String getAssetImageFromColor(CardColor e) {
-  var file = "";
+  var file = "heart.png";
   switch (e) {
     case CardColor.DIAMOND:
       file = "diamond.png";

@@ -94,7 +94,7 @@ class Bid {
           readableValueBid(),
           style: TextStyle(fontSize: fontSize, color: colorTextDark),
         ),
-        Image.asset(
+        if(this is! Pass) Image.asset(
           getAssetImageFromColor(cardColor()),
           width: fontSize,
         ),
