@@ -24,9 +24,8 @@ class ButtonLastTrick extends StatelessWidget {
         final state = game.state;
         final me = game.myPosition;
         final cardinalToPosTable = getCardinalToPosTable(me);
-        final mapColor = RM
+        final mapColor = Injector
             .get<PosTableToColor>()
-            .state
             .value
             .map((key, value) => MapEntry(key, value.item1));
         final List<CardPlayed> lastTrick = game.lastTrick;

@@ -15,7 +15,12 @@ class Nicknames extends Equatable {
   @JsonKey(name: "WEST")
   final String west;
 
-  Nicknames({this.north, this.south, this.east, this.west});
+  const Nicknames({
+    this.north = "",
+    this.south = "",
+    this.east = "",
+    this.west = "",
+  });
 
   factory Nicknames.fromJson(Map<String, dynamic> json) =>
       _$NicknamesFromJson(json);

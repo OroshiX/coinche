@@ -33,7 +33,7 @@ class BidsWidget extends StatelessWidget {
                 ?.where((element) => element.position == cardinalPosition) ??
             [];
         final state = model.state.state;
-        final mapToColor = RM.get<PosTableToColor>().state.value;
+        final mapToColor = Injector.get<PosTableToColor>().value;
         if (state != TableState.BIDDING || theBids.isEmpty) return SizedBox();
         Alignment alignment;
         BubbleNip bubbleNip;

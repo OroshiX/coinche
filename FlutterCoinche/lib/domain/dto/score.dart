@@ -4,11 +4,11 @@ import 'package:json_annotation/json_annotation.dart';
 part 'score.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Score extends Equatable{
+class Score extends Equatable {
   final int northSouth;
   final int eastWest;
 
-  Score({this.northSouth, this.eastWest});
+  const Score({this.northSouth = 0, this.eastWest = 0});
 
   factory Score.fromJson(Map<String, dynamic> json) => _$ScoreFromJson(json);
 

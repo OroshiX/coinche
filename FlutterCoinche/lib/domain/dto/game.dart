@@ -27,17 +27,17 @@ class Game extends Equatable {
 
   Game(
       {this.id,
-      this.nicknames,
-      this.cards,
-      this.onTable,
-      this.state,
-      this.nextPlayer,
-      this.myPosition,
+      this.nicknames = const Nicknames(),
+      this.cards = const [],
+      this.onTable = const [],
+      this.state = TableState.JOINING,
+      this.nextPlayer = PlayerPosition.NORTH,
+      this.myPosition = PlayerPosition.NORTH,
       this.bids = const [],
       this.currentBid,
-      this.score,
+      this.score = const Score(),
       this.winnerLastTrick,
-      this.lastTrick});
+      this.lastTrick = const []});
 
   factory Game.fromJson(Map<String, dynamic> json) => _$GameFromJson(json);
 

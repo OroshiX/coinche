@@ -29,9 +29,8 @@ class OnlyScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<AxisDirection, Color> mapColor = RM
+    final Map<AxisDirection, Color> mapColor = Injector
         .get<PosTableToColor>()
-        .state
         .value
         .map((key, value) => MapEntry(key, value.item1));
     const textSize = 14.0;
