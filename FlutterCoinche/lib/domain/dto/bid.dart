@@ -127,7 +127,7 @@ class Bid {
   bool operator ==(other) {
     if (identical(this, other)) return true;
     if (runtimeType != other.runtimeType || other is! Bid) return false;
-    var bid = other as Bid;
+    Bid bid = other;
     if (bid.type != this.type) return false;
     if (this is SimpleBid) return this as SimpleBid == bid;
     if (this is General) return this as General == bid;

@@ -2,8 +2,11 @@ import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/state/game_inherited.dart';
+import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
+import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
+import 'package:FlutterCoinche/ui/resources/colors.dart';
+import 'package:FlutterCoinche/ui/widget/table_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,28 +24,47 @@ class StatedGameScreen extends StatelessWidget {
         onWillPop: () async {
           return (await _quit(context)) ?? false;
         },
-        child: _top(context),
+        child: Container(
+          color: colorLightBlue,
+          child: _top(context),
+        ),
       ),
     );
   }
 
   Widget _top(BuildContext context) {
-    return StateBuilder<Game>(
-      observe: () =>
-          RM.stream(BlocProvider.of<GamesBloc>(context).game, name: "gameFire"),
-      builder: (context, model) => WhenRebuilder<Game>(
-          models: [model],
-          onIdle: () => _buildEmpty(),
-          onWaiting: () => _buildWaiting(),
-          onError: (e) => _buildEmpty(),
-          onData: (gameFire) {
-            var model = Inject(() => gameFire);
-            return Injector(
-                inject: [model],
-                builder: (BuildContext buildContext) {
-                  return _build(model.getReactive());
-                });
-          }),
+    return Injector(
+      inject: [
+        Inject(() => Game()),
+        Inject.future(() => getPosTableToColors())
+      ],
+      builder: (_) => StateBuilder<Game>(
+        observe: () => RM
+            .stream(BlocProvider.of<GamesBloc>(context).game, name: "gameFire")
+//            .asNew("mySeed")
+//              ..setState((s) => s.sortCards())
+        ,
+        builder: (_, modelFire) {
+          final currentModel = RM.get<Game>();
+          final pos = RM.get<PosTableToColor>();
+          return WhenRebuilder<Game>(
+              models: [modelFire, pos],
+              onIdle: () => _buildEmpty(),
+              onWaiting: () => _buildWaiting(),
+              onError: (e) => _buildEmpty(),
+              onSetState: (_, rmFire) {
+                if (rmFire.hasData && rmFire.state != null) {
+                  var different = rmFire.state.different(currentModel.state);
+                  currentModel.setValue(() => rmFire.state,
+                      filterTags: different);
+                }
+              },
+              onData: (_) {
+                return TableWidget(quit: _quit);
+//                  return _build(model.getReactive());
+              });
+        },
+      ),
     );
     /*
     return Injector(
