@@ -1,21 +1,28 @@
 <mat-card class="resume-wrapper">
   <div class="resume">
-    <div class="item">Game state : <span class="itemContent">{{gameState}}</span></div>
+    <div class="item">Game state: <span class="itemContent">{{gameState}}</span></div>
     <ng-container *ngIf="gameState !== 'JOINING'">
-      <div class="item">Scores :
+      <div class="item">
         <span class="itemContent">
             {{bidData?.eastNicknames | shorterName: 9}}/{{bidData?.westNicknames | shorterName: 9}}:
           {{bidData?.eastWest}}
         </span>
         <span>vs</span>
       </div>
-      <div class="itemScores">
-        {{bidData?.northNicknames | shorterName: 9}}/{{bidData?.southNicknames | shorterName: 9}}:
-        {{bidData?.northSouth}}
+      <div class="item">
+        <span class="itemContent">
+          {{bidData?.northNicknames | shorterName: 9}}/{{bidData?.southNicknames | shorterName: 9}}:
+          {{bidData?.northSouth}}
+        </span>
       </div>
+
+      <!--<div class="itemScores">
+        {{bidData?.northNicknames | shorterName: 5}}/{{bidData?.southNicknames | shorterName: 5}}:
+        {{bidData?.northSouth}}
+      </div>-->
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
-      <div class="item">Current bid :
+      <div class="item">Current bid:
         <span class="itemContent">{{bidData?.currentBidNickname | shorterName: 9}}
           - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
           {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}</span>
@@ -34,7 +41,10 @@
       </ng-template>
     </ng-container>
     <ng-template #ended>
-      <div class="item-blink">Game over. The winners are:
+      <div class="item-blink">Game over !
+      </div>
+      <div class="item-blink">
+        The winners are:
         <strong>
           {{winner1 | shorterName: 9}}/{{winner2 | shorterName: 9}}
         </strong>

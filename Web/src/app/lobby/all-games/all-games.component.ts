@@ -19,11 +19,15 @@ export const DIALOG_WIDTH = '300px';
 export const TABLE_WIDTH_SMALL = '410px';
 export const TABLE_WIDTH_LARGE = '550px';
 export const FIELD1_WIDTH_SMALL = 150;
-export const FIELD1_WIDTH_LARGE = 220;
-export const FIELD2_WIDTH_SMALL = 110;
-export const FIELD2_WIDTH_LARGE = 150;
-export const FIELD3_WIDTH_SMALL = 150;
-export const FIELD3_WIDTH_LARGE = 180;
+export const FIELD1_WIDTH_LARGE = 160;
+export const FIELD2_WIDTH_SMALL = 20;
+export const FIELD2_WIDTH_LARGE = 50;
+export const FIELD3_WIDTH_SMALL = 80;
+export const FIELD3_WIDTH_LARGE = 125;
+export const FIELD4_WIDTH_SMALL = 50;
+export const FIELD4_WIDTH_LARGE = 75;
+export const FIELD5_WIDTH_SMALL = 110;
+export const FIELD5_WIDTH_LARGE = 160;
 
 @Component({
   selector: 'app-all-games',
@@ -43,6 +47,8 @@ export class AllGamesComponent implements OnInit {
   field1Width: number;
   field2Width: number;
   field3Width: number;
+  field4Width: number;
+  field5Width: number;
 
   // dialog data
   newGame: Game = new Game({});
@@ -119,10 +125,15 @@ export class AllGamesComponent implements OnInit {
     this.field1Width = this.isSmallScreen ? FIELD1_WIDTH_SMALL : FIELD1_WIDTH_LARGE;
     this.field2Width = this.isSmallScreen ? FIELD2_WIDTH_SMALL : FIELD2_WIDTH_LARGE;
     this.field3Width = this.isSmallScreen ? FIELD3_WIDTH_SMALL : FIELD3_WIDTH_LARGE;
+    this.field4Width = this.isSmallScreen ? FIELD4_WIDTH_SMALL : FIELD4_WIDTH_LARGE;
+    this.field5Width = this.isSmallScreen ? FIELD5_WIDTH_SMALL : FIELD5_WIDTH_LARGE;
     this.columnDefs = [
-      {headerName: 'Game name', field: 'name', width: this.field1Width, sort: 'asc', sortable: true, filter: true, checkboxSelection: true},
-      {headerName: '#Players', field: 'nbJoined', width: this.field2Width, sortable: true, filter: true},
-      {headerName: 'Creator', field: 'nicknameCreator', width: this.field3Width, sortable: true, filter: true}
+      {headerName: 'Game name', field: 'name',
+        width: this.field1Width, sort: 'asc', sortable: false, filter: true, checkboxSelection: true},
+      {headerName: '#', field: 'nbJoined', width: this.field2Width, sortable: false, filter: false},
+      {headerName: 'State', field: 'state', width: this.field3Width, sortable: false, filter: false},
+      {headerName: 'InRoom', field: 'inRoom', width: this.field4Width, sortable: false, filter: false},
+      {headerName: 'Creator', field: 'nicknameCreator', width: this.field5Width, sortable: false, filter: true}
     ];
   }
 

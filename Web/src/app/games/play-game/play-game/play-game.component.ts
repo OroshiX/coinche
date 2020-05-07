@@ -118,7 +118,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   private updateLayoutForScreenChange() {
     if (this.breakpointService.isSmallScreen()) {
       this.isSmallScreen = true;
-      this.rowHeight = 60;
+      this.rowHeight = 75;
     } else {
       this.isSmallScreen = false;
       this.rowHeight = 95;

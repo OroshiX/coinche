@@ -11,6 +11,7 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   @Input() gameState: STATE;
   @Input() isMyTurn: boolean;
   @Input() bidData: BidData;
+  @Input() isSmallScreen: boolean;
 
   playOrBid: string;
   winner1: string;
@@ -31,6 +32,9 @@ export class ResumeGameComponent implements OnInit, OnChanges {
         this.bidData.eastNicknames : this.bidData.northNicknames;
       this.winner2 = (this.bidData.eastWest) - (this.bidData?.northSouth) > 0 ?
         this.bidData.westNicknames : this.bidData.southNicknames;
+    }
+    if (this.isSmallScreen) {
+      console.log(this.isSmallScreen);
     }
   }
 
