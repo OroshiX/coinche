@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:FlutterCoinche/dto/card.dart';
 import 'package:FlutterCoinche/dto/game.dart';
 import 'package:FlutterCoinche/dto/game_empty.dart';
 import 'package:FlutterCoinche/fire/fire_auth_service.dart';
@@ -60,19 +59,7 @@ class GamesBloc implements Bloc {
     if (subscription != null) {
       subscription.cancel();
     }
-    /*
-    Firestore.instance
-        .collection('playersSets')
-        .document(idGame)
-        .collection('players')
-        .document(_myAuthUser.uid)
-        .get()
-        .then((value) {
-      print(value.data);
-      gameBehavior.add(Game.fromJson(value.data));
-      notifyListeners();
-    });
-*/
+
     subscription = Firestore.instance
         .collection('playersSets')
         .document(idGame)
@@ -81,11 +68,6 @@ class GamesBloc implements Bloc {
         .snapshots()
         .map((event) => Game.fromJson(event.data))
         .listen((event) {
-      event.cards.sort((CardModel c1, CardModel c2) {
-        if (c1.color.index < c2.color.index) return -1;
-        if (c1.color.index > c2.color.index) return 1;
-        return compareValue(c2.value, c1.value, false);
-      });
       _gameController.sink.add(event);
     });
   }

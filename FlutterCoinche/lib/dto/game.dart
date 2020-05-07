@@ -33,7 +33,7 @@ class Game extends Equatable {
       this.state,
       this.nextPlayer,
       this.myPosition,
-      this.bids,
+      this.bids = const [],
       this.currentBid,
       this.score,
       this.winnerLastTrick,
@@ -45,7 +45,8 @@ class Game extends Equatable {
 
   @override
   String toString() {
-    return "game: $id, myCards: $cards";
+    return "game: $id\nmyCards: $cards\nonTable: $onTable\nstate: $state\n"
+        "me: $myPosition\nscore: $score\nnicknames: $nicknames\nbids: $bids";
   }
 
   @override
@@ -63,4 +64,14 @@ class Game extends Equatable {
         winnerLastTrick,
         lastTrick
       ];
+
+  sortCards() {
+    cards.sort((CardModel c1, CardModel c2) {
+      if (c1.color.index < c2.color.index) return -1;
+      if (c1.color.index > c2.color.index) return 1;
+      final trump =
+          state == TableState.PLAYING && currentBid.cardColor() == c1.color;
+      return compareValue(c2.value, c1.value, trump);
+    });
+  }
 }
