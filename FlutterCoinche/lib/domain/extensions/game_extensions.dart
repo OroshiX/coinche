@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 
 extension GameExtensions on Game {
   List<Aspects> different(Game old) {
+    if(old == null) return Aspects.values;
     List<Aspects> res = [];
     if (old.id != id) res.add(Aspects.ID);
     if (old.cards != cards) res.add(Aspects.CARDS);

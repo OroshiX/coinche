@@ -1,3 +1,4 @@
+import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,7 @@ extension TablePosition on AxisDirection {
           break;
       }
     }
+    print("getAvatar: $file");
     return file;
   }
 
@@ -77,12 +79,12 @@ extension TablePosition on AxisDirection {
   }
 }
 
-Future<Map<AxisDirection, Tuple2<Color, String>>> getPosTableToColors() async {
+Future<PosTableToColor> getPosTableToColors() async {
   var preferences = await SharedPreferences.getInstance();
   Map<AxisDirection, Tuple2<Color, String>> res = {};
   AxisDirection.values.forEach((element) {
     res[element] =
         Tuple2(element._getColor(preferences), element._getAvatar(preferences));
   });
-  return res;
+  return PosTableToColor(res);
 }

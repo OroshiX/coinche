@@ -1,16 +1,18 @@
-import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
+import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/extensions/bid_extension.dart';
+import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
+import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/state/game_inherited.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 class BiddingBar extends StatefulWidget {
 //  final double screenWidth;
@@ -175,89 +177,91 @@ class _BiddingBarState extends State<BiddingBar> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    final bids = GameInherited.of(context, aspectType: Aspects.BIDS).game.bids;
-    final me = GameInherited.of(context, aspectType: Aspects.MY_POSITION)
-        .game
-        .myPosition;
-    final nextPlayer =
-        GameInherited.of(context, aspectType: Aspects.NEXT_PLAYER)
-            .game
-            .nextPlayer;
-    final enabledBid = nextPlayer == me;
+    return StateBuilder<Game>(
+      models: [RM.get<Game>()],
+      tag: [Aspects.BIDS, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
+      builder: (context, model) {
+        final bids = model.state.bids;
+        final me = model.state.myPosition;
+        final nextPlayer = model.state.nextPlayer;
+        final enabledBid = nextPlayer == me;
 
-    final canSurcoinche = bids?.canSurcoinche(me) ?? false;
-    final canCoinche = bids?.canCoinche(me) ?? false;
-    final lastBid = bids?.lastBidCapotGeneral();
-    final minPoints = (bids?.lastWhere(
-          (element) => element is SimpleBid,
-          orElse: () => SimpleBid(points: 70),
-        ) as SimpleBid)
-            .points +
-        10;
-    assert(!(canSurcoinche && canCoinche));
-    return Container(
-      padding: const EdgeInsets.only(left: 2),
-      child: portrait
-          ? IntrinsicWidth(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _coincheWidget(
-                          canCoinche: canCoinche,
-                          lastSimpleBid: lastBid,
-                          me: me),
-                      _surcoincheWidget(
-                          canSurcoinche: canSurcoinche,
-                          lastSimpleBid: lastBid,
-                          me: me),
-                      _passWidget(me: me, enabledBid: enabledBid)
-                    ],
-                  ),
-                  SizedBox(
-                    height: isLargeScreen(screenSize) ? 10 : 5,
-                  ),
-                  _mainWidget(screenSize,
-                      me: me, minPoints: minPoints, enabledBid: enabledBid)
-                ],
-              ),
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                _mainWidget(screenSize,
-                    me: me, minPoints: minPoints, enabledBid: enabledBid),
-                SizedBox(
-                  width: isLargeScreen(screenSize) ? 20 : 10,
-                ),
-                IntrinsicWidth(
+        final canSurcoinche = bids?.canSurcoinche(me) ?? false;
+        final canCoinche = bids?.canCoinche(me) ?? false;
+        final lastBid = bids?.lastBidCapotGeneral();
+        final minPoints = (bids?.lastWhere(
+              (element) => element is SimpleBid,
+              orElse: () => SimpleBid(points: 70),
+            ) as SimpleBid)
+                .points +
+            10;
+        assert(!(canSurcoinche && canCoinche));
+
+        return Container(
+          padding: const EdgeInsets.only(left: 2),
+          child: portrait
+              ? IntrinsicWidth(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      _coincheWidget(
-                          canCoinche: canCoinche,
-                          lastSimpleBid: lastBid,
-                          me: me),
-                      _surcoincheWidget(
-                          canSurcoinche: canSurcoinche,
-                          lastSimpleBid: lastBid,
-                          me: me),
-                      _passWidget(me: me, enabledBid: enabledBid),
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _coincheWidget(
+                              canCoinche: canCoinche,
+                              lastSimpleBid: lastBid,
+                              me: me),
+                          _surcoincheWidget(
+                              canSurcoinche: canSurcoinche,
+                              lastSimpleBid: lastBid,
+                              me: me),
+                          _passWidget(me: me, enabledBid: enabledBid)
+                        ],
+                      ),
+                      SizedBox(
+                        height: isLargeScreen(screenSize) ? 10 : 5,
+                      ),
+                      _mainWidget(screenSize,
+                          me: me, minPoints: minPoints, enabledBid: enabledBid)
                     ],
                   ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    _mainWidget(screenSize,
+                        me: me, minPoints: minPoints, enabledBid: enabledBid),
+                    SizedBox(
+                      width: isLargeScreen(screenSize) ? 20 : 10,
+                    ),
+                    IntrinsicWidth(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          _coincheWidget(
+                              canCoinche: canCoinche,
+                              lastSimpleBid: lastBid,
+                              me: me),
+                          _surcoincheWidget(
+                              canSurcoinche: canSurcoinche,
+                              lastSimpleBid: lastBid,
+                              me: me),
+                          _passWidget(me: me, enabledBid: enabledBid),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+        );
+      },
     );
   }
 
