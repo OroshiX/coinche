@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { bidPointListWithCapotNGeneral, TYPE_BID } from '../../../shared/models/collection-game';
 import { CARD_COLOR } from '../../../shared/models/play';
 import { DialogData } from '../play-game/play-game.component';
-import { backCardImg, iconClub, iconDiamond, iconHeart, iconSpade } from '../services/card-image.service';
+import { iconClub, iconDiamond, iconHeart, iconSpade } from '../services/card-image.service';
 
 const IDX_MAX_SIMPLE_BID = 10;
 const IDX_CAPOT = 11;
@@ -21,7 +21,6 @@ export class DialogBidComponent {
   spadeImg = iconSpade;
   heartImg = iconHeart;
   diamondImg = iconDiamond;
-  backC = backCardImg;
   points: number;
   pointsLabel: string;
   color: string;
@@ -89,7 +88,10 @@ export class DialogBidComponent {
     /*if () {
 
     }*/
-    this.idxPoints = this.idxPointsMin;
+    this.points = data?.points;
+    this.idxPoints = !!this.points && this.points >= 80 ?
+      this.bidPoints.map(el => el.value).indexOf(this.points) : this.idxPointsMin;
+    this.pointsLabel = this.bidPoints[this.idxPoints].label;
     this.setType();
     this.setPoints();
     this.setColor('');

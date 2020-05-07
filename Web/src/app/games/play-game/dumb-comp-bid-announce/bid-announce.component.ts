@@ -15,6 +15,7 @@ export class BidAnnounceComponent implements OnInit {
   @Input() isDisableBid: boolean;
   @Input() myPosition: string;
   @Input() gameId: string;
+  @Input() currentBidPoints: number;
   @Output() announceBidData = new EventEmitter<any>();
 
 
@@ -33,7 +34,7 @@ export class BidAnnounceComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogBidComponent, {
       width: '250px',
-      data: {}
+      data: {points: this.currentBidPoints}
     });
 
     dialogRef.afterClosed()
