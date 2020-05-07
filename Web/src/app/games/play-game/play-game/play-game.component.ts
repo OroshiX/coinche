@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { ApiFirestoreService } from '../../../services/apis-firestore/api-firestore.service';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
@@ -59,6 +59,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   currentBidPoints: number;
   currentBidType: any;
 
+  isBidsEmpty: boolean;
   isDisableBid: boolean;
   isMyTurn: boolean;
   isMyCardsDisable: boolean;
@@ -101,7 +102,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.cd.detectChanges();
     this.breakpointService.layoutChanges$()
       .pipe(switchMap(() => this.firestoreService.getTableGame(this.gameId)),
-        debounceTime(100)
+        // debounceTime(100)
       )
       .subscribe((data: TableGame) => {
         console.log('table game *********************');
@@ -133,7 +134,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.isDisableBid = this.gameState !== STATE.BIDDING;
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
-
+    this.isBidsEmpty = data.bids.length <= 0;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.nextPlayerIdx = this.gameState !== STATE.ENDED && this.gameState !== STATE.JOINING ?
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever

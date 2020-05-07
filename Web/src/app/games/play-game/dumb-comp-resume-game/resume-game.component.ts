@@ -12,8 +12,10 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   @Input() isMyTurn: boolean;
   @Input() bidData: BidData;
   @Input() isSmallScreen: boolean;
+  @Input() isBidsEmpty: boolean;
 
   playOrBid: string;
+  currentOrPreviousBid: string;
   winner1: string;
   winner2: string;
   limit: 8;
@@ -27,14 +29,14 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.playOrBid = this.gameState === STATE.BIDDING ?
       'bid' : this.gameState === STATE.PLAYING ? 'play' : '';
+
     if (!!this.bidData) {
       this.winner1 = (this.bidData.eastWest) - (this.bidData.northSouth) > 0 ?
         this.bidData.eastNicknames : this.bidData.northNicknames;
       this.winner2 = (this.bidData.eastWest) - (this.bidData?.northSouth) > 0 ?
         this.bidData.westNicknames : this.bidData.southNicknames;
-    }
-    if (this.isSmallScreen) {
-      console.log(this.isSmallScreen);
+
+      this.currentOrPreviousBid = this.isBidsEmpty ? 'Previous bid' : 'Current bid';
     }
   }
 

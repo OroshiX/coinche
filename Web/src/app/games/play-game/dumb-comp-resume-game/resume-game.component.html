@@ -1,6 +1,6 @@
 <mat-card class="resume-wrapper">
   <div class="resume">
-    <div class="item">Game state: <span class="itemContent">{{gameState}}</span></div>
+    <div class="item">State: <span class="itemContent">{{gameState}}</span></div>
     <ng-container *ngIf="gameState !== 'JOINING'">
       <div class="item">
         <span class="itemContent">
@@ -15,17 +15,13 @@
           {{bidData?.northSouth}}
         </span>
       </div>
-
-      <!--<div class="itemScores">
-        {{bidData?.northNicknames | shorterName: 5}}/{{bidData?.southNicknames | shorterName: 5}}:
-        {{bidData?.northSouth}}
-      </div>-->
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
-      <div class="item">Current bid:
+      <div class="item">{{currentOrPreviousBid}}:
         <span class="itemContent">{{bidData?.currentBidNickname | shorterName: 9}}
           - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
-          {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}</span>
+          {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}
+        </span>
       </div>
     </ng-container>
     <ng-container *ngIf="gameState !=='ENDED' else ended">
@@ -41,8 +37,6 @@
       </ng-template>
     </ng-container>
     <ng-template #ended>
-      <div class="item-blink">Game over !
-      </div>
       <div class="item-blink">
         The winners are:
         <strong>
