@@ -15,6 +15,12 @@
   font-weight: bold;
   font-size: 11px;
 }
+.itemContentRight {
+  color: ghostwhite;
+  font-weight: bold;
+  font-size: 11px;
+  margin-left: 4px;
+}
 .itemScores {
   color: ghostwhite;
   font-weight: bold;
@@ -25,6 +31,9 @@
   flex: 1;
   color: whitesmoke;
   font-size: 11px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .item-blink {
   @include item-base;
@@ -32,6 +41,10 @@
 }
 .item {
   @include item-base;
+}
+.item-left {
+  @include item-base;
+  justify-content: flex-start;
 }
 /*@mixin margin-overlapped($top) {
   margin-top: $top;

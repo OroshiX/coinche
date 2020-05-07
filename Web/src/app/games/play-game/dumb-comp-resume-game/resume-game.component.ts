@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { STATE } from '../../../shared/models/collection-game';
+import { shortenStr } from '../../../shared/utils/shorter-name';
 import { BidData } from '../play-game/play-game.component';
 
 @Component({
@@ -19,6 +20,8 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   winner1: string;
   winner2: string;
   limit: 8;
+  pairEastWestNamePadding: string;
+  pairNorthSouthNamePadding: string;
 
   constructor() {
   }
@@ -37,6 +40,13 @@ export class ResumeGameComponent implements OnInit, OnChanges {
         this.bidData.westNicknames : this.bidData.southNicknames;
 
       this.currentOrPreviousBid = this.isBidsEmpty ? 'Previous bid' : 'Current bid';
+
+      this.pairEastWestNamePadding =
+        `${shortenStr(this.bidData.eastNicknames, 9)}/${shortenStr(this.bidData.westNicknames, 9)}`;
+
+      this.pairNorthSouthNamePadding =
+        `${shortenStr(this.bidData.northNicknames, 9)}/${shortenStr(this.bidData.southNicknames, 9)}`;
+
     }
   }
 
