@@ -2,7 +2,6 @@
   display: flex;
 }
 @mixin player-idx-n($just-cont, $align-cont) {
-  max-width: 130px;
   flex: 1;
   display: flex;
   justify-content: $just-cont;
@@ -26,7 +25,7 @@
   background-color: #193812;
   color: white;
   font-family: "Roboto", sans-serif;
-  max-width: 130px;
+  max-width: 170px;
   height: fit-content;
 }
 .matChipCol-blink {
@@ -37,7 +36,7 @@
   @include chip-player;
 }
 .icon-player {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { STATE } from '../../../shared/models/collection-game';
+import { STATE, TYPE_BID } from '../../../shared/models/collection-game';
 import { shortenStr } from '../../../shared/utils/shorter-name';
 import { BidData } from '../play-game/play-game.component';
 
@@ -19,9 +19,11 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   currentOrPreviousBid: string;
   winner1: string;
   winner2: string;
-  limit: 8;
+  // limit: 8;
   pairEastWestNamePadding: string;
   pairNorthSouthNamePadding: string;
+  showBidAnnounced: boolean;
+  sleep: string;
 
   constructor() {
   }
@@ -40,13 +42,19 @@ export class ResumeGameComponent implements OnInit, OnChanges {
         this.bidData.westNicknames : this.bidData.southNicknames;
 
       this.currentOrPreviousBid = this.isBidsEmpty ? 'Previous bid' : 'Current bid';
+      this.showBidAnnounced = !(this.isBidsEmpty && this.bidData.currentBidType === TYPE_BID.PASS
+        && this.gameState === STATE.BIDDING);
 
       this.pairEastWestNamePadding =
-        `${shortenStr(this.bidData.eastNicknames, 9)}/${shortenStr(this.bidData.westNicknames, 9)}`;
+        `${shortenStr(this.bidData.eastNicknames, 14)}/${shortenStr(this.bidData.westNicknames, 14)}`;
 
       this.pairNorthSouthNamePadding =
-        `${shortenStr(this.bidData.northNicknames, 9)}/${shortenStr(this.bidData.southNicknames, 9)}`;
+        `${shortenStr(this.bidData.northNicknames, 14)}/${shortenStr(this.bidData.southNicknames, 14)}`;
+      /*this.pairNorthSouthNamePadding = str.padEnd(24, '\u2764\uFE0F');*/
+      /*this.pairNorthSouthNamePadding = str.padEnd(24, '\u2663');
+      this.pairNorthSouthNamePadding = str.padEnd(24, '\u2666');
 
+      this.sleep = 'Waiting for '.concat('\u231B');*/
     }
   }
 

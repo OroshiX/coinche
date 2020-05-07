@@ -17,7 +17,10 @@
     [colspan]="tiles[1].cols"
     [rowspan]="tiles[1].rows"
     [style.background]="tiles[1].color">
-    <app-chip-player [idx]="2" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersNicknameByMyPosOnTable[2]">
+    <app-chip-player [idx]="2"
+                     [nextPlayerIdx]="nextPlayerIdx"
+                     [nickname]="playersNicknameByMyPosOnTable[2]"
+                     [isSmallScreen]="isSmallScreen">
     </app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
@@ -29,7 +32,10 @@
     [colspan]="tiles[3].cols"
     [rowspan]="tiles[3].rows"
     [style.background]="tiles[3].color">
-    <app-chip-player [idx]="1" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersNicknameByMyPosOnTable[1]">
+    <app-chip-player [idx]="1"
+                     [nextPlayerIdx]="nextPlayerIdx"
+                     [nickname]="playersNicknameByMyPosOnTable[1]"
+                     [isSmallScreen]="isSmallScreen">
     </app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
@@ -54,7 +60,10 @@
     [colspan]="tiles[5].cols"
     [rowspan]="tiles[5].rows"
     [style.background]="tiles[5].color">
-    <app-chip-player [idx]="3" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersNicknameByMyPosOnTable[3]">
+    <app-chip-player [idx]="3"
+                     [nextPlayerIdx]="nextPlayerIdx"
+                     [nickname]="playersNicknameByMyPosOnTable[3]"
+                     [isSmallScreen]="isSmallScreen">
     </app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile
@@ -66,7 +75,10 @@
     [colspan]="tiles[7].cols"
     [rowspan]="tiles[7].rows"
     [style.background]="tiles[7].color">
-    <app-chip-player [idx]="0" [nextPlayerIdx]="nextPlayerIdx" [nickname]="playersNicknameByMyPosOnTable[0]">
+    <app-chip-player [idx]="0"
+                     [nextPlayerIdx]="nextPlayerIdx"
+                     [nickname]="playersNicknameByMyPosOnTable[0]"
+                     [isSmallScreen]="isSmallScreen">
     </app-chip-player>
   </mat-grid-tile>
   <mat-grid-tile

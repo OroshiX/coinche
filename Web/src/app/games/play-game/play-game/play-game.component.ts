@@ -120,9 +120,11 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     if (this.breakpointService.isSmallScreen()) {
       this.isSmallScreen = true;
       this.rowHeight = 75;
+      this.cd.detectChanges();
     } else {
       this.isSmallScreen = false;
       this.rowHeight = 95;
+      this.cd.detectChanges();
     }
     this.backCardImg = this.service.getBackCardImgSmall();
     this.backCardImgSmall = this.service.getBackCardImg();
@@ -141,6 +143,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.playersNicknameByMyPosOnTable = this.helper.getPlayersNicknameByMyPos(data.myPosition, data.nicknames);
     console.log('Players position on Table  ============', this.playersNicknameByMyPosOnTable);
     this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
+    console.log(data.bids);
     console.log('bidListOrdered', this.bidListOrdered);
     this.bidData = this.buildBidData(data);
     console.log('nextPlayer', JSON.stringify(data.nextPlayer));

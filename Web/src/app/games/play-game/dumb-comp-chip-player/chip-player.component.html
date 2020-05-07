@@ -4,8 +4,10 @@
                 idx===3 ? 'player-idx-three' : ''">
   <mat-chip-list aria-label="Player">
     <mat-chip [ngClass]="nextPlayerIdx===idx ? 'matChipCol-blink' : 'matChipCol'">
-      <mat-icon class="icon-player">person</mat-icon>
-      <small>{{nickname | shorterName:9}}</small>
+      <ng-container *ngIf="!isSmallScreen">
+        <mat-icon class="icon-player">person</mat-icon>
+      </ng-container>
+      <small>{{nickname | shorterName:14}}</small>
     </mat-chip>
   </mat-chip-list>
 </div>

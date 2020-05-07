@@ -73,10 +73,9 @@ export class PlayGameHelperService {
 
   getBidsOrderByMyPos(myPos: PLAYER_POSITION, bids: Bid[]): Bid [] {
     const playerPosOrderedByMyPosZero = this.playersPositionRefOrderedByMyPosZero(myPos);
+    const bidsProceeded = (bids.length > 4) ? [...bids.slice(length - 4)] : [...bids];
     return playerPosOrderedByMyPosZero
       .filter(pos => !!pos)
-      .map(pos => bids
-        .filter(bid => !!bid)
-        .find(bid => bid.position === pos));
+      .map(pos => bidsProceeded.filter(bid => !!bid).find(bid => bid.position === pos));
   }
 }

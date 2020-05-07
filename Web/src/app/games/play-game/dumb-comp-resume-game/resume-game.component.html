@@ -12,24 +12,26 @@
       </div>
     </ng-container>
     <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'">
-      <div class="item">
-        <span class="itemContent">{{currentOrPreviousBid}}:</span>
-        <span class="itemContentRight">{{bidData?.currentBidNickname | shorterName: 9}}
-          - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
-          {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}
+      <ng-container *ngIf="showBidAnnounced">
+        <div class="item">
+          <span class="itemContent">{{currentOrPreviousBid}}:</span>
+          <span class="itemContentRight">{{bidData?.currentBidNickname | shorterName: 14}}
+            - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
+            {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}
         </span>
-      </div>
+        </div>
+      </ng-container>
     </ng-container>
     <ng-container *ngIf="gameState !=='ENDED' else ended">
       <ng-container *ngIf="gameState === 'BIDDING' || gameState === 'PLAYING'; else joining">
         <div class="item-left">
           <span>Waiting for</span>
-          <span class="itemContentRight">{{bidData.nextPlayer | shorterName: 9}}</span>
+          <span class="itemContentRight">{{bidData.nextPlayer | shorterName: 14}}</span>
           <span class="itemContentRight"> to {{playOrBid}}</span>
         </div>
       </ng-container>
       <ng-template #joining>
-        <div class="item">Waiting for other players to join the game
+        <div class="item"><span>Waiting for other players to join the game</span>
         </div>
       </ng-template>
     </ng-container>
@@ -39,7 +41,7 @@
           The winners:
         </span>
         <span class="itemContentRight">
-          {{winner1 | shorterName: 9}}/{{winner2 | shorterName: 9}}
+          {{winner1 | shorterName: 14}}/{{winner2 | shorterName: 14}}
         </span>
       </div>
     </ng-template>
