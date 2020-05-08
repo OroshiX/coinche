@@ -25,10 +25,13 @@ extension BidExtension on List<Bid> {
   }
 
   Bid _lastBidCapotGeneralOpposite(PlayerPosition me) {
-    return lastWhere(
+    var lastBid = lastWhere(
         (element) =>
-            oppositeTeam(me).contains(element.position) &&
-            (element is SimpleBid || element is Capot || element is General),
-        orElse: () => null);
+            element is SimpleBid || element is Capot || element is General,
+        orElse: () => null,);
+    if (lastBid == null || !oppositeTeam(me).contains(lastBid.position)) {
+      return null;
+    }
+    return lastBid;
   }
 }
