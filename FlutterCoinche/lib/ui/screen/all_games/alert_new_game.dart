@@ -2,7 +2,6 @@ import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/lobby_screen.dart';
 import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
