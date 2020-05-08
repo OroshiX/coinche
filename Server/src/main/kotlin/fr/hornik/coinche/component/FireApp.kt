@@ -3,6 +3,7 @@ package fr.hornik.coinche.component
 import com.google.api.core.ApiFuture
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.firestore.Firestore
+import com.google.cloud.firestore.Transaction
 import com.google.cloud.firestore.WriteResult
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -19,6 +20,7 @@ import fr.hornik.coinche.util.debugPrintln
 import fr.hornik.coinche.util.traceLevel
 import org.springframework.stereotype.Service
 import java.util.*
+
 
 @Service
 class FireApp {
@@ -56,6 +58,7 @@ class FireApp {
                 db.collection(COLLECTION_SETS).add(JsonMapper.parseJson(jsonSet))
         return addedDocRef.get().id
     }
+
     fun getStatistic(uid: String = ""): Statistic {
         if (statisticLocale) {
             //emulation of firebase
@@ -65,20 +68,21 @@ class FireApp {
             return Statistic()
         }
     }
+
     fun saveStatistics(setOfGames: SetOfGames) {
         val nameFunction = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
         traceLevel = dbgLevel.ALL
         // we should call this function everytime we end a game
 
-        for (uid in setOfGames.players.map {it.uid}) {
+        for (uid in setOfGames.players.map { it.uid }) {
             val aStatistic = getStatistic(uid)
             // update statistic with the right value
 
             // write statistics in the DB
             if (DataManagement.productionAction) {
                 val future: ApiFuture<WriteResult> = db.collection(COLLECTION_STATISTIQUES).document(uid)
-                        .set(aStatistic.toString())
+                        .set(aStatistic)
                 // println("saveStatistique : " + future.get().getUpdateTime() + "future:" +future.toString())
                 val arg = aStatistic.toString()
                 debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
@@ -89,6 +93,7 @@ class FireApp {
         }
         traceLevel = oldTraceLevel
     }
+
     fun deleteGame(setOfGames: SetOfGames) {
         for (uid in setOfGames.players.map { it.uid }) {
             db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.id)
@@ -97,18 +102,47 @@ class FireApp {
         db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.id).delete()
         db.collection(COLLECTION_SETS).document(setOfGames.id).delete()
     }
+
+
+    fun transactionSaveGame(setOfGames: SetOfGames) {
+        val nameFunction = object {}.javaClass.enclosingMethod.name
+
+        val docRef = db.collection(COLLECTION_SETS).document(setOfGames.id)
+        val jsonTable = JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
+        val tablesRef = setOfGames.players.filter { !it.uid.contains(DataManagement.AUTOMATEDPLAYERSID) }.map { e ->
+            Pair(
+                    db.collection(COLLECTION_PLAYERS_SETS).document(setOfGames.toTable(e.uid).id)
+                            .collection(COLLECTION_PLAYERS).document(e.uid), setOfGames.toTable(e.uid).toFirebase())
+        }
+
+        // run an asynchronous transaction
+
+        val futureTransaction = db.runTransaction<Void?> { transaction: Transaction ->
+            // retrieve document and increment population field
+            transaction.set(docRef, JsonMapper.parseJson(jsonTable))
+            for (pair in tablesRef) {
+                transaction.set(pair.first, pair.second)
+            }
+            null
+        }
+
+    }
+
+
     fun saveGame(setOfGames: SetOfGames, new: Boolean = false) {
+
         // save the game in sets
         if (new) {
             val id = saveNewGame(setOfGames)
             setOfGames.id = id
-        } else {
-            updateGame(setOfGames)
-        }
 
-        // save the tables for players in playersSets
-        for (uid in setOfGames.players.map { it.uid }) {
-            saveTable(setOfGames.toTable(uid), uid)
+
+            // save the tables for players in playersSets
+            for (uid in setOfGames.players.map { it.uid }.filter { !it.contains(DataManagement.AUTOMATEDPLAYERSID) }) {
+                saveTable(setOfGames.toTable(uid), uid)
+            }
+        } else {
+            transactionSaveGame(setOfGames)
         }
     }
 
@@ -129,15 +163,15 @@ class FireApp {
         return userUID
     }
 
-    private fun updateGame(table: SetOfGames) {
+    private fun updateGame(setOfGames: SetOfGames) {
         val nameFunction = object {}.javaClass.enclosingMethod.name
 
         if (DataManagement.productionAction) {
 
-            val jsonTable = JsonSerialize.toJson(table.copy(lastModified = Date()))
+            val jsonTable = JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
 
             val future: ApiFuture<WriteResult> = db.collection(
-                    COLLECTION_SETS).document(table.id)
+                    COLLECTION_SETS).document(setOfGames.id)
                     .set(JsonMapper.parseJson(jsonTable))
 
 
