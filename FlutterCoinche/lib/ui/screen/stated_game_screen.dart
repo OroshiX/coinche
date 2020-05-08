@@ -37,7 +37,8 @@ class StatedGameScreen extends StatelessWidget {
         Inject.future(() => getPosTableToColors())
       ],
       builder: (_) => StateBuilder<Game>(
-        observe: () => RM.stream(BlocProvider.of<GamesBloc>(context).game, name: "gameFire"),
+        observe: () => RM.stream(BlocProvider.of<GamesBloc>(context).game,
+            name: "gameFire"),
         builder: (_, modelFire) {
           final currentModel = RM.get<Game>();
           Injector.get<Game>();
@@ -48,14 +49,14 @@ class StatedGameScreen extends StatelessWidget {
               onError: (e) => _buildEmpty(),
               onSetState: (_, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
-                  var different = rmFire.state.different(currentModel.state);
-                  currentModel.setValue(() => rmFire.state..sortCards(),
+                  var different =
+                      (rmFire.state..sortCards()).different(currentModel.state);
+                  currentModel.setValue(() => rmFire.state,
                       filterTags: different);
                 }
               },
               onData: (_) {
                 return TableWidget(quit: _quit);
-//                  return _build(model.getReactive());
               });
         },
       ),
