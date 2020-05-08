@@ -2,6 +2,7 @@ import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
 import 'package:FlutterCoinche/ui/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class InRoomGame extends StatelessWidget {
       child: NeumorphicWidget(
         onTap: () {
           gamesProvider.changeGame(game.id);
-          Navigator.of(context).pushNamed(LobbyScreen.routeName);
+          Navigator.of(context).pushNamed(StatedGameScreen.routeName);
         },
         child: OneGame(
           game: game,
