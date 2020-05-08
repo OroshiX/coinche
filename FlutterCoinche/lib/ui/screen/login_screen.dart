@@ -2,7 +2,7 @@ import 'package:FlutterCoinche/service/network/fire_auth_service.dart';
 import 'package:FlutterCoinche/service/network/my_auth_user.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/all_games_screen.dart';
+import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';

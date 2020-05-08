@@ -13,6 +13,9 @@ class GameEmpty {
   String name;
   String nicknameCreator;
   bool inRoom;
+  @JsonKey(ignore: true)
+  bool hasBots;
+  static const automatedString = "AUTOMATED";
 
   TableState state;
 
@@ -22,7 +25,8 @@ class GameEmpty {
       this.name,
       this.nicknameCreator,
       this.inRoom,
-      this.state = TableState.JOINING});
+      this.state = TableState.JOINING})
+      : hasBots = name.contains(automatedString);
 
   factory GameEmpty.fromJson(Map<String, dynamic> json) =>
       _$GameEmptyFromJson(json);
