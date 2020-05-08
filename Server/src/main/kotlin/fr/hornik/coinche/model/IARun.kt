@@ -25,6 +25,7 @@ data class IARun(val setOfGames: SetOfGames) {
             User("Hugo-Linus55522234Gh", "Hugo-Linus")
     ).map { User(it.uid + DataManagement.AUTOMATEDPLAYERSID, it.nickname) }
 
+    private val MINIMUM_BETWEEN_2_ACTIONS:Long = 1500
     fun run(data: DataManagement, millis: Long): Boolean {
         //return true if saving is needed.
 
@@ -34,26 +35,34 @@ data class IARun(val setOfGames: SetOfGames) {
         // We need to call here the function written by Sacha
 
         when (setOfGames.state) {
-            TableState.BIDDING -> if (!listCandidatePlayer.isEmpty()) {
-                setOfGames.whoseTurnTimeLastChg = millis
-                val p = listCandidatePlayer.first()
-                val u = User(p.uid, p.nickname)
-                val aBid = enchere(setOfGames.whoseTurn, setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
-                debugPrintln(dbgLevel.DEBUG, "ANNOUNCE AUTOMATED $aBid for player ${setOfGames.whoseTurn}")
-                data.announceBid(setOfGames, aBid, u)
-                return false
-                // no need to save after data.announceBid
+            TableState.BIDDING -> {
+                // to avoid actions too fast we force interval to be at list 1,5s between 2 bids or playcard
+                if ((millis - setOfGames.whoseTurnTimeLastChg) < MINIMUM_BETWEEN_2_ACTIONS ) return false
+                if (listCandidatePlayer.isNotEmpty()) {
+                    setOfGames.whoseTurnTimeLastChg = millis
+                    val candidate = listCandidatePlayer.first()
+                    val userCandidate = User(candidate.uid, candidate.nickname)
+                    val aBid = enchere(setOfGames.whoseTurn, setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
+                    debugPrintln(dbgLevel.DEBUG, "ANNOUNCE AUTOMATED $aBid for player ${setOfGames.whoseTurn}")
+                    data.announceBid(setOfGames, aBid, userCandidate)
+                    return false
+                    // no need to save after data.announceBid
+                }
             }
 
-            TableState.PLAYING -> if (!listCandidatePlayer.isEmpty()) {
-                val p = listCandidatePlayer.first()
-                val u = User(p.uid, p.nickname)
-                val Acard = p.cardsInHand.filter { it.playable == true }.random()
-                val myCard = Card(value = Acard.value, color = Acard.color)
-                setOfGames.whoseTurnTimeLastChg = millis
-                debugPrintln(dbgLevel.DEBUG, "${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
-                data.playCard(setOfGames, myCard, user = u)
-                return false
+            TableState.PLAYING -> {
+                // to avoid actions too fast we force interval to be at list 1,5s between 2 bids or playcard
+                if ((millis - setOfGames.whoseTurnTimeLastChg) < MINIMUM_BETWEEN_2_ACTIONS ) return false
+                if (listCandidatePlayer.isNotEmpty()) {
+                    val candidate = listCandidatePlayer.first()
+                    val userCandidate = User(candidate.uid, candidate.nickname)
+                    val aCard = candidate.cardsInHand.filter { it.playable == true }.random()
+                    val myCard = Card(value = aCard.value, color = aCard.color)
+                    setOfGames.whoseTurnTimeLastChg = millis
+                    debugPrintln(dbgLevel.DEBUG, "${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
+                    data.playCard(setOfGames, myCard, user = userCandidate)
+                    return false
+                }
             }
 
             TableState.ENDED -> {
@@ -270,11 +279,15 @@ data class IARun(val setOfGames: SetOfGames) {
             val myBid: Bid
 
             if ((myEnchere >= 80) && (myEnchere > minPoints)) {
-                if (myEnchere >= 500) {
-                    myBid = General(color = atout, position = myPosition, belote = (myEnchere > 500))
-                } else if (myEnchere >= 250) {
-                    myBid = Capot(color = atout, position = myPosition, belote = (myEnchere > 250))
-                } else myBid = SimpleBid(atout, myEnchere, myPosition)
+                myBid = when {
+                    myEnchere >= 500 -> {
+                        General(color = atout, position = myPosition, belote = (myEnchere > 500))
+                    }
+                    myEnchere >= 250 -> {
+                        Capot(color = atout, position = myPosition, belote = (myEnchere > 250))
+                    }
+                    else -> SimpleBid(atout, myEnchere, myPosition)
+                }
 
                 // This test permits to eliminate case where somebody did coinche etc .....
                 if (isValidBid(allBids, myBid))
@@ -381,20 +394,20 @@ data class IARun(val setOfGames: SetOfGames) {
 
                 var nbMax = 0
                 if (trump) {
-                    myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointAtoutRev[e]!!)) }.toMap().toMutableMap()
+                    myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointAtoutRev.getValue(e))) }.toMap().toMutableMap()
                     nbMax = min(8 - curColorCards.size, 4)
                     // If we have less than (or equal to) 3 trumps, starting can be a big deal : BONUS/MALUS
                     if (curColorCards.size <=3) {
                         if (IStart) Value += NOTSTARTINGMALUS else Value+= STARTINGBONUS
                     }
                 } else {
-                    myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointCouleurRev[e]!!)) }.toMap().toMutableMap()
+                    myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointCouleurRev.getValue(e))) }.toMap().toMutableMap()
                     nbMax = min(curColorCards.size, 3)
 
                     // look if 10 is alone
                     if ((curColorCards.size == 1) && (curColorCards[0].value == CardValue.TEN)) {
                         // remove 7 points ( no ACE is already minus 13)
-                        Value = Value - 10
+                        Value -= 10
                     }
                 }
                 for (card in curColorCards) {
@@ -406,8 +419,8 @@ data class IARun(val setOfGames: SetOfGames) {
                 var i = 0
 
                 // Potential Bug : need to check order of map iteration - was it changed by assignment ?
-                for (obj in myPoints.toSortedMap(object : Comparator<CardValue> {
-                    override fun compare(c1: CardValue, c2: CardValue): Int = when (trump) {
+                for (obj in myPoints.toSortedMap(Comparator { c1, c2 ->
+                    when (trump) {
                         true -> c2.dominanceAtout - c1.dominanceAtout
                         else -> c2.dominanceCouleur - c1.dominanceCouleur
                     }
