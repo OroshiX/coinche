@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/inner_shadow.dart';
+import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';

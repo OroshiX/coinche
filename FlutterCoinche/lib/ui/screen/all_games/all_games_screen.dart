@@ -3,8 +3,7 @@ import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/alert_new_game.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/in_room_game.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/join_game.dart';
+import 'package:FlutterCoinche/ui/screen/all_games/list_games.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
 import 'package:FlutterCoinche/ui/widget/neu_round_inset.dart';
 import 'package:bloc_provider/bloc_provider.dart';
@@ -18,8 +17,7 @@ class AllGamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var gamesProvider = BlocProvider.of<GamesBloc>(context);
-    ServerCommunication.allGames()
-        .then((value) => gamesProvider.addAllMyGames(value));
+    _refreshData(gamesProvider);
     return Scaffold(
       floatingActionButton: NeuRoundInset(
         onTap: () {
@@ -36,13 +34,6 @@ class AllGamesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("All games"),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                ServerCommunication.allGames().then((value) {
-                  gamesProvider.addAllMyGames(value);
-                });
-              }),
           IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
@@ -70,49 +61,19 @@ class AllGamesScreen extends StatelessWidget {
                 child: Text("No data"),
               );
             }
-            var games = snapshot.data;
-            final inRoomGames =
-                games.where((element) => element.inRoom).toList();
-            final toJoin = games.where((element) => !element.inRoom).toList();
-            return ListView.builder(
-              itemCount: games.length + 2,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return ListTile(
-                    title: Text(
-                      "In game",
-                      style: TextStyle(color: colorTextDark, fontSize: 20),
-                    ),
-                  );
-                }
-                if (index == inRoomGames.length + 1) {
-                  return ListTile(
-                    title: Text(
-                      "Join",
-                      style: TextStyle(
-                        color: colorTextDark,
-                        fontSize: 20,
-                      ),
-                    ),
-                  );
-                }
-                if (index <= inRoomGames.length) {
-                  GameEmpty gameInRoom = inRoomGames[index - 1];
-                  return InRoomGame(
-                    game: gameInRoom,
-                    gamesProvider: gamesProvider,
-                  );
-                }
-                GameEmpty game = toJoin[index - inRoomGames.length - 2];
-                return JoinGame(
-                  gamesProvider: gamesProvider,
-                  game: game,
-                );
-              },
+
+            return ListGames(
+              gamesProvider: gamesProvider,
+              games: snapshot.data,
+              onRefresh: _refreshData,
             );
           },
         ),
       )),
     );
   }
+
+  Future<void> _refreshData(GamesBloc gamesProvider) =>
+      ServerCommunication.allGames()
+          .then((value) => gamesProvider.addAllMyGames(value));
 }

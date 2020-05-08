@@ -2,7 +2,7 @@ import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
-import 'package:FlutterCoinche/ui/screen/lobby_screen.dart';
+import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class JoinGame extends StatelessWidget {
             gameId: game.id,
           ).then((_) {
             gamesProvider.changeGame(game.id);
-            Navigator.of(context).pushNamed(LobbyScreen.routeName);
+            Navigator.of(context).pushNamed(StatedGameScreen.routeName);
           }, onError: (error) {
             FlushbarHelper.createError(
                     message: "Cannot join game ${game.id}: $error",
