@@ -1,7 +1,6 @@
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
-import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
@@ -27,25 +26,18 @@ class MiddleArea extends StatelessWidget {
     return StateBuilder(
       models: [RM.get<Game>()],
       tag: [
-        Aspects.STATE,
         Aspects.ID,
         Aspects.MY_POSITION,
-        Aspects.ON_TABLE,
-        Aspects.NEXT_PLAYER
+        Aspects.NEXT_PLAYER,
+        Aspects.ALL_BIDS
       ],
       builder: (context, model) {
-        final state = model.state.state;
         final id = model.state.id;
         final myPosition = model.state.myPosition;
-        final posTableToCardinal = getPosTableToCardinal(myPosition);
-        final onTable = model.state.onTable;
         final nextPlayer = model.state.nextPlayer;
         return Stack(
           children: [
             CardsOnTable(
-              state: state,
-              cardsOnTable: onTable,
-              posTableToCardinal: posTableToCardinal,
               minPadding: 2,
             ),
             Center(
