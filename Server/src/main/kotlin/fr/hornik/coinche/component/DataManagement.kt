@@ -310,37 +310,42 @@ class DataManagement(@Autowired private val fire: FireApp) {
             TableState.BIDDING,
             TableState.PLAYING -> {
                 // First check there are 32 cards ( pli / hands ) 8 belongs to each players
-                val nbCards: MutableMap<PlayerPosition, Int> = mutableMapOf()
+                val nbCards: MutableMap<PlayerPosition, Int> = PlayerPosition.values().map {Pair(it,0)}.toMap().toMutableMap()
 
                 for (position in PlayerPosition.values()) {
-                    val player = setOfGames.players.firstOrNull() { it.position == PlayerPosition.NORTH }
+                    val player = setOfGames.players.firstOrNull() { it.position == position }
                     if (player == null ) {
                         debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id}")
                         returnValue = false
                     }
-                    nbCards[position] = setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand.size
+                    nbCards[position] = setOfGames.players.first { it.position == position}.cardsInHand.size
                     for (i in 0 until setOfGames.plisCampNS.size) {
                         nbCards[position] = nbCards[position]!! + setOfGames.plisCampNS[i]!!.filter { it.position == position }.size
                     }
                     for (i in 0 until setOfGames.plisCampEW.size) {
-                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampNS[i]!!.filter { it.position == position }.size
+                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampEW[i]!!.filter { it.position == position }.size
                     }
-                    if (nbCards.any{it.value != 8}) {
-                        debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id}\n Players dont have 8 cards $nbCards")
+                    for (i in 0 until setOfGames.onTable.size){
+                        nbCards[position] = nbCards[position]!! + setOfGames.onTable.filter{ it.position == position }.size
                     }
+
+                }
+                if (nbCards.any{it.value != 8}) {
+                    debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id} \n Players dont have 8 cards $nbCards")
+                    returnValue=false
                 }
             }
         }
         return returnValue
     }
 
-    fun allCheckCoherency() :Boolean {
+    fun allCheckCoherency() : String? {
         for (setOfGames in sets)
             if (!checkCoherency(setOfGames)) {
                 debugPrintln(dbgLevel.REGULAR,"Coherency error on $setOfGames detected stopping check")
-                return false
+                return setOfGames.id
             }
-        return true
+        return ""
     }
 
     fun playCard(setOfGames: SetOfGames, card: Card, user: User): CardPlayed {
