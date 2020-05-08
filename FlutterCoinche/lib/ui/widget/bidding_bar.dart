@@ -179,7 +179,7 @@ class _BiddingBarState extends State<BiddingBar> {
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
-      tag: [Aspects.BIDS, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
+      tag: [Aspects.ALL_BIDS, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
       builder: (context, model) {
         final bids = model.state.bids;
         final me = model.state.myPosition;

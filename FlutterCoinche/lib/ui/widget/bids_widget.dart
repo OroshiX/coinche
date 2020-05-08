@@ -26,21 +26,32 @@ class BidsWidget extends StatelessWidget {
     final GlobalKey<AnimatedListState> key = GlobalKey();
     final List<Bid> currentBids = [];
     return StateBuilder<Game>(
-      tag: [Aspects.MY_POSITION, Aspects.BIDS, Aspects.STATE],
+      tag: [Aspects.MY_POSITION, fromPositionBid(posTable), Aspects.STATE],
       models: [RM.get<Game>()],
       onSetState: (context, model) {
-        var changeBids = model.state.getChangeBid(currentBids, posTable);
+        final newBids = model.state.bidsOfPosition(posTable);
+        final changeBids =
+            GameExtensions.changeBid(currentBids, newBids, posTable);
         if (changeBids == null) return;
         if (changeBids.typeChange == TypeChange.INSERT) {
-          key.currentState.insertItem(changeBids.position);
+          for (var i = 0; i < changeBids.nbChanges; i++) {
+            final indexInsert = currentBids.length;
+            currentBids.add(newBids[indexInsert]);
+            key.currentState.insertItem(indexInsert);
+          }
         } else {
-          key.currentState.removeItem(
-              changeBids.position,
-              (context, animation) => Container(
-                    width: 30,
-                    height: 30,
-                    color: Colors.blue,
-                  ));
+          // remove N bids
+          for (var i = 0; i < changeBids.nbChanges; i++) {
+            final indexRemove = currentBids.length - 1;
+            currentBids.removeAt(indexRemove);
+            key.currentState.removeItem(
+                indexRemove,
+                (context, animation) => Container(
+                      width: 30,
+                      height: 30,
+                      color: Colors.blue,
+                    ));
+          }
         }
       },
       builder: (context, model) {
