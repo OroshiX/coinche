@@ -50,8 +50,8 @@ class CardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = getAssetImageFromColor(card.color);
-    final letter = getLetterFromValue(card.value);
+    final image = getAssetImageFromColor(card?.color);
+    final letter = getLetterFromValue(card?.value);
     final marginValue = getPaddingInCard(cardWidth: width);
 
     return Container(
@@ -70,7 +70,7 @@ class CardContent extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: getSizeSuitIcon(cardWidth: width),
                 ),
-                if (card.playable != null && displayPlayable && card.playable)
+                if (card?.playable != null && displayPlayable && (card?.playable ?? false))
                   Icon(Icons.check)
               ],
             )),
