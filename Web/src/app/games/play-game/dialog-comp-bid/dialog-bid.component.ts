@@ -1,10 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { of } from 'rxjs';
 import { bidPointListWithCapotNGeneral, TYPE_BID } from '../../../shared/models/collection-game';
 import { CARD_COLOR } from '../../../shared/models/play';
 import { DialogData } from '../play-game/play-game.component';
 import { iconClub, iconDiamond, iconHeart, iconSpade } from '../services/card-image.service';
 
+const MIN_POINTS = 80;
+const IDX_MIN = 0;
 const IDX_MAX_SIMPLE_BID = 10;
 const IDX_CAPOT = 11;
 const IDX_GENERAL = 12;
@@ -26,26 +29,24 @@ export class DialogBidComponent {
   color: string;
   typeBid: string;
   idxPoints: number;
-  idxPointsMin = 0;
 
   constructor(public dialogRef: MatDialogRef<DialogBidComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.initializeData(data);
-    console.log(this.bidPoints);
+    console.log(this.data);
   }
 
   onNoClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(of(null));
   }
 
   clickMinus() {
-    this.idxPoints = this.idxPoints <= 0 ? 0 : (this.idxPoints - 1);
+    this.idxPoints = this.idxPoints <= IDX_MIN ? IDX_MIN : (this.idxPoints - 1);
     this.setData();
   }
 
   clickPlus() {
     this.idxPoints = this.idxPoints >= IDX_POINTS_ALL_MAX ? this.idxPoints : (this.idxPoints + 1);
-    console.log(this.idxPoints);
     this.setData();
   }
 
@@ -82,16 +83,9 @@ export class DialogBidComponent {
   }
 
   private initializeData(data: DialogData) {
-    /*this.idxPointsMin = (this.bidPoints.indexOf(data.points) >= 0) &&
-    (this.bidPoints.indexOf(data.points) <= IDX_MAX_SIMPLE_BID) ?
-      this.bidPoints.indexOf(data.points) + 1 : 0;*/
-    /*if () {
-
-    }*/
     this.points = data?.points;
-    this.idxPoints = !!this.points && this.points >= 80 ?
-      this.bidPoints.map(el => el.value).indexOf(this.points) : this.idxPointsMin;
-    this.pointsLabel = this.bidPoints[this.idxPoints].label;
+    this.idxPoints = !!this.points && this.points >= MIN_POINTS ?
+      this.bidPoints.map(el => el.value).indexOf(this.points) + 1: IDX_MIN;
     this.setType();
     this.setPoints();
     this.setColor('');
@@ -104,8 +98,11 @@ export class DialogBidComponent {
   }
 
   private setPoints() {
-    this.points = this.bidPoints[this.idxPoints].value;
-    this.pointsLabel = this.bidPoints[this.idxPoints].label;
+    this.idxPoints = this.idxPoints > IDX_POINTS_ALL_MAX ? this.idxPoints - 1 : this.idxPoints;
+    this.points = this.bidPoints.map(el => el.value)[this.idxPoints];
+    this.pointsLabel = this.bidPoints.map(el => el.label)[this.idxPoints];
+    // this.points = this.bidPoints[this.idxPoints].value;
+    // this.pointsLabel = this.bidPoints[this.idxPoints].label;
   }
 
   private setColor(color) {

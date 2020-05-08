@@ -59,6 +59,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   currentBidPoints: number;
   currentBidType: any;
 
+  currentBidPointsAnnounced: number;
   isBidsEmpty: boolean;
   isDisableBid: boolean;
   isMyTurn: boolean;
@@ -137,6 +138,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.myPosition = data.myPosition;
     this.isMyTurn = data.myPosition === data.nextPlayer;
     this.isBidsEmpty = data.bids.length <= 0;
+    this.currentBidPointsAnnounced = data.bids.length > 0 ? data.currentBid.points : 0;
     this.isMyCardsDisable = this.isMyCardsOnTableDisable(data.state, data.nextPlayer, data.myPosition);
     this.nextPlayerIdx = this.gameState !== STATE.ENDED && this.gameState !== STATE.JOINING ?
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever

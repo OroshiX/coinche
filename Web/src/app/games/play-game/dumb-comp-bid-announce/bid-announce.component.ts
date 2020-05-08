@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BID_POINTS, TYPE_BID } from '../../../shared/models/collection-game';
@@ -11,7 +12,7 @@ import { DialogBidComponent } from '../dialog-comp-bid/dialog-bid.component';
   templateUrl: './bid-announce.component.html',
   styleUrls: ['./bid-announce.component.scss']
 })
-export class BidAnnounceComponent implements OnInit {
+export class BidAnnounceComponent implements OnInit, OnChanges {
   @Input() isDisableBid: boolean;
   @Input() myPosition: string;
   @Input() gameId: string;
@@ -22,8 +23,13 @@ export class BidAnnounceComponent implements OnInit {
   constructor(public dialog: MatDialog, private apiService: ApiGamesService) {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(this.currentBidPoints);
+  }
+
   ngOnInit(): void {
   }
+
 
   bidPass(): void {
     const bid = new AnnounceBid({type: TYPE_BID.PASS, color: CARD_COLOR.HEART, points: BID_POINTS.EIGHTY});
@@ -40,7 +46,7 @@ export class BidAnnounceComponent implements OnInit {
     dialogRef.afterClosed()
       .pipe(
         switchMap(result => {
-          return this.announceBidApi(result);
+          return !!result && !!result.points ? this.announceBidApi(result) : of(null);
         }))
       .subscribe(res => {
         console.log('The dialog was closed');
@@ -49,7 +55,6 @@ export class BidAnnounceComponent implements OnInit {
   }
 
   private announceBidApi(result: AnnounceBid) {
-    console.log(result);
     if (!!result) {
       result.position = this.myPosition;
       return this.apiService.announceBid(this.gameId, result);
