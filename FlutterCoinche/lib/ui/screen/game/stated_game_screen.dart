@@ -1,6 +1,7 @@
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
+import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
@@ -50,7 +51,11 @@ class StatedGameScreen extends StatelessWidget {
               onSetState: (_, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
                   var different = rmFire.state.different(currentModel.state);
-                  currentModel.setValue(() => rmFire.state..sortCards(),
+                  currentModel.setValue(
+                      () => rmFire.value.copy(
+                          withCards: rmFire.value.cards.toList()
+                            ..sortCards(
+                                rmFire.value.state, rmFire.value.currentBid)),
                       filterTags: different);
                 }
               },
