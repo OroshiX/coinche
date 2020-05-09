@@ -10,18 +10,21 @@ class InnerShadow extends SingleChildRenderObjectWidget {
     this.color,
     this.blur,
     @required this.offset,
+    this.showIos = true,
     Widget child,
   }) : super(key: key, child: child);
 
   final Color color;
   final double blur;
   final Offset offset;
+  final bool showIos;
 
   @override
   RenderInnerShadow createRenderObject(BuildContext context) {
     return RenderInnerShadow()
       ..color = color
       ..blur = blur
+      ..showIos = showIos
       ..offset = offset;
   }
 
@@ -31,6 +34,7 @@ class InnerShadow extends SingleChildRenderObjectWidget {
     renderObject
       ..color = color
       ..blur = blur
+      ..showIos = showIos
       ..offset = offset;
   }
 }
@@ -46,12 +50,21 @@ class RenderInnerShadow extends RenderProxyBox {
   Color _color;
   double _blur;
   Offset _offset;
+  bool _showIos;
 
   Color get color => _color;
 
   set color(Color value) {
     if (_color == value) return;
     _color = value;
+    markNeedsPaint();
+  }
+
+  bool get showIos => _showIos;
+
+  set showIos(bool value) {
+    if (_showIos == value) return;
+    _showIos = value;
     markNeedsPaint();
   }
 
@@ -74,7 +87,8 @@ class RenderInnerShadow extends RenderProxyBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null) {
-      if (Platform.isIOS) { // Don'use inner shadow on iOS
+      if (Platform.isIOS && !showIos) {
+        // Don'use inner shadow on iOS
         context.paintChild(child, offset);
         return;
       }

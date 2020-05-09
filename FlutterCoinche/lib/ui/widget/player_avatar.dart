@@ -215,10 +215,12 @@ class _RoundAvatar extends StatelessWidget {
       child: InnerShadow(
         offset: Offset(2, 2),
         blur: 3,
+        showIos: false,
         color: Colors.black45,
         child: InnerShadow(
           offset: Offset(-2, -1),
           blur: 2,
+          showIos: false,
           color: Colors.white,
           child: Container(
             decoration:
