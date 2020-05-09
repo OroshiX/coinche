@@ -49,9 +49,8 @@ class StatedGameScreen extends StatelessWidget {
               onError: (e) => _buildEmpty(),
               onSetState: (_, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
-                  var different =
-                      (rmFire.state..sortCards()).different(currentModel.state);
-                  currentModel.setValue(() => rmFire.state,
+                  var different = rmFire.state.different(currentModel.state);
+                  currentModel.setValue(() => rmFire.state..sortCards(),
                       filterTags: different);
                 }
               },
