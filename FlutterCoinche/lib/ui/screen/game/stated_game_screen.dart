@@ -4,7 +4,7 @@ import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/widget/table_widget.dart';
+import 'package:FlutterCoinche/ui/screen/game/table_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

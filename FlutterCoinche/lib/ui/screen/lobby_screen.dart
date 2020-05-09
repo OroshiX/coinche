@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
-import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/material.dart';
 
