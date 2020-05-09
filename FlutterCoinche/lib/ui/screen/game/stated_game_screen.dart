@@ -42,7 +42,6 @@ class StatedGameScreen extends StatelessWidget {
             name: "gameFire"),
         builder: (_, modelFire) {
           final currentModel = RM.get<Game>();
-          Injector.get<Game>();
           return WhenRebuilder<Game>(
               models: [modelFire, RM.get<PosTableToColor>()],
               onIdle: () => _buildEmpty(),
@@ -51,11 +50,11 @@ class StatedGameScreen extends StatelessWidget {
               onSetState: (_, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
                   var different = rmFire.state.different(currentModel.state);
+                  final fireGame = modelFire.value;
                   currentModel.setValue(
-                      () => rmFire.value.copy(
-                          withCards: rmFire.value.cards.toList()
-                            ..sortCards(
-                                rmFire.value.state, rmFire.value.currentBid)),
+                      () => fireGame.copy(
+                          withCards: fireGame.cards.toList()
+                            ..sortCards(fireGame.state, fireGame.currentBid)),
                       filterTags: different);
                 }
               },
