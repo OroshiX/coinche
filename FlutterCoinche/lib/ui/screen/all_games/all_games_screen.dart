@@ -1,7 +1,9 @@
+import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
+import 'package:FlutterCoinche/ui/resources/dimens.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/alert_new_game.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/list_games.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
@@ -41,17 +43,33 @@ class AllGamesScreen extends StatelessWidget {
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
+                  builder: (context) {
+                    final String offsetName = AxisDirection.up.toString()+"offset";
+                    final String rotateName = AxisDirection.up.toString()+"rotate";
+                    return AlertDialog(
                     title: Text("Anim test"),
                     content: Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         color: colorLightBlue,
-                        child: Injector(inject: [
-                          Inject(() => Offset(300, 100)),
-                          Inject(() => 0.0)
-                        ], builder: (ctx) => Stack(children: [MovingCard()]))),
-                  ),
+                        child: Injector(
+                            inject: [
+                              Inject(() => Offset(300, 100), name: offsetName),
+                              Inject(() => 0.0, name: rotateName),
+                            ],
+                            builder: (ctx) => Stack(children: [
+                                  MovingCard(
+                                    card: CardModel(
+                                        value: CardValue.KING,
+                                        color: CardColor.SPADE),
+                                    cardHeight: 50 * golden,
+                                    cardWidth: 50,
+                                    offsetName: offsetName,
+                                    rotateName: rotateName,
+                                  )
+                                ]))),
+                  );
+                  },
                 );
               }),
           IconButton(
