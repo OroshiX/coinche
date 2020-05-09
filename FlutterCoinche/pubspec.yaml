@@ -32,7 +32,6 @@ dependencies:
   requests: ^3.1.0 # For cookie-aware http requests
   json_annotation: ^3.0.0 # for json
   rxdart: ^0.23.1
-  bubble: ^1.1.9+1 # speech bubbles
   bloc_provider: ^0.7.0
   audioplayers: ^0.15.1
   flutter_login: ^1.0.14 # animations and visuals for login
