@@ -23,6 +23,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { DialogBidComponent } from './games/play-game/dialog-comp-bid/dialog-bid.component';
+import { MiniCardComponent } from './games/play-game/dumb-comp-mini-card/mini-card.component';
 import { LoginGoogleComponent } from './login-google/login-google.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { AuthInterceptor } from './services/http-interceptors/auth-interceptor';
@@ -45,7 +46,8 @@ export const httpInterceptorProviders = [
     AlertComponent,
     LoginGoogleComponent,
     CreateNicknameDialogComponent,
-    DialogBidComponent
+    DialogBidComponent,
+    MiniCardComponent
   ],
   entryComponents: [
     CreateNicknameDialogComponent

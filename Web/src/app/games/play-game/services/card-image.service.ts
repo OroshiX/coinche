@@ -5,7 +5,7 @@ import { buildOrderedListPlayableTrueAndFalse } from '../../../shared/utils/help
 const bckgrndUrlImg = ` url("../../assets/images/1CPtk.png") no-repeat`;
 const bckgrndUrlImgSmall = ` url("../../assets/images/1CPtkSmall.png") no-repeat`;
 export const backCardImg = `url("../../assets/images/back-card-120X174.png") no-repeat`;
-const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
+export const backCardImgSmall = `url("../../assets/images/back-card-60X87.png") no-repeat`;
 
 export const iconClub = `url("../../assets/images/club.png") no-repeat`;
 export const iconSpade = `url("../../assets/images/spade.png") no-repeat`;

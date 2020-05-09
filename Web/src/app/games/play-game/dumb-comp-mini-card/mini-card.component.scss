@@ -1,0 +1,26 @@
+@mixin width-height-card($width-value, $height-value) {
+  width: $width-value;
+  height: $height-value;
+  border: none;
+  border-radius: 5px;
+}
+
+@media(max-width: 959px) {
+  .card-played {
+    @include width-height-card(60px, 87px);
+    margin: 10px;
+  }
+}
+
+@media(min-width: 960px) {
+  .card-played {
+    @include width-height-card(120px, 174px);
+    margin-left: 75px;
+    margin-right: 75px;
+  }
+}
+
+
+
+
+

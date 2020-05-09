@@ -25,24 +25,34 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span class="title">Coinche &clubs; &diams; &spades; &hearts;</span>
+      <div class="title-container">
+        <span class="title">Coinche</span>
+        <div class="emoji-container">
+          <span class="emoji-card-black">&clubs;</span>
+          <span class="emoji-card-red">&diams;</span>
+          <span class="emoji-card-black">&spades;</span>
+          <span class="emoji-card-red">&hearts;</span>
+        </div>
+      </div>
+      <div class="user-container">
       <ng-container *ngIf="isDisabled!==true">
-        <button
-          matTooltip="Create a nickname"
-          matTooltipPosition="below"
-          mat-raised-button color="primary"
-          (click)="setNickname()"
-          class="current-user">{{currentUserName}}
-        </button>
-        <button
-          mat-raised-button
-          color="primary"
-          matTooltip="Logout"
-          (click)="logout()"
-          mat-icon-button>
-          <mat-icon>logout</mat-icon>
-        </button>
+          <button
+            matTooltip="Create a nickname"
+            matTooltipPosition="below"
+            mat-raised-button color="primary"
+            (click)="setNickname()"
+            class="current-user">{{currentUserName}}
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            matTooltip="Logout"
+            (click)="logout()"
+            mat-icon-button>
+            <mat-icon>logout</mat-icon>
+          </button>
       </ng-container>
+      </div>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

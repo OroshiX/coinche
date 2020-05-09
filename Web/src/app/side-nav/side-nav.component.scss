@@ -20,13 +20,26 @@
   top: 0;
   z-index: 1;
 }
+.user-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
 .current-user {
   flex: fit-content;
   font-style: italic;
   font-size: small;
 }
+.title-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
 .title {
-  flex: auto;
+  margin-right: 15px;
+}
+.emoji-container{
+  flex: 1;
 }
 .color-inactive{
   background-color: lightslategrey;
@@ -43,6 +56,12 @@
 .active-link:hover {
   color: lightgray;
   background-color: mediumblue;
+}
+.emoji-card-red {
+  color: red;
+}
+.emoji-card-black {
+  color: #343434;
 }
 
 

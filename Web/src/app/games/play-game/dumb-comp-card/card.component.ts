@@ -21,8 +21,6 @@ export class CardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    // this.card = this.mustHideOnTable && this.isOnTable ? {...new CardView(null)} : this.card;
-    // console.log(JSON.stringify(this.mustHideOnTable));
   }
 
   onClickCard(card: CardView) {
@@ -31,9 +29,6 @@ export class CardComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.inactiveCard = !this.isOnTable && this.card?.playable === false;
-    // console.log(JSON.stringify(this.mustHideOnTable));
-    /*this.card = this.mustHideOnTable && this.isOnTable ? {...new CardView(null)} : this.card;
-    console.log(JSON.stringify(this.mustHideOnTable));*/
   }
 
 }

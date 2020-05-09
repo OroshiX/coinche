@@ -47,7 +47,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   cardsPlayed: CardView[] = new Array<CardView>();
   map = new Map<number, string[]>();
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
-  backCardImg: string;
   backCardImgSmall: string;
   isSmallScreen: boolean;
   rowHeight: number;
@@ -127,8 +126,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
       this.rowHeight = 95;
       this.cd.detectChanges();
     }
-    this.backCardImg = this.service.getBackCardImgSmall();
-    this.backCardImgSmall = this.service.getBackCardImg();
+    this.backCardImgSmall = this.service.getBackCardImgSmall();
     this.cd.detectChanges();
   }
 
