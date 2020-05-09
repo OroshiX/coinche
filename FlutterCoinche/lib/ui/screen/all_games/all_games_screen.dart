@@ -5,12 +5,13 @@ import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/alert_new_game.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/list_games.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
-import 'package:FlutterCoinche/ui/widget/moving_cards.dart';
+import 'package:FlutterCoinche/ui/widget/moving_card.dart';
 import 'package:FlutterCoinche/ui/widget/neu_round_inset.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 
 class AllGamesScreen extends StatelessWidget {
   static const routeName = "/allGames";
@@ -46,7 +47,10 @@ class AllGamesScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         color: colorLightBlue,
-                        child: Stack(children: [MovingCards()])),
+                        child: Injector(inject: [
+                          Inject(() => Offset(300, 100)),
+                          Inject(() => 0.0)
+                        ], builder: (ctx) => Stack(children: [MovingCard()]))),
                   ),
                 );
               }),
