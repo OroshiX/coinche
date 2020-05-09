@@ -103,6 +103,7 @@ class CardsOnTable extends StatelessWidget {
                 orderedCards[index] = MapEntry(AxisDirection.up, cardTop);
               }
 
+
               if (model.state.state != TableState.PLAYING) return SizedBox();
               return Stack(
                 children: [

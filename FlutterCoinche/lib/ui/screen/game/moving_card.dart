@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/ui/resources/dimens.dart';
 import 'package:FlutterCoinche/ui/widget/card_widget.dart';
 import 'package:animator/animator.dart';
 import 'package:flutter/cupertino.dart';
