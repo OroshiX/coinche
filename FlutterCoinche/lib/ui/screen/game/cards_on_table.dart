@@ -5,6 +5,7 @@ import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
@@ -61,36 +62,23 @@ class CardsOnTable extends StatelessWidget {
                   RM.get<CardWonOrCenter>(name: AxisDirection.up.simpleName());
               final rmMeCard = RM.get<CardWonOrCenter>(
                   name: AxisDirection.down.simpleName());
-
-              void _initState({
-                ReactiveModel<Game> model,
-              }) {
+              PlayerPosition myPosition;
+              Map<AxisDirection, PlayerPosition> posTableToCardinal;
+              void _initState({ReactiveModel<Game> model, bool init = false}) {
                 /// Init values
+                if (init) {
+                  myPosition = model.state.myPosition;
+                  posTableToCardinal = getPosTableToCardinal(myPosition);
+                }
                 List<CardPlayed> cardsOnTable = model.state.onTable;
-                final posTableToCardinal =
-                    getPosTableToCardinal(model.state.myPosition);
-                final newCardLeft = cardsOnTable.firstWhere(
-                    (element) =>
-                        element.position ==
-                        posTableToCardinal[AxisDirection.left],
-                    orElse: () => null);
-                final newCardTop = cardsOnTable.firstWhere(
-                    (element) =>
-                        element.position ==
-                        posTableToCardinal[AxisDirection.up],
-                    orElse: () => null);
-                final newCardRight = cardsOnTable.firstWhere(
-                  (element) =>
-                      element.position ==
-                      posTableToCardinal[AxisDirection.right],
-                  orElse: () => null,
-                );
-                final newCardMe = cardsOnTable.firstWhere(
-                  (element) =>
-                      element.position ==
-                      posTableToCardinal[AxisDirection.down],
-                  orElse: () => null,
-                );
+                final newCardLeft = cardsOnTable.atPosition(
+                    AxisDirection.left, posTableToCardinal);
+                final newCardTop = cardsOnTable.atPosition(
+                    AxisDirection.up, posTableToCardinal);
+                final newCardRight = cardsOnTable.atPosition(
+                    AxisDirection.right, posTableToCardinal);
+                final newCardMe = cardsOnTable.atPosition(
+                    AxisDirection.down, posTableToCardinal);
                 final tmpOrderedCards = calculateOrderedCards(
                     cardsOnTable: cardsOnTable,
                     left: newCardLeft,
@@ -129,8 +117,7 @@ class CardsOnTable extends StatelessWidget {
                   orderedCards = tmpOrderedCards;
                   return;
                 }
-                final posWinner =
-                    getCardinalToPosTable(model.state.myPosition)[winnerLast];
+                final posWinner = getCardinalToPosTable(myPosition)[winnerLast];
                 if (cardsOnTable.length == 4) {
                   // Animate to win the trick
                   final tuple =

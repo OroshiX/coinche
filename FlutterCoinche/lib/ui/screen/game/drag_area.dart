@@ -40,7 +40,7 @@ class DragArea extends StatelessWidget {
           cardHeight = min(maxHeightCard, minCardHeight);
         }
         final cardWidth = cardHeight / golden; // Golden ratio / nombre d'or
-        return StateBuilder(
+        return StateBuilder<Game>(
           models: [RM.get<Game>()],
           tag: [Aspects.ID, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
           builder: (context, model) {
