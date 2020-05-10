@@ -1,7 +1,6 @@
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
-import 'package:FlutterCoinche/ui/screen/lobby_screen.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,7 +34,6 @@ class MyApp extends StatelessWidget {
         LoginScreen.routeName: (context) => LoginScreen(),
         AllGamesScreen.routeName: (context) => AllGamesScreen(),
         StatedGameScreen.routeName: (context) => StatedGameScreen(),
-        LobbyScreen.routeName: (context) => LobbyScreen(),
       },
       home: LoginScreen(),
     );

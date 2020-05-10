@@ -29,19 +29,26 @@ class MovingCard extends StatelessWidget {
     Tween<Offset> tween;
     Tween<double> rotateTween;
     void Function(AnimatorState<dynamic>) _next;
+    int id = Random().nextInt(100);
     return StateBuilder<Offset>(
       models: [
         RM.get<Offset>(name: offsetName),
         RM.get<double>(name: rotateName),
       ],
       initState: (context, model) {
-        tween = Tween(begin: Offset(0, 0), end: model.value);
-        rotateTween = Tween(begin: 0, end: 2 * pi);
+        Offset offsetForced = model.value;
+        double angleForced = RM.get<double>(name: rotateName).state;
+        tween = Tween(begin: offsetForced, end: offsetForced);
+        rotateTween = Tween(begin: angleForced, end: angleForced);
+        print("[movingCard] init for id $id");
       },
+//      afterInitialBuild: (context, model) => animatorKey.triggerAnimation(),
       onSetState: (context, model) {
         final currTranslate = animatorKey.getAnimation<Offset>(TWEEN_TRANSLATE);
         final currRotate = animatorKey.getAnimation<double>(TWEEN_ROTATE);
         final angle = RM.get<double>(name: rotateName);
+        print(
+            "[movingCard] onSetState: newAngle: ${angle.value}, newOffset: ${model.value} for id $id");
         animatorKey.refreshAnimation(
           tweenMap: {
             TWEEN_TRANSLATE:
@@ -50,27 +57,33 @@ class MovingCard extends StatelessWidget {
                 Tween<double>(begin: currRotate.value, end: angle.value),
           },
         );
-        _next = (s){} ;
-        animatorKey.triggerAnimation(restart: false);
+        _next = (s) {};
       },
-      builder: (context, model) => Animator(
-        endAnimationListener: _next,
-        animatorKey: animatorKey,
-        tweenMap: {
-          TWEEN_TRANSLATE: tween,
-          TWEEN_ROTATE: rotateTween,
-        },
-        cycles: 1,
-        duration: Duration(seconds: 2),
-        builder: (context, animatorState, child) {
-          final offset = animatorState.getValue<Offset>(TWEEN_TRANSLATE);
-          final rotate = animatorState.getValue<double>(TWEEN_ROTATE);
-          return Transform.translate(
-              offset: offset,
-              child: Transform.rotate(angle: rotate, child: child));
-        },
-        child: Center(child: CardWidget(card: card, width: cardWidth, height: cardHeight)),
-      ),
+      builder: (context, model) {
+        print("[movingCard] builder for id $id");
+        return Animator(
+          endAnimationListener: _next,
+          animatorKey: animatorKey,
+          triggerOnInit: true,
+          tweenMap: {
+            TWEEN_TRANSLATE: tween,
+            TWEEN_ROTATE: rotateTween,
+          },
+          cycles: 1,
+          duration: Duration(seconds: 2),
+          builder: (context, animatorState, child) {
+            final offset = animatorState.getValue<Offset>(TWEEN_TRANSLATE);
+            final rotate = animatorState.getValue<double>(TWEEN_ROTATE);
+            return Transform.translate(
+                offset: offset,
+                child: Transform.rotate(angle: rotate, child: child));
+          },
+          child: Center(
+              child: card != null
+                  ? CardWidget(card: card, width: cardWidth, height: cardHeight)
+                  : SizedBox()),
+        );
+      },
     );
   }
 }

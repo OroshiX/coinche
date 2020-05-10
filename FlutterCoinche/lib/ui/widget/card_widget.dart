@@ -16,7 +16,8 @@ class CardWidget extends StatelessWidget {
       {@required this.card,
       this.displayPlayable = true,
       @required this.width,
-      @required this.height});
+      @required this.height})
+      : assert(card != null, "card is null in cardWidget");
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +47,13 @@ class CardContent extends StatelessWidget {
       this.displayPlayable = true,
       @required this.width,
       @required this.height})
-      : super(key: key);
+      : assert(card != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final image = getAssetImageFromColor(card?.color);
-    final letter = getLetterFromValue(card?.value);
+    final image = getAssetImageFromColor(card.color);
+    final letter = getLetterFromValue(card.value);
     final marginValue = getPaddingInCard(cardWidth: width);
 
     return Container(
@@ -70,7 +72,9 @@ class CardContent extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: getSizeSuitIcon(cardWidth: width),
                 ),
-                if (card?.playable != null && displayPlayable && (card?.playable ?? false))
+                if (card.playable != null &&
+                    displayPlayable &&
+                    (card.playable ?? false))
                   Icon(Icons.check)
               ],
             )),

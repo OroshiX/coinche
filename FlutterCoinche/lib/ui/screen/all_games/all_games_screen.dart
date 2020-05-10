@@ -1,4 +1,3 @@
-import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
@@ -51,9 +50,6 @@ class AllGamesScreen extends StatelessWidget {
                           color: colorLightBlue,
                           child: Stack(children: [
                             ManagedStateCard(
-                              card: CardModel(
-                                  value: CardValue.KING,
-                                  color: CardColor.SPADE),
                               cardHeight: 50 * golden,
                               cardWidth: 50,
                               axisDirection: AxisDirection.up,

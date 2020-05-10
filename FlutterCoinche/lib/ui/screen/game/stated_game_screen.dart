@@ -51,11 +51,16 @@ class StatedGameScreen extends StatelessWidget {
                 if (rmFire.hasData && rmFire.state != null) {
                   var different = rmFire.state.different(currentModel.state);
                   final fireGame = modelFire.value;
-                  currentModel.setValue(
-                      () => fireGame.copy(
-                          withCards: fireGame.cards.toList()
-                            ..sortCards(fireGame.state, fireGame.currentBid)),
-                      filterTags: different);
+                  if (different.isNotEmpty) {
+                    if(different.contains(Aspects.ON_TABLE)) {
+                      print("NEW onTable: ${fireGame.onTable}");
+                    }
+                    currentModel.setValue(
+                        () => fireGame.copy(
+                            withCards: fireGame.cards.toList()
+                              ..sortCards(fireGame.state, fireGame.currentBid)),
+                        filterTags: different);
+                  }
                 }
               },
               onData: (_) {
