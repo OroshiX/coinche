@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game.dart';
@@ -76,9 +78,15 @@ class TestingOfflineGame extends StatelessWidget {
   }
 
   _addACardFor(ReactiveModel<Game> rmGame) {
-    Game g = rmGame.value.copy(withOnTable: rmGame.value.onTable.toList());
+    PlayerPosition winner = PlayerPosition.values[Random().nextInt(4)];
+    Game g = rmGame.value.copy(
+        withOnTable: rmGame.value.onTable.toList(),
+        withLastTrick: rmGame.value.onTable.toList(),
+        withWinnerLastTrick: winner);
+    bool changedWinner = false;
     if (g.onTable.length == 4) {
       g.onTable.clear();
+      changedWinner = true;
     } else if (g.onTable.isEmpty) {
       g.onTable.add(getRandomCardTable(PlayerPosition.NORTH));
     } else {
@@ -87,7 +95,7 @@ class TestingOfflineGame extends StatelessWidget {
 
     rmGame.setValue(
       () => g,
-      filterTags: [Aspects.ON_TABLE],
+      filterTags: [Aspects.ON_TABLE, if (changedWinner) Aspects.LAST_TRICK],
       onSetState: (context) => print("setState in testing"),
     );
   }

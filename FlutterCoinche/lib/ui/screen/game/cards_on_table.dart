@@ -167,13 +167,19 @@ class CardsOnTable extends StatelessWidget {
                   print("At build $built, in onSetState");
                   _initState(model: model);
                 },
-                builder: (context, model) {
+                builderWithChild: (context, model, child) {
                   print("At build $built, in builder");
                   if (model.state.state != TableState.PLAYING &&
                       model.state.state != TableState.BETWEEN_GAMES &&
                       model.state.state != TableState.ENDED) return SizedBox();
 
-                  return Stack(
+                  return child;
+                },
+                child: Container(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  color: Colors.red,
+                  child: Stack(
                     children: [
                       for (var i = 0; i < orderedCards.length; i++)
                         ManagedStateCard(
@@ -182,8 +188,8 @@ class CardsOnTable extends StatelessWidget {
                           cardHeight: cardHeight,
                         ),
                     ],
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),

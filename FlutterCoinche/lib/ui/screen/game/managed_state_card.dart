@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/extensions/CardWonOrCenter.dart';
-import 'package:FlutterCoinche/ui/screen/game/moving_card.dart';
+import 'package:FlutterCoinche/ui/screen/game/animated_card.dart';
+import 'package:FlutterCoinche/ui/screen/game/move_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
@@ -11,7 +12,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 class ManagedStateCard extends StatelessWidget {
   final AxisDirection axisDirection;
   final double cardWidth, cardHeight;
-  final String offsetName, rotateName;
+  final String offsetRotationName;
   static const String offset = "-offset", rotate = "-rotate";
 
   ManagedStateCard({
@@ -20,90 +21,88 @@ class ManagedStateCard extends StatelessWidget {
     @required this.cardWidth,
     @required this.cardHeight,
   })  : assert(axisDirection != null, "Axis direction is null!"),
-        offsetName = axisDirection.simpleName() + offset,
-        rotateName = axisDirection.simpleName() + rotate,
+        offsetRotationName = axisDirection.simpleName() + offset + rotate,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     CardModel cardModel;
-    return Injector(
-      inject: [
-        Inject(() => Offset(0, 0), name: offsetName),
-        Inject(() => 0.0, name: rotateName),
-      ],
-      builder: (BuildContext context) {
-        final rmOffset = RM.get<Offset>(name: offsetName);
-        final rmAngle = RM.get<double>(name: rotateName);
-        void _onChangedState(ReactiveModel<CardWonOrCenter> model) {
-          // if model is identical to in memory, it means we have 4 cards on table,
-          // and we need to force the card to go into our tricks after a delay
-          if (cardModel == model.value.item1) {
-            assert(model.value.item2 != null,
-                "we should win the card $cardModel, but the position of the winner is null");
-            // TODO put a delay before this
-            _winPli(model.value.item2, rmAngle, rmOffset, size);
-            return;
-          }
 
-          // if newCard is null, animate the previous one to the tricks of the winner
-          if (model.value.item1 == null && model.value.item2 != null) {
-            _winPli(model.value.item2, rmAngle, rmOffset, size);
-            return;
-          }
-          // if newCard is NOT null, and it is a new card, put it in the middle
-          if (cardModel != model.value.item1 && model.value.item1 != null) {
-            assert(
-                model.value.item2 == null,
-                "The card should be in the middle, "
-                "but it is assigned to be won by player ${model.value.item2}.");
-            // animate card to the center of the table
-            cardModel = model.value.item1;
-            _putInCenter(rmAngle, rmOffset);
-            return;
-          }
-          throw "Illegal state: We have new values ${model.value.item1} "
-              "and ${model.value.item2} but it should not happen!!!!";
-        }
+    final keyCard = GlobalKey<MoveCardState>();
+    void _onChangedState(
+        ReactiveModel<CardWonOrCenter> model, MoveCardState moveCard,
+        {bool init = false}) {
+      // if model is identical to in memory, it means we have 4 cards on table,
+      // and we need to force the card to go into our tricks after a delay
+      if (cardModel == model.value.item1) {
+        assert(model.value.item2 != null,
+            "we should win the card $cardModel, but the position of the winner is null");
+        // TODO put a delay before this
+        _winPli(model.value.item2, moveCard, size);
+        return;
+      }
 
-        return StateBuilder<CardWonOrCenter>(
-          models: [RM.get<CardWonOrCenter>(name: axisDirection.simpleName())],
-          initState: (context, model) {
-            model.whenConnectionState(onIdle: () {
-              print("[managed] for $axisDirection: idle");
-            }, onWaiting: () {
-              print("[managed] for $axisDirection: Waiting");
-            }, onData: (state) {
-              print("[managed] for $axisDirection: received data: $state");
-              _onChangedState(model);
-            }, onError: (e) {
-              print("[managed] for $axisDirection: Error $e");
-            });
-          },
-          onSetState: (context, model) {
-            _onChangedState(model);
-          },
-          builder: (context, model) => MovingCard(
-              cardWidth: cardWidth,
-              cardHeight: cardHeight,
-              card: cardModel,
-              offsetName: offsetName,
-              rotateName: rotateName),
-        );
+      // if newCard is null, animate the previous one to the tricks of the winner
+      if (model.value.item1 == null && model.value.item2 != null) {
+        _winPli(model.value.item2, moveCard, size);
+        return;
+      }
+      // if newCard is NOT null, and it is a new card, put it in the middle
+      if (cardModel != model.value.item1 && model.value.item1 != null) {
+        assert(
+            model.value.item2 == null,
+            "The card should be in the middle, "
+            "but it is assigned to be won by player ${model.value.item2}.");
+        // animate card to the center of the table
+        cardModel = model.value.item1;
+        _putInCenter(moveCard, model.value.item1);
+        return;
+      }
+      throw "Illegal state: We have new values ${model.value.item1} "
+          "and ${model.value.item2} but it should not happen!!!!";
+    }
+
+    return StateBuilder<CardWonOrCenter>(
+      models: [RM.get<CardWonOrCenter>(name: axisDirection.simpleName())],
+      initState: (context, model) {
+        model.whenConnectionState(onIdle: () {
+          print("[managed] for $axisDirection: idle");
+        }, onWaiting: () {
+          print("[managed] for $axisDirection: Waiting");
+        }, onData: (state) {
+          print("[managed] for $axisDirection: received data: $state");
+          _onChangedState(model, keyCard.currentState, init: true);
+        }, onError: (e) {
+          print("[managed] for $axisDirection: Error $e");
+        });
       },
+      onSetState: (context, model) {
+        _onChangedState(model, keyCard.currentState);
+      },
+      builderWithChild: (context, model, child) => child,
+      child: MoveCard(
+          key: keyCard,
+          cardWidth: cardWidth,
+          cardHeight: cardHeight,
+          card: cardModel,
+          offsetAndRotationName: offsetRotationName),
     );
   }
 
-  _winPli(AxisDirection winnerPosTable, ReactiveModel<double> rmAngle,
-      ReactiveModel<Offset> rmOffset, Size screenSize) {
-    rmAngle.setValue(() => _getRotationPli(winnerPosTable));
-    rmOffset.setValue(() => _getOffsetPli(winnerPosTable, screenSize));
+  _winPli(AxisDirection winnerPosTable, MoveCardState moveCardState,
+      Size screenSize) {
+    print("$winnerPosTable is Winning trick");
+    moveCardState.setAnim(OffsetAndRotation(
+        _getOffsetPli(winnerPosTable, screenSize),
+        _getRotationPli(winnerPosTable)));
   }
 
-  _putInCenter(ReactiveModel<double> rmAngle, ReactiveModel<Offset> rmOffset) {
-    rmAngle.setValue(() => _getRotationCenter());
-    rmOffset.setValue(() => _getOffsetCenter());
+  _putInCenter(MoveCardState moveCardState, CardModel cardModel) {
+    print("we put card in center");
+    moveCardState
+        .setAnim(OffsetAndRotation(_getOffsetCenter(), _getRotationCenter()));
+    moveCardState.setCard(cardModel);
   }
 
   Offset _getOffsetCenter() {
