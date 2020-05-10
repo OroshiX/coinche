@@ -119,9 +119,11 @@ export const cardIdList =
 */
 
 export const cardIdList = enumToValues(CARD_ID);
-export const cardIdListEnum = enumToValues(CARD_ID);
+// export const cardIdListEnum = enumToKeys(CARD_ID);
+// export const cardIdListObj = enumToObjList(CARD_ID);
 
 export const cardValues= enumToValues(CARD_VALUE);
+export const cardValuesListObj = enumToObjList(CARD_VALUE);
 /*
 export const cardValues =
   [CARD_VALUE.SEVEN, CARD_VALUE.EIGHT, CARD_VALUE.NINE, CARD_VALUE.TEN, CARD_VALUE.JACK, CARD_VALUE.QUEEN, CARD_VALUE.KING, CARD_VALUE.ACE];

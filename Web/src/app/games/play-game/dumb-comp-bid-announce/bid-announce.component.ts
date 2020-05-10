@@ -24,7 +24,7 @@ export class BidAnnounceComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.currentBidPoints);
+    // console.log(this.currentBidPoints);
   }
 
   ngOnInit(): void {

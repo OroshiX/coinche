@@ -45,6 +45,8 @@ export interface BidData {
 export class PlayGameComponent implements OnInit, AfterViewInit {
   gameId: string;
   cardsPlayed: CardView[] = new Array<CardView>();
+  lastTricks: CardView[] = new Array<CardView>();
+  isLastTricksEmpty: boolean;
   map = new Map<number, string[]>();
   myCardMap: Map<string, CardView> = new Map<string, CardView>();
   backCardImgSmall: string;
@@ -68,6 +70,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
 
   playersNicknameByMyPosOnTable: string[] = [];
   bidListOrdered: Bid[] = [];
+  winnerLastTrick: string;
 
   tiles: Tile[] = [
     {text: '', cols: 2, rows: 1, color: 'darkgreen'},
@@ -142,16 +145,16 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever
     this.playersNicknameByMyPosOnTable = this.helper.getPlayersNicknameByMyPos(data.myPosition, data.nicknames);
     console.log('Players position on Table  ============', this.playersNicknameByMyPosOnTable);
-    this.bidListOrdered = data.bids !== [] ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
+    this.bidListOrdered = data.bids.length > 0 ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
     this.bidData = this.buildBidData(data);
-    console.log('nextPlayer', JSON.stringify(data.nextPlayer));
-    console.log('onTable', JSON.stringify(data.onTable));
-    console.log('lastTrick', JSON.stringify(data.lastTrick));
     this.myCardMap = this.service.buildMyDeck(data.cards);
     this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
-    if (this.isMyTurn && data.winnerLastTrick === data.myPosition) {
+    this.isLastTricksEmpty = data.lastTrick.length <= 0;
+    this.lastTricks = this.helper.onTableCardsOrdered(data.myPosition, data.lastTrick);
+    /*if (this.isMyTurn && data.winnerLastTrick === data.myPosition) {
       console.log('must reset cards on table', this.cardsPlayed);
-    }
+    }*/
+    this.winnerLastTrick = this.helper.getNicknameByPos(data.winnerLastTrick, data.nicknames);
     this.mustHideOnTable = this.helper.mustHideCardsOntable(data);
     this.cd.detectChanges();
   }
