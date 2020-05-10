@@ -2,11 +2,10 @@ import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/resources/dimens.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/alert_new_game.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/list_games.dart';
-import 'package:FlutterCoinche/ui/screen/game/managed_state_card.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
+import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
 import 'package:FlutterCoinche/ui/widget/neu_round_inset.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
@@ -19,7 +18,7 @@ class AllGamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var gamesProvider = BlocProvider.of<GamesBloc>(context);
-    _refreshData(gamesProvider);
+    _refreshData(gamesProvider, context);
     return Scaffold(
       floatingActionButton: NeuRoundInset(
         onTap: () {
@@ -39,25 +38,7 @@ class AllGamesScreen extends StatelessWidget {
           IconButton(
               icon: Icon(Icons.cake),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Anim test"),
-                      content: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          color: colorLightBlue,
-                          child: Stack(children: [
-                            ManagedStateCard(
-                              cardHeight: 50 * golden,
-                              cardWidth: 50,
-                              axisDirection: AxisDirection.up,
-                            )
-                          ])),
-                    );
-                  },
-                );
+                Navigator.of(context).pushNamed(TestingOfflineGame.routeName);
               }),
           IconButton(
               icon: Icon(Icons.exit_to_app),
@@ -98,7 +79,10 @@ class AllGamesScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _refreshData(GamesBloc gamesProvider) =>
-      ServerCommunication.allGames()
-          .then((value) => gamesProvider.addAllMyGames(value));
+  Future<void> _refreshData(GamesBloc gamesProvider, BuildContext context) =>
+      ServerCommunication.allGames().then(
+          (value) => gamesProvider.addAllMyGames(value),
+          onError: (error) =>
+              FlushbarHelper.createError(message: "Error getting games: $error")
+                  .show(context));
 }

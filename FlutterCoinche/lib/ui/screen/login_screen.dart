@@ -3,6 +3,7 @@ import 'package:FlutterCoinche/service/network/my_auth_user.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
+import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -237,6 +238,16 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+        Positioned(
+            bottom: 50,
+            child: Center(
+              child: RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(TestingOfflineGame.routeName);
+                },
+                child: Text("Test"),
+              ),
+            ))
       ],
     );
   }

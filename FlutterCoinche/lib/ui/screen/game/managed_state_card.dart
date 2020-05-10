@@ -19,7 +19,7 @@ class ManagedStateCard extends StatelessWidget {
     @required this.axisDirection,
     @required this.cardWidth,
     @required this.cardHeight,
-  })  : assert (axisDirection != null, "Axis direction is null!"),
+  })  : assert(axisDirection != null, "Axis direction is null!"),
         offsetName = axisDirection.simpleName() + offset,
         rotateName = axisDirection.simpleName() + rotate,
         super(key: key);

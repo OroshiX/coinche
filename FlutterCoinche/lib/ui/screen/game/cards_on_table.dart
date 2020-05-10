@@ -64,12 +64,11 @@ class CardsOnTable extends StatelessWidget {
                   name: AxisDirection.down.simpleName());
               PlayerPosition myPosition;
               Map<AxisDirection, PlayerPosition> posTableToCardinal;
-              void _initState({ReactiveModel<Game> model, bool init = false}) {
+              void _initState({ReactiveModel<Game> model}) {
                 /// Init values
-                if (init) {
-                  myPosition = model.state.myPosition;
-                  posTableToCardinal = getPosTableToCardinal(myPosition);
-                }
+                myPosition = model.state.myPosition;
+                posTableToCardinal = getPosTableToCardinal(myPosition);
+
                 List<CardPlayed> cardsOnTable = model.state.onTable;
                 final newCardLeft = cardsOnTable.atPosition(
                     AxisDirection.left, posTableToCardinal);
@@ -170,7 +169,6 @@ class CardsOnTable extends StatelessWidget {
                 },
                 builder: (context, model) {
                   print("At build $built, in builder");
-
                   if (model.state.state != TableState.PLAYING &&
                       model.state.state != TableState.BETWEEN_GAMES &&
                       model.state.state != TableState.ENDED) return SizedBox();

@@ -25,9 +25,10 @@ class MovingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animatorKey = AnimatorKey();
-    Tween<Offset> tween;
-    Tween<double> rotateTween;
+    Tween<Offset> tween = Tween(begin: Offset.zero, end: Offset.zero);
+    Tween<double> rotateTween = Tween(begin: 0, end: 0);
+    final animatorKey = AnimatorKey(
+        initialMapValue: {TWEEN_TRANSLATE: tween, TWEEN_ROTATE: rotateTween});
     void Function(AnimatorState<dynamic>) _next;
     int id = Random().nextInt(100);
     return StateBuilder<Offset>(
@@ -40,7 +41,7 @@ class MovingCard extends StatelessWidget {
         double angleForced = RM.get<double>(name: rotateName).state;
         tween = Tween(begin: offsetForced, end: offsetForced);
         rotateTween = Tween(begin: angleForced, end: angleForced);
-        print("[movingCard] init for id $id");
+        print("[movingCard - $id] init for id");
       },
 //      afterInitialBuild: (context, model) => animatorKey.triggerAnimation(),
       onSetState: (context, model) {
@@ -48,7 +49,7 @@ class MovingCard extends StatelessWidget {
         final currRotate = animatorKey.getAnimation<double>(TWEEN_ROTATE);
         final angle = RM.get<double>(name: rotateName);
         print(
-            "[movingCard] onSetState: newAngle: ${angle.value}, newOffset: ${model.value} for id $id");
+            "[movingCard - $id] onSetState: newAngle: ${angle.value}, newOffset: ${model.value}");
         animatorKey.refreshAnimation(
           tweenMap: {
             TWEEN_TRANSLATE:
@@ -60,8 +61,9 @@ class MovingCard extends StatelessWidget {
         _next = (s) {};
       },
       builder: (context, model) {
-        print("[movingCard] builder for id $id");
+        print("[movingCard - $id] builder");
         return Animator(
+          resetAnimationOnRebuild: true,
           endAnimationListener: _next,
           animatorKey: animatorKey,
           triggerOnInit: true,

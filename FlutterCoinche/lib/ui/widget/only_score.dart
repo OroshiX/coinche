@@ -29,6 +29,7 @@ class OnlyScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map<PlayerPosition, Color> playerPosToColor;
     final Map<AxisDirection, Color> mapColor = Injector.get<PosTableToColor>()
         .value
         .map((key, value) => MapEntry(key, value.item1));
@@ -37,11 +38,10 @@ class OnlyScoreWidget extends StatelessWidget {
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
       tag: [Aspects.SCORE, Aspects.MY_POSITION],
-      builder: (context, model) {
+      builder: (_, model) {
         final Score score = model.state.score;
-        Map<PlayerPosition, Color> playerPosToColor =
-            getCardinalToPosTable(model.state.myPosition)
-                .map((key, value) => MapEntry(key, mapColor[value]));
+        playerPosToColor = getCardinalToPosTable(model.state.myPosition)
+            .map((key, value) => MapEntry(key, mapColor[value]));
         return NeumorphicNoStateWidget(
           borderRadius: 10,
           sizeShadow: SizeShadow.SMALL,
