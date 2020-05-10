@@ -15,7 +15,6 @@ export const SET_NICKNAME= 'setNickname';
 // in game
 export const GAMES = 'games';
 export const API_BACKEND_GAMES = API_BACKEND + GAMES;
-export const GET_TABLE = 'getTable';
 export const PLAY_CARD = 'playCard';
 export const ANNOUNCE_BID = 'announceBid';
 export const SHOW_LAST_TRICK = 'showLastTrick';

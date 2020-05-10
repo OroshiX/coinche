@@ -16,4 +16,18 @@
 }
 .card-dialog {
   background-color: inherit;
+  font-size: 12px;
 }
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 5px;
+}
+.radio-button {
+  margin: 2px;
+}
+.form-field {
+  width: 100%;
+}
+

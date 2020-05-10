@@ -3,6 +3,7 @@ export class Game {
   nbJoined: number;
   nicknameCreator: string;
   name: string;
+  gameType: string;
 
   constructor(obj: Partial<Game>) {
     Object.assign(this, obj);

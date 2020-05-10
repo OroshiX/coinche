@@ -27,9 +27,13 @@
     [colspan]="tiles[2].cols"
     [rowspan]="tiles[2].rows"
     [style.background]="tiles[2].color">
-    <ng-container *ngIf="!isLastTricksEmpty">
-    <app-last-trick [lastTricks]="lastTricks" [winnerLastTrick]="winnerLastTrick">
-    </app-last-trick>
+    <ng-container *ngIf="gameState==='PLAYING' && !isLastTricksEmpty">
+      <app-last-trick [lastTricks]="lastTricks" [winnerLastTrick]="winnerLastTrick">
+      </app-last-trick>
+    </ng-container>
+    <ng-container *ngIf="gameState==='BETWEEN_GAMES' || gameState==='ENDED' ">
+      <!--<app-show-all-tricks>
+      </app-show-all-tricks>-->
     </ng-container>
   </mat-grid-tile>
   <mat-grid-tile

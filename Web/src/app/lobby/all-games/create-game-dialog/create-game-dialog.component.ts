@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DialogData } from '../all-games.component';
+import { DialogData, GAME_TYPE_AUTO } from '../all-games.component';
 
 
 @Component({
@@ -9,19 +9,22 @@ import { DialogData } from '../all-games.component';
   templateUrl: './create-game-dialog.component.html',
   styleUrls: ['./create-game-dialog.component.scss']
 })
-export class CreateGameDialogComponent implements OnInit{
+export class CreateGameDialogComponent implements OnInit {
   public form: FormGroup;
+  gameType = GAME_TYPE_AUTO;
 
   constructor(public dialogRef: MatDialogRef<CreateGameDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData,
-              private fb: FormBuilder) {}
+              private fb: FormBuilder) {
+  }
 
   ngOnInit(): void {
-        this.form = this.fb.group({
-          name: this.fb.control('', Validators.required),
-          nicknameCreator: this.fb.control('')
-        })
-    }
+    this.form = this.fb.group({
+      gameType: this.fb.control(GAME_TYPE_AUTO),
+      name: this.fb.control('', Validators.required),
+      nicknameCreator: this.fb.control('')
+    });
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
