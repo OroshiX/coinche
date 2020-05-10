@@ -1,26 +1,21 @@
-@mixin width-height-card($width-value, $height-value) {
-  width: $width-value;
-  height: $height-value;
-  border: none;
+.mini-card {
+  font-size: 14px;
+  //color: #0a0d0b;
+  background-color: whitesmoke;
+  padding: 2px 4px;
+  margin: 4px 2px;
   border-radius: 5px;
+  box-shadow: 2px 2px 2px 2px #0a0d0b;
 }
-
-@media(max-width: 959px) {
-  .card-played {
-    @include width-height-card(60px, 87px);
-    margin: 10px;
-  }
+/*.emoji-card-red {
+  color: red;
 }
-
-@media(min-width: 960px) {
-  .card-played {
-    @include width-height-card(120px, 174px);
-    margin-left: 75px;
-    margin-right: 75px;
-  }
+.emoji-card-black {
+  color: #343434;
+}*/
+.labelCardRed {
+  color: red;
 }
-
-
-
-
-
+.labelCardBlack {
+  color: #343434;
+}

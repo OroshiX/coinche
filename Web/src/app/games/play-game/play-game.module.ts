@@ -16,6 +16,8 @@ import { BidAnnounceComponent } from './dumb-comp-bid-announce/bid-announce.comp
 import { BidComponent } from './dumb-comp-bid/bid.component';
 import { CardComponent } from './dumb-comp-card/card.component';
 import { ChipPlayerComponent } from './dumb-comp-chip-player/chip-player.component';
+import { LastTrickComponent } from './dumb-comp-last-trick/last-trick.component';
+import { MiniCardComponent } from './dumb-comp-mini-card/mini-card.component';
 import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
 import { OnTableBiddingComponent } from './dumb-comp-on-table-bidding/on-table-bidding.component';
 import { OnTablePlayingComponent } from './dumb-comp-on-table-playing/on-table-playing.component';
@@ -36,7 +38,11 @@ import { PlayGameComponent } from './play-game/play-game.component';
     BidComponent,
     ChipPlayerComponent,
     BidAnnounceComponent,
-    ResumeGameComponent],
+    ResumeGameComponent,
+    LastTrickComponent,
+    MiniCardComponent
+
+  ],
   imports: [
     CommonModule,
     PlayGameRoutingModule,
