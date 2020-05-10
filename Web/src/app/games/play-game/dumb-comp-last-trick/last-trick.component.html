@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="mini-container">
+    <app-mini-card [card]="lastTricks[1]">
+    </app-mini-card>
+    <div class="col2-container">
+      <div class="mini-card-south">
+        <app-mini-card [card]="lastTricks[2]">
+        </app-mini-card>
+      </div>
+      <div class="mini-card-north">
+        <app-mini-card [card]="lastTricks[0]">
+        </app-mini-card>
+      </div>
+    </div>
+    <app-mini-card [card]="lastTricks[3]">
+    </app-mini-card>
+  </div>
+  <div class="winner">
+    <div class="txt">
+      Winner lastTrick:
+    </div>
+    <div class="valueText">
+      {{winnerLastTrick | shorterName: 14}}
+    </div>
+  </div>
+</div>
