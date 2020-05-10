@@ -163,34 +163,6 @@ class FireApp {
         return userUID
     }
 
-    private fun updateGame(setOfGames: SetOfGames) {
-        val nameFunction = object {}.javaClass.enclosingMethod.name
-
-        if (DataManagement.productionAction) {
-
-            val jsonTable = JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
-
-            val future: ApiFuture<WriteResult> = db.collection(
-                    COLLECTION_SETS).document(setOfGames.id)
-                    .set(JsonMapper.parseJson(jsonTable))
-
-
-            // For debugging purpose only.
-            val arg = JsonMapper.parseJson(jsonTable).toString()
-            debugPrintln(dbgLevel.DEBUG, "JSON from updateGame $arg")
-
-            /*
-          try {
-             println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
-         } catch (e: InvalidArgumentException) {
-         println("********Exception $e with $arg")
-     }
-      */
-        } else {
-            debugPrintln(dbgLevel.REGULAR, "Debug mode - $nameFunction no saving")
-        }
-    }
-
     fun getOrSetUsername(user: User): String {
         var username: String = user.nickname
         val doc = db.collection(COLLECTION_PLAYERS).document(user.uid)

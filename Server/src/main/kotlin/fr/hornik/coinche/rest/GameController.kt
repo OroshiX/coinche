@@ -91,14 +91,13 @@ class GameController(@Autowired val data: DataManagement,
             throw IllegalStateException(
                     "Nobody won a trick, you can't see the last trick")
         }
-
         game.whoWonLastTrick?.let {
             return when (it) {
                 PlayerPosition.NORTH,
-                PlayerPosition.SOUTH -> game.plisCampNS[game.plisCampNS.size -1]!!
+                PlayerPosition.SOUTH -> game.plisCampNS[game.plisCampNS.toSortedMap().lastKey()]
                 PlayerPosition.EAST,
-                PlayerPosition.WEST  -> game.plisCampEW[game.plisCampEW.size -1]!!
-            }
+                PlayerPosition.WEST  -> game.plisCampEW[game.plisCampNS.toSortedMap().lastKey()]
+            }!!
         } ?: throw IllegalStateException(
                 "Nobody won a trick, you can't see the last trick")
     }

@@ -103,8 +103,9 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     init {
         sets.addAll(fire.getAllGames())
-
-        timer.schedule(timeoutTask, 0, 1000)
+        // This is to disable automatic games in test environement and not mess up with prod DB due to conflict with automatic players
+        if (productionAction)
+            timer.schedule(timeoutTask, 0, 1000)
 
     }
 
@@ -246,6 +247,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 setOfGames.bids.clear()
                 setOfGames.whoWonLastTrick = null
 
+                // Everybody did pass - we need to put all cards in plisCamp before a new deal
                 for (i in 0..3) {
                     setOfGames.plisCampNS[i * 2] = setOfGames.players[i].cardsInHand.take(4).map { e -> CardPlayed(e) }
                     setOfGames.plisCampNS[i * 2 + 1] = setOfGames.players[i].cardsInHand.takeLast(4).map { e -> CardPlayed(e) }
@@ -310,29 +312,31 @@ class DataManagement(@Autowired private val fire: FireApp) {
             TableState.BIDDING,
             TableState.PLAYING -> {
                 // First check there are 32 cards ( pli / hands ) 8 belongs to each players
-                val nbCards: MutableMap<PlayerPosition, Int> = PlayerPosition.values().map {Pair(it,0)}.toMap().toMutableMap()
+                val nbCards: MutableMap<PlayerPosition, Int> = PlayerPosition.values().map { Pair(it, 0) }.toMap().toMutableMap()
 
                 for (position in PlayerPosition.values()) {
                     val player = setOfGames.players.firstOrNull() { it.position == position }
-                    if (player == null ) {
-                        debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id}")
+                    if (player == null) {
+                        debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id}")
                         returnValue = false
                     }
-                    nbCards[position] = setOfGames.players.first { it.position == position}.cardsInHand.size
-                    for (i in 0 until setOfGames.plisCampNS.size) {
-                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampNS[i]!!.filter { it.position == position }.size
+                    // there are several more efficient way to do it , but we really want to check coherency and potential bug
+                    // so we dont take any shortcut, to be able to detect if 2 cards of a same players were put in the same pli for example.
+                    nbCards[position] = setOfGames.players.first { it.position == position }.cardsInHand.size
+                    for (pli in setOfGames.plisCampNS.values) {
+                        nbCards[position] = nbCards[position]!! + pli.filter { it.position == position }.size
                     }
-                    for (i in 0 until setOfGames.plisCampEW.size) {
-                        nbCards[position] = nbCards[position]!! + setOfGames.plisCampEW[i]!!.filter { it.position == position }.size
+                    for (pli in setOfGames.plisCampEW.values) {
+                        nbCards[position] = nbCards[position]!! + pli.filter { it.position == position }.size
                     }
-                    for (i in 0 until setOfGames.onTable.size){
-                        nbCards[position] = nbCards[position]!! + setOfGames.onTable.filter{ it.position == position }.size
+                    for (i in 0 until setOfGames.onTable.size) {
+                        nbCards[position] = nbCards[position]!! + setOfGames.onTable.filter { it.position == position }.size
                     }
 
                 }
-                if (nbCards.any{it.value != 8}) {
-                    debugPrintln(dbgLevel.REGULAR,"COHERENCY DID FAIL FOR ${setOfGames.id} \n Players dont have 8 cards $nbCards")
-                    returnValue=false
+                if (nbCards.any { it.value != 8 }) {
+                    debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id} \n Players dont have 8 cards $nbCards")
+                    returnValue = false
                 }
             }
         }
