@@ -37,30 +37,27 @@ class MoveCardState extends State<MoveCard>
   @override
   void initState() {
     super.initState();
+    controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _initAnim(OffsetAndRotation.zero());
     cardModel = widget.card;
   }
 
-  void _initAnim(OffsetAndRotation offsetAndRotation) {
-    print("init anim to $offsetAndRotation");
-    controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    rotation = Tween(
-            begin: offsetAndRotation.rotation, end: offsetAndRotation.rotation)
-        .animate(controller);
-    offset = Tween<Offset>(
-            begin: offsetAndRotation.offset, end: offsetAndRotation.offset)
-        .animate(controller);
-    controller.reset();
-    controller.forward();
+  void _initAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
+    print("init anim to $destination");
+    setAnim(destination);
   }
 
-  void setAnim(OffsetAndRotation offsetAndRotation) {
-    print("setting anim to $offsetAndRotation");
-    rotation =
-        Tween<double>(begin: rotation.value, end: offsetAndRotation.rotation)
-            .animate(controller);
-    offset = Tween<Offset>(begin: offset.value, end: offsetAndRotation.offset)
+  void setAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
+    if (origin == null) {
+      origin = offset != null && rotation != null
+          ? OffsetAndRotation(offset.value, rotation.value)
+          : destination;
+    }
+    print("setting anim to $destination");
+    rotation = Tween<double>(begin: origin.rotation, end: destination.rotation)
+        .animate(controller);
+    offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
         .animate(controller);
     controller.reset();
     controller.forward();

@@ -56,7 +56,7 @@ class ManagedStateCard extends StatelessWidget {
             "but it is assigned to be won by player ${model.value.item2}.");
         // animate card to the center of the table
         cardModel = model.value.item1;
-        _putInCenter(moveCard, model.value.item1);
+        _putInCenter(moveCard, model.value.item1, size);
         return;
       }
       throw "Illegal state: We have new values ${model.value.item1} "
@@ -93,19 +93,22 @@ class ManagedStateCard extends StatelessWidget {
   _winPli(AxisDirection winnerPosTable, MoveCardState moveCardState,
       Size screenSize) {
     print("$winnerPosTable is Winning trick");
-    moveCardState.setAnim(OffsetAndRotation(
-        _getOffsetPli(winnerPosTable, screenSize),
-        _getRotationPli(winnerPosTable)));
+    moveCardState.setAnim(_offsetAndRotationPlayer(winnerPosTable, screenSize),
+        origin: _offsetRotationCenter);
   }
 
-  _putInCenter(MoveCardState moveCardState, CardModel cardModel) {
+  _putInCenter(
+      MoveCardState moveCardState, CardModel cardModel, Size screenSize) {
     print("we put card in center");
-    moveCardState
-        .setAnim(OffsetAndRotation(_getOffsetCenter(), _getRotationCenter()));
+    moveCardState.setAnim(_offsetRotationCenter,
+        origin: _offsetAndRotationPlayer(axisDirection, screenSize));
     moveCardState.setCard(cardModel);
   }
 
-  Offset _getOffsetCenter() {
+  OffsetAndRotation get _offsetRotationCenter =>
+      OffsetAndRotation(_getOffsetCenter, _getRotationCenter);
+
+  Offset get _getOffsetCenter {
     switch (axisDirection) {
       case AxisDirection.up:
         return Offset(0, -cardHeight / 2);
@@ -119,7 +122,7 @@ class ManagedStateCard extends StatelessWidget {
     return Offset.zero;
   }
 
-  double _getRotationCenter() {
+  double get _getRotationCenter {
     switch (axisDirection) {
       case AxisDirection.up:
       case AxisDirection.down:
@@ -129,6 +132,12 @@ class ManagedStateCard extends StatelessWidget {
         return pi / 2;
     }
     return 0;
+  }
+
+  OffsetAndRotation _offsetAndRotationPlayer(
+      AxisDirection player, Size screenSize) {
+    return OffsetAndRotation(
+        _getOffsetPli(player, screenSize), _getRotationPli(player));
   }
 
   Offset _getOffsetPli(AxisDirection winnerPosTable, Size screenSize) {
