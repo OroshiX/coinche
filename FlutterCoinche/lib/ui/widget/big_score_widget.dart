@@ -18,12 +18,11 @@ class BigScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
-      tag: [Aspects.STATE, Aspects.SCORE],
+      tag: [Aspects.STATE],
       builder: (context, model) {
         final state = model.state.state;
         if (state != TableState.BETWEEN_GAMES && state != TableState.ENDED)
           return SizedBox();
-        final score = model.state.score;
         final bool won = model.state.isWon();
         return LayoutBuilder(
           builder: (context, constraints) {

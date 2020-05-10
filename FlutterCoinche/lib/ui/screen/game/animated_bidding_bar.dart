@@ -4,7 +4,7 @@ import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/widget/bidding_bar.dart';
+import 'package:FlutterCoinche/ui/screen/game/bidding_bar.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';

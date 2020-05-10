@@ -10,10 +10,10 @@ extension GameExtensions on Game {
     if (old == null) return Aspects.values;
     List<Aspects> res = [];
     if (old.id != id) res.add(Aspects.ID);
-    if (old.cards != cards) res.add(Aspects.CARDS);
+    if (!setEquals(old.cards.toSet(), cards.toSet())) res.add(Aspects.CARDS);
     if (old.score != score) res.add(Aspects.SCORE);
     if (old.state != state) res.add(Aspects.STATE);
-    if (old.bids != bids) res.add(Aspects.ALL_BIDS);
+    if (!listEquals(old.bids, bids)) res.add(Aspects.ALL_BIDS);
     if (old.nicknames != nicknames) res.add(Aspects.NICKNAMES);
     if (!listEquals(old.onTable, onTable)) res.add(Aspects.ON_TABLE);
     if (old.nextPlayer != nextPlayer) res.add(Aspects.NEXT_PLAYER);

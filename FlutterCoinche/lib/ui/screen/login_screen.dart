@@ -92,21 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
   }
 
-  void _showWarning(String warningMessage) {
-    Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      icon: Icon(
-        Icons.warning,
-        size: 28,
-        color: Colors.orange,
-      ),
-      leftBarIndicatorColor: Colors.orange,
-      message: warningMessage,
-      duration: Duration(seconds: 3),
-    )..show(context);
-  }
-
   _showError(error) {
     print(error);
     Flushbar(

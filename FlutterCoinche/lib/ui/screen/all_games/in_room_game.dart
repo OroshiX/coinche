@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
-import 'package:FlutterCoinche/ui/screen/stated_game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:flutter/material.dart';
 

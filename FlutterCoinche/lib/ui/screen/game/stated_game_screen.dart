@@ -1,10 +1,11 @@
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
+import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/widget/table_widget.dart';
+import 'package:FlutterCoinche/ui/screen/game/table_widget.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,6 @@ class StatedGameScreen extends StatelessWidget {
             name: "gameFire"),
         builder: (_, modelFire) {
           final currentModel = RM.get<Game>();
-          Injector.get<Game>();
           return WhenRebuilder<Game>(
               models: [modelFire, RM.get<PosTableToColor>()],
               onIdle: () => _buildEmpty(),
@@ -49,9 +49,12 @@ class StatedGameScreen extends StatelessWidget {
               onError: (e) => _buildEmpty(),
               onSetState: (_, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
-                  var different =
-                      (rmFire.state..sortCards()).different(currentModel.state);
-                  currentModel.setValue(() => rmFire.state,
+                  var different = rmFire.state.different(currentModel.state);
+                  final fireGame = modelFire.value;
+                  currentModel.setValue(
+                      () => fireGame.copy(
+                          withCards: fireGame.cards.toList()
+                            ..sortCards(fireGame.state, fireGame.currentBid)),
                       filterTags: different);
                 }
               },

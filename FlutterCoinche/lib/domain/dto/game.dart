@@ -65,13 +65,36 @@ class Game extends Equatable {
         lastTrick
       ];
 
-  sortCards() {
-    cards.sort((CardModel c1, CardModel c2) {
-      if (c1.color.index < c2.color.index) return -1;
-      if (c1.color.index > c2.color.index) return 1;
-      final trump =
-          state == TableState.PLAYING && currentBid.cardColor() == c1.color;
-      return compareValue(c2.value, c1.value, trump);
-    });
+
+
+  Game copy({
+    String withId,
+    Nicknames withNicknames,
+    List<CardModel> withCards,
+    List<CardPlayed> withOnTable,
+    TableState withState,
+    PlayerPosition withNextPlayer,
+    PlayerPosition withMyPosition,
+    List<Bid> withBids,
+    Bid withCurrentBid,
+    Score withScore,
+    PlayerPosition withWinnerLastTrick,
+    List<CardPlayed> withLastTrick,
+  }) {
+    return Game(
+      id: withId != null ? withId : id,
+      nicknames: withNicknames != null ? withNicknames : nicknames,
+      cards: withCards != null ? withCards : cards,
+      onTable: withOnTable != null ? withOnTable : onTable,
+      state: withState != null ? withState : state,
+      nextPlayer: withNextPlayer != null ? withNextPlayer : nextPlayer,
+      myPosition: withMyPosition != null ? withMyPosition : myPosition,
+      bids: withBids != null ? withBids : bids,
+      currentBid: withCurrentBid != null ? withCurrentBid : currentBid,
+      score: withScore != null ? withScore : score,
+      winnerLastTrick:
+          withWinnerLastTrick != null ? withWinnerLastTrick : winnerLastTrick,
+      lastTrick: withLastTrick != null ? withLastTrick : lastTrick,
+    );
   }
 }

@@ -5,7 +5,6 @@ import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:bubble/bubble.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
@@ -64,29 +63,24 @@ class BidsWidget extends StatelessWidget {
             []);
         final state = model.state.state;
         Alignment alignment;
-        BubbleNip bubbleNip;
         double dx = 0, dy = 0;
         switch (posTable) {
           case AxisDirection.up:
             alignment = Alignment.topCenter;
-            bubbleNip = BubbleNip.leftTop;
             dx = widthAvatar;
             dy = 2;
             break;
           case AxisDirection.right:
             alignment = Alignment.centerRight;
-            bubbleNip = BubbleNip.rightTop;
 //            dx = -widthAvatar;
             dy = -heightAvatar;
             break;
           case AxisDirection.down:
             alignment = Alignment.bottomRight;
-            bubbleNip = BubbleNip.no;
             dy = -heightAvatar;
             break;
           case AxisDirection.left:
             alignment = Alignment.centerLeft;
-            bubbleNip = BubbleNip.leftTop;
 //            dx = widthAvatar;
             dy = -heightAvatar;
             break;

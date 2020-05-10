@@ -5,7 +5,7 @@ import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
 import 'package:FlutterCoinche/ui/widget/card_widget.dart';
-import 'package:FlutterCoinche/ui/widget/cards_on_table.dart';
+import 'package:FlutterCoinche/ui/screen/game/cards_on_table.dart';
 import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';

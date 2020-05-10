@@ -103,15 +103,21 @@ class CardsOnTable extends StatelessWidget {
                 orderedCards[index] = MapEntry(AxisDirection.up, cardTop);
               }
 
+
               if (model.state.state != TableState.PLAYING) return SizedBox();
               return Stack(
                 children: [
-                  for (var c in orderedCards)
-                    _positionWidget(c?.key, cardWidth, cardHeight,
-                        cardLeft: cardLeft,
-                        cardMe: cardMe,
-                        cardRight: cardRight,
-                        cardTop: cardTop),
+                  for (var i = 0; i < orderedCards.length; i++)
+                    _positionWidget(
+                      orderedCards[i]?.key,
+                      cardWidth,
+                      cardHeight,
+                      cardLeft: cardLeft,
+                      cardMe: cardMe,
+                      cardRight: cardRight,
+                      cardTop: cardTop,
+                      index: i,
+                    ),
                 ],
               );
             },
@@ -126,7 +132,8 @@ class CardsOnTable extends StatelessWidget {
       {CardPlayed cardTop,
       CardPlayed cardRight,
       CardPlayed cardMe,
-      CardPlayed cardLeft}) {
+      CardPlayed cardLeft,
+      int index}) {
     final duration = Duration(seconds: 2);
     switch (axisDirection) {
       case AxisDirection.up:
