@@ -54,13 +54,15 @@ class MoveCardState extends State<MoveCard>
           ? OffsetAndRotation(offset.value, rotation.value)
           : destination;
     }
-    print("setting anim to $destination");
-    rotation = Tween<double>(begin: origin.rotation, end: destination.rotation)
-        .animate(controller);
-    offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
-        .animate(controller);
-    controller.reset();
-    controller.forward();
+    print("setting anim to $destination from $origin");
+    setState(() {
+      rotation =
+          Tween<double>(begin: origin.rotation, end: destination.rotation)
+              .animate(controller);
+      offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
+          .animate(controller);
+    });
+    controller.forward(from: 0);
   }
 
   void setCard(CardModel card) {

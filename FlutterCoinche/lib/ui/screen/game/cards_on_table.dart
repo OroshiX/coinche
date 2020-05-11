@@ -64,6 +64,7 @@ class CardsOnTable extends StatelessWidget {
                   name: AxisDirection.down.simpleName());
               PlayerPosition myPosition;
               Map<AxisDirection, PlayerPosition> posTableToCardinal;
+              List<CardPlayed> currentCardsOnTable = [];
               void _initState({ReactiveModel<Game> model}) {
                 /// Init values
                 myPosition = model.state.myPosition;
@@ -116,16 +117,40 @@ class CardsOnTable extends StatelessWidget {
                   orderedCards = tmpOrderedCards;
                   return;
                 }
-                final posWinner = getCardinalToPosTable(myPosition)[winnerLast];
+                final cardinalToPosTable = getCardinalToPosTable(myPosition);
+                final posWinner = cardinalToPosTable[winnerLast];
                 if (cardsOnTable.length == 4) {
-                  // Animate to win the trick
-                  final tuple =
-                      CardWonOrCenter(position: posWinner, cardModel: null);
-                  rmLeftCard.setValue(() => tuple);
-                  rmUpCard.setValue(() => tuple);
-                  rmRightCard.setValue(() => tuple);
-                  rmMeCard.setValue(() => tuple);
-                  cardMe = cardRight = cardTop = cardLeft = null;
+                  // First put the last card on the table
+                  final lastCard = cardsOnTable.last;
+                  final AxisDirection last =
+                      cardinalToPosTable[lastCard.position];
+                  final newValue =
+                      CardWonOrCenter(cardModel: lastCard.card, position: null);
+                  switch (last) {
+                    case AxisDirection.up:
+                      rmUpCard.setValue(() => newValue);
+                      break;
+                    case AxisDirection.right:
+                      rmRightCard.setValue(() => newValue);
+                      break;
+                    case AxisDirection.down:
+                      rmMeCard.setValue(() => newValue);
+                      break;
+                    case AxisDirection.left:
+                      rmLeftCard.setValue(() => newValue);
+                      break;
+                  }
+
+                  // Then animate to win the trick
+                  Future.delayed(Duration(seconds: 2), () {
+                    final tuple =
+                        CardWonOrCenter(position: posWinner, cardModel: null);
+                    rmLeftCard.setValue(() => tuple);
+                    rmUpCard.setValue(() => tuple);
+                    rmRightCard.setValue(() => tuple);
+                    rmMeCard.setValue(() => tuple);
+                    cardMe = cardRight = cardTop = cardLeft = null;
+                  });
                   return;
                 }
 
@@ -178,7 +203,6 @@ class CardsOnTable extends StatelessWidget {
                 child: Container(
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  color: Colors.red,
                   child: Stack(
                     children: [
                       for (var i = 0; i < orderedCards.length; i++)

@@ -38,13 +38,14 @@ class ManagedStateCard extends StatelessWidget {
       if (cardModel == model.value.item1) {
         assert(model.value.item2 != null,
             "we should win the card $cardModel, but the position of the winner is null");
-        // TODO put a delay before this
+        print("winning card $cardModel [case1]");
         _winPli(model.value.item2, moveCard, size);
         return;
       }
 
       // if newCard is null, animate the previous one to the tricks of the winner
       if (model.value.item1 == null && model.value.item2 != null) {
+        print("winning card $cardModel [case2]");
         _winPli(model.value.item2, moveCard, size);
         return;
       }
@@ -56,6 +57,7 @@ class ManagedStateCard extends StatelessWidget {
             "but it is assigned to be won by player ${model.value.item2}.");
         // animate card to the center of the table
         cardModel = model.value.item1;
+        print("playing card $cardModel");
         _putInCenter(moveCard, model.value.item1, size);
         return;
       }
