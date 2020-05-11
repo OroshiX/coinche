@@ -11,11 +11,12 @@ import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
 import 'package:FlutterCoinche/ui/screen/game/managed_state_card.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class CardsOnTable extends StatelessWidget {
-  static var built = 0;
+  static int nbBuild = 0;
   final double maxHeightCard, minHeightCard;
   final double minPadding;
 
@@ -25,7 +26,7 @@ class CardsOnTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("[CardsOnTable] build nb: ${++built}");
+    print("[CardsOnTable] build ${++nbBuild}");
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableSpace = min(constraints.maxWidth, constraints.maxHeight);
@@ -65,12 +66,44 @@ class CardsOnTable extends StatelessWidget {
               PlayerPosition myPosition;
               Map<AxisDirection, PlayerPosition> posTableToCardinal;
               List<CardPlayed> currentCardsOnTable = [];
+              bool firstRender = true;
+
+              void _putLastCardOnTable(
+                  List<CardPlayed> cardsOnTable,
+                  Map<PlayerPosition, AxisDirection> cardinalToPosTable,
+                  int timestamp) {
+                final lastCard = cardsOnTable.last;
+                final AxisDirection last =
+                    cardinalToPosTable[lastCard.position];
+                final newValue = CardWonOrCenter(
+                    cardModel: lastCard.card,
+                    position: null,
+                    timestamp: timestamp,
+                    shouldAnim: !firstRender);
+                switch (last) {
+                  case AxisDirection.up:
+                    rmUpCard.setValue(() => newValue);
+                    break;
+                  case AxisDirection.right:
+                    rmRightCard.setValue(() => newValue);
+                    break;
+                  case AxisDirection.down:
+                    rmMeCard.setValue(() => newValue);
+                    break;
+                  case AxisDirection.left:
+                    rmLeftCard.setValue(() => newValue);
+                    break;
+                }
+              }
+
               void _initState({ReactiveModel<Game> model}) {
                 /// Init values
                 myPosition = model.state.myPosition;
                 posTableToCardinal = getPosTableToCardinal(myPosition);
 
                 List<CardPlayed> cardsOnTable = model.state.onTable;
+                if (listEquals(currentCardsOnTable, cardsOnTable)) return;
+                int timestamp = DateTime.now().millisecondsSinceEpoch;
                 final newCardLeft = cardsOnTable.atPosition(
                     AxisDirection.left, posTableToCardinal);
                 final newCardTop = cardsOnTable.atPosition(
@@ -88,93 +121,114 @@ class CardsOnTable extends StatelessWidget {
 
                 final lastTrick = model.state.lastTrick;
                 final winnerLast = model.state.winnerLastTrick;
-                if ((lastTrick == null ||
-                        lastTrick.isEmpty ||
-                        winnerLast == null) &&
-                    cardsOnTable.length != 4) {
+                final initial = lastTrick == null ||
+                    lastTrick.isEmpty ||
+                    winnerLast == null ||
+                    firstRender;
+                if (initial) {
                   // no last trick, this is the 1st (if 1st, but all cards are on table,
                   // we should still do something else)
                   if (cardLeft != newCardLeft) {
                     cardLeft = newCardLeft;
                     rmLeftCard.setValue(() => CardWonOrCenter(
-                        cardModel: cardLeft.card, position: null));
+                        cardModel: cardLeft.card,
+                        position: null,
+                        timestamp: timestamp,
+                        shouldAnim: !firstRender));
                   }
                   if (cardMe != newCardMe) {
                     cardMe = newCardMe;
                     rmMeCard.setValue(() => CardWonOrCenter(
-                        cardModel: cardMe.card, position: null));
+                        cardModel: cardMe.card,
+                        position: null,
+                        timestamp: timestamp,
+                        shouldAnim: !firstRender));
                   }
                   if (cardRight != newCardRight) {
                     cardRight = newCardRight;
                     rmRightCard.setValue(() => CardWonOrCenter(
-                        cardModel: cardRight.card, position: null));
+                        cardModel: cardRight.card,
+                        position: null,
+                        timestamp: timestamp,
+                        shouldAnim: !firstRender));
                   }
                   if (cardTop != newCardTop) {
                     cardTop = newCardTop;
                     rmUpCard.setValue(() => CardWonOrCenter(
-                        cardModel: cardTop.card, position: null));
+                        cardModel: cardTop.card,
+                        position: null,
+                        timestamp: timestamp,
+                        shouldAnim: !firstRender));
                   }
-                  orderedCards = tmpOrderedCards;
-                  return;
+                  if (cardsOnTable.length != 4) {
+                    currentCardsOnTable = cardsOnTable;
+                    firstRender = false;
+                    model.setState((g) => orderedCards = tmpOrderedCards);
+                    return;
+                  }
                 }
                 final cardinalToPosTable = getCardinalToPosTable(myPosition);
                 final posWinner = cardinalToPosTable[winnerLast];
                 if (cardsOnTable.length == 4) {
                   // First put the last card on the table
-                  final lastCard = cardsOnTable.last;
-                  final AxisDirection last =
-                      cardinalToPosTable[lastCard.position];
-                  final newValue =
-                      CardWonOrCenter(cardModel: lastCard.card, position: null);
-                  switch (last) {
-                    case AxisDirection.up:
-                      rmUpCard.setValue(() => newValue);
-                      break;
-                    case AxisDirection.right:
-                      rmRightCard.setValue(() => newValue);
-                      break;
-                    case AxisDirection.down:
-                      rmMeCard.setValue(() => newValue);
-                      break;
-                    case AxisDirection.left:
-                      rmLeftCard.setValue(() => newValue);
-                      break;
+                  if (!initial) {
+                    _putLastCardOnTable(
+                        cardsOnTable, cardinalToPosTable, timestamp);
                   }
+                  // Update the data
+                  cardMe = cardRight = cardTop = cardLeft = null;
 
                   // Then animate to win the trick
-                  Future.delayed(Duration(seconds: 2), () {
-                    final tuple =
-                        CardWonOrCenter(position: posWinner, cardModel: null);
+                  Future.delayed(Duration(milliseconds: initial ? 500 : 2000),
+                      () {
+                    final tuple = CardWonOrCenter(
+                        position: posWinner,
+                        cardModel: null,
+                        timestamp: timestamp);
                     rmLeftCard.setValue(() => tuple);
                     rmUpCard.setValue(() => tuple);
                     rmRightCard.setValue(() => tuple);
                     rmMeCard.setValue(() => tuple);
-                    cardMe = cardRight = cardTop = cardLeft = null;
                   });
+                  currentCardsOnTable = cardsOnTable;
+                  firstRender = false;
                   return;
                 }
-
-                orderedCards = tmpOrderedCards;
                 if (cardLeft == null && newCardLeft != null) {
                   cardLeft = newCardLeft;
                   rmLeftCard.setValue(() => CardWonOrCenter(
-                      cardModel: cardLeft.card, position: null));
+                      cardModel: cardLeft.card,
+                      position: null,
+                      timestamp: timestamp,
+                      shouldAnim: !firstRender));
                 }
                 if (cardRight == null && newCardRight != null) {
                   cardRight = newCardRight;
                   rmRightCard.setValue(() => CardWonOrCenter(
-                      cardModel: cardRight.card, position: null));
+                      cardModel: cardRight.card,
+                      position: null,
+                      timestamp: timestamp,
+                      shouldAnim: !firstRender));
                 }
                 if (cardTop == null && newCardTop != null) {
                   cardTop = newCardTop;
-                  rmUpCard.setValue(() =>
-                      CardWonOrCenter(cardModel: cardTop.card, position: null));
+                  rmUpCard.setValue(() => CardWonOrCenter(
+                      cardModel: cardTop.card,
+                      position: null,
+                      timestamp: timestamp,
+                      shouldAnim: !firstRender));
                 }
                 if (cardMe == null && newCardMe != null) {
                   cardMe = newCardMe;
-                  rmMeCard.setValue(() =>
-                      CardWonOrCenter(cardModel: cardMe.card, position: null));
+                  rmMeCard.setValue(() => CardWonOrCenter(
+                      cardModel: cardMe.card,
+                      position: null,
+                      timestamp: timestamp,
+                      shouldAnim: !firstRender));
                 }
+                currentCardsOnTable = cardsOnTable;
+                firstRender = false;
+                model.setState((g) => orderedCards = tmpOrderedCards);
               }
 
               return StateBuilder<Game>(
@@ -189,11 +243,9 @@ class CardsOnTable extends StatelessWidget {
                   _initState(model: model);
                 },
                 onSetState: (context, model) {
-                  print("At build $built, in onSetState");
                   _initState(model: model);
                 },
                 builderWithChild: (context, model, child) {
-                  print("At build $built, in builder");
                   if (model.state.state != TableState.PLAYING &&
                       model.state.state != TableState.BETWEEN_GAMES &&
                       model.state.state != TableState.ENDED) return SizedBox();

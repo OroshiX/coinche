@@ -20,32 +20,15 @@ class RotatedTransition extends AnimatedWidget {
 class OffsetAndRotation {
   final Offset offset;
   final double rotation;
+  final int timestamp;
+  const OffsetAndRotation(this.offset, this.rotation, this.timestamp);
 
-  const OffsetAndRotation(this.offset, this.rotation);
-
-  const OffsetAndRotation.zero()
+  const OffsetAndRotation.zero(this.timestamp)
       : offset = Offset.zero,
         rotation = 0;
 
-  OffsetAndRotation operator +(OffsetAndRotation other) {
-    return OffsetAndRotation(
-        this.offset + other.offset, this.rotation + other.rotation);
-  }
-
-  OffsetAndRotation operator *(OffsetAndRotation other) {
-    return OffsetAndRotation(
-        Offset(
-            this.offset.dx * other.offset.dx, this.offset.dy * other.offset.dy),
-        this.rotation + other.rotation);
-  }
-
-  OffsetAndRotation operator -(OffsetAndRotation other) {
-    return OffsetAndRotation(
-        this.offset - other.offset, this.rotation - other.rotation);
-  }
-
   @override
   String toString() {
-    return "offset: $offset, rotation: $rotation";
+    return "offset: $offset, rotation: $rotation, requested at ${timestamp % 1000}";
   }
 }

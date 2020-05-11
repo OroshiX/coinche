@@ -28,6 +28,7 @@ class MoveCardState extends State<MoveCard>
   Animation<Offset> _offset;
   AnimationController _controller;
   CardModel _cardModel;
+  int lastRequestTimestamp;
 
   set cardModel(CardModel value) {
     setState(() {
@@ -38,9 +39,10 @@ class MoveCardState extends State<MoveCard>
   @override
   void initState() {
     super.initState();
+    lastRequestTimestamp = DateTime.now().millisecondsSinceEpoch;
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _initAnim(OffsetAndRotation.zero());
+    _initAnim(OffsetAndRotation.zero(lastRequestTimestamp));
     _cardModel = widget.card;
   }
 
@@ -49,13 +51,25 @@ class MoveCardState extends State<MoveCard>
     setAnim(destination);
   }
 
-  void setAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
+  void setAnim(OffsetAndRotation destination,
+      {OffsetAndRotation origin, bool shouldAnim = true}) {
+//    assert(!shouldAnim || origin != null)
+    if (destination.timestamp < lastRequestTimestamp && shouldAnim) {
+      print(
+          "============= We won't do that, it's too late! ($destination) ==========");
+      return;
+    }
+    lastRequestTimestamp = destination.timestamp;
+    print("time: $destination");
+    if(!shouldAnim) {
+      origin = destination;
+    }
     if (origin == null) {
       origin = _offset != null && _rotation != null
-          ? OffsetAndRotation(_offset.value, _rotation.value)
+          ? OffsetAndRotation(
+              _offset.value, _rotation.value, lastRequestTimestamp)
           : destination;
     }
-    print("setting anim to $destination from $origin");
     setState(() {
       _rotation =
           Tween<double>(begin: origin.rotation, end: destination.rotation)

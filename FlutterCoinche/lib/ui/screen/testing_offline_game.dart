@@ -116,7 +116,10 @@ class TestingOfflineGame extends StatelessWidget {
 
   Game _init() {
     return Game(
-        onTable: [],
+        onTable: [
+          getRandomCardTable(PlayerPosition
+              .values[Random().nextInt(PlayerPosition.values.length)])
+        ],
         nicknames:
             Nicknames(north: "me", east: "toto", south: "south", west: "west"),
         cards: [randomCard(), randomCard()],

@@ -31,22 +31,27 @@ class ManagedStateCard extends StatelessWidget {
 
     final keyCard = GlobalKey<MoveCardState>();
     void _onChangedState(
-        ReactiveModel<CardWonOrCenter> model, MoveCardState moveCard,
-        {bool init = false}) {
+        ReactiveModel<CardWonOrCenter> model, MoveCardState moveCard) {
+      if (moveCard == null) {
+        print("not yet initialized");
+        return;
+      }
       // if model is identical to in memory, it means we have 4 cards on table,
       // and we need to force the card to go into our tricks after a delay
       if (cardModel == model.value.item1) {
         assert(model.value.item2 != null,
             "we should win the card $cardModel, but the position of the winner is null");
         print("winning card $cardModel [case1]");
-        _winPli(model.value.item2, moveCard, size);
+        _winPli(model.value.item2, moveCard, size,
+            timestamp: model.value.item3, shouldAnim: model.value.item4);
         return;
       }
 
       // if newCard is null, animate the previous one to the tricks of the winner
       if (model.value.item1 == null && model.value.item2 != null) {
         print("winning card $cardModel [case2]");
-        _winPli(model.value.item2, moveCard, size);
+        _winPli(model.value.item2, moveCard, size,
+            timestamp: model.value.item3, shouldAnim: model.value.item4);
         return;
       }
       // if newCard is NOT null, and it is a new card, put it in the middle
@@ -58,7 +63,8 @@ class ManagedStateCard extends StatelessWidget {
         // animate card to the center of the table
         cardModel = model.value.item1;
         print("playing card $cardModel");
-        _putInCenter(moveCard, model.value.item1, size);
+        _putInCenter(moveCard, model.value.item1, size,
+            timestamp: model.value.item3, shouldAnim: model.value.item4);
         return;
       }
       throw "Illegal state: We have new values ${model.value.item1} "
@@ -74,7 +80,7 @@ class ManagedStateCard extends StatelessWidget {
           print("[managed] for $axisDirection: Waiting");
         }, onData: (state) {
           print("[managed] for $axisDirection: received data: $state");
-          _onChangedState(model, keyCard.currentState, init: true);
+          _onChangedState(model, keyCard.currentState);
         }, onError: (e) {
           print("[managed] for $axisDirection: Error $e");
         });
@@ -93,22 +99,26 @@ class ManagedStateCard extends StatelessWidget {
   }
 
   _winPli(AxisDirection winnerPosTable, MoveCardState moveCardState,
-      Size screenSize) {
+      Size screenSize,
+      {@required int timestamp, @required bool shouldAnim}) {
     print("$winnerPosTable is Winning trick");
-    moveCardState.setAnim(_offsetAndRotationPlayer(winnerPosTable, screenSize),
-        origin: _offsetRotationCenter);
+    moveCardState.setAnim(
+        _offsetAndRotationPlayer(winnerPosTable, screenSize, timestamp),
+        origin: _offsetRotationCenter(timestamp),
+        shouldAnim: shouldAnim);
   }
 
   _putInCenter(
-      MoveCardState moveCardState, CardModel cardModel, Size screenSize) {
-    print("we put card in center");
-    moveCardState.setAnim(_offsetRotationCenter,
-        origin: _offsetAndRotationPlayer(axisDirection, screenSize));
+      MoveCardState moveCardState, CardModel cardModel, Size screenSize,
+      {@required int timestamp, @required bool shouldAnim}) {
+    moveCardState.setAnim(_offsetRotationCenter(timestamp),
+        origin: _offsetAndRotationPlayer(axisDirection, screenSize, timestamp),
+        shouldAnim: shouldAnim);
     moveCardState.cardModel = cardModel;
   }
 
-  OffsetAndRotation get _offsetRotationCenter =>
-      OffsetAndRotation(_getOffsetCenter, _getRotationCenter);
+  OffsetAndRotation _offsetRotationCenter(int timestamp) =>
+      OffsetAndRotation(_getOffsetCenter, _getRotationCenter, timestamp);
 
   Offset get _getOffsetCenter {
     switch (axisDirection) {
@@ -137,9 +147,9 @@ class ManagedStateCard extends StatelessWidget {
   }
 
   OffsetAndRotation _offsetAndRotationPlayer(
-      AxisDirection player, Size screenSize) {
+      AxisDirection player, Size screenSize, int timestamp) {
     return OffsetAndRotation(
-        _getOffsetPli(player, screenSize), _getRotationPli(player));
+        _getOffsetPli(player, screenSize), _getRotationPli(player), timestamp);
   }
 
   Offset _getOffsetPli(AxisDirection winnerPosTable, Size screenSize) {
