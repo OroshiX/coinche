@@ -92,11 +92,7 @@ class MoveCardState extends State<MoveCard>
                   card: _cardModel,
                   width: widget.cardWidth,
                   height: widget.cardHeight)
-              : Placeholder(
-                  fallbackWidth: 20,
-                  fallbackHeight: 30,
-                  color: Colors.black,
-                ),
+              : SizedBox(),
         ),
       ),
     );
