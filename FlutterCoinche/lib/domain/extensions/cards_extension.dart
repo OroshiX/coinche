@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
+import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
+import 'package:flutter/cupertino.dart';
 
 extension CardsExtension on List<CardModel> {
   sortCards(TableState state, Bid currentBid) {
@@ -12,4 +16,26 @@ extension CardsExtension on List<CardModel> {
       return compareValue(c2.value, c1.value, trump);
     });
   }
+}
+
+extension CardsPlayedExtension on List<CardPlayed> {
+  CardPlayed atPosition(AxisDirection posTable,
+      Map<AxisDirection, PlayerPosition> posTableToCardinal) {
+    assert(posTableToCardinal != null, "posTable is null");
+    return this.firstWhere(
+      (element) => element.position == posTableToCardinal[posTable],
+      orElse: () => null,
+    );
+  }
+}
+
+CardModel randomCard() {
+  var r = Random();
+  return CardModel(
+      value: CardValue.values[r.nextInt(CardValue.values.length)],
+      color: CardColor.values[r.nextInt(CardColor.values.length)]);
+}
+
+CardPlayed getRandomCardTable(PlayerPosition position) {
+  return CardPlayed(position: position, card: randomCard());
 }

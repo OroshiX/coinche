@@ -77,6 +77,10 @@ extension TablePosition on AxisDirection {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setString(avatar, file);
   }
+
+  String simpleName() {
+    return toString().split(".").last.toLowerCase();
+  }
 }
 
 Future<PosTableToColor> getPosTableToColors() async {

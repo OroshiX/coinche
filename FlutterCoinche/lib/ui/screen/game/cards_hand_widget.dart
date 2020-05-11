@@ -34,8 +34,6 @@ class CardsInHandWidget extends StatelessWidget {
         final myTurn = me == nextPlayer;
         final inPlayMode = model.state.state == TableState.PLAYING;
         return Container(
-//        color: colorLightBlue,
-//                  padding: EdgeInsets.all(20),
             height: cardHeight + paddingVertical * 2,
             width: screenWidth,
             child: ListView.builder(
@@ -51,7 +49,6 @@ class CardsInHandWidget extends StatelessWidget {
                             inPlayMode && myTurn && card.playable != null
                                 ? 1
                                 : 0,
-//                      hapticFeedbackOnStart: true,
                         data: card,
                         childWhenDragging: Container(
                           constraints:
@@ -83,7 +80,6 @@ class CardsInHandWidget extends StatelessWidget {
                                 blurRadius: 2,
                               )
                             ],
-//                          color: Colors.white,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),

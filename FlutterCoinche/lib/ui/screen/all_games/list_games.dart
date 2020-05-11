@@ -9,7 +9,8 @@ class ListGames extends StatelessWidget {
   final List<GameEmpty> games;
 
   final GamesBloc gamesProvider;
-  final Future<void> Function(GamesBloc gamesBloc) onRefresh;
+  final Future<void> Function(GamesBloc gamesBloc, BuildContext context)
+      onRefresh;
 
   const ListGames(
       {Key key,
@@ -23,7 +24,7 @@ class ListGames extends StatelessWidget {
     final inRoomGames = games.where((element) => element.inRoom).toList();
     final toJoin = games.where((element) => !element.inRoom).toList();
     return RefreshIndicator(
-      onRefresh: () => onRefresh(gamesProvider),
+      onRefresh: () => onRefresh(gamesProvider, context),
       child: ListView.builder(
         itemCount: games.length + 2,
         itemBuilder: (context, index) {

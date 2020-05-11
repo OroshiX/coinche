@@ -15,17 +15,13 @@ import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 
 class BiddingBar extends StatefulWidget {
-//  final double screenWidth;
   final void Function(Bid bid) onBid;
 
-//  final double height;
   final BidType initialBidType;
 
   const BiddingBar(
       {Key key,
-//      @required this.screenWidth,
       this.onBid,
-//      this.height = 200,
       this.initialBidType = BidType.Simple})
       : super(key: key);
 

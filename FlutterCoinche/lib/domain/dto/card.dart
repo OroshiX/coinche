@@ -123,6 +123,11 @@ class CardPlayed extends Equatable {
 
   @override
   List<Object> get props => [card, belote, position];
+
+  @override
+  String toString() {
+    return "card: $card, by $position";
+  }
 }
 
 String getAssetImageFromColor(CardColor e) {

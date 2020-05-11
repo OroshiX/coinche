@@ -37,32 +37,42 @@ class StatedGameScreen extends StatelessWidget {
         Inject(() => Game()),
         Inject.future(() => getPosTableToColors())
       ],
-      builder: (_) => StateBuilder<Game>(
-        observe: () => RM.stream(BlocProvider.of<GamesBloc>(context).game,
-            name: "gameFire"),
-        builder: (_, modelFire) {
-          final currentModel = RM.get<Game>();
-          return WhenRebuilder<Game>(
-              models: [modelFire, RM.get<PosTableToColor>()],
-              onIdle: () => _buildEmpty(),
-              onWaiting: () => _buildWaiting(),
-              onError: (e) => _buildEmpty(),
-              onSetState: (_, rmFire) {
+      builder: (_) {
+        final currentModel = RM.get<Game>();
+        return WhenRebuilder(
+          models: [RM.get<PosTableToColor>()],
+          onIdle: () => _buildEmpty(),
+          onWaiting: () => _buildWaiting(),
+          onError: (error) => _buildEmpty(),
+          onData: (data) {
+            return StateBuilder<Game>(
+              observe: () => RM.stream(BlocProvider.of<GamesBloc>(context).game,
+                  name: "gameFire"),
+              initState: (context, model) {
+                currentModel.setValue(() => Game());
+              },
+              onSetState: (context, rmFire) {
                 if (rmFire.hasData && rmFire.state != null) {
                   var different = rmFire.state.different(currentModel.state);
-                  final fireGame = modelFire.value;
-                  currentModel.setValue(
-                      () => fireGame.copy(
-                          withCards: fireGame.cards.toList()
-                            ..sortCards(fireGame.state, fireGame.currentBid)),
-                      filterTags: different);
+                  final fireGame = rmFire.value;
+                  if (different.isNotEmpty) {
+                    if (different.contains(Aspects.ON_TABLE)) {
+                      print("NEW onTable: ${fireGame.onTable}");
+                    }
+                    currentModel.setValue(
+                        () => fireGame.copy(
+                            withCards: fireGame.cards.toList()
+                              ..sortCards(fireGame.state, fireGame.currentBid)),
+                        filterTags: different);
+                  }
                 }
               },
-              onData: (_) {
-                return TableWidget(quit: _quit);
-              });
-        },
-      ),
+              builderWithChild: (context, model, child) => child,
+              child: TableWidget(quit: _quit),
+            );
+          },
+        );
+      },
     );
   }
 

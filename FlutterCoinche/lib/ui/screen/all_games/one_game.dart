@@ -63,7 +63,6 @@ class OneGame extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: colorGradient2,
-//                                  borderRadius: BorderRadius.circular(50)
                   ),
                   child: Text(
                     game.hasBots ? "🤖" : "🙂",
