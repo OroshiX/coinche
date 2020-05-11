@@ -4,7 +4,6 @@ import { of } from 'rxjs';
 import { bidPointListWithCapotNGeneral, TYPE_BID } from '../../../shared/models/collection-game';
 import { CARD_COLOR } from '../../../shared/models/play';
 import { DialogData } from '../play-game/play-game.component';
-import { iconClub, iconDiamond, iconHeart, iconSpade } from '../services/card-image.service';
 
 const MIN_POINTS = 80;
 const IDX_MIN = 0;
@@ -20,20 +19,21 @@ const IDX_POINTS_ALL_MAX = IDX_GENERAL;
 })
 export class DialogBidComponent {
   bidPoints = bidPointListWithCapotNGeneral;
-  clubImg = iconClub;
-  spadeImg = iconSpade;
-  heartImg = iconHeart;
-  diamondImg = iconDiamond;
+
   points: number;
   pointsLabel: string;
   color: string;
   typeBid: string;
   idxPoints: number;
 
+  colorClub = false;
+  colorDiam = false;
+  colorSpade = false;
+  colorHeart = false;
+
   constructor(public dialogRef: MatDialogRef<DialogBidComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.initializeData(data);
-    console.log(this.data);
   }
 
   onNoClick(): void {
@@ -50,23 +50,8 @@ export class DialogBidComponent {
     this.setData();
   }
 
-  clickClub() {
-    this.setColor(CARD_COLOR.CLUB);
-    this.setDataBasic();
-  }
-
-  clickDiamond() {
-    this.setColor(CARD_COLOR.DIAMOND);
-    this.setDataBasic();
-  }
-
-  clickSpade() {
-    this.setColor(CARD_COLOR.SPADE);
-    this.setDataBasic();
-  }
-
-  clickHeart() {
-    this.setColor(CARD_COLOR.HEART);
+  clickColor(color: string) {
+    this.setColor(color);
     this.setDataBasic();
   }
 
@@ -85,7 +70,7 @@ export class DialogBidComponent {
   private initializeData(data: DialogData) {
     this.points = data?.points;
     this.idxPoints = !!this.points && this.points >= MIN_POINTS ?
-      this.bidPoints.map(el => el.value).indexOf(this.points) + 1: IDX_MIN;
+      this.bidPoints.map(el => el.value).indexOf(this.points) + 1 : IDX_MIN;
     this.setType();
     this.setPoints();
     this.setColor('');
@@ -101,12 +86,41 @@ export class DialogBidComponent {
     this.idxPoints = this.idxPoints > IDX_POINTS_ALL_MAX ? this.idxPoints - 1 : this.idxPoints;
     this.points = this.bidPoints.map(el => el.value)[this.idxPoints];
     this.pointsLabel = this.bidPoints.map(el => el.label)[this.idxPoints];
-    // this.points = this.bidPoints[this.idxPoints].value;
-    // this.pointsLabel = this.bidPoints[this.idxPoints].label;
   }
 
   private setColor(color) {
     this.color = color;
+    switch (color) {
+      case CARD_COLOR.CLUB :
+        this.colorClub = true;
+        this.colorDiam = false;
+        this.colorSpade = false;
+        this.colorHeart = false;
+        break;
+      case CARD_COLOR.DIAMOND :
+        this.colorClub = false;
+        this.colorDiam = true;
+        this.colorSpade = false;
+        this.colorHeart = false;
+        break;
+      case CARD_COLOR.SPADE :
+        this.colorClub = false;
+        this.colorDiam = false;
+        this.colorSpade = true;
+        this.colorHeart = false;
+        break;
+      case CARD_COLOR.HEART :
+        this.colorClub = false;
+        this.colorDiam = false;
+        this.colorSpade = false;
+        this.colorHeart = true;
+        break;
+      default:
+        this.colorClub = false;
+        this.colorDiam = false;
+        this.colorSpade = false;
+        this.colorHeart = false;
+    }
   }
 
   private setType() {

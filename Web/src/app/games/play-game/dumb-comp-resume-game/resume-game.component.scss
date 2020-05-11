@@ -15,27 +15,28 @@
 .itemContent {
   color: ghostwhite;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 14px;
 }
 .itemContentRight {
   color: ghostwhite;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 14px;
   margin-left: 4px;
 }
 .itemScores {
   color: ghostwhite;
   font-weight: bold;
-  font-size: 11px;
+  font-size: 14px;
   margin-left: 50px;
 }
 @mixin item-base {
   flex: 1;
   color: whitesmoke;
-  font-size: 11px;
+  font-size: 14px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .item-blink {
   @include item-base;
@@ -48,30 +49,22 @@
   @include item-base;
   justify-content: flex-start;
 }
-/*@mixin margin-overlapped($top) {
-  margin-top: $top;
-  display: flex;
-  flex: 1;
-  justify-content: space-evenly;
+@mixin emoji-card {
+  font-size: 14px;
+  margin-left: 2px;
+}
+.black {
+  @include emoji-card;
+  color: #0a0d0b;
+}
+.red {
+  @include emoji-card;
+  color: #f44336;
+}
+.blink-emoji {
+  animation: blinker 2s step-start infinite;
 }
 
-@media(max-width: 959px) {
-  .row1 {
-    @include margin-overlapped(5px);
-  }
-  .row2 {
-    @include margin-overlapped(5px);
-  }
-}
-
-@media(min-width: 960px) {
-  .row1 {
-    @include margin-overlapped(10px);
-  }
-  .row2 {
-    @include margin-overlapped(10px);
-  }
-}*/
 
 
 

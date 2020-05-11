@@ -1,6 +1,6 @@
 .footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-evenly;
   align-items: center;
 }
 .action {
@@ -17,6 +17,8 @@
 .card-dialog {
   background-color: inherit;
   font-size: 12px;
+  align-self: center;
+  min-height: 280px;
 }
 .radio-group {
   display: flex;

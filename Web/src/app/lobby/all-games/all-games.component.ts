@@ -21,7 +21,7 @@ export interface DialogData {
 }
 
 
-export const DIALOG_WIDTH = '350px';
+export const DIALOG_WIDTH = '280px';
 export const TABLE_WIDTH_SMALL = '410px';
 export const TABLE_WIDTH_LARGE = '550px';
 export const FIELD1_WIDTH_SMALL = 150;

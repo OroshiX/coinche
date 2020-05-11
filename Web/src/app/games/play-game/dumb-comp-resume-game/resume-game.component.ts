@@ -19,11 +19,9 @@ export class ResumeGameComponent implements OnInit, OnChanges {
   currentOrPreviousBid: string;
   winner1: string;
   winner2: string;
-  // limit: 8;
   pairEastWestNamePadding: string;
   pairNorthSouthNamePadding: string;
   showBidAnnounced: boolean;
-  sleep: string;
 
   constructor() {
   }

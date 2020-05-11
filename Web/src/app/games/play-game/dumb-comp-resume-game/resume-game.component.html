@@ -16,7 +16,18 @@
         <div class="item">
           <span class="itemContent">{{currentOrPreviousBid}}:</span>
           <span class="itemContentRight">{{bidData?.currentBidNickname | shorterName: 14}}
-            - {{bidData?.currentBidPoints}} {{bidData?.currentBidColor}}
+            - {{bidData?.currentBidPoints}}
+            <ng-container [ngSwitch]="bidData?.currentBidColor">
+              <span *ngSwitchCase="'CLUB'" class="black"
+                    [ngClass]="{'blink-emoji': gameState === 'PLAYING'}">&clubs;</span>
+              <span *ngSwitchCase="'DIAMOND'" class="red"
+                    [ngClass]="{'blink-emoji': gameState === 'PLAYING'}">&diams;</span>
+              <span *ngSwitchCase="'SPADE'" class="black"
+                    [ngClass]="{'blink-emoji': gameState === 'PLAYING'}">&spades;</span>
+              <span *ngSwitchCase="'HEART'" class="red"
+                    [ngClass]="{'blink-emoji': gameState === 'PLAYING'}">&hearts;</span>
+              <span *ngSwitchDefault></span>
+            </ng-container>
             {{bidData?.currentBidType === 'SimpleBid' ? '' : bidData?.currentBidType}}
         </span>
         </div>

@@ -6,14 +6,10 @@
       <button class="fab" mat-mini-fab color="primary" (click)="clickPlus()"><span class="sign">+</span></button>
     </div>
     <div class="colors">
-      <button mat-mini-fab class="btn" [ngStyle]="{'background': clubImg}" (click)="clickClub()">
-      </button>
-      <button mat-mini-fab class="btn" [ngStyle]="{'background': diamondImg}" (click)="clickDiamond()">
-      </button>
-      <button mat-mini-fab class="btn" [ngStyle]="{'background': spadeImg}" (click)="clickSpade()">
-      </button>
-      <button mat-mini-fab class="btn" [ngStyle]="{'background': heartImg}" (click)="clickHeart()">
-      </button>
+      <button mat-mini-fab [ngClass]="{'clicked-btn': colorClub}" class="btn black" (click)="clickColor('CLUB')">&clubs;</button>
+      <button mat-mini-fab [ngClass]="{'clicked-btn': colorDiam}" class="btn red" (click)="clickColor('DIAMOND')">&diams;</button>
+      <button mat-mini-fab [ngClass]="{'clicked-btn': colorSpade}" class="btn black" (click)="clickColor('SPADE')">&spades;</button>
+      <button mat-mini-fab [ngClass]="{'clicked-btn': colorHeart}" class="btn red" (click)="clickColor('HEART')">&hearts;</button>
     </div>
     <mat-divider></mat-divider>
     <div class="score-result">
