@@ -5,7 +5,7 @@ import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
 import 'package:bloc_provider/bloc_provider.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -95,31 +95,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _showError(error) {
     print(error);
-    Flushbar(
-      message: error.toString(),
-      leftBarIndicatorColor: Colors.red,
-      duration: Duration(seconds: 3),
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      icon: Icon(
-        Icons.error,
-        color: Colors.red,
-      ),
-    )..show(context);
+    FlushbarHelper.createError(message: error.toString()).show(context);
   }
 
   _showSuccess(String message) {
-    Flushbar(
-      message: message,
-      leftBarIndicatorColor: Colors.lightGreen,
-      duration: Duration(seconds: 3),
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      icon: Icon(
-        Icons.check,
-        color: Colors.lightGreen,
-      ),
-    )..show(context);
+    FlushbarHelper.createSuccess(message: message).show(context);
   }
 
   @override
