@@ -77,8 +77,6 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
                   blur: 2,
                   child: Container(
                     padding: EdgeInsets.all(10),
-//              width: 200,
-//              height: 50,
                     decoration: BoxDecoration(
                         color: colorGradient1,
                         borderRadius: BorderRadius.circular(50)),

@@ -145,7 +145,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             textFieldStyle: TextStyle(
               color: colorTextDark,
-//              shadows: [Shadow(color: Colors.yellow, blurRadius: 2)],
             ),
             buttonStyle: TextStyle(
               fontWeight: FontWeight.w800,
@@ -163,7 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
               fillColor: Colors.blueGrey.withOpacity(.1),
               contentPadding: EdgeInsets.zero,
               errorStyle: TextStyle(
-//                backgroundColor: Colors.orange,
                 color: Colors.purple.shade900,
               ),
               labelStyle: TextStyle(fontSize: 12),
@@ -194,9 +192,6 @@ class _LoginScreenState extends State<LoginScreen> {
               highlightColor: colorGradientMiddle,
               elevation: 9,
               highlightElevation: 6,
-//              shape: BeveledRectangleBorder(
-//                borderRadius: BorderRadius.circular(10),
-//              ),
             ),
           ),
           emailValidator: (value) {

@@ -47,7 +47,6 @@ class TestingOfflineGame extends StatelessWidget {
                   observe: () => RM.create(_init()),
                   builder: (_, initModel) => WhenRebuilder<Game>(
                     models: [rmPos],
-//                    onSetState: (_,),
                     onData: (data) => TableWidget(
                         quit: (context) => showDialog(context: context)),
                     onWaiting: () => CircularProgressIndicator(),

@@ -40,7 +40,6 @@ class _TableWidgetState extends State<TableWidget> {
     final double cardWidth = getCardWidth(screenSize);
     final double cardHeight = cardWidth * golden;
     final double marginCardsPosition = getMarginCardsPosition(screenSize);
-//    final double heightBiddingBar = getHeightBidding(screenSize);
     final double paddingHeightCards = getPaddingHeightCard(screenSize);
 
     return Stack(children: [

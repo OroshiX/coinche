@@ -37,7 +37,6 @@ class AnimatedBiddingBar extends StatelessWidget {
             duration: Duration(milliseconds: 500),
             opacity: state == TableState.BIDDING ? 1 : 0,
             child: BiddingBar(
-//                height: heightBiddingBar,
               onBid: (Bid bid) {
                 ServerCommunication.bid(bid, id).then((success) {
                   print("success");
@@ -50,7 +49,6 @@ class AnimatedBiddingBar extends StatelessWidget {
                       .show(context);
                 });
               },
-//                screenWidth: screenSize.width,
             ),
           ),
         );

@@ -72,7 +72,6 @@ class BidsWidget extends StatelessWidget {
             break;
           case AxisDirection.right:
             alignment = Alignment.centerRight;
-//            dx = -widthAvatar;
             dy = -heightAvatar;
             break;
           case AxisDirection.down:
@@ -81,7 +80,6 @@ class BidsWidget extends StatelessWidget {
             break;
           case AxisDirection.left:
             alignment = Alignment.centerLeft;
-//            dx = widthAvatar;
             dy = -heightAvatar;
             break;
         }
