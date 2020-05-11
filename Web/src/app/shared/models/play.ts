@@ -13,9 +13,10 @@ export interface Card {
 }
 
 export enum SCREEN {
-  SMALL= 'small',
+  SMALL = 'small',
   LARGE = 'large '
 }
+
 export class Play {
   card: Card;
   belote: string;
@@ -91,6 +92,16 @@ export class MultiValuesCard {
   }
 }
 
+export class Belote {
+  nickname: string;
+  position: string;
+  belote: string;
+
+  constructor(obj: Partial<Belote>) {
+    Object.assign(this, obj);
+  }
+}
+
 export enum CARD_ID {
   SEVEN,
   EIGHT,
@@ -113,21 +124,9 @@ export enum CARD_VALUE {
   ACE = 1
 }
 
-/*
-export const cardIdList =
-  [CARD_ID.SEVEN, CARD_ID.EIGHT, CARD_ID.NINE, CARD_ID.TEN, CARD_ID.JACK, CARD_ID.QUEEN, CARD_ID.KING, CARD_ID.ACE];
-*/
-
 export const cardIdList = enumToValues(CARD_ID);
-// export const cardIdListEnum = enumToKeys(CARD_ID);
-// export const cardIdListObj = enumToObjList(CARD_ID);
 
-export const cardValues= enumToValues(CARD_VALUE);
-export const cardValuesListObj = enumToObjList(CARD_VALUE);
-/*
-export const cardValues =
-  [CARD_VALUE.SEVEN, CARD_VALUE.EIGHT, CARD_VALUE.NINE, CARD_VALUE.TEN, CARD_VALUE.JACK, CARD_VALUE.QUEEN, CARD_VALUE.KING, CARD_VALUE.ACE];
-*/
+export const cardValues = enumToValues(CARD_VALUE);
 
 export const CARD_VALUES_LIST: number[][] = [
   [CARD_VALUE.SEVEN, 0, 0, 0, 0, CARD_ID.SEVEN],

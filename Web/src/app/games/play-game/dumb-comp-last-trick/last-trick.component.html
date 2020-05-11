@@ -15,12 +15,23 @@
     <app-mini-card [card]="lastTricks[3]">
     </app-mini-card>
   </div>
-  <div class="winner">
-    <div class="txt">
-      Winner lastTrick:
-    </div>
-    <div class="valueText">
-      {{winnerLastTrick | shorterName: 14}}
+  <div class="right">
+    <ng-container *ngIf="!!belote">
+      <div class="right-item">
+        <div class="txt">
+          {{belote?.nickname}}: <strong>{{belote?.belote}}</strong>
+        </div>
+        <!--<div class="valueText">
+        </div>-->
+      </div>
+    </ng-container>
+    <div class="right-item">
+      <div class="txt">
+        Winner lastTrick:
+      </div>
+      <div class="valueText">
+        {{winnerLastTrick | shorterName: 14}}
+      </div>
     </div>
   </div>
 </div>

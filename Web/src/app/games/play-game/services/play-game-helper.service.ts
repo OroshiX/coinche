@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Bid, PLAYER_POSITION, PlayerPosition, playersPositionRef, STATE, TableGame } from '../../../shared/models/collection-game';
-import { CardView, Play } from '../../../shared/models/play';
+import { Belote, CardView, Play } from '../../../shared/models/play';
 import { CardImageService } from './card-image.service';
 
 const ZERO = 0;
@@ -48,6 +48,16 @@ export class PlayGameHelperService {
     const playersPos = this.playersPositionRefOrderedByMyPosZero(myPos);
     return playersPos.map(pos => onTable.find((p: Play) => p.position === pos))
       .map(pl => !!pl ? this.imgService.buildCardView(pl?.card?.color, pl?.card?.value, pl?.card?.playable) : new CardView(null));
+  }
+
+  beloteRebelote(myPos: PLAYER_POSITION, lastTrick: Play[], nicknames: any): Belote {
+    const playersPos = this.playersPositionRefOrderedByMyPosZero(myPos);
+    return playersPos.map((pos: PLAYER_POSITION) => lastTrick.find((p: Play) => p.position === pos))
+      .map((pl:Play )=> lastTrick.find((lt: Play)=> lt.position === pl.position))
+      .filter(pl => !!pl && pl.belote !== null)
+      .map((pl: Play) =>
+        new Belote({nickname: this.getNicknameByPos(pl.position, nicknames), belote: pl.belote, position: pl.position}))
+      .shift();
   }
 
   // my position must always be found at idx zero of this list

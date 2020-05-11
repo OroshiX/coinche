@@ -29,12 +29,20 @@
 .mini-card-south {
   margin-bottom: 5px;
 }
-.winner {
+.right {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
   margin-left: 20px;
+}
+.right-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: 20px;
+  margin-bottom: 5px;
 }
 .txt {
   font-size: 12px;

@@ -42,8 +42,10 @@
         </div>
       </ng-container>
       <ng-template #joining>
+        <ng-container *ngIf="gameState === 'JOINING'">
         <div class="item"><span>Waiting for other players to join the game</span>
         </div>
+        </ng-container>
       </ng-template>
     </ng-container>
     <ng-template #ended>

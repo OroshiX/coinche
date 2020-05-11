@@ -6,7 +6,7 @@ import { ApiFirestoreService } from '../../../services/apis-firestore/api-firest
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { BreakpointService } from '../../../services/breakpoint/breakpoint.service';
 import { Bid, PLAYER_POSITION, STATE, TableGame } from '../../../shared/models/collection-game';
-import { CardView, PlayCard } from '../../../shared/models/play';
+import { Belote, CardView, PlayCard } from '../../../shared/models/play';
 import { CardImageService } from '../services/card-image.service';
 import { PlayGameHelperService } from '../services/play-game-helper.service';
 
@@ -71,6 +71,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   playersNicknameByMyPosOnTable: string[] = [];
   bidListOrdered: Bid[] = [];
   winnerLastTrick: string;
+  beloteRebelote: Belote;
 
   tiles: Tile[] = [
     {text: '', cols: 2, rows: 1, color: 'darkgreen'},
@@ -151,6 +152,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.cardsPlayed = this.helper.onTableCardsOrdered(data.myPosition, data.onTable);
     this.isLastTricksEmpty = data.lastTrick.length <= 0;
     this.lastTricks = this.helper.onTableCardsOrdered(data.myPosition, data.lastTrick);
+    this.beloteRebelote = this.helper.beloteRebelote(data.myPosition, data.lastTrick, data.nicknames);
+    console.log(JSON.stringify(this.beloteRebelote));
     /*if (this.isMyTurn && data.winnerLastTrick === data.myPosition) {
       console.log('must reset cards on table', this.cardsPlayed);
     }*/

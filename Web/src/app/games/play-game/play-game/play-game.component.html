@@ -28,7 +28,10 @@
     [rowspan]="tiles[2].rows"
     [style.background]="tiles[2].color">
     <ng-container *ngIf="gameState==='PLAYING' && !isLastTricksEmpty">
-      <app-last-trick [lastTricks]="lastTricks" [winnerLastTrick]="winnerLastTrick">
+      <app-last-trick
+        [lastTricks]="lastTricks"
+        [winnerLastTrick]="winnerLastTrick"
+        [belote]="beloteRebelote">
       </app-last-trick>
     </ng-container>
     <ng-container *ngIf="gameState==='BETWEEN_GAMES' || gameState==='ENDED' ">

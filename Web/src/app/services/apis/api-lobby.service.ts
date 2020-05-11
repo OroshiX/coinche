@@ -21,12 +21,9 @@ export class ApiLobbyService {
       .pipe(
         map(games => games
           .map(g => {
-              // const r = g.name.includes('AUTOMATED') ? g.name.replace('AUTOMATED', '') : g.name;
               const r = g.name.includes('AUTOMATED') ?  '🤖 '.concat(g.name.replace('AUTOMATED', '')) :
                 '👨‍👩‍👧‍👦 '.concat(g.name);
               g.name = r;
-              console.log(r);
-              console.log(g);
               return g;
             }
           )),
