@@ -99,7 +99,7 @@ data class SetOfGames(
     @JsonIgnore
     fun getAllTricks(): Map<Int, List<CardPlayed>> {
 
-        return  plisCampNS + plisCampNS
+        return  (plisCampNS + plisCampEW).toSortedMap()
 
     }
 
