@@ -76,5 +76,5 @@ export function buildOrderedListPlayableTrueAndFalse(cards: Card[]): Card[] {
   }
   const listTrue =  cards.filter(card => card.playable === true);
   const listFalse =cards.filter(card => card.playable === false);
-  return [...listTrue, ...listFalse];
+  return [...listFalse, ...listTrue];
 }

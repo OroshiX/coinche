@@ -28,6 +28,47 @@
 @media(min-width: 960px) {
   .card {
     @include width-height-card(120px, 174px);
+    margin: 30px -60px 30px 0;
+  }
+  .card-inactive {
+    @include width-height-card(120px, 174px);
+    margin: 30px 0 30px -60px;
+    opacity: 0.7;
+    filter: blur(1px);
+  }
+
+  .card-played {
+    @include width-height-card(120px, 174px);
+    margin-left: 75px;
+    margin-right: 75px;
+  }
+  .cards {
+    min-height: 210px;
+  }
+}
+/*@media(max-width: 959px) {
+  .card {
+    @include width-height-card(60px, 87px);
+    margin: 10px -15px;
+  }
+  .card-inactive {
+    @include width-height-card(60px, 87px);
+    margin: 10px -15px;
+    opacity: 0.7;
+    filter: blur(1px);
+  }
+  .card-played {
+    @include width-height-card(60px, 87px);
+    margin: 10px;
+  }
+  .cards {
+    min-height: 105px;
+  }
+}
+
+@media(min-width: 960px) {
+  .card {
+    @include width-height-card(120px, 174px);
     margin: 30px -30px;
   }
   .card-inactive {
@@ -45,7 +86,7 @@
   .cards {
     min-height: 210px;
   }
-}
+}*/
 
 
 
