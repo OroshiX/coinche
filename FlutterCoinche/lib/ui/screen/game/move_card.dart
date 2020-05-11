@@ -41,7 +41,7 @@ class MoveCardState extends State<MoveCard>
     super.initState();
     lastRequestTimestamp = DateTime.now().millisecondsSinceEpoch;
     _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _initAnim(OffsetAndRotation.zero(lastRequestTimestamp));
     _cardModel = widget.card;
   }
