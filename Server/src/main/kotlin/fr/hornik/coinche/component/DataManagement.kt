@@ -190,6 +190,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value },
                 setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
         setOfGames.bids.clear()
+        setOfGames.currentBid = Pass()
         setOfGames.players.onEach { it.cardsInHand.clear() }
 
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
@@ -317,7 +318,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 for (position in PlayerPosition.values()) {
                     val player = setOfGames.players.firstOrNull() { it.position == position }
                     if (player == null) {
-                        debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id}")
+                        debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id} null player at position $position")
                         returnValue = false
                     }
                     // there are several more efficient way to do it , but we really want to check coherency and potential bug
@@ -329,9 +330,11 @@ class DataManagement(@Autowired private val fire: FireApp) {
                     for (pli in setOfGames.plisCampEW.values) {
                         nbCards[position] = nbCards[position]!! + pli.filter { it.position == position }.size
                     }
-                    for (i in 0 until setOfGames.onTable.size) {
+                    if (setOfGames.onTable.size != 4 ) {
+                        // if there are 4 cards on table , they are already in plisCampNS or plisCampEW
                         nbCards[position] = nbCards[position]!! + setOfGames.onTable.filter { it.position == position }.size
                     }
+
 
                 }
                 if (nbCards.any { it.value != 8 }) {

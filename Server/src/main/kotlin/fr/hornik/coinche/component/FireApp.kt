@@ -125,6 +125,7 @@ class FireApp {
             }
             null
         }
+        debugPrintln(dbgLevel.REGULAR,"Game ${setOfGames.id} saved through a transaction $futureTransaction")
 
     }
 
@@ -153,7 +154,7 @@ class FireApp {
             val future: ApiFuture<WriteResult> = db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
                     .collection(COLLECTION_PLAYERS).document(userUID)
                     .set(table.toFirebase())
-            // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
+            debugPrintln(dbgLevel.REGULAR,"SaveTable : " + future.get().updateTime + "future:" +future)
             val arg = table.toFirebase().toString()
             debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
 
