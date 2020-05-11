@@ -86,6 +86,7 @@ class TestingOfflineGame extends StatelessWidget {
     if (g.onTable.length == 4) {
       g.onTable.clear();
       changedWinner = true;
+      g.onTable.add(getRandomCardTable(_next(winner)));
     } else if (g.onTable.isEmpty) {
       g.onTable.add(getRandomCardTable(PlayerPosition.NORTH));
     } else {
