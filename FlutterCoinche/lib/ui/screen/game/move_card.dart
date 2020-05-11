@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/ui/screen/game/animated_card.dart';
 import 'package:FlutterCoinche/ui/widget/card_widget.dart';
@@ -26,21 +24,24 @@ class MoveCard extends StatefulWidget {
 
 class MoveCardState extends State<MoveCard>
     with SingleTickerProviderStateMixin {
-//  Animation<OffsetAndRotation> _animation;
-  Animation<double> rotation;
-  Animation<Offset> offset;
-  AnimationController controller;
-  static int buildNb = 0;
-  int id;
-  CardModel cardModel;
+  Animation<double> _rotation;
+  Animation<Offset> _offset;
+  AnimationController _controller;
+  CardModel _cardModel;
+
+  set cardModel(CardModel value) {
+    setState(() {
+      _cardModel = value;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    controller =
+    _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _initAnim(OffsetAndRotation.zero());
-    cardModel = widget.card;
+    _cardModel = widget.card;
   }
 
   void _initAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
@@ -50,39 +51,31 @@ class MoveCardState extends State<MoveCard>
 
   void setAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
     if (origin == null) {
-      origin = offset != null && rotation != null
-          ? OffsetAndRotation(offset.value, rotation.value)
+      origin = _offset != null && _rotation != null
+          ? OffsetAndRotation(_offset.value, _rotation.value)
           : destination;
     }
     print("setting anim to $destination from $origin");
     setState(() {
-      rotation =
+      _rotation =
           Tween<double>(begin: origin.rotation, end: destination.rotation)
-              .animate(controller);
-      offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
-          .animate(controller);
+              .animate(_controller);
+      _offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
+          .animate(_controller);
     });
-    controller.forward(from: 0);
-  }
-
-  void setCard(CardModel card) {
-    setState(() {
-      cardModel = card;
-    });
+    _controller.forward(from: 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    id = Random().nextInt(100);
-    print("MoveCard build ${++buildNb}");
     return TranslatedTransition(
-      animation: offset,
+      animation: _offset,
       child: RotatedTransition(
-        animation: rotation,
+        animation: _rotation,
         child: Center(
-          child: cardModel != null
+          child: _cardModel != null
               ? CardWidget(
-                  card: cardModel,
+                  card: _cardModel,
                   width: widget.cardWidth,
                   height: widget.cardHeight)
               : Placeholder(
@@ -97,7 +90,7 @@ class MoveCardState extends State<MoveCard>
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 }

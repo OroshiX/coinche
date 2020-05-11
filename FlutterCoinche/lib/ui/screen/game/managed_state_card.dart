@@ -104,7 +104,7 @@ class ManagedStateCard extends StatelessWidget {
     print("we put card in center");
     moveCardState.setAnim(_offsetRotationCenter,
         origin: _offsetAndRotationPlayer(axisDirection, screenSize));
-    moveCardState.setCard(cardModel);
+    moveCardState.cardModel = cardModel;
   }
 
   OffsetAndRotation get _offsetRotationCenter =>
