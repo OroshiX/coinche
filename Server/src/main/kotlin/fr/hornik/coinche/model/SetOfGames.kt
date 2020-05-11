@@ -79,8 +79,8 @@ data class SetOfGames(
                 lastTrick = whoWonLastTrick?.let {
                     if (state == TableState.PLAYING) {
                         return@let when (it) {
-                            PlayerPosition.NORTH, PlayerPosition.SOUTH -> plisCampNS[plisCampNS.size -1]
-                            PlayerPosition.WEST, PlayerPosition.EAST   -> plisCampEW[plisCampEW.size -1]
+                            PlayerPosition.NORTH, PlayerPosition.SOUTH -> plisCampNS[plisCampNS.toSortedMap().lastKey()]
+                            PlayerPosition.WEST, PlayerPosition.EAST   -> plisCampEW[plisCampEW.toSortedMap().lastKey()]
                         }
                     }
                     return@let listOf<CardPlayed>()
@@ -97,14 +97,9 @@ data class SetOfGames(
     }
 
     @JsonIgnore
-    fun getAllTricks(): MutableMap<Int, List<CardPlayed>> {
+    fun getAllTricks(): Map<Int, List<CardPlayed>> {
 
-        var tempList : MutableMap<Int,List<CardPlayed>> = plisCampNS
-        val size = plisCampNS.size
-        for ((key,value) in plisCampNS ){
-            tempList[key+size]=value
-        }
-        return tempList
+        return  (plisCampNS + plisCampEW).toSortedMap()
 
     }
 
@@ -120,12 +115,15 @@ data class SetOfGames(
         if (state != TableState.PLAYING) return false
         if (onTable.size != 4) return false
 
+        // for IA, it's important to be able to find the order of the trick, hence we use the key of the map pliCamp...
+        // to remember the order (pliCampsNS[3] = Null if NS did not made the 4th trick, or equals the list of cards done ar 4th trick
+        val nbPlisDone = plisCampNS.size + plisCampEW.size
         when (who) {
             PlayerPosition.NORTH, PlayerPosition.SOUTH -> {
-                plisCampNS[plisCampNS.size]=onTable.toList()
+                plisCampNS[nbPlisDone]=onTable.toList()
             }
             PlayerPosition.EAST, PlayerPosition.WEST   -> {
-                plisCampEW[plisCampEW.size]=onTable.toList()
+                plisCampEW[nbPlisDone]=onTable.toList()
             }
         }
         whoseTurn = who

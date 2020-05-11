@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, shareReplay } from 'rxjs/operators';
+import { catchError, map, shareReplay } from 'rxjs/operators';
 import { Game } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
 import { ALL_GAMES, API_BACKEND_LOBBY, CREATE_GAME, JOIN_GAME, SET_NICKNAME } from './api-constant';
@@ -19,6 +19,14 @@ export class ApiLobbyService {
   allGames(): Observable<GameI[]> {
     return this.httpClient.get<GameI[]>(API_BACKEND_LOBBY + ALL_GAMES)
       .pipe(
+        map(games => games
+          .map(g => {
+              const r = g.name.includes('AUTOMATED') ?  '🤖 '.concat(g.name.replace('AUTOMATED', '')) :
+                '👨‍👩‍👧‍👦 '.concat(g.name);
+              g.name = r;
+              return g;
+            }
+          )),
         shareReplay<GameI[]>(1),
         catchError(this.errorHandler.handleError));
   }

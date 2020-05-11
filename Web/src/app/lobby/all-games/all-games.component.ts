@@ -8,14 +8,20 @@ import { ApiLobbyService } from '../../services/apis/api-lobby.service';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
 import { Game } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
+import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
 import { CreateGameDialogComponent } from './create-game-dialog/create-game-dialog.component';
+import { HelperService } from './services/helper.service';
+
+export const GAME_TYPE_AUTO ='AUTOMATED';
 
 export interface DialogData {
-  name: '';
-  nicknameCreator: ''
+  gameType: string,
+  name: string,
+  nicknameCreator: string
 }
 
-export const DIALOG_WIDTH = '300px';
+
+export const DIALOG_WIDTH = '280px';
 export const TABLE_WIDTH_SMALL = '410px';
 export const TABLE_WIDTH_LARGE = '550px';
 export const FIELD1_WIDTH_SMALL = 150;
@@ -58,6 +64,7 @@ export class AllGamesComponent implements OnInit {
   constructor(
     private router: Router,
     private apiService: ApiLobbyService,
+    private helperService: HelperService,
     private breakpointService: BreakpointService,
     private dialog: MatDialog
   ) {
@@ -140,7 +147,8 @@ export class AllGamesComponent implements OnInit {
   private processCreateGame(data: Game) {
     console.log('The dialog was closed');
     if (!!data) {
-      this.newGame.name = data.name;
+      const gameType = isNotNullAndNotUndefined(data.gameType) ? data.gameType: GAME_TYPE_AUTO;
+      this.newGame.name = gameType === GAME_TYPE_AUTO ? data.name.concat(GAME_TYPE_AUTO) : data.name;
       this.newGame.nicknameCreator = data.nicknameCreator;
       return this.apiService.createGame(this.newGame);
     }

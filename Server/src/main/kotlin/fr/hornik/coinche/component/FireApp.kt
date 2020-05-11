@@ -125,6 +125,7 @@ class FireApp {
             }
             null
         }
+        debugPrintln(dbgLevel.REGULAR,"Game ${setOfGames.id} saved through a transaction $futureTransaction")
 
     }
 
@@ -153,7 +154,7 @@ class FireApp {
             val future: ApiFuture<WriteResult> = db.collection(COLLECTION_PLAYERS_SETS).document(table.id)
                     .collection(COLLECTION_PLAYERS).document(userUID)
                     .set(table.toFirebase())
-            // println("SaveTable : " + future.get().getUpdateTime() + "future:" +future.toString())
+            debugPrintln(dbgLevel.REGULAR,"SaveTable : " + future.get().updateTime + "future:" +future)
             val arg = table.toFirebase().toString()
             debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
 
@@ -161,34 +162,6 @@ class FireApp {
             debugPrintln(dbgLevel.REGULAR, "$nameFunction no saving mode")
         }
         return userUID
-    }
-
-    private fun updateGame(setOfGames: SetOfGames) {
-        val nameFunction = object {}.javaClass.enclosingMethod.name
-
-        if (DataManagement.productionAction) {
-
-            val jsonTable = JsonSerialize.toJson(setOfGames.copy(lastModified = Date()))
-
-            val future: ApiFuture<WriteResult> = db.collection(
-                    COLLECTION_SETS).document(setOfGames.id)
-                    .set(JsonMapper.parseJson(jsonTable))
-
-
-            // For debugging purpose only.
-            val arg = JsonMapper.parseJson(jsonTable).toString()
-            debugPrintln(dbgLevel.DEBUG, "JSON from updateGame $arg")
-
-            /*
-          try {
-             println("updateGame time : " + future.get().getUpdateTime())//+ "future:" +future.toString())
-         } catch (e: InvalidArgumentException) {
-         println("********Exception $e with $arg")
-     }
-      */
-        } else {
-            debugPrintln(dbgLevel.REGULAR, "Debug mode - $nameFunction no saving")
-        }
     }
 
     fun getOrSetUsername(user: User): String {

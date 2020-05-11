@@ -2,6 +2,7 @@ package fr.hornik.coinche.model
 
 import fr.hornik.coinche.business.isValidBid
 import fr.hornik.coinche.business.whatIsTheLastSignificantBid
+import fr.hornik.coinche.business.whatToPlay
 import fr.hornik.coinche.component.DataManagement
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
@@ -57,6 +58,8 @@ data class IARun(val setOfGames: SetOfGames) {
                     val candidate = listCandidatePlayer.first()
                     val userCandidate = User(candidate.uid, candidate.nickname)
                     val aCard = candidate.cardsInHand.filter { it.playable == true }.random()
+                    // TODO this will be the call to decide what card to play - Work In Progress
+                    // val bCard = whatToPlay(candidate.position,candidate.cardsInHand,setOfGames.bids,setOfGames.currentBid.curColor(),setOfGames.onTable,setOfGames.plisCampNS,setOfGames.plisCampEW)
                     val myCard = Card(value = aCard.value, color = aCard.color)
                     setOfGames.whoseTurnTimeLastChg = millis
                     debugPrintln(dbgLevel.DEBUG, "${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")

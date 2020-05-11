@@ -40,6 +40,10 @@ install: instServer instWeb
 
 flutter:
 	cd FlutterCoinche; flutter pub get
+	#if the next step fail - rm -rf FlutterCoinche/.dart_tool should solve the issue
+	#this directory not cleaned before a build 
+	# --> after upgrading flutter build_runner step can fail
+	#removing .dart_tool (in FlutterCoinche directory solves) the issue.
 	cd FlutterCoinche; dart tool/env.dart ; flutter pub run build_runner build --delete-conflicting-outputs
 	cd FlutterCoinche; flutter build ios 
 	#to run on device xxxx

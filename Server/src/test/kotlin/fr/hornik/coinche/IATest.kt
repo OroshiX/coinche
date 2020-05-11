@@ -1,6 +1,8 @@
 package fr.hornik.coinche
 
+import fr.hornik.coinche.business.masterColor
 import fr.hornik.coinche.business.printHand
+import fr.hornik.coinche.business.totalRemainingNumber
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
@@ -467,7 +469,7 @@ class IATest {
         val nameTest = object {}.javaClass.enclosingMethod.name
 
         val oldTraceLevel = traceLevel
-        traceLevel = dbgLevel.ALL
+        //traceLevel = dbgLevel.ALL
         var myCards: MutableList<Card> = mutableListOf<Card>()
 
 
@@ -496,7 +498,152 @@ class IATest {
 
     }
 
+    @Test
+    fun testPlayCard001() {
 
+
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        //traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.HEART,  80,PlayerPosition.EAST)
+        val partnerBid = Coinche(prevBid,PlayerPosition.SOUTH,false)
+        val listBids = listOf(prevBid,partnerBid)
+
+        val aCard = masterColor(CardColor.HEART,CardColor.HEART,allCardsPlayed = listOf())
+
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${CardColor.HEART} is ${aCard}")
+        traceLevel = oldTraceLevel
+        assert(aCard?.value ?: CardValue.SEVEN == CardValue.JACK ) { "$nameTest FAIL - $aCard is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Master is  $aCard")
+
+    }
+    @Test
+    fun testPlayCard002() {
+
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+
+        val prevBid = SimpleBid(CardColor.HEART,  80,PlayerPosition.EAST)
+        val partnerBid = Coinche(prevBid,PlayerPosition.SOUTH,false)
+        val listBids = listOf(prevBid,partnerBid)
+
+        val aCard = masterColor(CardColor.HEART,CardColor.DIAMOND,allCardsPlayed = listOf())
+
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${CardColor.DIAMOND} is ${aCard}")
+        traceLevel = oldTraceLevel
+        assert(aCard?.value ?: CardValue.SEVEN == CardValue.ACE ) { "$nameTest FAIL - $aCard is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Master is  $aCard")
+
+    }
+    @Test
+    fun testPlayCard003() {
+
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+        var playedCards: MutableList<CardPlayed> = mutableListOf()
+
+        playedCards.add(CardPlayed(Card(CardValue.JACK, CardColor.HEART, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.ACE, CardColor.DIAMOND, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.ACE, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.TEN, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.KING, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.SEVEN, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.EIGHT, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.ACE, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.TEN, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.KING, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.QUEEN, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.JACK, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.NINE, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.EIGHT, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.SEVEN, CardColor.CLUB, playable = null)))
+
+
+        val prevBid = SimpleBid(CardColor.HEART,  80,PlayerPosition.EAST)
+        val partnerBid = Coinche(prevBid,PlayerPosition.SOUTH,false)
+        val listBids = listOf(prevBid,partnerBid)
+        val atout = CardColor.HEART
+        val color = CardColor.DIAMOND
+        val color2 = CardColor.SPADE
+        val color3 = CardColor.CLUB
+
+        val seven = CardValue.SEVEN
+        val aCard = masterColor(color,atout,allCardsPlayed = playedCards)
+        val bCard = masterColor(atout,atout,allCardsPlayed = playedCards)
+        val cCard = masterColor(color2,atout,allCardsPlayed = playedCards)
+        val dCard = masterColor(color3,atout,allCardsPlayed = playedCards)
+
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${color} is ${aCard}")
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${atout} is ${bCard}")
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${color2} is ${cCard}")
+        debugPrintln(dbgLevel.DEBUG,"masterCard at ${color3} is ${dCard}")
+        traceLevel = oldTraceLevel
+        assert((aCard?.value ?: seven == CardValue.TEN )
+                && (bCard?.value ?: seven == CardValue.NINE )
+                && (cCard?.value ?: seven == CardValue.QUEEN )
+                && (dCard == null ) ) { "$nameTest FAIL - $aCard is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - Master is  $aCard and $bCard")
+
+    }
+
+    @Test
+    fun testPlayCard004() {
+
+        val nameTest = object {}.javaClass.enclosingMethod.name
+
+        val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+        var myCards: MutableList<Card> = mutableListOf<Card>()
+
+
+
+        myCards.add(Card(CardValue.QUEEN, CardColor.SPADE, playable = null))
+        myCards.add(Card(CardValue.NINE, CardColor.SPADE, playable = null))
+
+
+        var playedCards: MutableList<CardPlayed> = mutableListOf()
+
+        playedCards.add(CardPlayed(Card(CardValue.JACK, CardColor.HEART, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.ACE, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.TEN, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.KING, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.SEVEN, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.EIGHT, CardColor.SPADE, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.ACE, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.TEN, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.KING, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.QUEEN, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.JACK, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.NINE, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.EIGHT, CardColor.CLUB, playable = null)))
+        playedCards.add(CardPlayed(Card(CardValue.SEVEN, CardColor.CLUB, playable = null)))
+
+
+        val prevBid = SimpleBid(CardColor.HEART,  80,PlayerPosition.EAST)
+        val partnerBid = Coinche(prevBid,PlayerPosition.SOUTH,false)
+        val listBids = listOf(prevBid,partnerBid)
+        val heart = CardColor.HEART
+        val diamond = CardColor.DIAMOND
+        val spade = CardColor.SPADE
+        val club = CardColor.CLUB
+        val heartnb = totalRemainingNumber(heart,playedCards,myCards)
+        val spadenb = totalRemainingNumber(spade,playedCards,myCards)
+        val clubnb = totalRemainingNumber(club,playedCards,myCards)
+        val diamondnb = totalRemainingNumber(diamond,playedCards,myCards)
+
+
+
+        traceLevel = oldTraceLevel
+        assert((heartnb==7) && (diamondnb ==8)&& (spadenb==1) && (clubnb==0)) { "$nameTest FAIL -  h=$heartnb d=$diamondnb s=$spadenb c=$clubnb is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS - \"$nameTest FAIL -  h=$heartnb d=$diamondnb s=$spadenb c=$clubnb is OK \n")
+
+    }
 
 }
 

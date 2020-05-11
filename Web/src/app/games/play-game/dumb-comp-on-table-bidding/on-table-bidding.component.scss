@@ -25,6 +25,16 @@
   justify-content: space-evenly;
   align-content: space-evenly;
 }
+.middle {
+  display: flex;
+  margin: 20px;
+}
+.right {
+  margin-left: 90px;
+}
+.left {
+  margin-right: 90px;
+}
 
 
 

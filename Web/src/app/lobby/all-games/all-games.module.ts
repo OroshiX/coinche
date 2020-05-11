@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AgGridModule } from 'ag-grid-angular';
 import { AllGamesRoutingModule } from './all-games-routing.module';
@@ -17,19 +18,20 @@ import { CreateGameDialogComponent } from './create-game-dialog/create-game-dial
 @NgModule({
   declarations: [AllGamesComponent, CreateGameDialogComponent],
   entryComponents: [CreateGameDialogComponent],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    AllGamesRoutingModule,
-    AgGridModule.withComponents([]),
-    MatButtonModule,
-    MatCardModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTooltipModule
-  ],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        AllGamesRoutingModule,
+        AgGridModule.withComponents([]),
+        MatButtonModule,
+        MatCardModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTooltipModule,
+        MatRadioModule
+    ],
   providers : [
     {provide: MatDialogConfig, useValue: []},
   ]

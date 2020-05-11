@@ -6,6 +6,11 @@
   </mat-card-header>
   <mat-card-content>
     <mat-dialog-content [formGroup]="form">
+      <mat-radio-group aria-labelledby="radio-group-label"
+                       class="radio-group" formControlName="gameType">
+        <mat-radio-button class="radio-button" [value]="gameType" [checked]="true">🤖  Allow bots</mat-radio-button>
+        <mat-radio-button class="radio-button" value="FRIENDS">👨‍👩‍👧‍👦  Only friends</mat-radio-button>
+      </mat-radio-group>
       <mat-form-field class="form-field">
         <input matInput placeholder="Game name" formControlName="name" required>
       </mat-form-field>
