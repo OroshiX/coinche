@@ -153,7 +153,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.isLastTricksEmpty = data.lastTrick.length <= 0;
     this.lastTricks = this.helper.onTableCardsOrdered(data.myPosition, data.lastTrick);
     this.beloteRebelote = this.helper.beloteRebelote(data.myPosition, data.lastTrick, data.nicknames);
-    console.log(JSON.stringify(this.beloteRebelote));
     /*if (this.isMyTurn && data.winnerLastTrick === data.myPosition) {
       console.log('must reset cards on table', this.cardsPlayed);
     }*/

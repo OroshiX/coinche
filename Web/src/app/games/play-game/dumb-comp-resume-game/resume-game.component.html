@@ -15,8 +15,10 @@
       <ng-container *ngIf="showBidAnnounced">
         <div class="item">
           <span class="itemContent">{{currentOrPreviousBid}}:</span>
-          <span class="itemContentRight">{{bidData?.currentBidNickname | shorterName: 14}}
-            - {{bidData?.currentBidPoints}}
+          <span class="itemContentRight">{{bidData?.currentBidNickname | shorterName: 14}} -
+            <ng-container *ngIf="bidData?.currentBidType !== 'Pass'">
+              <span class="points">{{bidData?.currentBidPoints}}</span>
+            </ng-container>
             <ng-container [ngSwitch]="bidData?.currentBidColor">
               <span *ngSwitchCase="'CLUB'" class="black"
                     [ngClass]="{'blink-emoji': gameState === 'PLAYING'}">&clubs;</span>

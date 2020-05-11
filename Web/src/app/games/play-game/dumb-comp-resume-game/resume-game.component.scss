@@ -52,6 +52,8 @@
 @mixin emoji-card {
   font-size: 14px;
   margin-left: 2px;
+  background-color: whitesmoke;
+  padding: 2px;
 }
 .black {
   @include emoji-card;
@@ -63,6 +65,12 @@
 }
 .blink-emoji {
   animation: blinker 2s step-start infinite;
+}
+.points {
+  background-color: #343434;
+  color: whitesmoke;
+  padding: 2px;
+  font-size: 14px;
 }
 
 
