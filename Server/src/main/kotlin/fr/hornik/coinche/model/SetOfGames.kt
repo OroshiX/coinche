@@ -96,10 +96,22 @@ data class SetOfGames(
         )
     }
 
-    @JsonIgnore
-    fun getAllTricks(): Map<Int, List<CardPlayed>> {
 
-        return  (plisCampNS + plisCampEW).toSortedMap()
+    data class Trick(
+
+            val camp: String,
+            val trick: List<CardPlayed>
+    )
+
+    @JsonIgnore
+    fun getAllTricks(): List<Trick> {
+
+
+        val tricksEW = plisCampEW.toList().map{e-> Pair(e.first,Trick("EW",e.second))}
+        val tricksNS = plisCampNS.toList().map{ e-> Pair(e.first,Trick("NS",e.second))}
+        val allTricks = (tricksEW+tricksNS).sortedBy { it.first }.map { e-> e.second}
+
+        return allTricks
 
     }
 
