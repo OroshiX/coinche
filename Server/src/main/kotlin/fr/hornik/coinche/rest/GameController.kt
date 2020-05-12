@@ -133,7 +133,7 @@ class GameController(@Autowired val data: DataManagement,
 
     @GetMapping("/{gameId}/showAllTricks",
                 produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun showAllTricks(@PathVariable gameId: String): Map<Int,List<CardPlayed>> {
+    fun showAllTricks(@PathVariable gameId: String): List<SetOfGames.Trick> {
         val game = data.getGameOrThrow(gameId)
         // If not finished, not allowed
         when (game.state) {

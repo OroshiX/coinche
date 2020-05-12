@@ -8,6 +8,7 @@ import fr.hornik.coinche.exception.AlreadyJoinedException
 import fr.hornik.coinche.exception.GameFullException
 import fr.hornik.coinche.exception.NotAuthenticatedException
 import fr.hornik.coinche.exception.NotAuthorizedOperation
+import fr.hornik.coinche.model.LoginStatus
 import fr.hornik.coinche.model.SetOfGames
 import fr.hornik.coinche.model.User
 import fr.hornik.coinche.model.values.PlayerPosition
@@ -60,5 +61,12 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
 
         fire.setNewUsername(user)
         // Only for the games to come
+    }
+
+    @GetMapping("/isLoggedIn",  produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun isLoggedIn():LoginStatus {
+
+        return LoginStatus(isLoggedIn = user.uid.isNotBlank(), nickName = user.nickname)
+
     }
 }
