@@ -19,30 +19,47 @@ class BiddingBar extends StatefulWidget {
 
   final BidType initialBidType;
 
-  const BiddingBar(
-      {Key key,
-      this.onBid,
-      this.initialBidType = BidType.Simple})
+  const BiddingBar({Key key, this.onBid, this.initialBidType = BidType.Simple})
       : super(key: key);
 
   @override
-  _BiddingBarState createState() => _BiddingBarState();
+  BiddingBarState createState() => BiddingBarState();
 }
 
-class _BiddingBarState extends State<BiddingBar> {
-  int points;
+class BiddingBarState extends State<BiddingBar> {
+  int _points;
   CardColor _cardColor;
 
   bool _belote;
 
   BidType bidType;
-  GamesBloc gamesBloc;
+  GamesBloc _gamesBloc;
+
+  int _minPoints;
+
+  set minPoints(int min) {
+    _minPoints = min;
+    if (min > 160) return; // No can do, too high!
+    if (min > _points) {
+      if (_points == min) return;
+      setState(() {
+        _points = min;
+      });
+    }
+  }
+
+  set points(int p) {
+    if (p == _points) return;
+    setState(() {
+      _points = p;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    gamesBloc = BlocProvider.of<GamesBloc>(context);
-    points = 80;
+    _gamesBloc = BlocProvider.of<GamesBloc>(context);
+    _points = 80;
     _belote = false;
     bidType = widget.initialBidType;
     _cardColor = CardColor.HEART;
@@ -91,10 +108,10 @@ class _BiddingBarState extends State<BiddingBar> {
                 child: NeumorphicWidget(
                   sizeShadow: SizeShadow.MEDIUM,
                   onTap: () {
-                    gamesBloc.playHardButton();
-                    if (points > minPoints) {
+                    _gamesBloc.playHardButton();
+                    if (_points > minPoints) {
                       setState(() {
-                        points -= 10;
+                        _points -= 10;
                       });
                     }
                   },
@@ -108,7 +125,7 @@ class _BiddingBarState extends State<BiddingBar> {
                 ),
               ),
               Text(
-                points.toString(),
+                _points.toString(),
                 style: TextStyle(color: colorText),
               ),
               Padding(
@@ -120,10 +137,10 @@ class _BiddingBarState extends State<BiddingBar> {
                     child: Icon(Icons.add, color: colorText),
                   ),
                   onTap: () {
-                    gamesBloc.playPlop();
-                    if (points < 160) {
+                    _gamesBloc.playPlop();
+                    if (_points < 160) {
                       setState(() {
-                        points += 10;
+                        _points += 10;
                       });
                     }
                   },
@@ -153,7 +170,7 @@ class _BiddingBarState extends State<BiddingBar> {
               Switch(
                   value: _belote,
                   onChanged: (value) {
-                    gamesBloc.playSoftButton();
+                    _gamesBloc.playSoftButton();
                     setState(() {
                       _belote = value;
                     });
@@ -169,6 +186,34 @@ class _BiddingBarState extends State<BiddingBar> {
     );
   }
 
+  List<Bid> bids;
+  PlayerPosition me, nextPlayer;
+  bool enabledBid, canSurcoinche, canCoinche;
+  Bid lastBid;
+
+  _whenChangingState(ReactiveModel<Game> model, {bool init = false}) {
+    bids = model.state.bids;
+    me = model.state.myPosition;
+    nextPlayer = model.state.nextPlayer;
+    enabledBid = nextPlayer == me;
+
+    canSurcoinche = bids?.canSurcoinche(me) ?? false;
+    canCoinche = bids?.canCoinche(me) ?? false;
+    lastBid = bids?.lastBidCapotGeneral();
+    final calculateMin = (bids?.lastWhere(
+          (element) => element is SimpleBid,
+          orElse: () => SimpleBid(points: 70),
+        ) as SimpleBid)
+            .points +
+        10;
+    if (init) {
+      _minPoints = calculateMin;
+    } else {
+      minPoints = calculateMin;
+    }
+    assert(!(canSurcoinche && canCoinche));
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -176,23 +221,13 @@ class _BiddingBarState extends State<BiddingBar> {
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
       tag: [Aspects.ALL_BIDS, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
+      initState: (context, model) {
+        _whenChangingState(model, init: true);
+      },
+      onSetState: (context, model) {
+        _whenChangingState(model);
+      },
       builder: (context, model) {
-        final bids = model.state.bids;
-        final me = model.state.myPosition;
-        final nextPlayer = model.state.nextPlayer;
-        final enabledBid = nextPlayer == me;
-
-        final canSurcoinche = bids?.canSurcoinche(me) ?? false;
-        final canCoinche = bids?.canCoinche(me) ?? false;
-        final lastBid = bids?.lastBidCapotGeneral();
-        final minPoints = (bids?.lastWhere(
-              (element) => element is SimpleBid,
-              orElse: () => SimpleBid(points: 70),
-            ) as SimpleBid)
-                .points +
-            10;
-        assert(!(canSurcoinche && canCoinche));
-
         return Container(
           padding: const EdgeInsets.only(left: 2),
           child: portrait
@@ -222,7 +257,7 @@ class _BiddingBarState extends State<BiddingBar> {
                         height: isLargeScreen(screenSize) ? 10 : 5,
                       ),
                       _mainWidget(screenSize,
-                          me: me, minPoints: minPoints, enabledBid: enabledBid)
+                          me: me, minPoints: _minPoints, enabledBid: enabledBid)
                     ],
                   ),
                 )
@@ -232,7 +267,7 @@ class _BiddingBarState extends State<BiddingBar> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     _mainWidget(screenSize,
-                        me: me, minPoints: minPoints, enabledBid: enabledBid),
+                        me: me, minPoints: _minPoints, enabledBid: enabledBid),
                     SizedBox(
                       width: isLargeScreen(screenSize) ? 20 : 10,
                     ),
@@ -272,7 +307,7 @@ class _BiddingBarState extends State<BiddingBar> {
         child: NeumorphicWidget(
           sizeShadow: SizeShadow.SMALL,
           onTap: () {
-            gamesBloc.playPlop();
+            _gamesBloc.playPlop();
             widget.onBid(Coinche(
                 position: me, surcoinche: false, annonce: lastSimpleBid));
           },
@@ -301,7 +336,7 @@ class _BiddingBarState extends State<BiddingBar> {
         child: NeumorphicWidget(
           sizeShadow: SizeShadow.SMALL,
           onTap: () {
-            gamesBloc.playPlop();
+            _gamesBloc.playPlop();
             widget.onBid(Coinche(
                 position: me, surcoinche: true, annonce: lastSimpleBid));
           },
@@ -329,7 +364,7 @@ class _BiddingBarState extends State<BiddingBar> {
           sizeShadow: SizeShadow.SMALL,
           borderRadius: 5,
           onTap: () {
-            gamesBloc.playPlop();
+            _gamesBloc.playPlop();
             widget.onBid(Pass(position: me));
           },
           child: Padding(
@@ -366,7 +401,7 @@ class _BiddingBarState extends State<BiddingBar> {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      gamesBloc.playSoftButton();
+                      _gamesBloc.playSoftButton();
                       setState(() {
                         bidType = BidType.Simple;
                       });
@@ -388,7 +423,7 @@ class _BiddingBarState extends State<BiddingBar> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      gamesBloc.playSoftButton();
+                      _gamesBloc.playSoftButton();
                       setState(() {
                         bidType = BidType.Capot;
                       });
@@ -408,7 +443,7 @@ class _BiddingBarState extends State<BiddingBar> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      gamesBloc.playSoftButton();
+                      _gamesBloc.playSoftButton();
                       setState(() {
                         bidType = BidType.Generale;
                       });
@@ -432,11 +467,11 @@ class _BiddingBarState extends State<BiddingBar> {
               NeumorphicWidget(
                 onTap: () {
                   Bid bid;
-                  gamesBloc.playPlop();
+                  _gamesBloc.playPlop();
                   switch (bidType) {
                     case BidType.Simple:
                       bid = SimpleBid(
-                          points: points, color: _cardColor, position: me);
+                          points: _points, color: _cardColor, position: me);
                       break;
                     case BidType.Capot:
                       bid = Capot(

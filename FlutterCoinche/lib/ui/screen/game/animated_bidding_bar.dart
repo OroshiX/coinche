@@ -4,7 +4,7 @@ import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/screen/game/bidding_bar.dart';
+import 'package:FlutterCoinche/ui/widget/bidding_bar/bidding_bar.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
@@ -20,13 +20,19 @@ class AnimatedBiddingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final key = GlobalKey<BiddingBarState>();
     return StateBuilder<Game>(
       models: [RM.get<Game>()],
       tag: [Aspects.STATE, Aspects.ID],
+      onSetState: (context, model) {
+        if (model.state.state == TableState.PLAYING) {
+          key.currentState.minPoints = 80;
+          key.currentState.points = 80;
+        }
+      },
       builder: (context, model) {
         final state = model.state.state;
         final id = model.state.id;
-
         return AnimatedPositioned(
           bottom: getBottomOfBiddingBar(screenSize),
           left: state == TableState.BIDDING
@@ -37,6 +43,7 @@ class AnimatedBiddingBar extends StatelessWidget {
             duration: Duration(milliseconds: 500),
             opacity: state == TableState.BIDDING ? 1 : 0,
             child: BiddingBar(
+              key: key,
               onBid: (Bid bid) {
                 ServerCommunication.bid(bid, id).then((success) {
                   print("success");
