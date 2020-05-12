@@ -1,3 +1,4 @@
+.MtDEVICE=9a303ebc8e323dfa96d7a38106d8b781d00f14cc
 
 all: update install flutter
 	echo you can test http://www.hornik.fr:8080/getTable?gameId=99
@@ -11,6 +12,7 @@ help:
 	@echo "\tkotlin\t\t:\tGenerate the Server"
 	@echo "\tupdate\t\t:\tUpdate from git the workspace"
 	@echo "\tflutter\t\t:\tCompile the application Flutter"
+	@echo "\tios\t\t:\tCompile the application on the first IOS device found"
 	@echo "\tinstWeb\t\t:\tCompile and deploy the Web files on the raspBerry Pi"
 	@echo "\tinstServer\t:\tCompile and install the Server on the raspberry Pi"
 	@echo "\tinstall\t\t:\tCompile and install Web and Server"
@@ -49,6 +51,10 @@ flutter:
 	#to run on device xxxx
 	#flutter run -d 420095c6ea425400
 
+iPad:
+	cd FlutterCoinche; flutter pub get
+	cd FlutterCoinche; dart tool/env.dart ; flutter pub run build_runner build --delete-conflicting-outputs
+	cd FlutterCoinche ; flutter run -d ${MYDEVICE}
 
 tutu:
 	@ssh pi@fraise1 "rm -rf /var/www/html/*"
