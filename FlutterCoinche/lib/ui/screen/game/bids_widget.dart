@@ -24,6 +24,8 @@ class BidsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final GlobalKey<AnimatedListState> key = GlobalKey();
     final List<Bid> currentBids = [];
+    final double width = 170, height = 80;
+
     return StateBuilder<Game>(
       tag: [Aspects.MY_POSITION, fromPositionBid(posTable), Aspects.STATE],
       models: [RM.get<Game>()],
@@ -67,27 +69,27 @@ class BidsWidget extends StatelessWidget {
         switch (posTable) {
           case AxisDirection.up:
             alignment = Alignment.topCenter;
-            dx = widthAvatar;
+            dx = (width + widthAvatar) / 2;
             dy = 2;
             break;
           case AxisDirection.right:
             alignment = Alignment.centerRight;
-            dy = -heightAvatar;
+            dy = (-heightAvatar - height) / 2;
             break;
           case AxisDirection.down:
             alignment = Alignment.bottomRight;
-            dy = -heightAvatar;
+            dy = (-heightAvatar - height) / 2;
             break;
           case AxisDirection.left:
             alignment = Alignment.centerLeft;
-            dy = -heightAvatar;
+            dy = (-heightAvatar - height) / 2;
             break;
         }
         return Transform.translate(
           offset: Offset(dx, dy),
           child: Align(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 170, maxHeight: 80),
+              constraints: BoxConstraints(maxWidth: width, maxHeight: height),
               child: AnimatedOpacity(
                 opacity: (state != TableState.BIDDING || currentBids.isEmpty)
                     ? 0
@@ -118,7 +120,9 @@ class BidsWidget extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 2.0),
                           child: Container(
                             padding: const EdgeInsets.all(2),
-                            color: Colors.lightGreen,
+                            color: index % 2 == 0
+                                ? colorGradient2
+                                : colorGradient1,
                             child: LimitedBox(
                               maxWidth: 80,
                               maxHeight: 40,
