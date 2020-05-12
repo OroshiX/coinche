@@ -75,9 +75,6 @@ class _DialogNewGameState extends State<DialogNewGame> {
                   widget.gamesProvider.changeGame(value.id);
                   Navigator.of(context).pop();
                   Navigator.of(context).pushNamed(StatedGameScreen.routeName);
-                  return Flushbar(
-                    message: "YES! (now go to game)",
-                  ).show(context);
                 },
                         onError: (error) => Flushbar(
                               message: "Oh no! Please check your connection",
