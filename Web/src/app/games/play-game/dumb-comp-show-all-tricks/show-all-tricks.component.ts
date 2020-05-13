@@ -23,7 +23,7 @@ export class ShowAllTrick {
   styleUrls: ['./show-all-tricks.component.scss']
 })
 export class ShowAllTricksComponent implements OnInit, OnDestroy {
-  @Input() myPosition: string;
+  @Input() myPosition: PLAYER_POSITION;
   @Input() nicknames: string[];
 
   sub: Subscription;

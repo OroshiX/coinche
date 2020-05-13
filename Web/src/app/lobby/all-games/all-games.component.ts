@@ -10,7 +10,6 @@ import { Game, GAME_TYPE_AUTO } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
 import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
 import { CreateGameDialogComponent } from './create-game-dialog/create-game-dialog.component';
-import { HelperService } from './services/helper.service';
 
 export const DIALOG_WIDTH = '280px';
 export const TABLE_WIDTH_SMALL = '410px';
@@ -55,7 +54,6 @@ export class AllGamesComponent implements OnInit {
   constructor(
     private router: Router,
     private apiService: ApiLobbyService,
-    private helperService: HelperService,
     private breakpointService: BreakpointService,
     private dialog: MatDialog
   ) {
