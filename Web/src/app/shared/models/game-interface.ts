@@ -1,4 +1,5 @@
 import { STATE } from './collection-game';
+import { Play } from './play';
 
 export interface GameI {
   id: string,
@@ -8,3 +9,9 @@ export interface GameI {
   state: STATE;
   inRoom: boolean;
 }
+
+export interface AllTrick {
+  camp: string,
+  trick: Play[]
+}
+

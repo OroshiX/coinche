@@ -42,27 +42,15 @@ export function enumToValues(enumInput: any) {
   return Array.from(map.values());
 }
 
-export function mapToArrayObj(map: Map<string, CardView>, playable: boolean): KeyValue[] {
+export function mapToArrayObj(map: Map<string, any>): KeyValue[] {
   return Array.from(map.entries())
-    .map(([k, v]) => ({id: k, value: v}))
-    .filter((obj) => obj.value.playable === playable);
+    .map(([k, v]) => ({id: k, value: v}));
 }
 
 export function arrayObjToMap(list: KeyValue[]): Map<string, CardView> {
   const map = new Map<string, CardView>();
   list.map((obj => map.set(obj.id, obj.value)));
   return map;
-}
-
-export function rebuildOrderedMap(mapOrig: Map<string, CardView>): Map<string, CardView> {
-  const arrayPlayableNull = mapToArrayObj(mapOrig, null);
-  if (arrayPlayableNull.length > 0) {
-    return mapOrig;
-  }
-  const arrayPlayableTrue = mapToArrayObj(mapOrig, true);
-  const arrayPlayableFalse = mapToArrayObj(mapOrig, false);
-  const concatList = [...arrayPlayableTrue, ...arrayPlayableFalse];
-  return arrayObjToMap(concatList);
 }
 
 export function buildOrderedListPlayableNull(cards: Card[]): Card[] {

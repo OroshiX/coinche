@@ -35,8 +35,8 @@
       </app-last-trick>
     </ng-container>
     <ng-container *ngIf="gameState==='BETWEEN_GAMES' || gameState==='ENDED' ">
-      <!--<app-show-all-tricks>
-      </app-show-all-tricks>-->
+      <app-show-all-tricks [myPosition]="myPosition" [nicknames]="playersNicknameByMyPosOnTable">
+      </app-show-all-tricks>
     </ng-container>
   </mat-grid-tile>
   <mat-grid-tile

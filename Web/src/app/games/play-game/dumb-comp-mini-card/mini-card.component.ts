@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { CARD_VALUE, CardView } from '../../../shared/models/play';
-import { enumToEntries } from '../../../shared/utils/helper';
+import { CardView } from '../../../shared/models/play';
+import { PlayGameHelperService } from '../services/play-game-helper.service';
 
 @Component({
   selector: 'app-mini-card',
@@ -10,24 +10,22 @@ import { enumToEntries } from '../../../shared/utils/helper';
 export class MiniCardComponent implements OnInit, OnChanges {
   @Input() card: CardView;
   cardLabel: string;
+  emoji: string;
+  cardLabelEmoji: string;
+  isBlack: boolean;
 
-  constructor() {
-    this.cardList = enumToEntries(CARD_VALUE);
+  constructor(private helper: PlayGameHelperService) {
   }
-
-  cardList: any[];
 
   ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!!this.card && this.card.value) {
-      const tmp = this.cardList
-        .filter(el => !!el)
-        .find(k => +this.card.value === +k[1]);
-      const tmp1 = tmp[0];
-      this.cardLabel = ['ACE', 'KING', 'QUEEN', 'JACK'].includes(tmp1) ? tmp1.charAt(0) : this.card?.value;
-    }
+    const cardEmoji = this.helper.buildEmojiCard(this.card);
+    this.cardLabel = cardEmoji.cardLabel;
+    this.emoji = cardEmoji.cardEmoji;
+    this.cardLabelEmoji = cardEmoji.cardLabelEmoji;
+    this.isBlack= cardEmoji.isBlack;
   }
 
 }

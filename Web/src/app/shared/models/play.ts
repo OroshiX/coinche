@@ -1,9 +1,9 @@
-import { enumToKeys, enumToObjList, enumToValues } from '../utils/helper';
+import { enumToEntries, enumToValues } from '../utils/helper';
 import { PLAYER_POSITION } from './collection-game';
 
 export interface KeyValue {
   id: string;
-  value: CardView;
+  value: any;
 }
 
 export interface Card {
@@ -41,7 +41,7 @@ export class AnnounceBid {
 export class PlayCard {
   value: number;
   color: string;
-  belote: boolean;
+  belote: string;
 
   constructor(obj: Partial<PlayCard>) {
     Object.assign(this, obj);
@@ -74,11 +74,6 @@ export enum CARD_COLOR {
   CLUB = 'CLUB', DIAMOND = 'DIAMOND', HEART = 'HEART', SPADE = 'SPADE'
 }
 
-// export const colorList = [CARD_COLOR.CLUB, CARD_COLOR.DIAMOND, CARD_COLOR.HEART, CARD_COLOR.SPADE];
-export const colorList = enumToKeys(CARD_COLOR);
-
-export const colorListObj = enumToObjList(CARD_COLOR);
-
 export class MultiValuesCard {
   value: number;
   atoutPoints: number;
@@ -98,6 +93,32 @@ export class Belote {
   belote: string;
 
   constructor(obj: Partial<Belote>) {
+    Object.assign(this, obj);
+  }
+}
+
+export class AllTrickFlat {
+  camp: string;
+  color: string;
+  value: number;
+  belote: string;
+  position: string;
+  winnerTrick: string;
+
+  constructor(obj: Partial<AllTrickFlat>) {
+    Object.assign(this, obj);
+  }
+}
+
+export class EmojiCardLabel {
+  cardLabel: string;
+  cardColor: string;
+  cardLabelEmoji: any;
+  cardEmoji: string;
+  isBlack: boolean;
+  camp: string;
+
+  constructor(obj: Partial<EmojiCardLabel>) {
     Object.assign(this, obj);
   }
 }
@@ -125,6 +146,7 @@ export enum CARD_VALUE {
 }
 
 export const cardIdList = enumToValues(CARD_ID);
+export const cardValueEntriesList = enumToEntries(CARD_VALUE);
 
 export const cardValues = enumToValues(CARD_VALUE);
 

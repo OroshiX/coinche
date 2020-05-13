@@ -11,7 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
+import { AgGridModule } from 'ag-grid-angular';
 import { SharedCommonModule } from '../../shared-common/shared-common.module';
+import { ShowAllTricksDialogComponent } from './dialog-comp-show-all-tricks/show-all-tricks-dialog.component';
 import { BidAnnounceComponent } from './dumb-comp-bid-announce/bid-announce.component';
 import { BidComponent } from './dumb-comp-bid/bid.component';
 import { CardComponent } from './dumb-comp-card/card.component';
@@ -22,6 +24,7 @@ import { MyCardsComponent } from './dumb-comp-my-cards/my-cards.component';
 import { OnTableBiddingComponent } from './dumb-comp-on-table-bidding/on-table-bidding.component';
 import { OnTablePlayingComponent } from './dumb-comp-on-table-playing/on-table-playing.component';
 import { ResumeGameComponent } from './dumb-comp-resume-game/resume-game.component';
+import { ShowAllTricksComponent } from './dumb-comp-show-all-tricks/show-all-tricks.component';
 import { StateComponent } from './dumb-comp-state/state.component';
 import { PlayGameRoutingModule } from './play-game-routing.module';
 import { PlayGameComponent } from './play-game/play-game.component';
@@ -40,7 +43,9 @@ import { PlayGameComponent } from './play-game/play-game.component';
     BidAnnounceComponent,
     ResumeGameComponent,
     LastTrickComponent,
-    MiniCardComponent
+    MiniCardComponent,
+    ShowAllTricksComponent,
+    ShowAllTricksDialogComponent
 
   ],
   imports: [
@@ -57,6 +62,7 @@ import { PlayGameComponent } from './play-game/play-game.component';
     MatSelectModule,
     ReactiveFormsModule,
     SharedCommonModule,
+    AgGridModule.withComponents([]),
   ],
   providers: [
     {

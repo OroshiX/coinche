@@ -6,20 +6,11 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ApiLobbyService } from '../../services/apis/api-lobby.service';
 import { BreakpointService } from '../../services/breakpoint/breakpoint.service';
-import { Game } from '../../shared/models/game';
+import { Game, GAME_TYPE_AUTO } from '../../shared/models/game';
 import { GameI } from '../../shared/models/game-interface';
 import { isNotNullAndNotUndefined } from '../../shared/utils/helper';
 import { CreateGameDialogComponent } from './create-game-dialog/create-game-dialog.component';
 import { HelperService } from './services/helper.service';
-
-export const GAME_TYPE_AUTO ='AUTOMATED';
-
-export interface DialogData {
-  gameType: string,
-  name: string,
-  nicknameCreator: string
-}
-
 
 export const DIALOG_WIDTH = '280px';
 export const TABLE_WIDTH_SMALL = '410px';

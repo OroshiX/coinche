@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, shareReplay } from 'rxjs/operators';
 import { AnnounceBid, PlayCard } from '../../shared/models/play';
 import { ANNOUNCE_BID, API_BACKEND_GAMES, PLAY_CARD, SHOW_ALL_TRICKS } from './api-constant';
 import { ApiErrorHandlerService } from './api-error-handler.service';
@@ -31,9 +31,11 @@ export class ApiGamesService {
       );
   }
 
-  showAllTricks(gameId: string): Observable<any> {
+  showAllTricks(gameId: string) {
     const url =  API_BACKEND_GAMES + '/' + gameId + '/' + SHOW_ALL_TRICKS;
     return this.httpClient.get(url)
-      .pipe(catchError(this.errorHandler.handleError));
+      .pipe(
+        shareReplay(1),
+        catchError(this.errorHandler.handleError));
   }
 }

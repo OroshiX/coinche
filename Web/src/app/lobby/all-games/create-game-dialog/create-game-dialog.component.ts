@@ -1,8 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { DialogData, GAME_TYPE_AUTO } from '../all-games.component';
+import { GAME_TYPE_AUTO } from '../../../shared/models/game';
 
+export interface DialogData {
+  gameType: string,
+  name: string,
+  nicknameCreator: string
+}
 
 @Component({
   selector: 'app-create-dialog',

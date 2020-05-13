@@ -145,7 +145,7 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.nextPlayerIdx = this.gameState !== STATE.ENDED && this.gameState !== STATE.JOINING ?
       this.helper.getIdxPlayer(data.myPosition, data.nextPlayer) : 9; // 9 just to set whatever
     this.playersNicknameByMyPosOnTable = this.helper.getPlayersNicknameByMyPos(data.myPosition, data.nicknames);
-    console.log('Players position on Table  ============', this.playersNicknameByMyPosOnTable);
+    // console.log('Players position on Table  ============', this.playersNicknameByMyPosOnTable);
     this.bidListOrdered = data.bids.length > 0 ? this.helper.getBidsOrderByMyPos(data.myPosition, data.bids) : data.bids;
     this.bidData = this.buildBidData(data);
     this.myCardMap = this.service.buildMyDeck(data.cards);
