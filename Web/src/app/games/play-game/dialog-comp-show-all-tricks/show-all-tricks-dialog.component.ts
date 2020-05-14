@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Trick } from '../../../shared/models/game';
 
-export const FIELD1_WIDTH_SMALL = 75;
+export const FIELD1_WIDTH_SMALL = 95;
 
 export interface DialogData {
   allTrickData: Trick[],
