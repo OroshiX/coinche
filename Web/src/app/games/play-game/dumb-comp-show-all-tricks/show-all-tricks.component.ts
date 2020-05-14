@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { PLAYER_POSITION } from '../../../shared/models/collection-game';
 import { Trick } from '../../../shared/models/game';
@@ -46,7 +46,7 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.dataToDialog.allTrickData = data;
         this.dataToDialog.nicknames = this.nicknames.map(nn => shortenStr(nn, 14));
-        console.log('allTrickData=====', data);
+        // console.log('allTrickData=====', data);
       });
   }
 
@@ -58,7 +58,7 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ShowAllTricksDialogComponent, {
-      width: '400px',
+      width: '500px',
       data: this.dataToDialog
     });
 
@@ -84,22 +84,20 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
   private buildDataDialog(gameId: string) {
     return this.apiService.showAllTricks(gameId)
       .pipe(
-        tap(res => console.table('show all tricks', res)),
         map((tricks: AllTrick[]) => this.helper.buildAllTrickFlat(tricks)),
         map(res => res.map((tr: AllTrickFlat[]) => {
           const rowTrickMap = new Map<string, EmojiCardLabel | string>();
           const listPlayerPosOrdered = this.helper.playersPositionRefOrderedByMyPosZero(this.myPosition);
-          let pos: PLAYER_POSITION;
-          tr.forEach((el, idx) => {
-            pos = listPlayerPosOrdered.find(p => p === el.position);
-            if (idx === 0) {
+          tr.map(el => {
+            const id = listPlayerPosOrdered.findIndex((p, idx) => p === el.position);
+            if (id === 0) {
               this.campList.push(el.camp);
             }
             const emojiLabel = this.helper.buildEmojiCard(new PlayCard({
               color: el.color,
               value: el.value
             }), el.belote);
-            rowTrickMap.set(idx.toString(), emojiLabel);
+            rowTrickMap.set(id.toString(), emojiLabel);
           });
           return rowTrickMap;
         })),

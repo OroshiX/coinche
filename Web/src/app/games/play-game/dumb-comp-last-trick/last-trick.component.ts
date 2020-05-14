@@ -16,7 +16,6 @@ export class LastTrickComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(JSON.stringify(this.belote));
   }
 
 }

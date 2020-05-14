@@ -109,8 +109,8 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
         // debounceTime(100)
       )
       .subscribe((data: TableGame) => {
-        console.log('table game *********************');
-        console.log(JSON.stringify(data));
+        // console.log('table game *********************');
+        // console.log(JSON.stringify(data));
         this.setTableGame(data);
         this.updateLayoutForScreenChange();
       });
