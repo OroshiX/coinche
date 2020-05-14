@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ApiGamesService } from '../../../services/apis/api-games.service';
 import { PLAYER_POSITION } from '../../../shared/models/collection-game';
 import { Trick } from '../../../shared/models/game';
@@ -45,7 +45,8 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
       )
       .subscribe(data => {
         this.dataToDialog.allTrickData = data;
-         this.dataToDialog.nicknames =this.nicknames.map(nn => shortenStr(nn, 14));
+        this.dataToDialog.nicknames = this.nicknames.map(nn => shortenStr(nn, 14));
+        console.log('allTrickData=====', data);
       });
   }
 
@@ -83,6 +84,7 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
   private buildDataDialog(gameId: string) {
     return this.apiService.showAllTricks(gameId)
       .pipe(
+        tap(res => console.table('show all tricks', res)),
         map((tricks: AllTrick[]) => this.helper.buildAllTrickFlat(tricks)),
         map(res => res.map((tr: AllTrickFlat[]) => {
           const rowTrickMap = new Map<string, EmojiCardLabel | string>();
