@@ -28,6 +28,7 @@ import { ShowAllTricksComponent } from './dumb-comp-show-all-tricks/show-all-tri
 import { StateComponent } from './dumb-comp-state/state.component';
 import { PlayGameRoutingModule } from './play-game-routing.module';
 import { PlayGameComponent } from './play-game/play-game.component';
+import { TestImgComponent } from './test-img/test-img.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { PlayGameComponent } from './play-game/play-game.component';
     LastTrickComponent,
     MiniCardComponent,
     ShowAllTricksComponent,
-    ShowAllTricksDialogComponent
+    ShowAllTricksDialogComponent,
+    TestImgComponent
 
   ],
   imports: [
