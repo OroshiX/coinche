@@ -24,7 +24,6 @@ export class BidAnnounceComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log(this.currentBidPoints);
   }
 
   ngOnInit(): void {
@@ -49,7 +48,6 @@ export class BidAnnounceComponent implements OnInit, OnChanges {
           return !!result && !!result.points ? this.announceBidApi(result) : of(null);
         }))
       .subscribe(res => {
-        console.log('The dialog was closed');
         this.announceBidData.emit(res);
       });
   }

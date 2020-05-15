@@ -59,7 +59,6 @@
 }
 
 .btn-overlay {
-  //background-color: antiquewhite;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -84,4 +83,16 @@
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
+}
+
+.wrapper-btn {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.wrapper-1 {
+  margin-right: -60px;
+}
+.wrapper-2 {
+  margin-left: -60px;
 }

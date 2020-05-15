@@ -63,7 +63,6 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      console.log('The dialog was closed');
     });
   }
 

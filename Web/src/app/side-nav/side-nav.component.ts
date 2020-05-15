@@ -50,7 +50,6 @@ export class SideNavComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(CreateNicknameDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((data: string) => {
-      console.log('The dialog was closed');
       this.apiLobbyService.setNickname(data)
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe(() => console.log('nickname succeed'));
@@ -78,7 +77,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
     this.apiService.logoutToServer()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(ret => {
-        console.log('logout', ret);
+        console.log('logout');
       });
   }
 

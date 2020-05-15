@@ -4,9 +4,26 @@
     <mat-icon class="icon" aria-hidden="false" aria-label="Example stop icon">block</mat-icon>
   </div>
 </div>
-<button class="btn-container" style="border: none" [disabled]="true">
-  <img [src]="img" alt="Avatar" class="btn-image">
-  <div class="btn-overlay">
-    <mat-icon class="btn-icon" aria-hidden="false" aria-label="Example stop icon">block</mat-icon>
+<mat-slide-toggle (click)="onClick()">Inactivate/Activate Card</mat-slide-toggle>
+<div class="wrapper-btn">
+  <div class="wrapper-1">
+    <button class="btn-container" style="border: none" [disabled]="isCardDisabled" (dblclick)="OnDblClick('One')">
+      <img [src]="img" alt="Avatar" class="btn-image">
+      <ng-container *ngIf="isCardDisabled">
+        <div class="btn-overlay">
+          <mat-icon class="btn-icon" aria-hidden="false" aria-label="Example stop icon">block</mat-icon>
+        </div>
+      </ng-container>
+    </button>
   </div>
-</button>
+  <div class="wrapper-2">
+    <button class="btn-container" style="border: none" [disabled]="isCardDisabled" (dblclick)="OnDblClick('Two')">
+      <img [src]="img" alt="Avatar" class="btn-image">
+      <ng-container *ngIf="isCardDisabled">
+        <div class="btn-overlay">
+          <mat-icon class="btn-icon" aria-hidden="false" aria-label="Example stop icon">block</mat-icon>
+        </div>
+      </ng-container>
+    </button>
+  </div>
+</div>

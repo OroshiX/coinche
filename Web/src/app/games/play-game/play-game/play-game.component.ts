@@ -192,7 +192,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
   }
 
   onAnnounceBid(bid: Bid) {
-    console.log('in announceBid');
     this.setCurrentBidding(bid);
     this.isMyTurn = false;
   }
@@ -203,7 +202,6 @@ export class PlayGameComponent implements OnInit, AfterViewInit {
     this.apiService.playCard(this.gameId,
       new PlayCard({color: cardChosen.color, value: cardChosen.value, belote: null}))
       .subscribe(() => {
-        console.log('Card played');
         this.cd.detectChanges();
       });
     this.cd.detectChanges();

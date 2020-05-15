@@ -10,6 +10,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { AgGridModule } from 'ag-grid-angular';
 import { SharedCommonModule } from '../../shared-common/shared-common.module';
@@ -65,6 +66,7 @@ import { TestImgComponent } from './test-img/test-img.component';
     ReactiveFormsModule,
     SharedCommonModule,
     AgGridModule.withComponents([]),
+    MatSlideToggleModule,
   ],
   providers: [
     {

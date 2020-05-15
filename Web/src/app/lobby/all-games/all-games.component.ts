@@ -99,7 +99,6 @@ export class AllGamesComponent implements OnInit {
   }
 
   joinGame() {
-    console.log('join game');
     this.apiService.joinGame(this.selectedDataStringPresentation, '')
       .subscribe(() => {
           this.rowData$ = this.apiService.allGames();
@@ -134,7 +133,6 @@ export class AllGamesComponent implements OnInit {
   }
 
   private processCreateGame(data: Game) {
-    console.log('The dialog was closed');
     if (!!data) {
       const gameType = isNotNullAndNotUndefined(data.gameType) ? data.gameType: GAME_TYPE_AUTO;
       this.newGame.name = gameType === GAME_TYPE_AUTO ? data.name.concat(GAME_TYPE_AUTO) : data.name;
