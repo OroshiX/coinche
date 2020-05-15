@@ -6,9 +6,40 @@ if [ ! -f "$1" ]
 	printf "ERROR \"$1\" : file not found\n"
 	echo 
 	echo "Usage $0 <testDescription>\n"
-	printf "\t this script generate lkotlin code to test the play card code from the IA\n"
+	printf "\t this script generate kotlin code to test the play card code from the IA\n"
 	printf "\t it takes as input a file to describe the test\n"
 	printf "\t see exempleTest.txt as an example\n"
+	cat <<!
+Légende : 
+H : Heart
+S : Spade
+C : Club
+D : Diamond
+n : north
+e : east
+s : south
+w : west
+1 As
+7
+8
+9
+10
+11 Valet
+12 Dame
+13 Roi
+
+
+Atout : S 
+Moi : s 
+Mon jeu : [ 7 S , 1 H , 12 H , 13 D , 1 D ]
+Pli 1 : [ n 11 S , e 8 S , s 12 S , w 7 C ]
+Pli 2 : [ n 9 C , e 1 C , s 7 C , w 10 C ]
+Pli 3 : [ e 1 D , s 8 D , w 9 H , n 7 D ]
+Table : [ e 13 H ]
+Test : w, R1C + R2C
+Resultat : w n’a pas de carreau
+!
+
 	printf "\n\n"
 	exit 2
 fi
