@@ -66,7 +66,7 @@ class LobbyController(@Autowired val dataManagement: DataManagement,
     @GetMapping("/isLoggedIn",  produces = [MediaType.APPLICATION_JSON_VALUE])
     fun isLoggedIn():LoginStatus {
 
-        return LoginStatus(isLoggedIn = user.uid.isNotBlank(), nickName = user.nickname)
+        return LoginStatus(isLoggedIn = user.uid.isNotBlank(), nickName = user.nickname,uid = user.uid)
 
     }
 }
