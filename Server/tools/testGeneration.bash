@@ -44,6 +44,8 @@ Resultat : w has no diamonds
 	exit 2
 fi
 
+name=`grep "^Name.*:" exempleTest001.txt | sed -e "s/^.*: *\(.*\)/fun test\1() { /"`
+
 cat <<!
 /*
 !
@@ -54,7 +56,7 @@ cat <<!
 */
 
 @Test
-fun testIAPlayXXX() {
+$name
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
 	val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
