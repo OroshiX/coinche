@@ -1,6 +1,7 @@
 package fr.hornik.coinche.model
 
 import fr.hornik.coinche.business.isValidBid
+import fr.hornik.coinche.business.playRandom
 import fr.hornik.coinche.business.whatIsTheLastSignificantBid
 import fr.hornik.coinche.business.whatToPlay
 import fr.hornik.coinche.component.DataManagement
@@ -15,7 +16,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 data class IARun(val setOfGames: SetOfGames) {
-    val robotsPlayer: List<User> = listOf(
+    private val robotsPlayer: List<User> = listOf(
             User("Jean-Sebastien96541826ghD", "Jean-Seb"),
             User("Marie-Jeanne R.72hdkIkhgf", "Marie-Jeanne"),
             User("Charles-Henri9854RfGD", "Charles-Henri"),
@@ -57,9 +58,12 @@ data class IARun(val setOfGames: SetOfGames) {
                 if (listCandidatePlayer.isNotEmpty()) {
                     val candidate = listCandidatePlayer.first()
                     val userCandidate = User(candidate.uid, candidate.nickname)
-                    val aCard = candidate.cardsInHand.filter { it.playable == true }.random()
+
                     // TODO this will be the call to decide what card to play - Work In Progress
-                    // val bCard = whatToPlay(candidate.position,candidate.cardsInHand,setOfGames.bids,setOfGames.currentBid.curColor(),setOfGames.onTable,setOfGames.plisCampNS,setOfGames.plisCampEW)
+                    var aCard: Card? = whatToPlay(candidate.position, candidate.cardsInHand, setOfGames.bids,
+                                                 setOfGames.currentBid.curColor(), setOfGames.onTable,
+                                                 setOfGames.plisCampNS, setOfGames.plisCampEW)
+                    if (aCard == null)  { aCard = playRandom(candidate.cardsInHand) }
                     val myCard = Card(value = aCard.value, color = aCard.color)
                     setOfGames.whoseTurnTimeLastChg = millis
                     debugPrintln(dbgLevel.DEBUG, "${setOfGames.id}:${setOfGames.whoseTurn} is playing $myCard")
@@ -93,43 +97,28 @@ data class IARun(val setOfGames: SetOfGames) {
 
         // Parameters to compute points evaluations for Announces
 
-        val STARTINGBONUS = 2
-        val NOTSTARTINGMALUS = -3
-        val TOTALPOINT = 162
-        val TRUMPJACKGAIN = 35
-        val TRUMPNINEGAIN = 20
-        val TRUMPACEGAIN = 15
-        val TRUMPTENGAIN = 10
-        val COLORACEGAIN = 13
-        val COLORTENGAIN = 11
-        val COLORKINGGAIN = 2
-        val OTHERGAIN = 0
+        private const val STARTINGBONUS = 2
+        private const val NOTSTARTINGMALUS = -3
+        private const val TOTALPOINT = 162
+        private const val TRUMPJACKGAIN = 35
+        private const val TRUMPNINEGAIN = 20
+        private const val TRUMPACEGAIN = 15
+        private const val TRUMPTENGAIN = 10
+        private const val COLORACEGAIN = 13
+        private const val COLORTENGAIN = 11
+        private const val COLORKINGGAIN = 2
+        private const val OTHERGAIN = 0
 
 
         fun enchere(myPosition: PlayerPosition = PlayerPosition.NORTH, allBids: List<Bid>, myCards: List<Card>, behaviour: Int): Bid {
-            val mapTrump: Map<CardValue, Int>
             val lastBid: Bid = whatIsTheLastSignificantBid(allBids)
-            var IStart:Boolean
 
-            if (allBids.isEmpty()) {
-                IStart = true
+            val iStart:Boolean = if (allBids.isEmpty()) {
+                true
             } else {
-                IStart = (myPosition == allBids[0].position)
+                (myPosition == allBids[0].position)
             }
-            val bidPartner: Bid = when {
-                // Pas d'enchere precedente
-                allBids.isEmpty() -> {
-                    Pass()
-                }
-                // 1 seule enchere precedente
-                allBids.size == 1 -> {
-                    Pass()
-                }
-                // cas classique plus d'1 encheres
-                else -> {
-                    allBids[allBids.size - 2]
-                }
-            }
+
             val minPoints = lastBid.curPoint()
             val mapColor = mapOf(CardColor.HEART to 0,
                     CardColor.DIAMOND to 1,
@@ -248,7 +237,7 @@ data class IARun(val setOfGames: SetOfGames) {
 
 
                     */
-                    valEnchere = reversePoints(myCards, trump, IStart)
+                    valEnchere = reversePoints(myCards, trump, iStart)
                 }
                 enchereColor[trump] = valEnchere
             }
@@ -303,7 +292,7 @@ data class IARun(val setOfGames: SetOfGames) {
         //let find the first time where our partner choose a color
         //This is the only time we will take this value into account, and only if we did not bid it first
 
-        fun surEncherePartner(listBid: List<Bid>, myPosition: PlayerPosition, myCards: List<Card>): MutableMap<CardColor, Int> {
+        private fun surEncherePartner(listBid: List<Bid>, myPosition: PlayerPosition, myCards: List<Card>): MutableMap<CardColor, Int> {
             val partner = myPosition + 2
             val bidPartner = listBid.filter { it.position == partner }
             val myBids = listBid.filter { it.position == myPosition }
@@ -311,12 +300,12 @@ data class IARun(val setOfGames: SetOfGames) {
             val tableBids: MutableMap<CardColor, Int> = CardColor.values().map { Pair(it, -30) }.toMap().toMutableMap()
 
             for (color in CardColor.values()) {
-                val bids = bidPartner.filter { e -> (e.curColor() == color) && (myBids.filter { f -> (f.curColor() == color) && (f.curPoint() < e.curPoint()) }.isEmpty()) }
+                val bids = bidPartner.filter { e -> (e.curColor() == color) && (myBids.none { f -> (f.curColor() == color) && (f.curPoint() < e.curPoint()) }) }
                 if (bids.any()) {
                     tableBids[color] = bids.first().curPoint()
                 }
             }
-            var nbColors: MutableMap<CardColor, Int> = mutableMapOf()
+            val nbColors: MutableMap<CardColor, Int> = mutableMapOf()
 
             for (color in CardColor.values()) {
                 nbColors[color] = myCards.filter { it.color == color }.size
@@ -363,8 +352,8 @@ data class IARun(val setOfGames: SetOfGames) {
             }
             return tableBids
         }
-        fun reversePoints(myCards: List<Card>, color: CardColor, IStart:Boolean): Int {
-            var Value = TOTALPOINT
+        private fun reversePoints(myCards: List<Card>, color: CardColor, IStart:Boolean): Int {
+            var value = TOTALPOINT
             val pointAtoutRev = mapOf<CardValue, Int>(
                     Pair(CardValue.JACK, TRUMPJACKGAIN),
                     Pair(CardValue.NINE, TRUMPNINEGAIN),
@@ -383,7 +372,7 @@ data class IARun(val setOfGames: SetOfGames) {
                     Pair(CardValue.NINE, OTHERGAIN),
                     Pair(CardValue.EIGHT, OTHERGAIN),
                     Pair(CardValue.SEVEN, OTHERGAIN))
-            var Belote:Boolean=false
+            var belote =false
 
             debugPrintln(dbgLevel.DEBUG, "Trump Evaluated is $color")
 
@@ -395,13 +384,13 @@ data class IARun(val setOfGames: SetOfGames) {
                 // if Trump : 8 - nb of trump in my hands, but no more than 4
                 // if regular color : nb of cards of the color in my hans, but no more than 4 ( perhaps we should use 3 ? )
 
-                var nbMax = 0
+                var nbMax: Int
                 if (trump) {
                     myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointAtoutRev.getValue(e))) }.toMap().toMutableMap()
                     nbMax = min(8 - curColorCards.size, 4)
                     // If we have less than (or equal to) 3 trumps, starting can be a big deal : BONUS/MALUS
                     if (curColorCards.size <=3) {
-                        if (IStart) Value += NOTSTARTINGMALUS else Value+= STARTINGBONUS
+                        value += if (IStart) NOTSTARTINGMALUS else STARTINGBONUS
                     }
                 } else {
                     myPoints = CardValue.values().map { e -> Pair(e, Pair(false, pointCouleurRev.getValue(e))) }.toMap().toMutableMap()
@@ -410,14 +399,14 @@ data class IARun(val setOfGames: SetOfGames) {
                     // look if 10 is alone
                     if ((curColorCards.size == 1) && (curColorCards[0].value == CardValue.TEN)) {
                         // remove 7 points ( no ACE is already minus 13)
-                        Value -= 10
+                        value -= 10
                     }
                 }
                 for (card in curColorCards) {
                     myPoints[card.value] = myPoints[card.value]!!.copy(first = true)
                 }
                 if (trump && myPoints[CardValue.QUEEN]!!.first && myPoints[CardValue.KING]!!.first) {
-                    Belote = true
+                    belote = true
                 }
                 var i = 0
 
@@ -432,22 +421,22 @@ data class IARun(val setOfGames: SetOfGames) {
 
 
                     if (! obj.value.first) {
-                        Value -= obj.value.second
+                        value -= obj.value.second
                     }
                     debugPrintln(dbgLevel.DEBUG, "Checking ${obj.key} at $curColor")
 
                 }
             }
-            if (Value >= 151) Value = 500
+            if (value >= 151) value = 500
 
-            if (Belote) {
-                Value += 20
+            if (belote) {
+                value += 20
             } else {
-                if ((Value >= 140) && (Value < 150)) {
-                    Value -=10
+                if ((value >= 140) && (value < 150)) {
+                    value -=10
                 }
             }
-            return Value
+            return value
         }
     }
 }
