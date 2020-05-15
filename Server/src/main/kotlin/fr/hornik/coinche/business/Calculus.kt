@@ -180,7 +180,7 @@ fun whatIsTheLastSignificantBid(allBids: List<Bid>):Bid {
     if (bidsLength == 0 ) {
         return Pass()
     }
-    for (j in 0..bidsLength-1) {
+    for (j in 0 until bidsLength) {
         if (allBids[bidsLength-j-1] !is Pass) {
             return allBids[bidsLength-j-1]
         }

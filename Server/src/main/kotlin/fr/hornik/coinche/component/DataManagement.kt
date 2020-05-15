@@ -40,7 +40,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
         // you should keep its value to true for normal behaviour
 
-        val productionAction = true
+        const val productionAction = true
 
     }
 
@@ -298,7 +298,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
 
     fun checkCoherency(setOfGames: SetOfGames): Boolean {
-        var returnValue: Boolean = true
+        var returnValue = true
 
         when (setOfGames.state) {
 
@@ -316,7 +316,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 val nbCards: MutableMap<PlayerPosition, Int> = PlayerPosition.values().map { Pair(it, 0) }.toMap().toMutableMap()
 
                 for (position in PlayerPosition.values()) {
-                    val player = setOfGames.players.firstOrNull() { it.position == position }
+                    val player = setOfGames.players.firstOrNull { it.position == position }
                     if (player == null) {
                         debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id} null player at position $position")
                         returnValue = false
