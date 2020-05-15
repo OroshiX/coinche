@@ -10,7 +10,7 @@ if [ ! -f "$1" ]
 	printf "\t it takes as input a file to describe the test\n"
 	printf "\t see exempleTest.txt as an example\n"
 	cat <<!
-Légende : 
+Legend : 
 H : Heart
 S : Spade
 C : Club
@@ -24,10 +24,10 @@ w : west
 8
 9
 10
-11 Valet
-12 Dame
-13 Roi
-
+11 Jack
+12 Queen
+13 King
+Note : Upper case and lowercase are important to respect as well as space between symbols !!!
 
 Atout : S 
 Moi : s 
@@ -36,8 +36,8 @@ Pli 1 : [ n 11 S , e 8 S , s 12 S , w 7 C ]
 Pli 2 : [ n 9 C , e 1 C , s 7 C , w 10 C ]
 Pli 3 : [ e 1 D , s 8 D , w 9 H , n 7 D ]
 Table : [ e 13 H ]
-Test : w, R1C + R2C
-Resultat : w n’a pas de carreau
+Test : w , R1C + R2C
+Resultat : w has no diamonds
 !
 
 	printf "\n\n"
