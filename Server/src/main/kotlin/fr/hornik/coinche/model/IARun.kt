@@ -67,8 +67,10 @@ data class IARun(val setOfGames: SetOfGames) {
                                                   setOfGames.currentBid.curColor(), setOfGames.onTable,
                                                   setOfGames.plisCampNS, setOfGames.plisCampEW)
                     if ((aCard == null) || (aCard.playable == false)) {
-                        debugPrintln(dbgLevel.REGULAR, "***********This Should never happen $aCard - error in IA we will use a random card**********")
+                        debugPrintln(dbgLevel.REGULAR, "***********Returned card by IA is null or not playable -  we will use a random card**********")
                         aCard = playRandom(candidate.cardsInHand)
+                        debugPrintln(dbgLevel.REGULAR, "***********playing  $aCard for ${candidate.nickname} instead **********")
+
                     }
                     val myCard = Card(value = aCard.value, color = aCard.color)
                     setOfGames.whoseTurnTimeLastChg = millis

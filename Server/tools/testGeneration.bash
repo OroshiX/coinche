@@ -44,7 +44,7 @@ Resultat : w has no diamonds
 	exit 2
 fi
 
-name=`grep "^Name.*:" exempleTest001.txt | sed -e "s/^.*: *\(.*\)/fun test\1() { /"`
+name=`grep "^Name.*:" $1 | sed -e "s/^.*: *\(.*\)/fun test\1() { /"`
 
 cat <<!
 /*
@@ -86,11 +86,11 @@ cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
 	     -e "s/Atout : /val atout=/"\
 	     -e "s/Moi : /val myPosition=/"\
 	     -e "s/Mon jeu : \[/val myCards = listOf(/"\
-	     -e "s/Table : \[/val onTable = listOf(/"\
+	     -e "s/Table : \[/val onTable :List<CardPlayed> = listOf(/"\
 	     -e "s/\]/)/g"\
 	     -e "s/\+\+)/\+\+\]/" \
 	     -e "s/\(Resultat.*$\)/\/*\1*\//g"\
-	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/"
+	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/" | egrep -v "^.*Name :.*"
 
 cat <<!
 /* you need to check result here */

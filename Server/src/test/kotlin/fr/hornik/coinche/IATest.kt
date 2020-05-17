@@ -1,9 +1,6 @@
 package fr.hornik.coinche
 
-import fr.hornik.coinche.business.masterColor
-import fr.hornik.coinche.business.printHand
-import fr.hornik.coinche.business.totalRemainingNumber
-import fr.hornik.coinche.business.whatToPlay
+import fr.hornik.coinche.business.*
 import fr.hornik.coinche.model.*
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
@@ -934,26 +931,102 @@ class IATest {
    */
 
     @Test
-    fun testIAPlayXXX() {
+    fun testIAPlaynoDiamondForWest() {
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
-        val atout=spade
-        val myPosition=south
-        val myCards = listOf( Card( seven , spade ) , Card( ace , heart ) , Card( queen , heart ) , Card( king , diamond ) , Card( ace , diamond ) )
-        plisNS[nb++] = listOf(CardPlayed(Card( jack , spade ) , position= north  ) ,CardPlayed(Card( eight , spade ) , position= east  ) ,CardPlayed(Card( queen , spade ) , position= south  ) ,CardPlayed(Card( seven , club ) , position= west  ) )
-        plisNS[nb++] = listOf(CardPlayed(Card( nine , club ) , position= north  ) ,CardPlayed(Card( ace , club ) , position= east  ) ,CardPlayed(Card( seven , club ) , position= south  ) ,CardPlayed(Card( ten , club ) , position= west  ) )
-        plisNS[nb++] = listOf(CardPlayed(Card( ace , diamond ) , position= east  ) ,CardPlayed(Card( eight , diamond ) , position= south  ) ,CardPlayed(Card( nine , heart ) , position= west  ) ,CardPlayed(Card( seven , diamond ) , position= north  ) )
-        val onTable = listOf(CardPlayed(Card( king , heart ) , position= east  ) )
-        val result = TODO("Test : w, R1C + R2C")
+        var nb = 0
+        val atout = spade
+        val myPosition = south
+        val myCards = listOf(Card(seven, spade), Card(ace, heart), Card(queen, heart), Card(king, diamond),
+                             Card(ace, diamond))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(jack, spade), position = north), CardPlayed(Card(eight, spade), position = east),
+                       CardPlayed(Card(queen, spade), position = south), CardPlayed(Card(seven, club), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(nine, club), position = north), CardPlayed(Card(ace, club), position = east),
+                       CardPlayed(Card(seven, club), position = south), CardPlayed(Card(ten, club), position = west))
+        plisNS[nb++] = listOf(CardPlayed(Card(ace, diamond), position = east),
+                              CardPlayed(Card(eight, diamond), position = south),
+                              CardPlayed(Card(nine, heart), position = west),
+                              CardPlayed(Card(seven, diamond), position = north))
+        val onTable = listOf(CardPlayed(Card(king, heart), position = east))
+        val result = playersHaveColor(diamond, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                      myCards)
 /*Resultat : west n’a pas de carreau*/
 /* you need to check result here */
-        assert(TODO()) { "$nameTest FAIL $result is not accurate" }
+        assert(result[west] == false) { "$nameTest FAIL $result is not accurate West should not have diamond" }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS :$result - no diamond for West ")
+
     }
 
 
+    /*
+  Name : noClubNoHeart
+  Atout : H
+  Moi : n
+  Mon jeu : [ 7 H , 13 H , 10 H , 11 C , 8 C ]
+  Pli 1 : [ n 11 H , e 1 H , s 12 H , w 8 H ]
+  Pli 2 : [ n 9 H , e 7 D , s 7 C , w 9 C ]
+  Pli 3 : [ n 1 C , e 10 C , s 13 C , w 12 C ]
+  Table : [  ]
+  Test : playColor
+  Resultat : e , w and s have no C
 
+  */
+
+    @Test
+    fun testnoClubNoHeart() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+        val atout = heart
+        val myPosition = north
+        val myCards =
+                listOf(Card(seven, heart), Card(king, heart), Card(ten, heart), Card(jack, club), Card(eight, club))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(jack, heart), position = north), CardPlayed(Card(ace, heart), position = east),
+                       CardPlayed(Card(queen, heart), position = south),
+                       CardPlayed(Card(eight, heart), position = west))
+        plisNS[nb++] = listOf(CardPlayed(Card(nine, heart), position = north),
+                              CardPlayed(Card(seven, diamond), position = east),
+                              CardPlayed(Card(seven, club), position = south),
+                              CardPlayed(Card(nine, club), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ace, club), position = north), CardPlayed(Card(ten, club), position = east),
+                       CardPlayed(Card(king, club), position = south), CardPlayed(Card(queen, club), position = west))
+        val onTable: List<CardPlayed> = listOf()
+        var result =
+                playersHaveColor(heart, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                 myCards)
+
+        /* Resultat : east , west and south have no club */
+        var resultB =
+                (result[south] == result[west]) and (result[east] == result[west]) and (result[west] == false) and (result[north] == true)
+        result =
+                playersHaveColor(club, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                 myCards)
+
+        resultB =
+                resultB and (result[south] == result[west]) and (result[east] == result[west]) and (result[west] == false) and (result[north] == true)
+
+        result =
+                playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                 myCards)
+
+        resultB =
+                resultB and (result[south] == result[west]) and (result[east] == result[west]) and (result[west] == true) and (result[north] == false)
+
+        /* you need to check result here */
+        assert(resultB) { "all players but north should have no more heart and no more club" }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS :$resultB ")
+
+
+    }
 }
 
