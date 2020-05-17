@@ -1,0 +1,10 @@
+Name : noClubNoHeart
+Atout : H 
+Moi : s 
+Mon jeu : [ 7 H , 13 H , 10 H , 11 H , 8 C ]
+Pli 1 : [ n 11 H , e 1 H , s 12 H , w 8 H ]
+Pli 2 : [ n 9 H , e 7 D , s 7 C , w 9 C ]
+Pli 3 : [ n 1 C , e 10 C , s 13 C , w 12 C ]
+Table : [  ]
+Test : playColor
+Resultat : e , w and s have no C 
