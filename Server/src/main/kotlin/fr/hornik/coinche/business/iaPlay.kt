@@ -196,7 +196,7 @@ fun fR5(color: CardColor, atout: CardColor,
                 listTrumpInTricks.add(pli[index])
             }
         }
-        if (listTrumpInTricks.maxBy { it.card.value.dominanceAtout }!!.position != (pPosition + 2)) {
+        if (listTrumpInTricks.isNotEmpty() && listTrumpInTricks.maxBy { it.card.value.dominanceAtout }!!.position != (pPosition + 2)) {
 
             // somebody before pposition did play trump and we still play 10 or Ace ???
             //Here we can reasonably say this player has no more of this color or is it bluff ???
