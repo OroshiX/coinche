@@ -1,0 +1,9 @@
+Name : testRule3
+Atout : C 
+Moi : s 
+Mon jeu : [ 7 H , 13 H , 10 H , 12 C , 13 C , 9 D ]
+Pli 1 : [ n 11 C , e 9 C , s 10 S , w 8 C ]
+Pli 2 : [ n 1 S , e 13 S , s 11 S , w 9 S ]
+Table : [ n 1 D ]
+Test : playColor 
+Resultat : e has not any more S 

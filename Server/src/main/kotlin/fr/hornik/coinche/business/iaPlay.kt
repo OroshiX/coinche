@@ -60,8 +60,9 @@ fun allCards(): List<CardPlayed> {
 Couleur :
 R1 - Pour une couleur c, si un joueur X a joué d’une couleur différente de c alors que c’était la première carte jouée à un tour précédent, le joueur X ne possède pas la couleur c.
 R2 - Si toutes les cartes (en comptant celles présentes dans mon jeu) de la couleur c sont tombées, le joueur X en particulier ne possède pas la couleur c.
-*R3 - (règle heuristique) Si le joueur X a mis un 10 ou un Roi de la couleur c alors que c’était une carte adjacente à la carte maîtresse, et que cette carte maîtresse était à l’adversaire alors on considère que le joueur X ne possède plus de la couleur c Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique. Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître, on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif. N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
+R3 - (règle heuristique) Si le joueur X a mis un 10 ou un Roi de la couleur c alors que c’était une carte adjacente à la carte maîtresse, et que cette carte maîtresse était à l’adversaire alors on considère que le joueur X ne possède plus de la couleur c Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique. Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître, on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif. N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
 *R4 - (règle heuristique), Si le joueur X a mis un 10 de la couleur c sans que l’As ne soit tombé au préalable dans le pli actuel ou les plis précédents, on considère que le joueur X ne possède plus de la couleur c.
+R5 - (règle heuristique), Si le joueur X a mis un 10 ou un As de la couleur c alors qu’un de ces adversaires a mis préalablement dans ce pli un atout (et que cet atout était le plus fort à ce moment) alors on considère que le joueur X ne possède plus de la couleur c.
 Atout :
     *R1 - Si le joueur X n’a pas joué de l’atout alors que l’atout était demandé ou qu’il a joué d’une couleur différente de celle demandée alors que son partenaire n’était pas maître alors le joueur X n’a plus d’atout.
     *R2 - Si tous les atouts sont tombés (ceux que j’ai en main sont considérés tombés) alors le joueur X n’a plus d’atout.
@@ -72,46 +73,218 @@ Atout :
     *R7 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 110, que le partenaire (ou moi) a déjà lancé un tour d’atout (joué un atout en première carte d’un pli) et que 2 atouts ou plus ne provenant pas du partenaire sont tombés hors de ce tour d’atout (mes atouts en main font partie des cartes tombées), alors on considère que seul le partenaire possède les atouts restants, on estime que les deux adversaires n’ont plus d’atout. R7’ avec une annonce >= 120 et 1 atout non partenaire.
 
 
+
  */
+
+
+
+//Rule 1 - valid color and Atout
+fun fR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
+        pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
+    //R1 - For a color C, if it was the first color of the trick and a player X played a different color
+    //     it means that X is missing C
+
+    if (pliColor == color) {
+        for (position in pli.filter { it.card.color != color }.map { it.position }) {
+            allPlayerColor[position] = false
+        }
+    }
+    return allPlayerColor
+}
+
+
+//Rule 2 - valid color and Atout
+fun fR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, listPlis: List<List<CardPlayed>>,
+        cardsInHand: List<Card>)
+        : MutableMap<PlayerPosition, Boolean> {
+
+    // R2 - If all cards ( including mine) of color C were played, than all X player are missing the color
+    val allCardsPlayed = listPlis.toList().flatten()
+    val nbCardPlayed = allCardsPlayed.filter { it.card.color == color }.size
+    val nbMyCard = cardsInHand.filter { it.color == color }.size
+
+    if ((nbCardPlayed + nbMyCard) == 8) {
+        // here we change also my position , but this will be put to real value at the end of caller since it s a special case
+        PlayerPosition.values().forEach { e -> allPlayerColor[e] = false }
+    }
+    return allPlayerColor
+}
+
+
+// Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique.
+// Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître,
+// on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle
+// que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif.
+// N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
+
+
+// Rule 3 only valid for color
+fun fR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
+        currentMaster: CardValue?, nextMaster: CardValue?,
+        winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
+    //R3  - if player X played a 10 or 1 King of color C and master card was in the trick belonging to an opponent X has no more color C
+    if ((currentMaster != null) && (nextMaster != null)) {
+        // somebody put the master on the table
+        if (pli.any { it.card.value == currentMaster && it.card.color == color }) {
+
+            // it was not the last card of the trick
+            val nb = pli.indexOf(pli.first { it.card.value == currentMaster && it.card.color == color })
+
+            if (nb < pli.size - 1) {
+
+                //check if next opponent put a 10 or a King of the same color and it was the next master
+                // if so, it was probably the last card of the color for this player
+
+                // pPosition is the position of the player putting the master card
+                val pPosition = pli[nb].position
+
+                //for all folling cards in the trick
+                for (index in (nb + 1) until pli.size) {
+
+                    //if somebody put king or 10 and it was the next master
+                    if ((pli[index].card.value == CardValue.TEN || pli[index].card.value == CardValue.KING) &&
+                        (pli[index].card.value == nextMaster) &&
+                        (pli[index].card.color == color) &&
+                        ((pli[index].position == pPosition + 1) || (pli[index].position == pPosition + 3)) &&
+                        // we should also check it was not a gift for the partner
+                        winnerTrick != (pli[index].position + 2)) {
+                        //Here we can reasonably say this player has no more of this color or is it bluff ???
+                        allPlayerColor[pli[index].position] = false
+                    }
+                }
+            }
+        }
+    }
+
+    return allPlayerColor
+}
+
+
+/*
+  R5 - heuristic
+     If the Player X played a 10 or Ace of Color C when one of his opponent
+     had put before, in the same trick a trump, and this trump was the stronger at this point
+     then : we consider that player X has no more C
+ */
+fun fR5(color: CardColor, atout: CardColor,
+        allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+        pli: List<CardPlayed>,
+        pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
+
+    if (pliColor != color) {
+        // this rule is not applicable if the pli did not start with our color
+        return allPlayerColor
+    }
+    val listBigValue =
+            pli.filter { (it.card.value == CardValue.ACE || it.card.value == CardValue.TEN) && it.card.color == color }
+
+    for (bigCard in listBigValue) {
+
+        // it was not the first card of the trick
+        val nb = pli.indexOf(pli.first { it.card.value == bigCard.card.value && it.card.color == color })
+
+        // not applicable if this is the first card of the trick
+        if (nb == 0) continue
+
+        // pPosition is the position of the player putting the big card
+        val pPosition = pli[nb].position
+
+        //for all previous cards in the trick chcek if there is a trump and that master of all trumps is not our partner
+        val listTrumpInTricks: MutableList<CardPlayed> = mutableListOf()
+        for (index in 0 until nb) {
+            if (pli[index].card.color == atout) {
+                listTrumpInTricks.add(pli[index])
+            }
+        }
+        if (listTrumpInTricks.maxBy { it.card.value.dominanceAtout }!!.position != (pPosition + 2)) {
+
+            // somebody before pposition did play trump and we still play 10 or Ace ???
+            //Here we can reasonably say this player has no more of this color or is it bluff ???
+            allPlayerColor[pPosition] = false
+        }
+    }
+
+
+
+    return allPlayerColor
+}
+
 fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<CardPlayed>>, myPosition: PlayerPosition,
                      cardsInHand: List<Card>): Map<PlayerPosition, Boolean> {
 
     // By default all players have all colors
-    val allPlayerColor = PlayerPosition.values().map { Pair(it, true) }.toMap().toMutableMap()
+    var allPlayerColor = PlayerPosition.values().map { Pair(it, true) }.toMap().toMutableMap()
     val allCardsPlayed = listPlis.toList().flatten()
+    val rR1 = true
+    val rR2 = true
+    val rR3 = (color != atout)
+    val rR4 = (color != atout)
+    val rR5 = (color != atout)
+    val rR6 = (color != atout)
+    val rR7 = (color != atout)
 
-    //R1 - Pour une couleur c, si un joueur X a joué d’une couleur différente de c
-    //     alors que c’était la première carte jouée à un tour précédent, le joueur X ne possède pas la couleur c.
+
+    // R2 - If all cards ( including mine) of color C were played, than all X player are missing the color
+    if (rR2) {
+        allPlayerColor = fR2(color, allPlayerColor, listPlis, cardsInHand)
+    }
+
+    // Now we use heuristic rules ( not 100% right but good enough to play using this "a priori"
+    // Generally heuristic rules need to be applied for all plis one after the other
+
+    val presenceInGameCardValue: MutableMap<CardValue, Boolean> =
+            CardValue.values().map { Pair(it, true) }.toMap().toMutableMap()
+    cardsInHand.filter { it.color == color }.forEach { e -> presenceInGameCardValue[e.value] = false }
+
     for (pli in listPlis) {
-        if (pli.first().card.color == color) {
-            for (position in pli.filter { it.card.color != color }.map { it.position })
-                allPlayerColor[position] = false
+        var master: CardValue? = null
+        var nextMaster: CardValue? = null
+        val listRemainingCardinColor: List<CardValue>
+
+        when (atout) {
+            color -> {
+                listRemainingCardinColor = presenceInGameCardValue.filterValues { it }.keys.toList()
+                        .sortedBy { e -> -e.dominanceAtout }
+                master = listRemainingCardinColor.firstOrNull()
+                if (listRemainingCardinColor.size >= 2) {
+                    nextMaster = listRemainingCardinColor[1]
+                }
+            }
+            else -> {
+                listRemainingCardinColor = presenceInGameCardValue.filterValues { it }.keys.toList()
+                        .sortedBy { e -> -e.dominanceCouleur }
+
+                master = listRemainingCardinColor.firstOrNull()
+                if (listRemainingCardinColor.size >= 2) {
+                    nextMaster = listRemainingCardinColor[1]
+                }
+            }
+        }
+        val winnerTrick = calculateWinnerTrick(pli, atout)
+        val pliColor = pli.first().card.color
+        if (rR1) {
+            allPlayerColor = fR1(color, allPlayerColor, pli, pliColor)
+        }
+        if (rR3) {
+            allPlayerColor = fR3(color, allPlayerColor, pli, master, nextMaster, winnerTrick)
+        }
+        if (rR5) {
+            allPlayerColor = fR5(color, atout, allPlayerColor, pli, pliColor)
+        }
+
+
+        // the card was played , it's not anymore a master card
+
+        pli.filter { it.card.color == color }.forEach { e -> presenceInGameCardValue[e.card.value] = false }
+        if (presenceInGameCardValue.filter { it.value }.none()) {
+            PlayerPosition.values().forEach { e -> allPlayerColor[e] = false }
+            break
         }
     }
-
-    // R2 - Si toutes les cartes (en comptant celles présentes dans mon jeu)
-    // de la couleur c sont tombées, le joueur X en particulier ne possède pas la couleur c.
-    val nbCardPlayed = allCardsPlayed.filter { it.card.color == color }.size
-
-    val nbMyCard = cardsInHand.filter { it.color == color }.size
-    when {
-        (nbCardPlayed == 8) -> PlayerPosition.values().forEach { allPlayerColor[it] = false }
-
-        ((nbCardPlayed + nbMyCard) == 8) -> PlayerPosition.values().filter { it != myPosition }
-                .forEach { e -> allPlayerColor[e] = false }
-    }
-    //R3 - (règle heuristique) Si le joueur X a mis un 10 ou un Roi de la couleur c alors que c’était une carte adjacente à la carte maîtresse,
-    // et que cette carte maîtresse était à l’adversaire alors on considère que le joueur X ne possède plus de la couleur c
-    // Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique.
-    // Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître,
-    // on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle
-    // que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif.
-    // N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
-    // TODO
-
     // for my self I know my cards .... so no need to use any heuristic
     allPlayerColor[myPosition] = cardsInHand.any { it.color == color }
     return allPlayerColor
+
 }
 
 fun playRandom(cardsInHand: List<Card>): Card {
@@ -602,7 +775,7 @@ fun nthToPlay(myPosition: PlayerPosition,
     val myPlayableCards = cardsInHand.filter { it.playable == true }
     val currentTableColor = onTable[0].card.color
     val myPlayableNoDefausse = myPlayableCards.filter { it.color == currentTableColor }
-    val partnerIsActualWinner = calculateWinnerTrick(onTable, currBid) == (myPosition + 2)
+    val partnerIsActualWinner = calculateWinnerTrick(onTable, atout) == (myPosition + 2)
 
     if ((currentTableColor == atout) && myPlayableNoDefausse.isNotEmpty()) {
         /*

@@ -209,7 +209,7 @@ class CalculusTest {
                 fourHands[tHand[indexPlayer]].remove(c[0])
                 indexPlayer = (indexPlayer + 1) % 4
             }
-            indexPlayer = mapPos[calculateWinnerTrick(listCardP, aBid)]!!
+            indexPlayer = mapPos[calculateWinnerTrick(listCardP, aBid.curColor())]!!
             if (tour == 8) {
                 dixDer = lRand[indexPlayer]
             }

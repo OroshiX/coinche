@@ -1028,5 +1028,78 @@ class IATest {
 
 
     }
+
+
+
+
+    /*
+Name : testRule3
+Atout : C
+Moi : s
+Mon jeu : [ 7 H , 13 H , 10 H , 12 C , 13 C , 9 D ]
+Pli 1 : [ n 11 C , e 9 C , s 10 S , w 8 C ]
+Pli 2 : [ n 1 S , e 13 S , s 11 S , w 9 S ]
+Table : [ n 1 D ]
+Test : playColor
+Resultat : e has not any more S
+
+*/
+
+    @Test
+    fun testRule3() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+        val atout=club
+        val myPosition=west
+        val myCards = listOf( Card( seven , heart ) , Card( king , heart ) , Card( ten , heart ) , Card( queen , club ) , Card( king , club ) , Card( nine , diamond ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( jack , club ) , position= north  ) ,CardPlayed(Card( nine , club ) , position= east  ) ,CardPlayed(Card( ten , spade ) , position= south  ) ,CardPlayed(Card( eight , club ) , position= west  ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( ace , spade ) , position= north  ) ,CardPlayed(Card( king , spade ) , position= east  ) ,CardPlayed(Card( jack , spade ) , position= south  ) ,CardPlayed(Card( nine , spade ) , position= west  ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( ace , diamond ) , position= north  ) )
+        val result =                 playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                                      myCards)
+/*Resultat : east has not any more Spade */
+/* you need to check result here */
+        assert((result.size == 4) and !result[east]!! and result[north]!! and result[south]!! and !result[west]!!) { "good result is west and east have no more Spade but we have $result " }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS  for Spade :$result ")
+    }
+
+/*
+Name : Rule5
+Atout : C
+Moi : w
+Mon jeu : [ 7 H , 13 H , 10 H , 12 C , 13 C , 9 D , 9 S ]
+Pli 1 : [ w 1 S , n 8 C , e 10 S , s 13 S ]
+Table : [ n 1 D ]
+Test : ____playColor ____
+Resultat : e has not any more S
+
+*/
+
+    @Test
+    fun testRule5() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+        val atout=club
+        val myPosition=west
+        val myCards = listOf( Card( seven , heart ) , Card( king , heart ) , Card( ten , heart ) , Card( queen , club ) , Card( king , club ) , Card( nine , diamond ) , Card( nine , spade ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( ace , spade ) , position= west  ) ,CardPlayed(Card( eight , club ) , position= north  ) ,CardPlayed(Card( ten , spade ) , position= east  ) ,CardPlayed(Card( king , spade ) , position= south  ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( ace , diamond ) , position= north  ) )
+        val result =                 playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                                                           myCards)
+/*Resultat : east has not any more spade */
+/* you need to check result here */
+        assert((result.size == 4) && !result[east]!! && result[west]!! && !result[north]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS  for Spade :$result ")
+    }
+
+
 }
 

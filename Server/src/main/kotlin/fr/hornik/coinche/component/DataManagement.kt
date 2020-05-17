@@ -388,7 +388,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         setOfGames.whoseTurn += 1
         // Evaluation of who win the trick
         if (setOfGames.onTable.size == 4) {
-            val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids))
+            val winner = calculateWinnerTrick(setOfGames.onTable, getCurrentBid(setOfGames.bids).curColor())
             setOfGames.whoWonLastTrick = winner
 
             // This function set the whoseturn field to winner

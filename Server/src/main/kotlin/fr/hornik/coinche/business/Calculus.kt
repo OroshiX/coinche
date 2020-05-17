@@ -71,7 +71,7 @@ fun allValidCardsToPlay(myCardsInHand: List<Card>, bid: Bid,
         val myPos =
                 (mapPos[cardsOnTable[cardsOnTable.size - 1].position]
                         ?: error("!!!!!!!!")) + 1
-        val playerPosition = calculateWinnerTrick(cardsOnTable, bid)
+        val playerPosition = calculateWinnerTrick(cardsOnTable, bid.curColor())
         var master = false
         if ((mapPos.getValue(playerPosition) + myPos) % 2 == 0) {
             master = true    // partenaire maître
@@ -191,9 +191,8 @@ fun whatIsTheLastSignificantBid(allBids: List<Bid>):Bid {
  *  Fonction Gagnant
  */
 fun calculateWinnerTrick(cardsPlayed: List<CardPlayed>,
-                         bid: Bid): PlayerPosition {
+                         trump: CardColor): PlayerPosition {
     // Pour 1 à 4 cartes sur la table
-    val trump = bid.curColor()
 
     // Couleur de la 1ere carte
     val curColor = cardsPlayed[0].card.color
@@ -394,7 +393,7 @@ fun sumIfGeneraleOrCapot(sumBefore: Int,
         sum = 250
         var isGene = true
         for (trick in plis) {
-            if (calculateWinnerTrick(trick, bid) != posTaker) {
+            if (calculateWinnerTrick(trick, bid.curColor()) != posTaker) {
                 // pas de générale deso
                 isGene = false
                 break
