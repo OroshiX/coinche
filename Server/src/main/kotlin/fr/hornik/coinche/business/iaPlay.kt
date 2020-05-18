@@ -330,10 +330,10 @@ fun whatToPlay(myPosition: PlayerPosition,
     // Check where we are in terms of points :
     val currentScore = when (myPosition) {
         PlayerPosition.SOUTH,
-        PlayerPosition.NORTH -> calculateScoreGame(plisNS.toList().map { it.second }, plisEW.toList().map { it.second },
-                                                   myPosition,
+        PlayerPosition.NORTH -> calculateScoreTricks(plisNS.toList().map { it.second }, plisEW.toList().map { it.second },
+                                                   myPosition+1,
                                                    currBid).northSouth
-        else -> calculateScoreGame(plisNS.toList().map { it.second }, plisEW.toList().map { it.second }, myPosition,
+        else -> calculateScoreTricks(plisNS.toList().map { it.second }, plisEW.toList().map { it.second }, myPosition+1,
                                    currBid).eastWest
     }
     val missingPoints = currBid.curPoint() - currentScore
