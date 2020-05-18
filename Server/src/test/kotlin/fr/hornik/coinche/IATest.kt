@@ -1104,7 +1104,7 @@ Resultat : e has not any more S
 
 
     /*
-Name : Rule5b
+Name : Rule3b
 Atout : C
 Moi : n
 Mon jeu : [ 7 D , 13 H , 8 H , 8 D , 9 C , 11 H , 11 S ]
@@ -1116,7 +1116,7 @@ Resultat : e has not any more S
 */
 
     @Test
-    fun testRule5b() {
+    fun testRule3b() {
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
