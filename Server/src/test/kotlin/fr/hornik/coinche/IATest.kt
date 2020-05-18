@@ -1101,5 +1101,39 @@ Resultat : e has not any more S
     }
 
 
+
+
+    /*
+Name : Rule5b
+Atout : C
+Moi : n
+Mon jeu : [ 7 D , 13 H , 8 H , 8 D , 9 C , 11 H , 11 S ]
+Pli 1 : [ s 13 S , w 7 S , n 1 S , s 10 E ]
+Table : [ n 11 C , e 8 C ]
+Test : ____playColor ____
+Resultat : e has not any more S
+
+*/
+
+    @Test
+    fun testRule5b() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+        val atout=club
+        val myPosition=south
+        val myCards = listOf( Card( seven , diamond ) , Card( king , heart ) , Card( eight , heart ) , Card( eight , diamond ) , Card( nine , club ) , Card( jack , heart ) , Card( jack , spade ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( king , spade ) , position= south  ) ,CardPlayed(Card( seven , spade ) , position= west  ) ,CardPlayed(Card( ace , spade ) , position= north  ) ,CardPlayed(Card( ten , spade ) , position= east  ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( jack , club ) , position= north  ) ,CardPlayed(Card( eight , club ) , position= east  ) )
+        val result =                 playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                                                      myCards)
+/*Resultat : east has not any more spade */
+/* you need to check result here */
+        assert((result.size == 4) && !result[east]!! && result[west]!! && result[north]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS  for Spade :$result ")    }
+
 }
 

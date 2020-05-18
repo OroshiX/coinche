@@ -125,8 +125,8 @@ fun fR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, p
     //R3  - if player X played a 10 or 1 King of color C and master card was in the trick belonging to an opponent X has no more color C
     if ((currentMaster != null) && (nextMaster != null)) {
         // somebody put the master on the table
-        if (pli.any { it.card.value == currentMaster && it.card.color == color }) {
 
+        if (pli.any { it.card.value == currentMaster && it.card.color == color }) {
             // it was not the last card of the trick
             val nb = pli.indexOf(pli.first { it.card.value == currentMaster && it.card.color == color })
 

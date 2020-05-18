@@ -1,0 +1,8 @@
+Name : Rule5b
+Atout : C 
+Moi : n 
+Mon jeu : [ 7 D , 13 H , 8 H , 8 D , 9 C , 11 H , 11 S ]
+Pli 1 : [ s 13 S , w 7 S , n 1 S , s 10 E ]
+Table : [ n 11 C , e 8 C ]
+Test : ____playColor ____
+Resultat : e has not any more S 
