@@ -31,6 +31,7 @@ Note : Upper case and lowercase are important to respect as well as space betwee
 
 Atout : S 
 Moi : s 
+Bid : s 80 S 
 Mon jeu : [ 7 S , 1 H , 12 H , 13 D , 1 D ]
 Pli 1 : [ n 11 S , e 8 S , s 12 S , w 7 C ]
 Pli 2 : [ n 9 C , e 1 C , s 7 C , w 10 C ]
@@ -62,9 +63,11 @@ $name
 	val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
 	var nb=0
+
 !
 
 cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
+	     -e "s/^.*Bid *: * \([SHDC]\) \([0-9][0-9]*\) \([news] \)$/val bid = SimpleBid(\1,\2,\3) /"\
 	     -e "s/ \([1789][0-3]*\) \([SCDH]\) / Card( \1 , \2 ) /g"\
 	     -e "s/ S / spade /g" \
 	     -e "s/ C / club /g" \
@@ -79,22 +82,34 @@ cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
 	     -e "s/ 13 / king /g" \
 	     -e "s/ 1 / ace /g" \
 	     -e "s/\( [news] \)\([^)]*)\)/CardPlayed(\2 , position=\1 )/g"\
+	     -e "/SimpleBid/s/Bid(\([HCDS]\)\(..*\)\([news]\)/Bid( \1 \2 \3 )™val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south)/"\
+	     -e "s/ S / spade /g" \
+	     -e "s/ C / club /g" \
+	     -e "s/ H / heart /g" \
+	     -e "s/ D / diamond /g" \
 	     -e "s/ n / north /g" \
 	     -e "s/ e / east /g" \
 	     -e "s/ w / west /g" \
 	     -e "s/ s / south /g" \
 	     -e "s/Atout : /val atout=/"\
 	     -e "s/Moi : /val myPosition=/"\
-	     -e "s/Mon jeu : \[/val myCards = listOf(/"\
+	     -e "s/Mon jeu : \[/val myCards = mutableListOf(/"\
 	     -e "s/Table : \[/val onTable :List<CardPlayed> = listOf(/"\
+	     -e "/onTable/s/$/™validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)/"\
 	     -e "s/\]/)/g"\
 	     -e "s/\+\+)/\+\+\]/" \
-	     -e "s/\(Resultat.*$\)/\/*\1*\//g"\
-	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/" | egrep -v "^.*Name :.*"
+	     -e "s/\(Resultat.*$\)/                   \/*\1*\//g"\
+	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/" | egrep -v "^.*Name :.*" |  tr "™" "\012"
 
 cat <<!
-/* you need to check result here */
+			/* it could be         val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW) */
+
+	               	/* you need to check result here */
+
+traceLevel = oldTraceLevel
 assert(TODO()) { "\$nameTest FAIL \$result is not accurate" }
+debugPrintln(dbgLevel.REGULAR,"\$nameTest:PASS  we play  :\$result ")
+
 }
 
 

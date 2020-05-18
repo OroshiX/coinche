@@ -1,8 +1,9 @@
-Name : defausseAce
+Name : defausseDiamondAce
 Atout : C 
+Bid : C 100 w 
 Moi : e 
 Mon jeu : [ 1 D , 10 H , 13 H , 7 H , 9 H , 8 H ]
-Pli 1 : [ w 11 C , n 9 C , e 1 S , s 10 C ]
+Pli 1 : [ w 11 C , n 9 C , e 1 C , s 10 C ]
 Pli 2 : [ w 1 S , n 10 S , e 1 H , s 13 S ]
 Table : [ w 13 C , n 7 D ]
 Test : e , whatToPlay
