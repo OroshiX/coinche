@@ -1,35 +1,10 @@
 <ng-container *ngIf="card">
   <div class="mini-card">
-    <span [ngClass]="isBlack===false?'labelCardRed':'labelCardBlack'"><strong>{{cardLabel}}</strong>
+    <span [ngClass]="isBlack===false?'labelCardRed':'labelCardBlack'"><strong>{{cardLabelEmoji}}</strong>
     </span>
-    <span>{{emoji}}</span>
+    <!--<span>{{emoji}}</span>-->
   </div>
 </ng-container>
-<!--<div [ngSwitch]="card?.color">
-  <ng-container *ngSwitchCase="'CLUB'">
-    <div class="mini-card">
-      <span class="labelCardBlack"><strong>{{cardLabel}}</strong></span>
-      <span class="labelCardBlack">&clubs;</span>
-    </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="'DIAMOND'">
-    <div class="mini-card">
-      <span class="labelCardRed"><strong>{{cardLabel}}</strong></span>
-      <span class="labelCardRed">&diams;</span>
-    </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="'SPADE'">
-    <div class="mini-card">
-      <span class="labelCardBlack"><strong>{{cardLabel}}</strong></span>
-      <span class="labelCardBlack">&spades;</span>
-    </div>
-  </ng-container>
-  <ng-container *ngSwitchCase="'HEART'">
-    <div class="mini-card">
-      <span class="labelCardRed"><strong>{{cardLabel}}</strong></span>
-      <span class="labelCardRed">&hearts;</span>
-    </div>
-  </ng-container>
-</div>-->
+
 
 
