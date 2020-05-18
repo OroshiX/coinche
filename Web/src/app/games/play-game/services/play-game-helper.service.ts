@@ -114,7 +114,7 @@ export class PlayGameHelperService {
       label = ['ACE', 'KING', 'QUEEN', 'JACK'].includes(tmp1) ? tmp1.charAt(0) : card?.value.toString();
 
       const emojiBelote = ' 👸🏻';
-      const emojiRebelote = ' 👸🏻🤴🏻';
+      const emojiRebelote = ' 🤴🏻';
       const emojiClub = ' ♣️';
       const emojiDiam = ' ♦️';
       const emojiSpade = ' ♠️';
