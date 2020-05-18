@@ -1133,7 +1133,36 @@ Resultat : e has not any more S
 /* you need to check result here */
         assert((result.size == 4) && !result[east]!! && result[west]!! && result[north]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
         debugPrintln(dbgLevel.REGULAR,
-                     "$nameTest:PASS  for Spade :$result ")    }
+                     "$nameTest:PASS  for Spade :$result ")
+    }
+
+
+
+    @Test
+    fun testdefausseAce() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+        val atout=club
+        val myPosition=east
+        // whatTo Play needs to have playable field set for playable cards !!!! or we should call isValidCard using onTable
+        val myCards = listOf( Card( ace , diamond ,true) , Card( ten , heart ,true) , Card( king , heart ,true) , Card( seven , heart ,true) , Card( nine , heart ,true) , Card( eight , heart ,true) )
+        plisEW[nb++] = listOf(CardPlayed(Card( jack , club ) , position= west  ) ,CardPlayed(Card( nine , club ) , position= north  ) ,CardPlayed(Card( ace , club ) , position= east  ) ,CardPlayed(Card( ten , club ) , position= south  ) )
+        plisEW[nb++] = listOf(CardPlayed(Card( ace , spade ) , position= west  ) ,CardPlayed(Card( ten , spade ) , position= north  ) ,CardPlayed(Card( ace , heart ) , position= east  ) ,CardPlayed(Card( king , spade ) , position= south  ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( king , club ) , position= west  ) ,CardPlayed(Card( seven , spade ) , position= north  ) )
+        val prevBid = SimpleBid(heart, 80, east)
+        val partnerBid = SimpleBid(club, 100, west)
+        val listBids: MutableList<Bid> = mutableListOf(prevBid, Pass(south),partnerBid, Pass(north), Pass(east), Pass(south))
+
+        val result = whatToPlay(myPosition, myCards.toMutableList(), listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+/*Resultat : ace of diamond should be played since we bid Card( 100 , spade ) */
+/* you need to check result here */
+        assert(result != null && result.color == diamond && result.value == ace ) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,
+                     "$nameTest:PASS  we play  :$result ")
+    }
 
 }
 
