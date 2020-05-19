@@ -1,0 +1,8 @@
+Name : annonce130Club
+Atout : C 
+Bid : C 100 w 
+Moi : e 
+Mon jeu : [ 1 D , 10 D , 1 H , 10 H , 11 H , 12 S , 13 S , 13 C ]
+Table : [ n 7 C ] 
+Test : e , whatToAnnonce
+Resultat : e should annonce 130 C 

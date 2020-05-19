@@ -103,6 +103,8 @@ cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
 
 cat <<!
 			// val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW) 
+			// val result = IARun.enchere(myPosition, listBids, myCards, 0)
+
 
 	               	/* you need to check result here */
 

@@ -1345,4 +1345,87 @@ Resultat : 1 of S should be played
         debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
 
     }
+
+
+
+    /*
+ Name : annonce100Club
+ Atout : C
+ Bid : S 80 n
+ Moi : e
+ Mon jeu : [ 7 H , 13 H , 11 C , 7 C , 8 C , 12 C , 10 C , 11 D ]
+ Table : [ n 7 C ]
+ Test : e , whatToAnnonce
+ Resultat : e should annonce 100 C
+
+ */
+
+    @Test
+    fun testannonce100Club() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=club
+        val bid = SimpleBid( spade ,80, north )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myPosition=east
+        val myCards = mutableListOf( Card( seven , heart ) , Card( king , heart ) , Card( jack , club ) , Card( seven , club ) , Card( eight , club ) , Card( queen , club ) , Card( ten , club ) , Card( jack , diamond ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , club ) , position= north  ) )
+        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        /* Resultat :CardPlayed(should annonce Card( 100 , club ) , position= east  )  */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+        val result = IARun.enchere(myPosition, listBids, myCards, 0)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result.curColor() == club && result.curPoint() == 100 ) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    /*
+Name : annonce130Club
+Atout : C
+Bid : C 100 w
+Moi : e
+Mon jeu : [ 1 D , 10 D , 1 H , 10 H , 11 H , 12 S , 13 S , 13 C ]
+Table : [ n 7 C ]
+Test : e , whatToAnnonce
+Resultat : e should annonce 130 C
+
+*/
+
+    @Test
+    fun testannonce130Club() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=club
+        val bid = SimpleBid( club ,100, west )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myPosition=east
+        val myCards = mutableListOf( Card( ace , diamond ) , Card( ten , diamond ) , Card( ace , heart ) , Card( ten , heart ) , Card( jack , heart ) , Card( queen , spade ) , Card( king , spade ) , Card( king , club ) )
+        /* Resultat :CardPlayed(should annonce Card( 130 , club ) , position= east  )  */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+        val result = IARun.enchere(myPosition, listBids, myCards, 0)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result.curPoint() == 130 && result.curColor() == club) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+    }
+
+
 }
