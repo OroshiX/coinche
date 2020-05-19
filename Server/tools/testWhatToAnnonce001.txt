@@ -1,0 +1,8 @@
+Name : annonce100Club
+Atout : C 
+Bid : S 80 n 
+Moi : e 
+Mon jeu : [ 7 H , 13 H , 11 C , 7 C , 8 C , 12 C , 10 C , 11 D ]
+Table : [ n 7 C ] 
+Test : e , whatToAnnonce
+Resultat : e should annonce 100 C 
