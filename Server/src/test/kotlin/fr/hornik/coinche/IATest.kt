@@ -1228,4 +1228,121 @@ Resultat : 1 of D should be played since we bid 100 S
     }
 
 
+    /*
+Name : playKingNotQueenHeart
+Atout : C
+Bid : C 90 w
+Moi : e
+Mon jeu : [ 12 H , 13 H , 9 D , 8 D , 8 C , 11 S , 9 S , 7 S ]
+Pli 1 : [  ]
+Table : [ s 7 H , w 9 H , n 8 H ]
+Test : e , whatToPlay
+Resultat : 12 of H should be played and not 13 of H
+
+*/
+
+    @Test
+    fun testplayKingNotQueenHeart() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=club
+        val bid = SimpleBid( club ,90, west )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myPosition=east
+        val myCards = mutableListOf( Card( queen , heart ) , Card( king , heart ) , Card( nine , diamond ) , Card( eight , diamond ) , Card( eight , club ) , Card( jack , spade ) , Card( nine , spade ) , Card( seven , spade ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , heart ) , position= south  ) ,CardPlayed(Card( nine , heart ) , position= west  ) ,CardPlayed(Card( eight , heart ) , position= north  ) )
+        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        /*Resultat : queen of heart should be played and not king of heart */
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result != null && result.color == heart && result.value == king) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    /*
+Name : playKingTenNotQueenClub
+Atout : C
+Bid : C 90 w
+Moi : e
+Mon jeu : [ 12 C , 13 C , 10 C , 9 C , 8 H , 11 S , 9 S , 7 S ]
+Pli 1 : [  ]
+Table : [ s 7 C , w 8 C , n 7 S ]
+Test : e , whatToPlay
+Resultat : 12 of C or 10 of C should be played and not 12 of C
+
+*/
+
+    @Test
+    fun testplayTenNotQueenClub() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=club
+        val bid = SimpleBid( club ,90, west )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myPosition=east
+        val myCards = mutableListOf( Card( queen , club ) , Card( king , club ) , Card( ten , club ) , Card( nine , club ) , Card( eight , heart ) , Card( jack , spade ) , Card( nine , spade ) , Card( seven , spade ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , club ) , position= south  ) ,CardPlayed(Card( eight , club ) , position= west  ) ,CardPlayed(Card( seven , spade ) , position= north  ) )
+        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        /* Resultat : ten of club should be played and not queen of club */
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result != null && result.color == club && result.value == ten) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    /*
+Name : playDefausseAceofSpade
+Atout : C
+Bid : C 90 w
+Moi : e
+Mon jeu : [ 1 D , 10 H , 1 H , 1 S , 10 S , 13 S , 9 S ]
+Table : [ w 11 C , n 12 C ]
+Test : e , whatToPlay
+Resultat : 1 of S should be played
+
+*/
+
+    @Test
+    fun testplayDefausseAceofSpade() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=club
+        val bid = SimpleBid( club ,90, west )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myPosition=east
+        val myCards = mutableListOf( Card( ace , diamond ) , Card( ten , heart ) , Card( ace , heart ) , Card( ace , spade ) , Card( ten , spade ) , Card( king , spade ) , Card( nine , spade ) )
+        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( jack , club ) , position= west  ) ,CardPlayed(Card( queen , club ) , position= north  ) )
+        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        /* Resultat : ace of spade should be played  */
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result != null && result.value == ace && result.color == spade) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+    }
 }

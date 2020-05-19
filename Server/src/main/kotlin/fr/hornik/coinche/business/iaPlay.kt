@@ -818,7 +818,26 @@ fun nthToPlay(myPosition: PlayerPosition,
         /*
              else I play the lowest trump allowed ( I choose my cards in the playable cards anyway.
          */
-        aCard = myPlayableCards.minBy { it.value.dominanceAtout }!!
+
+        if (onTable.size == 3) {
+            // if we are last to play , lets save some points since it is the same to play Ace or 9 for example
+            //TODO take into account cards already played in the for loop - perhaps too complex to program compared to value added ?
+            val onTableHypothetic = onTable.toMutableList()
+            val listCandidates = myPlayableCards.sortedBy { it.value.dominanceAtout }
+
+            aCard = listCandidates.first()
+            onTableHypothetic.add(CardPlayed(aCard, position = myPosition))
+            val iWillWinTheTrick = calculateWinnerTrick(onTableHypothetic, atout) == myPosition
+            if (iWillWinTheTrick) {
+                for (myCard in listCandidates) {
+                    if ((myCard.value.dominanceAtout - aCard!!.value.dominanceAtout) == 1) {
+                        aCard = myCard
+                    }
+                }
+            }
+        } else {
+            aCard = myPlayableCards.minBy { it.value.dominanceAtout }!!
+        }
         debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard which is probably the strongest card")
 
         return aCard
@@ -875,8 +894,25 @@ fun nthToPlay(myPosition: PlayerPosition,
                         myPlayableCards.sortedByDescending { it.value.dominanceCouleur }[index]
                     }
                     else -> {
-                        myPlayableCards.minBy { it.value.dominanceCouleur }!!
+                        // check if we wil win the trick
+                        // if yes, then for 2 consecutive cards we would choose to play, choose the bigger
+                        val onTableHypothetic = onTable.toMutableList()
+                        val listCandidates = myPlayableCards.sortedBy { it.value.dominanceCouleur }
+
+                        var minMyCardsPlayable = listCandidates.first()
+                        onTableHypothetic.add(CardPlayed(minMyCardsPlayable, position = myPosition))
+                        val iWillWinTheTrick = calculateWinnerTrick(onTableHypothetic, atout) == myPosition
+                        if (iWillWinTheTrick) {
+                            for (myCard in listCandidates) {
+                                if ((myCard.value.dominanceCouleur - minMyCardsPlayable.value.dominanceCouleur) == 1) {
+                                    minMyCardsPlayable = myCard
+                                }
+                            }
+                        }
+                        minMyCardsPlayable
+
                     }
+
                 }
             }
             2 -> {
@@ -994,17 +1030,15 @@ fun nthToPlay(myPosition: PlayerPosition,
     }
 
     val listColorWithTenAndNoAces = CardColor.values().filter { color ->
-        myPlayableCards.filter { e -> e.color == color && e.value != CardValue.ACE }
-                .any { it.value == CardValue.TEN }
-    }
-    val listColor2CardsInMyHandsTenNoAce = listColorWithTenAndNoAces.map { color ->
-        Pair(color, myPlayableCards.filter { it.color == color }.size)
-    }.toMap().toList().filter { e -> e.second == 2 }.map { it.first }
+        myPlayableCards.none { e -> e.color == color && e.value == CardValue.ACE } && myPlayableCards.any { e -> e.color == color && e.value == CardValue.TEN }
 
+    }
+    val listColor2CardsInMyHandsTenNoAce =
+            listColorWithTenAndNoAces.filter { color -> myPlayableCards.filter { it.color == color }.size == 2 }
 
     val listMyCardsColorWithAceNoTen = CardColor.values().filter { color ->
-        myPlayableCards.filter { e -> e.color == color && e.value != CardValue.TEN }
-                .any { it.value == CardValue.ACE }
+        myPlayableCards.none { e -> e.color == color && e.value == CardValue.TEN } && myPlayableCards.any { e -> e.color == color && e.value == CardValue.ACE }
+
     }
     val mapColorMin2CardsInMyHandsAmongAce = listMyCardsColorWithAceNoTen.map { color ->
         Pair(color, myPlayableCards.filter { it.color == color }.size)
@@ -1182,9 +1216,11 @@ fun defausse(onTable: List<CardPlayed>,
         if (partnerAbsolute) {
             // We have an Ace + ten, we give the Ace
             if (aceAndTenInAColor.isNotEmpty()) {
+                val mapColorMyPlayableCardSize = CardColor.values().map {Pair (it, myPlayableCards.filter{e->e.color == it}.size)}.toMap()
+                val selectedColor = aceAndTenInAColor.maxBy { e -> mapColorMyPlayableCardSize[e]!! }
                 aCard =
                         myPlayableCards.first { e ->
-                            aceAndTenInAColor.contains(e.color) and (e.value == CardValue.ACE)
+                            selectedColor == e.color && e.value == CardValue.ACE
                         }
                 return aCard
             }

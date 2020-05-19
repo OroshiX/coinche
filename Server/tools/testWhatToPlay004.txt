@@ -1,0 +1,8 @@
+Name : playDefausseAceofSpade
+Atout : C 
+Bid : C 90 w 
+Moi : e 
+Mon jeu : [ 1 D , 10 H , 1 H , 1 S , 10 S , 13 S , 9 S ]
+Table : [ w 11 C , n 12 C ]
+Test : e , whatToPlay
+Resultat : 1 of S should be played 

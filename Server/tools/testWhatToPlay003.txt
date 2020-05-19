@@ -1,0 +1,8 @@
+Name : playKingTenNotQueenClub
+Atout : C 
+Bid : C 90 w 
+Moi : e 
+Mon jeu : [ 12 C , 13 C , 10 C , 9 C , 8 H , 11 S , 9 S , 7 S ]
+Table : [ s 7 C , w 8 C , n 7 S ]
+Test : e , whatToPlay
+Resultat :  10 of C should be played and not 12 of C 

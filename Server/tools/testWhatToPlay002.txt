@@ -1,0 +1,9 @@
+Name : playKingNotQueenHeart
+Atout : C 
+Bid : C 90 w 
+Moi : e 
+Mon jeu : [ 12 H , 13 H , 9 D , 8 D , 8 C , 11 S , 9 S , 7 S ]
+Pli 1 : [  ]
+Table : [ s 7 H , w 9 H , n 8 H ]
+Test : e , whatToPlay
+Resultat : 12 of H should be played and not 13 of H 

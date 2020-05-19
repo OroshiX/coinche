@@ -98,11 +98,11 @@ cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
 	     -e "/onTable/s/$/™validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)/"\
 	     -e "s/\]/)/g"\
 	     -e "s/\+\+)/\+\+\]/" \
-	     -e "s/\(Resultat.*$\)/                   \/*\1*\//g"\
+	     -e "s/\(Resultat.*$\)/                   \/* \1 *\//g"\
 	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/" | egrep -v "^.*Name :.*" |  tr "™" "\012"
 
 cat <<!
-			/* it could be         val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW) */
+			// val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW) 
 
 	               	/* you need to check result here */
 
