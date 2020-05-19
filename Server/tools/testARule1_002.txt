@@ -1,0 +1,9 @@
+Name : RuleA1_002
+Atout : H 
+Bid :  H 80 w 
+Moi : s 
+Mon jeu : [ 7 H ]
+Pli 1 : [   ]
+Table : [ w 1 C , n 7 D , e 8 S ]
+Test : ____playColor ____ check n and s have no C 
+Resultat : n and s have  not any more C 

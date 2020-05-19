@@ -94,16 +94,19 @@ cat $1 | sed -e "s/Pli .* :.*\[/plisNS\[nb++\] = listOf(/"\
 	     -e "s/Atout : /val atout=/"\
 	     -e "s/Moi : /val myPosition=/"\
 	     -e "s/Mon jeu : \[/val myCards = mutableListOf(/"\
-	     -e "s/Table : \[/val onTable :List<CardPlayed> = listOf(/"\
+	     -e "s/Table : \[/val onTable :MutableList<CardPlayed> = mutableListOf(/"\
 	     -e "/onTable/s/$/™validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)/"\
+	     -e "/onTable/s/$/™val nbPlis = plisEW.size + plisNS.size™var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()™if (onTable.isNotEmpty()) {™currentPli = listOf(Pair(nbPlis, onTable)).toMap()™}™val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }™/"\
 	     -e "s/\]/)/g"\
 	     -e "s/\+\+)/\+\+\]/" \
 	     -e "s/\(Resultat.*$\)/                   \/* \1 *\//g"\
 	     -e "s/\(Test.*$\)/val result = TODO(\"\1\")/" | egrep -v "^.*Name :.*" |  tr "™" "\012"
 
 cat <<!
-			// val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW) 
+			// val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW) 
 			// val result = IARun.enchere(myPosition, listBids, myCards, 0)
+			// val result = playersHaveColor(club, atout, allCardPli, myPosition, myCards)
+
 
 
 	               	/* you need to check result here */

@@ -1,0 +1,10 @@
+Name : RuleA1_003
+Atout : S 
+Bid :  S 80 w 
+Moi : s 
+Mon jeu : [ 7 H ]
+Pli 1 : [ w 10 D , n 1 D , e 9 C , s 8 D  ]
+Table : [  ]
+Test : ____playColor ____ check e has no D 
+Resultat : e has not any more D 
+
