@@ -79,7 +79,7 @@ Atout :
 
 
 //Rule 1 - valid color and Atout
-fun fR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
+fun cR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
         pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
     //R1 - For a color C, if it was the first color of the trick and a player X played a different color
     //     it means that X is missing C
@@ -94,7 +94,7 @@ fun fR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, p
 
 
 //Rule 2 - valid color and Atout
-fun fR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, listPlis: List<List<CardPlayed>>,
+fun cR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, listPlis: List<List<CardPlayed>>,
         cardsInHand: List<Card>)
         : MutableMap<PlayerPosition, Boolean> {
 
@@ -118,8 +118,8 @@ fun fR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, l
 // N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
 
 
-// Rule 3 only valid for color
-fun fR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
+// Rule 3 only valid for color - Heuristic
+fun cR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
         currentMaster: CardValue?, nextMaster: CardValue?,
         winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
     //R3  - if player X played a 10 or 1 King of color C and master card was in the trick belonging to an opponent X has no more color C
@@ -166,7 +166,7 @@ fun fR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, p
      had put before, in the same trick a trump, and this trump was the stronger at this point
      then : we consider that player X has no more C
  */
-fun fR5(color: CardColor, atout: CardColor,
+fun cR5(color: CardColor, atout: CardColor,
         allPlayerColor: MutableMap<PlayerPosition, Boolean>,
         pli: List<CardPlayed>,
         pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
@@ -209,6 +209,37 @@ fun fR5(color: CardColor, atout: CardColor,
     return allPlayerColor
 }
 
+/*
+    Rule 1 Trump
+        if player X did not play Trump when atout was requested or if he played a different color from requested, but not trump when partner was not master
+         then player has not more trump
+
+ */
+fun aR1(atout: CardColor,
+        allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+        pli: List<CardPlayed>,
+        pliColor: CardColor,
+        winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
+
+    pli.filter { it.card.color != pliColor && it.card.color != atout }.forEach { card ->
+        when (pli.indexOf(card)) {
+            // partner play after , player did not play trump it means that he doesn't have trump
+            1 -> allPlayerColor[card.position] = false
+            // check that partner was not
+            3 -> if ((winnerTrick != card.position + 2) || (pliColor == atout)) {
+                allPlayerColor[card.position] = false
+            }
+            2 -> if ((pliColor == atout) ||
+                     (pli[1].card.color == atout) ||
+                     ((pli[1].card.color == pliColor) && (pli[1].card.value.dominanceCouleur > pli[0].card.value.dominanceCouleur))) {
+                allPlayerColor[card.position] = false
+            }
+        }
+    }
+
+    return allPlayerColor
+}
+
 fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<CardPlayed>>, myPosition: PlayerPosition,
                      cardsInHand: List<Card>): Map<PlayerPosition, Boolean> {
 
@@ -220,13 +251,13 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
     val rR3 = (color != atout)
     val rR4 = (color != atout)
     val rR5 = (color != atout)
-    val rR6 = (color != atout)
-    val rR7 = (color != atout)
+    val tR1 = (color == atout)
+    val tR2 = (color == atout)
 
 
     // R2 - If all cards ( including mine) of color C were played, than all X player are missing the color
     if (rR2) {
-        allPlayerColor = fR2(color, allPlayerColor, listPlis, cardsInHand)
+        allPlayerColor = cR2(color, allPlayerColor, listPlis, cardsInHand)
     }
 
     // Now we use heuristic rules ( not 100% right but good enough to play using this "a priori"
@@ -263,16 +294,17 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
         val winnerTrick = calculateWinnerTrick(pli, atout)
         val pliColor = pli.first().card.color
         if (rR1) {
-            allPlayerColor = fR1(color, allPlayerColor, pli, pliColor)
+            allPlayerColor = cR1(color, allPlayerColor, pli, pliColor)
         }
         if (rR3) {
-            allPlayerColor = fR3(color, allPlayerColor, pli, master, nextMaster, winnerTrick)
+            allPlayerColor = cR3(color, allPlayerColor, pli, master, nextMaster, winnerTrick)
         }
         if (rR5) {
-            allPlayerColor = fR5(color, atout, allPlayerColor, pli, pliColor)
+            allPlayerColor = cR5(color, atout, allPlayerColor, pli, pliColor)
         }
-
-
+        if (tR1) {
+            aR1(atout, allPlayerColor, pli, pliColor, winnerTrick)
+        }
         // the card was played , it's not anymore a master card
 
         pli.filter { it.card.color == color }.forEach { e -> presenceInGameCardValue[e.card.value] = false }
