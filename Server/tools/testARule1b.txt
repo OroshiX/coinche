@@ -1,4 +1,4 @@
-Name : RuleA1_003
+Fonction : RuleA1_003
 Atout : S 
 Bid :  S 80 w 
 Moi : s 

@@ -1,4 +1,4 @@
-Name : playAtoutCase003
+Fonction : playAtoutCase003
 Atout : S 
 Moi : s 
 Mon jeu : [ 7 S , 1 H , 12 H , 13 D , 1 D ]

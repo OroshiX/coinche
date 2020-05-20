@@ -1,4 +1,4 @@
-Name : defausseDiamondAce
+Fonction : defausseDiamondAce
 Atout : C 
 Bid : C 100 w 
 Moi : e 

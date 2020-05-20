@@ -1,4 +1,4 @@
-Name : playKingNotQueenHeart
+Fonction : playKingNotQueenHeart
 Atout : C 
 Bid : C 90 w 
 Moi : e 

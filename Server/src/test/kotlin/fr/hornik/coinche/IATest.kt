@@ -1245,6 +1245,8 @@ Resultat : 12 of H should be played and not 13 of H
     fun testplayKingNotQueenHeart() {
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
+        traceLevel = dbgLevel.ALL
+
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb=0
@@ -1605,6 +1607,7 @@ Resultat : e has not any more D
     fun testRuleA1_004() {
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
+       // traceLevel = dbgLevel.ALL
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb=0
@@ -1642,9 +1645,7 @@ Resultat : e has not any more D
 
     }
 
-
-
-
+    
 
 
 

@@ -1,5 +1,7 @@
 package fr.hornik.coinche.util
 
+import java.time.LocalDateTime
+
 enum class dbgLevel(val value: Int) {
     NONE(0), DEBUG(1), FUNCTION(2), LOGIN(4), HTML(8), HTMLFUNC(10), MISC(16), REGULAR(32), ALL (63);
 
@@ -26,13 +28,14 @@ fun debugPrintln(wantedLevel: dbgLevel, Str: Any) {
         dbgLevel.LOGIN -> "Score Traces"
         dbgLevel.HTML -> "HTML Traces"
         dbgLevel.MISC -> "MISC Traces"
-        dbgLevel.REGULAR -> "Generic Traces"
+        dbgLevel.REGULAR -> "Coinche"
         else -> "Other Traces"
 
         // Wantedlevel cannot be a combination of levels ( e.g. ALL pr HTMLFUNC)
     }
+    val currentTime = LocalDateTime.now()
     if ((wantedLevel and traceLevel) != 0) {
-        println("$addtlTraces : $wantedLevel : $Str")
+        println("[$currentTime] $addtlTraces : $Str")
     }
 
 

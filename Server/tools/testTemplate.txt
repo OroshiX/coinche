@@ -1,3 +1,10 @@
+
+
+//
+// Any comment
+// probably better to avoid any code used by the test generator 
+//
+ 
 Fonction : RuleA1_004
 Atout : C 
 Bid :  C 80 w 

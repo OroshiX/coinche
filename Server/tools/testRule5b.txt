@@ -1,4 +1,4 @@
-Name : Rule5b
+Fonction : Rule5b
 Atout : C 
 Moi : n 
 Mon jeu : [ 7 D , 13 H , 8 H , 8 D , 9 C , 11 H , 11 S ]

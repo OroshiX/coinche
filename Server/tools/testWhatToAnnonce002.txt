@@ -1,4 +1,4 @@
-Name : annonce130Club
+Fonction : annonce130Club
 Atout : C 
 Bid : C 100 w 
 Moi : e 

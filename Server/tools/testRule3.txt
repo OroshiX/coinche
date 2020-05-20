@@ -1,4 +1,4 @@
-Name : testRule3
+Fonction : testRule3
 Atout : C 
 Moi : s 
 Mon jeu : [ 7 H , 13 H , 10 H , 12 C , 13 C , 9 D ]
