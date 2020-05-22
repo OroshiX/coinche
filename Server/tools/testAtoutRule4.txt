@@ -1,0 +1,12 @@
+
+Atout : H 
+Fonction : testAtoutRule4
+Moi : s 
+Bid : H 80 w 
+Mon jeu : [ 7 S ]
+Pli  1 : [ w 1 H , n 7 H , e 10 H , s 8 H ]
+Table : [  ]
+Test : call playersHaveColors and check rules R4 Atout
+Resultat : : s and e have no trump H  
+
+

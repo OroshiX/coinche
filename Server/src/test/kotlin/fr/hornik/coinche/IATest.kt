@@ -1177,7 +1177,6 @@ Resultat : e has not any more S
     }
 
 
-
     /*
 Name : defausseDiamondAce
 Atout : C
@@ -1249,15 +1248,19 @@ Resultat : 12 of H should be played and not 13 of H
 
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( club ,90, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=east
-        val myCards = mutableListOf( Card( queen , heart ) , Card( king , heart ) , Card( nine , diamond ) , Card( eight , diamond ) , Card( eight , club ) , Card( jack , spade ) , Card( nine , spade ) , Card( seven , spade ) )
-        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , heart ) , position= south  ) ,CardPlayed(Card( nine , heart ) , position= west  ) ,CardPlayed(Card( eight , heart ) , position= north  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = club
+        val bid = SimpleBid(club, 90, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = east
+        val myCards = mutableListOf(Card(queen, heart), Card(king, heart), Card(nine, diamond), Card(eight, diamond),
+                                    Card(eight, club), Card(jack, spade), Card(nine, spade), Card(seven, spade))
+        val onTable: List<CardPlayed> =
+                listOf(CardPlayed(Card(seven, heart), position = south), CardPlayed(Card(nine, heart), position = west),
+                       CardPlayed(Card(eight, heart), position = north))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         /*Resultat : queen of heart should be played and not king of heart */
         val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
 
@@ -1265,7 +1268,7 @@ Resultat : 12 of H should be played and not 13 of H
 
         traceLevel = oldTraceLevel
         assert(result != null && result.color == heart && result.value == king) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1289,15 +1292,19 @@ Resultat : 12 of C or 10 of C should be played and not 12 of C
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( club ,90, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=east
-        val myCards = mutableListOf( Card( queen , club ) , Card( king , club ) , Card( ten , club ) , Card( nine , club ) , Card( eight , heart ) , Card( jack , spade ) , Card( nine , spade ) , Card( seven , spade ) )
-        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , club ) , position= south  ) ,CardPlayed(Card( eight , club ) , position= west  ) ,CardPlayed(Card( seven , spade ) , position= north  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = club
+        val bid = SimpleBid(club, 90, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = east
+        val myCards = mutableListOf(Card(queen, club), Card(king, club), Card(ten, club), Card(nine, club),
+                                    Card(eight, heart), Card(jack, spade), Card(nine, spade), Card(seven, spade))
+        val onTable: List<CardPlayed> =
+                listOf(CardPlayed(Card(seven, club), position = south), CardPlayed(Card(eight, club), position = west),
+                       CardPlayed(Card(seven, spade), position = north))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         /* Resultat : ten of club should be played and not queen of club */
         val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
 
@@ -1305,7 +1312,7 @@ Resultat : 12 of C or 10 of C should be played and not 12 of C
 
         traceLevel = oldTraceLevel
         assert(result != null && result.color == club && result.value == ten) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1328,15 +1335,18 @@ Resultat : 1 of S should be played
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( club ,90, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=east
-        val myCards = mutableListOf( Card( ace , diamond ) , Card( ten , heart ) , Card( ace , heart ) , Card( ace , spade ) , Card( ten , spade ) , Card( king , spade ) , Card( nine , spade ) )
-        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( jack , club ) , position= west  ) ,CardPlayed(Card( queen , club ) , position= north  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = club
+        val bid = SimpleBid(club, 90, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = east
+        val myCards = mutableListOf(Card(ace, diamond), Card(ten, heart), Card(ace, heart), Card(ace, spade),
+                                    Card(ten, spade), Card(king, spade), Card(nine, spade))
+        val onTable: List<CardPlayed> =
+                listOf(CardPlayed(Card(jack, club), position = west), CardPlayed(Card(queen, club), position = north))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         /* Resultat : ace of spade should be played  */
         val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
 
@@ -1344,10 +1354,9 @@ Resultat : 1 of S should be played
 
         traceLevel = oldTraceLevel
         assert(result != null && result.value == ace && result.color == spade) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
-
 
 
     /*
@@ -1368,15 +1377,17 @@ Resultat : 1 of S should be played
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( spade ,80, north )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=east
-        val myCards = mutableListOf( Card( seven , heart ) , Card( king , heart ) , Card( jack , club ) , Card( seven , club ) , Card( eight , club ) , Card( queen , club ) , Card( ten , club ) , Card( jack , diamond ) )
-        val onTable :List<CardPlayed> = listOf(CardPlayed(Card( seven , club ) , position= north  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = club
+        val bid = SimpleBid(spade, 80, north)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = east
+        val myCards = mutableListOf(Card(seven, heart), Card(king, heart), Card(jack, club), Card(seven, club),
+                                    Card(eight, club), Card(queen, club), Card(ten, club), Card(jack, diamond))
+        val onTable: List<CardPlayed> = listOf(CardPlayed(Card(seven, club), position = north))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         /* Resultat :CardPlayed(should annonce Card( 100 , club ) , position= east  )  */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
         val result = IARun.enchere(myPosition, listBids, myCards, 0)
@@ -1385,8 +1396,8 @@ Resultat : 1 of S should be played
         /* you need to check result here */
 
         traceLevel = oldTraceLevel
-        assert(result.curColor() == club && result.curPoint() == 100 ) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        assert(result.curColor() == club && result.curPoint() == 100) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1409,13 +1420,14 @@ Resultat : e should annonce 130 C
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( club ,100, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=east
-        val myCards = mutableListOf( Card( ace , diamond ) , Card( ten , diamond ) , Card( ace , heart ) , Card( ten , heart ) , Card( jack , heart ) , Card( queen , spade ) , Card( king , spade ) , Card( king , club ) )
+        val atout = club
+        val bid = SimpleBid(club, 100, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = east
+        val myCards = mutableListOf(Card(ace, diamond), Card(ten, diamond), Card(ace, heart), Card(ten, heart),
+                                    Card(jack, heart), Card(queen, spade), Card(king, spade), Card(king, club))
         /* Resultat :CardPlayed(should annonce Card( 130 , club ) , position= east  )  */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable.toMutableList(), plisNS, plisEW)
         val result = IARun.enchere(myPosition, listBids, myCards, 0)
@@ -1425,7 +1437,7 @@ Resultat : e should annonce 130 C
 
         traceLevel = oldTraceLevel
         assert(result.curPoint() == 130 && result.curColor() == club) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1448,15 +1460,18 @@ Resultat : e and n have not any more C
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=diamond
-        val bid = SimpleBid( diamond ,80, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition= south
-        val myCards = mutableListOf( Card( eight , diamond ) )
-        val onTable :MutableList<CardPlayed> = mutableListOf(CardPlayed(Card( ace , club ) , position= west  ) ,CardPlayed(Card( seven , diamond ) , position= north  ) ,CardPlayed(Card( eight , spade ) , position= east  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = diamond
+        val bid = SimpleBid(diamond, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = south
+        val myCards = mutableListOf(Card(eight, diamond))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(ace, club), position = west),
+                                                             CardPlayed(Card(seven, diamond), position = north),
+                                                             CardPlayed(Card(eight, spade), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         val nbPlis = plisEW.size + plisNS.size
         var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
         if (onTable.isNotEmpty()) {
@@ -1471,12 +1486,11 @@ Resultat : e and n have not any more C
         val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
 
 
-
         /* you need to check result here */
 
         traceLevel = oldTraceLevel
         assert(!result[east]!! && result[south]!! && result[north]!! && result[west]!!) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1500,15 +1514,18 @@ Resultat : n and s have  not any more C
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=heart
-        val bid = SimpleBid( heart ,80, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=south
-        val myCards = mutableListOf( Card( eight , heart ) )
-        val onTable :MutableList<CardPlayed> = mutableListOf(CardPlayed(Card( ace , club ) , position= west  ) ,CardPlayed(Card( seven , diamond ) , position= north  ) ,CardPlayed(Card( eight , spade ) , position= east  ) )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = heart
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = south
+        val myCards = mutableListOf(Card(eight, heart))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(ace, club), position = west),
+                                                             CardPlayed(Card(seven, diamond), position = north),
+                                                             CardPlayed(Card(eight, spade), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         val nbPlis = plisEW.size + plisNS.size
         var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
         if (onTable.isNotEmpty()) {
@@ -1523,13 +1540,12 @@ Resultat : n and s have  not any more C
         val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
 
 
-
         /* you need to check result here */
 
         traceLevel = oldTraceLevel
         assert(result[east]!! && result[south]!! && !result[north]!! && result[west]!!) { "$nameTest FAIL $result is not accurate" }
 
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1554,16 +1570,20 @@ Resultat : e has not any more D
         val oldTraceLevel = traceLevel
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=spade
-        val bid = SimpleBid( spade ,80, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=south
-        val myCards = mutableListOf( Card( nine , spade ) )
-        plisNS[nb++] = listOf(CardPlayed(Card( ten , diamond ) , position= west  ) ,CardPlayed(Card( ace , diamond ) , position= north  ) ,CardPlayed(Card( nine , club ) , position= east  ) ,CardPlayed(Card( eight , diamond ) , position= south  )  )
-        val onTable :MutableList<CardPlayed> = mutableListOf(  )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = spade
+        val bid = SimpleBid(spade, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = south
+        val myCards = mutableListOf(Card(nine, spade))
+        plisNS[nb++] = listOf(CardPlayed(Card(ten, diamond), position = west),
+                              CardPlayed(Card(ace, diamond), position = north),
+                              CardPlayed(Card(nine, club), position = east),
+                              CardPlayed(Card(eight, diamond), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         val nbPlis = plisEW.size + plisNS.size
         var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
         if (onTable.isNotEmpty()) {
@@ -1571,7 +1591,7 @@ Resultat : e has not any more D
         }
         val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
 
-       // val result = TODO("Test : ____playColor ____ check east has no diamond ")
+        // val result = TODO("Test : ____playColor ____ check east has no diamond ")
         /* Resultat : east has not any more diamond  */
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
@@ -1579,12 +1599,11 @@ Resultat : e has not any more D
         val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
 
 
-
         /* you need to check result here */
 
         traceLevel = oldTraceLevel
         assert(!result[east]!! && !!result[south]!! && result[north]!! && result[west]!!) { "$nameTest FAIL $result is not accurate" }
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
@@ -1607,19 +1626,23 @@ Resultat : e has not any more D
     fun testRuleA1_004() {
         val nameTest = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
-       // traceLevel = dbgLevel.ALL
+        // traceLevel = dbgLevel.ALL
         val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
-        var nb=0
+        var nb = 0
 
-        val atout=club
-        val bid = SimpleBid( club ,80, west )
-        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
-        val myPosition=south
-        val myCards = mutableListOf( Card( seven , club ) )
-        plisNS[nb++] = listOf(CardPlayed(Card( queen , diamond ) , position= east  ) ,CardPlayed(Card( jack , diamond ) , position= north  ) ,CardPlayed(Card( seven , spade ) , position= east  ) ,CardPlayed(Card( king , diamond ) , position= south  ) )
-        val onTable :MutableList<CardPlayed> = mutableListOf(   )
-        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val atout = club
+        val bid = SimpleBid(club, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myPosition = south
+        val myCards = mutableListOf(Card(seven, club))
+        plisNS[nb++] = listOf(CardPlayed(Card(queen, diamond), position = east),
+                              CardPlayed(Card(jack, diamond), position = north),
+                              CardPlayed(Card(seven, spade), position = east),
+                              CardPlayed(Card(king, diamond), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
         val nbPlis = plisEW.size + plisNS.size
         var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
         if (onTable.isNotEmpty()) {
@@ -1632,8 +1655,7 @@ Resultat : e has not any more D
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-         val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
-
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1641,12 +1663,609 @@ Resultat : e has not any more D
         traceLevel = oldTraceLevel
         assert(result[east]!! && !!result[south]!! && result[north]!! && result[west]!!) { "$nameTest FAIL $result is not accurate" }
 
-        debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
 
     }
 
-    
 
+/*
+Atout : H
+Fonction : testAtoutRule3
+Moi : n
+Bid : H 80 n
+Mon jeu : [ 13 H ]
+Pli  1 : [ n 10 H , e 8 H , s 11 H , w 7 H ]
+Pli  2 : [ s 7 S , w 1 S , n 12 H , e 9 S ]
+Table : [  ]
+Test : call playersHaveColors and check East has no heart
+Resultat : : e has no H
+
+*/
+
+    @Test
+    fun testtestAtoutRule3() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = heart
+        val myPosition = north
+        val bid = SimpleBid(heart, 80, north)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(king, heart))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ten, heart), position = north), CardPlayed(Card(eight, heart), position = east),
+                       CardPlayed(Card(jack, heart), position = south), CardPlayed(Card(seven, heart), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(seven, spade), position = south), CardPlayed(Card(ace, spade), position = west),
+                       CardPlayed(Card(queen, heart), position = north), CardPlayed(Card(nine, spade), position = east))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : east has no heart  */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! and result[west]!! and result[north]!! and result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+/*
+
+Atout : H
+Fonction : testAtoutRule4
+Moi : s
+Bid : H 80 w
+Mon jeu : [ 7 S ]
+Pli  1 : [ w 1 H , n 7 H , e 8 H , s 10 H ]
+Table : [  ]
+Test : call playersHaveColors and check rules R4 Atout
+Resultat : : s has no trump H
+
+
+
+*/
+
+    /*
+
+ Atout : H
+ Fonction : testAtoutRule4
+ Moi : s
+ Bid : H 80 w
+ Mon jeu : [ 7 S ]
+ Pli  1 : [ w 1 H , n 7 H , e 10 H , s 8 H ]
+ Table : [  ]
+ Test : call playersHaveColors and check rules R4 Atout
+ Resultat : : s and e have no trump H
+
+
+
+ */
+
+    @Test
+    fun testtestAtoutRule4() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = south
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(seven, spade))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ace, heart), position = west), CardPlayed(Card(seven, heart), position = north),
+                       CardPlayed(Card(ten, heart), position = east), CardPlayed(Card(eight, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : south and east have no trump heart   */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result[east]!! && result[north]!! && result[west]!! && !result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+    /*
+
+  Atout : H
+  Fonction : testAtoutRule4
+  Moi : s
+  Bid : H 80 w
+  Mon jeu : [ 7 S ]
+  Pli  1 : [ w 1 H , n 7 H , e 10 H , s 8 H ]
+  Table : [  ]
+  Test : call playersHaveColors and check rules R4 Atout
+  Resultat : : s and e have no trump H
+
+
+
+  */
+
+    @Test
+    fun testtestAtoutRule4b() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = south
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(seven, spade))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ace, heart), position = west), CardPlayed(Card(ten, heart), position = north),
+                       CardPlayed(Card(seven, heart), position = east),
+                       CardPlayed(Card(eight, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : south and east have no trump heart   */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result[east]!! && !result[north]!! && result[west]!! && !result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+    @Test
+    fun testtestAtoutRule4c() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = west
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(ace, heart))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(nine, heart), position = west), CardPlayed(Card(ten, heart), position = north),
+                       CardPlayed(Card(seven, heart), position = east),
+                       CardPlayed(Card(eight, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : south and east have no trump heart   */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result[east]!! && !result[north]!! && result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    @Test
+    fun testtestAtoutRule4d() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = west
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(ace, spade))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(nine, heart), position = west), CardPlayed(Card(ten, heart), position = north),
+                       CardPlayed(Card(seven, heart), position = east),
+                       CardPlayed(Card(eight, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : south and east have no trump heart   */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result[east]!! && result[north]!! && !result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    @Test
+    fun testtestAtoutRule4e() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = west
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(ace, spade))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(nine, heart), position = west), CardPlayed(Card(ten, heart), position = north),
+                       CardPlayed(Card(eight, heart), position = east), CardPlayed(Card(ace, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf()
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : south and east have no trump heart   */
+
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result[east]!! && !result[north]!! && !result[west]!! && !result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+/*
+Atout : S
+Fonction : testRule4Sacha1
+Moi : s
+Bid : S 80 w
+Mon jeu : [ 7 S , 7 C , 9 C , 7 D , 13 D ]
+Pli 1 : [ s 1 H , w 13 H , n 7 H , e 8 H ]
+Pli 2 : [ s 10 H , w 1 S , n 9 S , e 11 H ]
+Pli 3 : [ n 11 S , e 10 S , s 12 S , w 13 S ]
+Table : [ n 13 C , e 11 C ]
+Test : Atout , R4A
+Resultat : est et ouest n’ont plus d’atout
+
+*/
+
+    @Test
+    fun testtestRule4Sacha1() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = spade
+        val myPosition = south
+        val bid = SimpleBid(spade, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(seven, spade), Card(seven, club), Card(nine, club), Card(seven, diamond),
+                                    Card(king, diamond))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ace, heart), position = south), CardPlayed(Card(king, heart), position = west),
+                       CardPlayed(Card(seven, heart), position = north),
+                       CardPlayed(Card(eight, heart), position = east))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ten, heart), position = south), CardPlayed(Card(ace, spade), position = west),
+                       CardPlayed(Card(nine, spade), position = north), CardPlayed(Card(jack, heart), position = east))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(jack, spade), position = north), CardPlayed(Card(ten, spade), position = east),
+                       CardPlayed(Card(queen, spade), position = south), CardPlayed(Card(king, spade), position = west))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(king, club), position = north),
+                                                             CardPlayed(Card(jack, club), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : est et ouest n’ont plus d’atout */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! && result[north]!! && !result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+/*
+Atout : H
+Fonction : testRule4Sacha2
+Moi : s
+Bid : H 80 w
+Mon jeu : [ 1 H , 9 D , 8 D , 8 S , 12 S , 9 S ]
+Pli 1 : [ w 8 C , n 11 C , e 1 C , s 12 H ]
+Pli 2 : [ s 13 H , w 9 H , n 11 H , e 10 H ]
+Table : [ n 1 S , e 10 S ]
+Test : Atout, R4A
+Resultat : est n’a plus d’atout
+
+
+*/
+
+    @Test
+    fun testtestRule4Sacha2() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = heart
+        val myPosition = south
+        val bid = SimpleBid(heart, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(ace, heart), Card(nine, diamond), Card(eight, diamond), Card(eight, spade),
+                                    Card(queen, spade), Card(nine, spade))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(eight, club), position = west), CardPlayed(Card(jack, club), position = north),
+                       CardPlayed(Card(ace, club), position = east), CardPlayed(Card(queen, heart), position = south))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(king, heart), position = south), CardPlayed(Card(nine, heart), position = west),
+                       CardPlayed(Card(jack, heart), position = north), CardPlayed(Card(ten, heart), position = east))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(ace, spade), position = north),
+                                                             CardPlayed(Card(ten, spade), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : est n’a plus d’atout */
+
+        //val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! && result[north]!! && result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+/*
+Atout : C
+Fonction : testRule4Sacha3
+Moi : s
+Bid : C 80 w
+Mon jeu : [ 7 H , 8 H , 10 D , 8 C , 8 S ]
+Pli 1 : [ s 13 D , w 1 D , n 7 D , e 8 D ]
+Pli 2 : [ w 1 H , n 10 H , e 11 H , s 9 H ]
+Pli 3 : [ w 13 H , n 9 C , e 1 C , s 12 H ]
+Table : [ n 1 S , e 7 S ]
+Test : Atout, R4A
+Resultat : est n’a plus d’atout
+
+
+*/
+
+    @Test
+    fun testtestRule4Sacha3() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = club
+        val myPosition = south
+        val bid = SimpleBid(club, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(seven, heart), Card(eight, heart), Card(ten, diamond), Card(eight, club),
+                                    Card(eight, spade))
+        plisNS[nb++] = listOf(CardPlayed(Card(king, diamond), position = south),
+                              CardPlayed(Card(ace, diamond), position = west),
+                              CardPlayed(Card(seven, diamond), position = north),
+                              CardPlayed(Card(eight, diamond), position = east))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(ace, heart), position = west), CardPlayed(Card(ten, heart), position = north),
+                       CardPlayed(Card(jack, heart), position = east), CardPlayed(Card(nine, heart), position = south))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(king, heart), position = west), CardPlayed(Card(nine, club), position = north),
+                       CardPlayed(Card(ace, club), position = east), CardPlayed(Card(queen, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(ace, spade), position = north),
+                                                             CardPlayed(Card(seven, spade), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : est n’a plus d’atout */
+
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! && result[north]!! && result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+/*
+Atout C
+Fonction : testRule4Sacha4
+Moi : s
+Bid : C 80 w
+Mon jeu : [ 10 H , 12 H , 9 C ]
+Pli 1 : [ w 7 S , n 13 S , e 12 S , s 11 S ]
+Pli 2 : [ n 1 D , e 12 D , s 9 S , w 13 D ]
+Pli 3 : [ n 13 C , e 10 C , s 7 C , w 8 C ]
+Pli 4 : [ n 8 S , e 10 S , s 1 S , w 1 C ]
+Table : [ w 1 H , n 9 H , e 11 H ]
+Test : Atout, R4A (futur
+Resultat : est n’a plus da’tout
+
+*/
+
+    @Test
+    fun testtestRule4Sacha4() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = club
+        val myPosition = south
+        val bid = SimpleBid(club, 80, west)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(ten, heart), Card(queen, heart), Card(nine, club))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(seven, spade), position = west),
+                       CardPlayed(Card(king, spade), position = north),
+                       CardPlayed(Card(queen, spade), position = east),
+                       CardPlayed(Card(jack, spade), position = south))
+        plisNS[nb++] = listOf(CardPlayed(Card(ace, diamond), position = north),
+                              CardPlayed(Card(queen, diamond), position = east),
+                              CardPlayed(Card(nine, spade), position = south),
+                              CardPlayed(Card(king, diamond), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(jack, club), position = north),
+                       CardPlayed(Card(ten, club), position = east),
+                       CardPlayed(Card(seven, club), position = south),
+                       CardPlayed(Card(eight, club), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(eight, spade), position = north),
+                       CardPlayed(Card(ten, spade), position = east),
+                       CardPlayed(Card(ace, spade), position = south),
+                       CardPlayed(Card(ace, club), position = west))
+        val onTable: MutableList<CardPlayed> =
+                mutableListOf(CardPlayed(Card(ace, heart), position = west),
+                              CardPlayed(Card(nine, heart), position = north),
+                              CardPlayed(Card(jack, heart), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : est n’a plus da’tout */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! && result[north]!! && result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate\n This test is complex to implement see explanation in test code" }
+        // to pass this test you need to look back to trick 3 while analyzing trick 4
+        // since we gave east gave 10 to north , that means that player east does not have 7, 8, Q or K
+        // so it means that Ace is the last trump
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
 
 
 }

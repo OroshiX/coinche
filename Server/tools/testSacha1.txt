@@ -1,0 +1,11 @@
+Atout : S 
+Fonction : testRule4Sacha1
+Moi : s 
+Bid : S 80 w 
+Mon jeu : [ 7 S , 7 C , 9 C , 7 D , 13 D ]
+Pli 1 : [ s 1 H , w 13 H , n 7 H , e 8 H ]
+Pli 2 : [ s 10 H , w 1 S , n 9 S , e 11 H ]
+Pli 3 : [ n 11 S , e 10 S , s 12 S , w 13 S ]
+Table : [ n 13 C , e 11 C ]
+Test : Atout , R4A
+Resultat : est et ouest n’ont plus d’atout

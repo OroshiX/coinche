@@ -9,6 +9,10 @@ import fr.hornik.coinche.model.values.PlayerPosition
 import fr.hornik.coinche.util.dbgLevel
 import fr.hornik.coinche.util.debugPrintln
 
+// Class used to compute remaining cards in hand following rules and heuristics
+
+enum class CardInPlayerHand(val status: Int) { YES(1), UNK(0), NO(2) }
+
 /*
 Fun master(color) :
  Pour une couleur donnée, selon les cartes qui sont tombées dans les plis précédents,
@@ -58,15 +62,15 @@ fun allCards(): List<CardPlayed> {
 
     Pour un une couleur donnée, renvoie pour l’ensemble des 3 autres joueurs s’il possèdent la couleur ou non. Possède des éléments heuristiques. Fonctionne différemment pour les couleurs ou pour l’atout.
 Couleur :
-R1 - Pour une couleur c, si un joueur X a joué d’une couleur différente de c alors que c’était la première carte jouée à un tour précédent, le joueur X ne possède pas la couleur c.
-R2 - Si toutes les cartes (en comptant celles présentes dans mon jeu) de la couleur c sont tombées, le joueur X en particulier ne possède pas la couleur c.
-R3 - (règle heuristique) Si le joueur X a mis un 10 ou un Roi de la couleur c alors que c’était une carte adjacente à la carte maîtresse, et que cette carte maîtresse était à l’adversaire alors on considère que le joueur X ne possède plus de la couleur c Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique. Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître, on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif. N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
+cR1 - Pour une couleur c, si un joueur X a joué d’une couleur différente de c alors que c’était la première carte jouée à un tour précédent, le joueur X ne possède pas la couleur c.
+cR2 - Si toutes les cartes (en comptant celles présentes dans mon jeu) de la couleur c sont tombées, le joueur X en particulier ne possède pas la couleur c.
+cR3 - (règle heuristique) Si le joueur X a mis un 10 ou un Roi de la couleur c alors que c’était une carte adjacente à la carte maîtresse, et que cette carte maîtresse était à l’adversaire alors on considère que le joueur X ne possède plus de la couleur c Exemple : Au tour 2, Ouest s’est défaussé de son 10 de pique. Au tour 4, Nord met l’As de pique, puis Est met le roi de pique. Puisque, le Roi et l’As de pique sont adjacents (le 10 de pique avait été défaussé), et que Nord est maître, on considère que Est n’a dorénavant plus de pique. N.B. : On ne prend (arbitrairement) en compte cette règle que pour le 10 et le Roi, Dame et Valet ne valent pas assez de points pour que ce soit significatif. N.B. 2 : L’exemple ci-dessus fonctionnerait aussi si le 10 de pique n’était pas tombé mais qu’il se trouvait dans la main du joueur qui est en train de calculer.
 *R4 - (règle heuristique), Si le joueur X a mis un 10 de la couleur c sans que l’As ne soit tombé au préalable dans le pli actuel ou les plis précédents, on considère que le joueur X ne possède plus de la couleur c.
-R5 - (règle heuristique), Si le joueur X a mis un 10 ou un As de la couleur c alors qu’un de ces adversaires a mis préalablement dans ce pli un atout (et que cet atout était le plus fort à ce moment) alors on considère que le joueur X ne possède plus de la couleur c.
+cR5 - (règle heuristique), Si le joueur X a mis un 10 ou un As de la couleur c alors qu’un de ces adversaires a mis préalablement dans ce pli un atout (et que cet atout était le plus fort à ce moment) alors on considère que le joueur X ne possède plus de la couleur c.
 Atout :
-    *R1 - Si le joueur X n’a pas joué de l’atout alors que l’atout était demandé ou qu’il a joué d’une couleur différente de celle demandée alors que son partenaire n’était pas maître alors le joueur X n’a plus d’atout.
-    *R2 - Si tous les atouts sont tombés (ceux que j’ai en main sont considérés tombés) alors le joueur X n’a plus d’atout.
-    *R3 - Si le joueur X a joué un atout de valeur inférieure à l’atout noté a le plus fort du pli (a doit uniquement être parmi les cartes jouées avant le joueur X lors de ce pli), alors on sait qu’il n’a pas d’atout supérieur à a, on peut donc appliquer la règle R2 avec un plus petit nombre d’atouts. Exemple : C’est atout Coeur. Au tour 1 Nord a joué 10 de Coeur, Est a joué 8 de Coeur, Sud a joué Valet de Coeur, Ouest a joué 7 de Coeur. Plus tard au tour 3, la Dame de Coeur est jouée. De plus Nord (= le joueur qui calcule) possède dans son jeu le roi de Coeur. En parcourant les plis on voit qu’au tour 1, Est rentre dans les conditions de R3, on applique donc R2 avec les atouts inférieurs au 10 de Coeur. Or tous les coeurs inférieurs au 10 sont tombés (Roi dans la main, 8 et 7 au tour 1, Dame au tour 3), on en conclut que Est n’a plus d’atout.
+    aR1 - Si le joueur X n’a pas joué de l’atout alors que l’atout était demandé ou qu’il a joué d’une couleur différente de celle demandée alors que son partenaire n’était pas maître alors le joueur X n’a plus d’atout.
+    R2 - DUPLICATE WITH R2 Si tous les atouts sont tombés (ceux que j’ai en main sont considérés tombés) alors le joueur X n’a plus d’atout.
+    aR3 - Si le joueur X a joué un atout de valeur inférieure à l’atout noté a le plus fort du pli (a doit uniquement être parmi les cartes jouées avant le joueur X lors de ce pli), alors on sait qu’il n’a pas d’atout supérieur à a, on peut donc appliquer la règle R2 avec un plus petit nombre d’atouts. Exemple : C’est atout Coeur. Au tour 1 Nord a joué 10 de Coeur, Est a joué 8 de Coeur, Sud a joué Valet de Coeur, Ouest a joué 7 de Coeur. Plus tard au tour 3, la Dame de Coeur est jouée. De plus Nord (= le joueur qui calcule) possède dans son jeu le roi de Coeur. En parcourant les plis on voit qu’au tour 1, Est rentre dans les conditions de R3, on applique donc R2 avec les atouts inférieurs au 10 de Coeur. Or tous les coeurs inférieurs au 10 sont tombés (Roi dans la main, 8 et 7 au tour 1, Dame au tour 3), on en conclut que Est n’a plus d’atout.
     *R4 - (règle heuristique similaire à R3 couleur) Si le joueur X a mis un 9, un As ou un 10 d’atout alors que c’était une carte adjacente à la carte maîtresse et que cette carte maîtresse est à l’adversaire alors on considère que le joueur X n’a plus d’atout. Vraiment la même règle que R3 couleur, simplement elle s’applique pour 9, As et 10.
     *R5 - (règle heuristique légèrement similaire à R4 couleur) À n’appliquer que pour les adversaires, par pour le partenaire. Si le joueur X a mis un 9 d’atout, que la première carte du pli était de l’atout (ne pas faire si la première carte était de la couleur et que le joueur X devait couper) et que le valet d’atout n’est pas préalablement tombé, alors on considère que le joueur X ne possède plus que des atouts inférieurs au seuil auquel il était tenu. On applique alors R2 sur ces atouts inférieurs. Exemple : L’atout est Coeur. Au tour 1 Nord joue la Dame de Coeur, Est joue le 9 de Coeur, Sud joue le Valet de Coeur, Ouest joue le 7 de Coeur. Au tour 2 le 8 de Coeur est joué. En parcourant les plis on voit qu’au tour 1 Est rentre dans les conditions de R5, on applique donc R2 avec les atouts inférieurs à la Dame. Or tous les coeurs inférieurs à la Dame sont tombés (7 au tour 1 et 8 au tour 2), on en conclut que Est n’a plus d’atout.
     *R6 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 100, qu’il ne reste plus qu’un seul atout dehors (en comptant comme tombés les atouts dans notre main) et que l’on a pas estimé avec les règles précédentes que le partenaire n’a plus d’atout (on estime qu’il lui reste de l’atout donc), alors on considère que c’est le partenaire qui possède ce dernier atout, on dit que les deux adversaires n’ont plus d’atouts. R6’ avec 2 atouts dehors et l’annonce initiale du partenaire >= 120.
@@ -79,8 +83,8 @@ Atout :
 
 
 //Rule 1 - valid color and Atout
-fun cR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
-        pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
+fun colorRule1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
+               pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
     //R1 - For a color C, if it was the first color of the trick and a player X played a different color
     //     it means that X is missing C
 
@@ -94,8 +98,8 @@ fun cR1(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, p
 
 
 //Rule 2 - valid color and Atout
-fun cR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, listPlis: List<List<CardPlayed>>,
-        cardsInHand: List<Card>)
+fun colorRule2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, listPlis: List<List<CardPlayed>>,
+               cardsInHand: List<Card>)
         : MutableMap<PlayerPosition, Boolean> {
 
     // R2 - If all cards ( including mine) of color C were played, than all X player are missing the color
@@ -119,9 +123,12 @@ fun cR2(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, l
 
 
 // Rule 3 only valid for color - Heuristic
-fun cR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, pli: List<CardPlayed>,
-        currentMaster: CardValue?, nextMaster: CardValue?,
-        winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
+fun colorRule3(color: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               pli: List<CardPlayed>,
+               currentMaster: CardValue?,
+               nextMaster: CardValue?,
+               winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
     //R3  - if player X played a 10 or 1 King of color C and master card was in the trick belonging to an opponent X has no more color C
     if ((currentMaster != null) && (nextMaster != null)) {
         // somebody put the master on the table
@@ -166,10 +173,10 @@ fun cR3(color: CardColor, allPlayerColor: MutableMap<PlayerPosition, Boolean>, p
      had put before, in the same trick a trump, and this trump was the stronger at this point
      then : we consider that player X has no more C
  */
-fun cR5(color: CardColor, atout: CardColor,
-        allPlayerColor: MutableMap<PlayerPosition, Boolean>,
-        pli: List<CardPlayed>,
-        pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
+fun colorRule5(color: CardColor, atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               pli: List<CardPlayed>,
+               pliColor: CardColor): MutableMap<PlayerPosition, Boolean> {
 
     if (pliColor != color) {
         // this rule is not applicable if the pli did not start with our color
@@ -215,11 +222,11 @@ fun cR5(color: CardColor, atout: CardColor,
          then player has not more trump
 
  */
-fun aR1(atout: CardColor,
-        allPlayerColor: MutableMap<PlayerPosition, Boolean>,
-        pli: List<CardPlayed>,
-        pliColor: CardColor,
-        winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
+fun trumpRule1(atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               pli: List<CardPlayed>,
+               pliColor: CardColor,
+               winnerTrick: PlayerPosition): MutableMap<PlayerPosition, Boolean> {
 
     pli.filter { it.card.color != pliColor && it.card.color != atout }.forEach { card ->
         when (pli.indexOf(card)) {
@@ -240,26 +247,193 @@ fun aR1(atout: CardColor,
     return allPlayerColor
 }
 
+/*
+    Rule 3 Trump
+        If player X played an trump with a value lower than stronger trump of the trick (A) (from cards played before X)
+        then X has no trump with higer value than A
+        In which case we have less value to apply rule 2
+
+    Example : Heart is trump
+      at Tour 1 North play   10 H
+                East  play    8 H
+                South play Jack H
+                West play     7 H
+      Later in the game (tour 3)
+                           Queen H is played
+       In addition North (player doing evaluation) has the King H in his game
+
+       North can conclude that East has no more trump
+
+    This rule is globale on all trick, so it needs to be evaluated on all tricks, not only trick per trick (similar to rule 2)
+
+ */
+
+
+
+fun trumpRule3(atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               listPlis: List<List<CardPlayed>>,
+               myPosition: PlayerPosition,
+               cardsInHand: List<Card>): MutableMap<PlayerPosition, Boolean> {
+
+    // lets make a map for each player which indicates which cards are not in their hands
+    val allPlayerTrump = PlayerPosition.values()
+            .map { Pair(it, CardValue.values().map { value -> Pair(value, true) }.toMap().toMutableMap()) }.toMap()
+
+    // Cards in my hands are not in other players hand !!!
+    for (card in cardsInHand.filter { it.color == atout }) {
+        for (position in PlayerPosition.values().filter { it != myPosition }) {
+            allPlayerTrump[position]!![card.value] = false
+        }
+    }
+    // iterate over all plis
+    for (pli in listPlis.filter { aPli -> aPli.any { it.card.color == atout } }) {
+        // select card which does not respect order - max Pli will be the current max value
+        var maxPli = -1
+        // iterate over the card in the pli which are trump
+        for (card in pli.filter { it.card.color == atout }) {
+            if (card.card.value.dominanceAtout < maxPli) {
+                // here we did not respect atout order
+                for (value in CardValue.values().filter { it.dominanceAtout >= maxPli }) {
+                    allPlayerTrump[card.position]!![value] = false
+                }
+            } else {
+                // we have a new max :
+                maxPli = card.card.value.dominanceAtout
+            }
+            for (position in PlayerPosition.values()) {
+                allPlayerTrump[position]!![card.card.value] = false
+            }
+        }
+    }
+    for (position in PlayerPosition.values()) {
+        if (allPlayerTrump[position]!!.none { it.value }) {
+            allPlayerColor[position] = false
+        }
+    }
+    return allPlayerColor
+}
+
+/*
+    Rule 4 Trump - Heuristic
+
+    (This rule is similar to the rule 3 for Color)
+     If player X played a 9 or As or 10 of trump and it was a card close to the master card , and this card belong to adversary
+     we consider player X has no more trump
+     Same rule as rule 3 for color, but applied to 9, ace and 10
+
+ */
+
+fun trumpRule4(atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               realGamePlayer: Map<PlayerPosition, MutableMap<CardValue, CardInPlayerHand>>,
+               myCards: List<Card>,
+               pli: List<CardPlayed>,
+               remainingBigTrump: List<CardValue>): MutableMap<PlayerPosition, Boolean> {
+
+    // if there are no trump in this pli, this function is not relevant
+    if (pli.none { it.card.color == atout }) return allPlayerColor
+
+    // we have trump  in the pli so we can compute the max
+    val maxAtoutPli = pli.filter { it.card.color == atout }.maxBy { it.card.value.dominanceAtout }!!.card.value
+    val iterationAtout =
+            remainingBigTrump.filter { it.dominanceAtout <= maxAtoutPli.dominanceAtout && myCards.none { card -> card.color == atout && card.value == it } }
+                    .sortedByDescending { it.dominanceAtout }
+    var maxCurValue = CardValue.SEVEN
+    var maxPosition: PlayerPosition? = null
+
+    val maxPotCardInPlayerHand = PlayerPosition.values()
+            .map { Pair(it,
+                        realGamePlayer[it]!!.filter { e -> e.value != CardInPlayerHand.NO && remainingBigTrump.any { bigAtout -> bigAtout == e.key } }
+                                .toList().map { hand -> hand.first }.maxBy { cardValue -> cardValue.dominanceAtout })
+            }.toMap()
+    for (card in pli.filter { it.card.color == atout }) {
+        if (maxCurValue.dominanceAtout <= card.card.value.dominanceAtout) {
+            maxCurValue = card.card.value
+            maxPosition = card.position
+        }
+        if ((card.card.value.dominanceAtout < maxCurValue.dominanceAtout) &&
+            (card.position != maxPosition!! + 2) &&
+            (maxPotCardInPlayerHand[card.position] != null) &&
+            (card.card.value == maxPotCardInPlayerHand[card.position])) {
+            for (value in CardValue.values()
+                    .filter { it.dominanceAtout < maxPotCardInPlayerHand[card.position]!!.dominanceAtout }) {
+                realGamePlayer[card.position]!![value] = CardInPlayerHand.NO
+            }
+        }
+    }
+    // new methods to compute a;;PlayerColor using realFamePlayer map
+
+
+    for (index in 0..iterationAtout.size - 2) {
+        if (pli.any { it.card.value == iterationAtout[index] && it.card.color == atout } && pli.any { it.card.value == iterationAtout[index + 1] && it.card.color == atout }) {
+            val cCard = pli.first { it.card.value == iterationAtout[index + 1] && it.card.color == atout }
+            val mCard = pli.first { it.card.value == iterationAtout[index] && it.card.color == atout }
+            val cIndex = pli.indexOf(cCard)
+            val curMax = pli.filter { it.card.color == atout && pli.indexOf(it) <= cIndex }
+                    .maxBy { e -> e.card.value.dominanceAtout }!!
+            if ((pli.indexOf(curMax) < pli.indexOf(cCard)) && (curMax.position != cCard.position + 2)) {
+
+                allPlayerColor[cCard.position] = false
+            }
+        }
+
+    }
+
+
+
+    return allPlayerColor
+}
+
 fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<CardPlayed>>, myPosition: PlayerPosition,
                      cardsInHand: List<Card>): Map<PlayerPosition, Boolean> {
 
+    val unk = CardInPlayerHand.UNK
+    val yes = CardInPlayerHand.YES
+    val no = CardInPlayerHand.NO
     // By default all players have all colors
     var allPlayerColor = PlayerPosition.values().map { Pair(it, true) }.toMap().toMutableMap()
     val allCardsPlayed = listPlis.toList().flatten()
-    val rR1 = true
-    val rR2 = true
-    val rR3 = (color != atout)
+    val cR1 = true
+    val cR2 = true // probably to disable for trump since rule 3 will do it in a better way
+    val cR3 = (color != atout)
     val rR4 = (color != atout)
-    val rR5 = (color != atout)
+    val cR5 = (color != atout)
     val tR1 = (color == atout)
     val tR2 = (color == atout)
+    val tR3 = (color == atout)
+    val tR4 = (color == atout)
 
-
+    val realGamePlayers = PlayerPosition.values().map { position ->
+        Pair(position, CardValue.values().map { value -> Pair(value, unk) }.toMap().toMutableMap())
+    }.toMap()
+    for (card in cardsInHand.filter { it.color == color }) {
+        for (position in PlayerPosition.values()) {
+            realGamePlayers[position]!![card.value] = when (position) {
+                myPosition -> yes
+                else -> no
+            }
+        }
+    }
+    for (pli in listPlis) {
+        for (card in pli.filter { it.card.color == color }) {
+            for (position in PlayerPosition.values()) {
+                realGamePlayers[position]!![card.card.value] = when (position) {
+                    card.position -> yes
+                    else -> no
+                }
+            }
+        }
+    }
     // R2 - If all cards ( including mine) of color C were played, than all X player are missing the color
-    if (rR2) {
-        allPlayerColor = cR2(color, allPlayerColor, listPlis, cardsInHand)
+    if (cR2) {
+        allPlayerColor = colorRule2(color, allPlayerColor, listPlis, cardsInHand)
     }
 
+    // R3 Trump
+    if (tR3) {
+        allPlayerColor = trumpRule3(atout, allPlayerColor, listPlis, myPosition, cardsInHand)
+    }
     // Now we use heuristic rules ( not 100% right but good enough to play using this "a priori"
     // Generally heuristic rules need to be applied for all plis one after the other
 
@@ -293,17 +467,22 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
         }
         val winnerTrick = calculateWinnerTrick(pli, atout)
         val pliColor = pli.first().card.color
-        if (rR1) {
-            allPlayerColor = cR1(color, allPlayerColor, pli, pliColor)
+        if (cR1) {
+            allPlayerColor = colorRule1(color, allPlayerColor, pli, pliColor)
         }
-        if (rR3) {
-            allPlayerColor = cR3(color, allPlayerColor, pli, master, nextMaster, winnerTrick)
+        if (cR3) {
+            allPlayerColor = colorRule3(color, allPlayerColor, pli, master, nextMaster, winnerTrick)
         }
-        if (rR5) {
-            allPlayerColor = cR5(color, atout, allPlayerColor, pli, pliColor)
+        if (cR5) {
+            allPlayerColor = colorRule5(color, atout, allPlayerColor, pli, pliColor)
         }
         if (tR1) {
-            aR1(atout, allPlayerColor, pli, pliColor, winnerTrick)
+            trumpRule1(atout, allPlayerColor, pli, pliColor, winnerTrick)
+        }
+        if (tR4) {
+            allPlayerColor = trumpRule4(color, allPlayerColor, realGamePlayers, cardsInHand, pli,
+                                        presenceInGameCardValue.filter { it.key.dominanceAtout >= CardValue.QUEEN.dominanceAtout && it.value }
+                                                .map { it.key })
         }
         // the card was played , it's not anymore a master card
 
@@ -311,6 +490,12 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
         if (presenceInGameCardValue.filter { it.value }.none()) {
             PlayerPosition.values().forEach { e -> allPlayerColor[e] = false }
             break
+        }
+    }
+    for (position in PlayerPosition.values()) {
+
+        if (realGamePlayers[position]!!.none { (it.value == yes || it.value == unk) && (presenceInGameCardValue[it.key]!!) }) {
+            allPlayerColor[position] = false
         }
     }
     // for my self I know my cards .... so no need to use any heuristic
@@ -362,11 +547,13 @@ fun whatToPlay(myPosition: PlayerPosition,
     // Check where we are in terms of points :
     val currentScore = when (myPosition) {
         PlayerPosition.SOUTH,
-        PlayerPosition.NORTH -> calculateScoreTricks(plisNS.toList().map { it.second }, plisEW.toList().map { it.second },
-                                                   myPosition+1,
-                                                   currBid).northSouth
-        else -> calculateScoreTricks(plisNS.toList().map { it.second }, plisEW.toList().map { it.second }, myPosition+1,
-                                   currBid).eastWest
+        PlayerPosition.NORTH -> calculateScoreTricks(plisNS.toList().map { it.second },
+                                                     plisEW.toList().map { it.second },
+                                                     myPosition + 1,
+                                                     currBid).northSouth
+        else -> calculateScoreTricks(plisNS.toList().map { it.second }, plisEW.toList().map { it.second },
+                                     myPosition + 1,
+                                     currBid).eastWest
     }
     val missingPoints = currBid.curPoint() - currentScore
     // Decide what function to call
@@ -1248,7 +1435,8 @@ fun defausse(onTable: List<CardPlayed>,
         if (partnerAbsolute) {
             // We have an Ace + ten, we give the Ace
             if (aceAndTenInAColor.isNotEmpty()) {
-                val mapColorMyPlayableCardSize = CardColor.values().map {Pair (it, myPlayableCards.filter{e->e.color == it}.size)}.toMap()
+                val mapColorMyPlayableCardSize =
+                        CardColor.values().map { Pair(it, myPlayableCards.filter { e -> e.color == it }.size) }.toMap()
                 val selectedColor = aceAndTenInAColor.maxBy { e -> mapColorMyPlayableCardSize[e]!! }
                 aCard =
                         myPlayableCards.first { e ->
@@ -1305,5 +1493,6 @@ fun defausse(onTable: List<CardPlayed>,
         }
         return aCard
     }
+
 
 }

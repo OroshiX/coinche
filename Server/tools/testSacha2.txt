@@ -1,0 +1,11 @@
+Atout : H 
+Fonction : testRule4Sacha2
+Moi : s
+Bid : H 80 w 
+Mon jeu : [ 1 H , 9 D , 8 D , 8 S , 12 S , 9 S ]
+Pli 1 : [ w 8 C , n 11 C , e 1 C , s 12 H ]
+Pli 2 : [ s 13 H , w 9 H , n 11 H , e 10 H ]
+Table : [ n 1 S , e 10 S ]
+Test : Atout, R4A
+Resultat : est n’a plus d’atout
+

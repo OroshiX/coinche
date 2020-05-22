@@ -1,0 +1,31 @@
+// Legend : 
+// H : Heart
+// S : Spade
+// C : Club
+// D : Diamond
+// n : north
+// e : east
+// s : south
+// w : west
+// 1 As
+// 7
+// 8
+// 9
+// 10
+// 11 Jack
+// 12 Queen
+// 13 King
+// Note : Upper case and lowercase are important to respect as well as space between symbols !!!
+
+Atout : H 
+Fonction : testAtoutRule3
+Moi : n 
+Bid : H 80 n 
+Mon jeu : [ 13 H ]
+Pli  1 : [ n 10 H , e 8 H , s 11 H , w 7 H ]
+Pli  2 : [ s 7 S , w 1 S , n 12 H , e 9 S ]
+Table : [  ]
+Test : call playersHaveColors and check East has no heart
+Resultat : : e has no H 
+
+
