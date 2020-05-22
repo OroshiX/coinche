@@ -11,8 +11,11 @@ import fr.hornik.coinche.util.debugPrintln
 
 // Class used to compute remaining cards in hand following rules and heuristics
 
-enum class CardInPlayerHand(val status: Int) { YES(1), UNK(0), NO(2) }
+enum class CardInPlayerHand { YES, UNK, NO }
 
+fun getLineNumber(): Int {
+    return Thread.currentThread().stackTrace[2].lineNumber
+}
 /*
 Fun master(color) :
  Pour une couleur donnée, selon les cartes qui sont tombées dans les plis précédents,
@@ -52,10 +55,6 @@ fun colorInMyGame(cardsInHand: List<Card>): Map<CardColor, Int> {
     val mapColor = CardColor.values().map { Pair(it, 0) }.toMap().toMutableMap()
     CardColor.values().forEach { mapColor[it] = cardsInHand.filter { e -> e.color == it }.size }
     return mapColor
-}
-
-fun allCards(): List<CardPlayed> {
-    return listOf(CardPlayed())
 }
 
 /*
@@ -276,6 +275,8 @@ fun trumpRule3(atout: CardColor,
                myPosition: PlayerPosition,
                cardsInHand: List<Card>): MutableMap<PlayerPosition, Boolean> {
 
+    val nameFunction = object {}.javaClass.enclosingMethod.name
+
     // lets make a map for each player which indicates which cards are not in their hands
     val allPlayerTrump = PlayerPosition.values()
             .map { Pair(it, CardValue.values().map { value -> Pair(value, true) }.toMap().toMutableMap()) }.toMap()
@@ -283,7 +284,7 @@ fun trumpRule3(atout: CardColor,
     // Cards in my hands are not in other players hand !!!
     for (card in cardsInHand.filter { it.color == atout }) {
         for (position in PlayerPosition.values().filter { it != myPosition }) {
-            allPlayerTrump[position]!![card.value] = false
+            (allPlayerTrump[position] ?: error("$nameFunction:${getLineNumber()} Impossible"))[card.value] = false
         }
     }
     // iterate over all plis
@@ -295,19 +296,19 @@ fun trumpRule3(atout: CardColor,
             if (card.card.value.dominanceAtout < maxPli) {
                 // here we did not respect atout order
                 for (value in CardValue.values().filter { it.dominanceAtout >= maxPli }) {
-                    allPlayerTrump[card.position]!![value] = false
+                    (allPlayerTrump[card.position] ?: error("$nameFunction:${getLineNumber()} Impossible"))[value] = false
                 }
             } else {
                 // we have a new max :
                 maxPli = card.card.value.dominanceAtout
             }
             for (position in PlayerPosition.values()) {
-                allPlayerTrump[position]!![card.card.value] = false
+                (allPlayerTrump[position] ?: error("$nameFunction:${getLineNumber()} Impossible"))[card.card.value] = false
             }
         }
     }
     for (position in PlayerPosition.values()) {
-        if (allPlayerTrump[position]!!.none { it.value }) {
+        if ((allPlayerTrump[position] ?: error("$nameFunction:${getLineNumber()} Impossible")).none { it.value }) {
             allPlayerColor[position] = false
         }
     }
@@ -330,6 +331,7 @@ fun trumpRule4(atout: CardColor,
                myCards: List<Card>,
                pli: List<CardPlayed>,
                remainingBigTrump: List<CardValue>): MutableMap<PlayerPosition, Boolean> {
+    val nameFunction = object {}.javaClass.enclosingMethod.name
 
     // if there are no trump in this pli, this function is not relevant
     if (pli.none { it.card.color == atout }) return allPlayerColor
@@ -343,9 +345,10 @@ fun trumpRule4(atout: CardColor,
     var maxPosition: PlayerPosition? = null
 
     val maxPotCardInPlayerHand = PlayerPosition.values()
-            .map { Pair(it,
-                        realGamePlayer[it]!!.filter { e -> e.value != CardInPlayerHand.NO && remainingBigTrump.any { bigAtout -> bigAtout == e.key } }
-                                .toList().map { hand -> hand.first }.maxBy { cardValue -> cardValue.dominanceAtout })
+            .map {
+                Pair(it,
+                     realGamePlayer[it]!!.filter { e -> e.value != CardInPlayerHand.NO && remainingBigTrump.any { bigAtout -> bigAtout == e.key } }
+                             .toList().map { hand -> hand.first }.maxBy { cardValue -> cardValue.dominanceAtout })
             }.toMap()
     for (card in pli.filter { it.card.color == atout }) {
         if (maxCurValue.dominanceAtout <= card.card.value.dominanceAtout) {
@@ -358,7 +361,7 @@ fun trumpRule4(atout: CardColor,
             (card.card.value == maxPotCardInPlayerHand[card.position])) {
             for (value in CardValue.values()
                     .filter { it.dominanceAtout < maxPotCardInPlayerHand[card.position]!!.dominanceAtout }) {
-                realGamePlayer[card.position]!![value] = CardInPlayerHand.NO
+                (realGamePlayer[card.position] ?: error("$nameFunction:${getLineNumber()} Impossible"))[value] = CardInPlayerHand.NO
             }
         }
     }
@@ -368,7 +371,6 @@ fun trumpRule4(atout: CardColor,
     for (index in 0..iterationAtout.size - 2) {
         if (pli.any { it.card.value == iterationAtout[index] && it.card.color == atout } && pli.any { it.card.value == iterationAtout[index + 1] && it.card.color == atout }) {
             val cCard = pli.first { it.card.value == iterationAtout[index + 1] && it.card.color == atout }
-            val mCard = pli.first { it.card.value == iterationAtout[index] && it.card.color == atout }
             val cIndex = pli.indexOf(cCard)
             val curMax = pli.filter { it.card.color == atout && pli.indexOf(it) <= cIndex }
                     .maxBy { e -> e.card.value.dominanceAtout }!!
@@ -393,7 +395,6 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
     val no = CardInPlayerHand.NO
     // By default all players have all colors
     var allPlayerColor = PlayerPosition.values().map { Pair(it, true) }.toMap().toMutableMap()
-    val allCardsPlayed = listPlis.toList().flatten()
     val cR1 = true
     val cR2 = true // probably to disable for trump since rule 3 will do it in a better way
     val cR3 = (color != atout)
@@ -442,7 +443,7 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
     cardsInHand.filter { it.color == color }.forEach { e -> presenceInGameCardValue[e.value] = false }
 
     for (pli in listPlis) {
-        var master: CardValue? = null
+        var master: CardValue?
         var nextMaster: CardValue? = null
         val listRemainingCardinColor: List<CardValue>
 
@@ -507,8 +508,8 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
 fun playRandom(cardsInHand: List<Card>): Card {
     val nameFunction = object {}.javaClass.enclosingMethod.name
     val aCard: Card = cardsInHand.filter { it.playable == true }.random()
-    debugPrintln(dbgLevel.DEBUG,
-                 "$nameFunction : we play $aCard  OOPS this is randomly played **************************************")
+    debugPrintln(dbgLevel.REGULAR,
+                 "$nameFunction:${getLineNumber()} we play $aCard  OOPS this is randomly played **************************************")
 
     return aCard
 }
@@ -568,11 +569,11 @@ fun whatToPlay(myPosition: PlayerPosition,
         myPosition + 2 -> {
             if (onTable.size == 0) {
                 //it's my turn to play
-                debugPrintln(dbgLevel.DEBUG, "in $nameFunction calling first to play ")
+                debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} calling first to play ")
                 return firstToPlay(myPosition, cardsInHand, pointsPreneur, bids, atout, allCardPli,
                                    list3Dominantes, listMyDominantes)
             } else {
-                debugPrintln(dbgLevel.DEBUG, "in $nameFunction calling nth to play ")
+                debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} calling nth to play ")
                 return nthToPlay(myPosition, cardsInHand, atout, allCardPli,
                                  missingPoints, currBid, list3Dominantes, listMyDominantes, maxAtout)
 
@@ -687,21 +688,21 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
 
     // the other team has still trumps ?
     if (pAtouts[myPosition + 1] ?: error("Impossible Error in  $nameFunction 1") || pAtouts[myPosition + 3] ?: error(
-                    "Impossible Error in $nameFunction 2")) {
+                    "$nameFunction:${getLineNumber()} Impossible")) {
         // Do I have trumps ?
-        if (pAtouts[myPosition] ?: error("Impossible Error in $nameFunction 3")) {
+        if (pAtouts[myPosition] ?: error("$nameFunction:${getLineNumber()} Impossible")) {
             // first announce was 80 ?
             if (pointsFirstAnnounce == 80) {
                 // let's the smallest trump in my cards
                 aCard = cardsInHand.filter { it.color == atout }.minBy { it.value.dominanceAtout }!!
-                debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard with criteria smallest trump we have")
+                debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard with criteria smallest trump we have")
                 return aCard
             } else {
                 //If the jack was already played
                 if (allCardPli.flatten().any { (it.card.color == atout) && (it.card.value == CardValue.JACK) }) {
                     // we play the strongest card
                     aCard = cardsInHand.filter { it.color == atout }.maxBy { it.value.dominanceAtout }!!
-                    debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard with criteria strongest trump we have")
+                    debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} : we play $aCard with criteria strongest trump we have")
                     return aCard
                 } else {
                     // we play astrongest atrump but the 9
@@ -709,7 +710,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
                             .maxBy { it.value.dominanceAtout }
                     if (aCard != null) {
                         debugPrintln(dbgLevel.DEBUG,
-                                     "$nameFunction : we play $aCard with criteria strongest trump we have but the 9")
+                                     "$nameFunction:${getLineNumber()} : we play $aCard with criteria strongest trump we have but the 9")
                         return aCard
                     }
                 }
@@ -732,7 +733,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
                 candidateOrdered.add(element = Triple(card, 0, 0), index = 0)
             } else {
 
-                val nbRemain = remainingColorMap[card.color] ?: error("$nameFunction : Impossible nbRemain is null")
+                val nbRemain = remainingColorMap[card.color] ?: error("$nameFunction:${getLineNumber()} Impossible")
                 if (nbRemain >= 5) {
                     candidateOrdered.add(element = Triple(card, 1, -nbRemain))
                 }
@@ -744,7 +745,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
             val myTriple = candidateOrdered.sortedWith(
                     compareBy({ it.second }, { it.third }, { -it.first.value.dominanceCouleur })).first()
             debugPrintln(dbgLevel.DEBUG,
-                         "$nameFunction : we play $myTriple.first  with criteria first to play - no trump $myTriple")
+                         "$nameFunction:${getLineNumber()} we play $myTriple.first  with criteria first to play - no trump $myTriple")
             return myTriple.first
         } else {
             // we dont have any card which can make the next trick for sure
@@ -801,7 +802,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
                     .minBy { it.value.dominanceCouleur }
             if (aCard != null) {
                 debugPrintln(dbgLevel.DEBUG,
-                             "$nameFunction : we play $aCard it is a color cards where probably next player will have to play trump")
+                             "$nameFunction:${getLineNumber()} we play $aCard it is a color cards where probably next player will have to play trump")
                 return aCard
             }
             //
@@ -818,7 +819,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
                                   { (list3Dominantes[it.color]!!.value.dominanceCouleur - it.value.dominanceCouleur) }))
                 aCard = tempList.first()
                 debugPrintln(dbgLevel.DEBUG,
-                             "$nameFunction : we play $aCard , not a 10 alone, less cards / strongest ")
+                             "$nameFunction:${getLineNumber()} we play $aCard , not a 10 alone, less cards / strongest ")
 
                 return aCard
 
@@ -833,13 +834,13 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
             return if (newCandidate.isNotEmpty()) {
                 aCard = newCandidate.first()
                 debugPrintln(dbgLevel.DEBUG,
-                             "$nameFunction : we play $aCard , not a 10 color with the most cards outside ")
+                             "$nameFunction:${getLineNumber()} we play $aCard , not a 10 color with the most cards outside ")
                 aCard
             } else {
                 // just play randomly
                 aCard = localCards.random()
                 debugPrintln(dbgLevel.DEBUG,
-                             "$nameFunction : we play $aCard , randomly ")
+                             "$nameFunction:${getLineNumber()} we play $aCard , randomly ")
                 aCard
             }
         }
@@ -878,7 +879,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
         aCard =
                 listMyDominantesSorted.firstOrNull()
         if (aCard != null) {
-            debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard which is probably the strongest card")
+            debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard which is probably the strongest card")
 
             return aCard
         }
@@ -900,7 +901,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
         aCard = listCandidate.sortedWith(compareBy({ remainingColorMap[it.color] },
                                                    { (list3Dominantes[it.color]!!.value.dominanceCouleur - it.value.dominanceCouleur) }))
                 .first()
-        debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard there are no mastercards in our hand")
+        debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard there are no mastercards in our hand")
 
         return aCard
     }
@@ -1018,7 +1019,7 @@ fun nthToPlay(myPosition: PlayerPosition,
             aCard = myPlayableCards.filter { it.value == CardValue.TEN || it.value == CardValue.ACE }
                     .sortedByDescending { e -> e.value.dominanceAtout }.firstOrNull()
             if (aCard != null) {
-                debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard my partner did play the Jack")
+                debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard my partner did play the Jack")
 
                 return aCard
             }
@@ -1029,7 +1030,7 @@ fun nthToPlay(myPosition: PlayerPosition,
          */
         if ((jackPlayed != null) && (myPlayableCards.firstOrNull { it.value == CardValue.NINE } != null)) {
             aCard = myPlayableCards.firstOrNull { it.value == CardValue.NINE }
-            debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard Nine and Jack of trump already played ")
+            debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard Nine and Jack of trump already played ")
 
             return aCard
         }
@@ -1057,7 +1058,7 @@ fun nthToPlay(myPosition: PlayerPosition,
         } else {
             aCard = myPlayableCards.minBy { it.value.dominanceAtout }!!
         }
-        debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard which is probably the strongest card")
+        debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard which is probably the strongest card")
 
         return aCard
     }
@@ -1091,7 +1092,9 @@ fun nthToPlay(myPosition: PlayerPosition,
                 val tenIsStillUp = allCardPli.flatten()
                                            .none { it.card.color == currentTableColor && it.card.value == CardValue.TEN } && myPlayableCards.none { it.value == CardValue.TEN }
                 val othersCanStillCut =
-                        mapColorPlayerRemain[atout]!![myPosition + 1]!! || mapColorPlayerRemain[atout]!![myPosition + 3]!!
+                        (mapColorPlayerRemain[atout] ?: error("$nameFunction:${getLineNumber()} Impossible"))[myPosition + 1] ?: error(
+                                "$nameFunction:${getLineNumber()} Impossible") || (mapColorPlayerRemain[atout] ?: error(
+                                "$nameFunction:${getLineNumber()} Impossible"))[myPosition + 3]!!
                 val otherTeamBeatUsTrump: Boolean =
                         onTable.any { it.card.color == atout && it.position != myPosition + 2 } && onTable.filter { it.card.color == atout }
                                 .maxBy { e -> e.card.value.dominanceAtout }!!.position != (myPosition + 2)
@@ -1139,7 +1142,9 @@ fun nthToPlay(myPosition: PlayerPosition,
                      2e cas : I am the third to play
 
                  */
-                val nextPlayerHasStilTrump = mapColorPlayerRemain[atout]!![(myPosition + 1)]!!
+                val nextPlayerHasStilTrump =
+                        (mapColorPlayerRemain[atout] ?: error("I$nameFunction:${getLineNumber()} Impossible"))[(myPosition + 1)] ?: error(
+                                "$nameFunction:${getLineNumber()} Impossible")
 
                 //Next player has no trumps
                 if (onTable[1].card.color == atout) {
@@ -1238,7 +1243,7 @@ fun nthToPlay(myPosition: PlayerPosition,
 
         if (aCard != null) {
             debugPrintln(dbgLevel.DEBUG,
-                         "$nameFunction : we play $aCard  the first Card was  Color  I have this color in my cards color")
+                         "$nameFunction:${getLineNumber()} we play $aCard  the first Card was  Color  I have this color in my cards color")
 
             return aCard
         }
@@ -1289,7 +1294,7 @@ fun nthToPlay(myPosition: PlayerPosition,
                          mapColorMin2CardsInMyHandsAmongAce,
                          missingPoints,
                          listColor2CardsInMyHandsTenNoAce)
-        debugPrintln(dbgLevel.DEBUG, "$nameFunction : we play $aCard  tThis is the result of defausse")
+        debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} we play $aCard  tThis is the result of defausse")
         return aCard
     }
 /*
@@ -1319,7 +1324,7 @@ D) Si je dois couper
                            listColor2CardsInMyHandsTenNoAce,
                            currBid)
         debugPrintln(dbgLevel.DEBUG,
-                     "$nameFunction : we play $aCard  it's probably a trump since we have to use trump with the exception of partner owning the trick")
+                     "$nameFunction:${getLineNumber()} we play $aCard  it's probably a trump since we have to use trump with the exception of partner owning the trick")
         return aCard
     }
 
@@ -1410,6 +1415,8 @@ fun defausse(onTable: List<CardPlayed>,
              missingPoints: Int,
              listColor2CardsInMyHandsTenNoAce: List<CardColor>): Card? {
 
+    val nameFunction = object {}.javaClass.enclosingMethod.name
+
     val aCard: Card?
 
     if ((onTable.size > 1) && partnerIsActualWinner) {
@@ -1420,7 +1427,8 @@ fun defausse(onTable: List<CardPlayed>,
         if ((partnerCard.color == atout) && (partnerCard.value == maxAtout!!.value))
             partnerAbsolute = true
         //if partner played a color .... there is a max value for this color
-        if ((partnerCard.color != atout) && list3Dominantes[currentTableColor]!!.isSimilar(partnerCard))
+        if ((partnerCard.color != atout) && (list3Dominantes[currentTableColor] ?: error(
+                        "$nameFunction:${getLineNumber()} Impossible")).isSimilar(partnerCard))
             partnerAbsolute = true
 
 
@@ -1437,7 +1445,7 @@ fun defausse(onTable: List<CardPlayed>,
             if (aceAndTenInAColor.isNotEmpty()) {
                 val mapColorMyPlayableCardSize =
                         CardColor.values().map { Pair(it, myPlayableCards.filter { e -> e.color == it }.size) }.toMap()
-                val selectedColor = aceAndTenInAColor.maxBy { e -> mapColorMyPlayableCardSize[e]!! }
+                val selectedColor = aceAndTenInAColor.maxBy { e -> mapColorMyPlayableCardSize[e] ?: error("$nameFunction:${getLineNumber()} Impossible") }
                 aCard =
                         myPlayableCards.first { e ->
                             selectedColor == e.color && e.value == CardValue.ACE
