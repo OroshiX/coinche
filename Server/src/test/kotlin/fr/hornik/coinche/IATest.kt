@@ -2678,4 +2678,80 @@ Resultat : e et w n’ont plus de H
 
     }
 
+
+    /*
+
+Atout : H
+Fonction : DefausseReelle
+Moi : n
+Bid : H 100 n
+Mon jeu : [ 10 C , 8 C , 9 C , 10 C , 7 S , 1 C , 12 S ]
+Pli  1 : [ n 1 D , e 8 D , s 7 C , w 12 D ]
+Pli  2 : [ n 11 H , e 10 H , s 9 H , w 13 H ]
+Table : [ n 8 H , w 11 S ]
+Test : call what to play check we don't play 10 of C
+Resultat : : result should be different from 10 of C
+
+
+
+*/
+
+    @Test
+    fun testDefausseReelle() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = heart
+        val myPosition = north
+        val bid = SimpleBid(heart, 100, south)
+        val bid2 = SimpleBid(heart, 110, north)
+        val listBids: MutableList<Bid> =
+                mutableListOf(Pass(east), bid, Pass(west), bid2, Pass(east), Pass(south), Pass(west))
+        val myCards =
+                mutableListOf(Card(ten, club), Card(eight, club), Card(nine, club), Card(seven, spade), Card(ace, club),
+                              Card(queen, spade))
+        plisNS[nb++] = listOf(CardPlayed(Card(ace, diamond), position = north),
+                              CardPlayed(Card(eight, diamond), position = east),
+                              CardPlayed(Card(seven, club), position = south),
+                              CardPlayed(Card(queen, diamond), position = west))
+        plisNS[nb++] =
+                listOf(CardPlayed(Card(jack, heart), position = north), CardPlayed(Card(ten, heart), position = east),
+                       CardPlayed(Card(nine, heart), position = south), CardPlayed(Card(king, heart), position = west))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(eight, heart), position = north),
+                                                             CardPlayed(Card(jack, spade), position = west))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        // val result = TODO("Test : call what to play check we don't play ten of club ")
+        /* Resultat : : result should be different from ten of club  */
+
+
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        // val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        //assert(result[east]!! && result[north]!! && result[west]!! && result[south]!! ) { "$nameTest FAIL $result is not accurate" }
+        assert(result != null && result.value == seven && result.color == spade) { "$nameTest FAIL $result is not accurate" }
+        //assert((result.curColor() == heart) && (result.curPoint() == 80)) { " FAIL  is not accurate" }
+
+        //assert(TODO()) {"$nameTest FAIL : $result is not OK ")
+
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
 }

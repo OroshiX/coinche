@@ -1,0 +1,13 @@
+
+Atout : H 
+Fonction : DefausseReelle
+Moi : n 
+Bid : H 100 n 
+Mon jeu : [ 10 C , 8 C , 9 C , 7 S , 1 C , 12 S ]
+Pli  1 : [ n 1 D , e 8 D , s 7 C , w 12 D ]
+Pli  2 : [ n 11 H , e 10 H , s 9 H , w 13 H ]
+Table : [ n 8 H , w 11 S ]
+Test : call what to play check we don't play 10 of C 
+Resultat : : result should be different from 10 of C 
+
+

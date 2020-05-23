@@ -81,7 +81,7 @@ $name
 !
 
 cat $1 | sed -e "s/${TRICK}.* :.*\[/plisNS\[nb++\] = listOf(/"\
-	     -e "s/^.*${BID} * \([SHDC]\) \([0-9][0-9]*\) \([news] \)$/val bid = SimpleBid(\1,\2,\3) /"\
+	     -e "s/^.*${BID} * \([SHDC]\)  *\([0-9][0-9]*\) *\([news] \) *$/val bid = SimpleBid(\1,\2,\3) /"\
 	     -e "s/ \([1789][0-3]*\) \([SCDH]\) / Card( \1 , \2 ) /g"\
 	     -e "s/ S / spade /g" \
 	     -e "s/ C / club /g" \
