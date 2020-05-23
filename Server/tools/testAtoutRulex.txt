@@ -1,0 +1,11 @@
+
+Atout : C 
+Fonction : AtoutNineJack
+Moi : s 
+Bid : C 100 n 
+Mon jeu : [ 9 C , 7 C , 1 S , 1 H , 9 S , 13 D , 10 S , 13 S ]
+Table : [ n 11 C , e 12 C ]
+Test : call what to play check we don't play 9 of C 
+Resultat : : result should be different from 9 of C 
+
+

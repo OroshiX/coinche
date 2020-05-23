@@ -1220,7 +1220,7 @@ fun nthToPlay(myPosition: PlayerPosition,
         /*
            if I have the nine and Jack already played, I play it
          */
-        if ((jackPlayed != null) && (myPlayableCards.firstOrNull { it.value == CardValue.NINE } != null)) {
+        if ((jackPlayed != null) && (!jackOnTable) && (myPlayableCards.any { it.value == CardValue.NINE })) {
             aCard = myPlayableCards.firstOrNull { it.value == CardValue.NINE }
             debugPrintln(dbgLevel.DEBUG,
                          "$nameFunction:${getLineNumber()} we play $aCard Nine and Jack of trump already played ")

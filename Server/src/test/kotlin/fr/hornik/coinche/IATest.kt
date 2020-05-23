@@ -2754,4 +2754,68 @@ Resultat : : result should be different from 10 of C
 
     }
 
+    /*
+
+Atout : C
+Fonction : AtoutNineJack
+Moi : s
+Bid : C 100 n
+Mon jeu : [ 9 C , 7 C , 1 S , 1 H , 9 S , 13 D , 10 S , 13 S ]
+Table : [ n 11 C , e 12 C ]
+Test : call what to play check we don't play 9 of C
+Resultat : : result should be different from 9 of C
+
+
+
+*/
+
+    @Test
+    fun testAtoutNineJack() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = club
+        val myPosition = south
+        val bid = SimpleBid(club, 100, north)
+        val bid2 = SimpleBid(club, 110, south)
+        val listBids: MutableList<Bid> = mutableListOf(Pass(west), bid, Pass(east),bid2 , Pass(west), Pass(north),Pass(east))
+        val myCards = mutableListOf(Card(nine, club), Card(seven, club), Card(ace, spade), Card(ace, heart),
+                                    Card(nine, spade), Card(king, diamond), Card(ten, spade), Card(king, spade))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(ten,club),position=west),CardPlayed(Card(jack, club), position = north),
+                                                             CardPlayed(Card(queen, club), position = east))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        //val result = TODO("Test : call what to play check we don't play nine of club ")
+        /* Resultat : : result should be different from nine of club  */
+
+
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        // val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        //assert(result[east]!! && result[north]!! && result[west]!! && result[south]!! ) { "$nameTest FAIL $result is not accurate" }
+        assert(result != null && result.value == seven && result.color == club) { "$nameTest FAIL $result is not accurate" }
+        //assert((result.curColor() == heart) && (result.curPoint() == 80)) { " FAIL  is not accurate" }
+
+        //assert(TODO()) {"$nameTest FAIL : $result is not OK ")
+
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
 }
