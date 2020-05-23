@@ -1,0 +1,11 @@
+Atout : S 
+Fonction : enchere100Heart
+Moi : s 
+Bid : S 80 e 
+Mon jeu : [ 11 H , 9 H , 1 D , 1 C , 10 C , 1 S , 10 S , 13 S ]
+Pli  1 : [  ]
+Table : [  ]
+Test : enchere 100 H ? 
+Resultat : : check Enchere
+
+

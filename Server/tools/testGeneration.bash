@@ -128,8 +128,9 @@ cat <<!
 traceLevel = oldTraceLevel
 //assert(result[east]!! && result[north]!! && result[west]!! && result[south]!! ) { "\$nameTest FAIL \$result is not accurate" }
 //assert(result.value == heart && result.color == king ) { "\$nameTest FAIL \$result is not accurate" }
-//assert(result.curcolor()  == heart && result.curPoints == 80 ) { "\$nameTest FAIL \$result is not accurate" }
-assert(TODO()) {"\$nameTestFAIL : \$result is not OK ")
+//assert((result.curColor() == heart) && (result.curPoint() == 80)) { "$nameTest FAIL $result is not accurate" }
+
+assert(TODO()) {"\$nameTest FAIL : \$result is not OK ")
 
 debugPrintln(dbgLevel.REGULAR,"\$nameTest:PASS  we play  :\$result ")
 

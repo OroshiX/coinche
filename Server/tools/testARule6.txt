@@ -1,0 +1,13 @@
+
+Atout : H 
+Fonction : ARule6
+Moi : n 
+Bid : S 120 e 
+Mon jeu : [ 8 H , 13 H , 9 C , 12 C , 7 C , 7 D ]
+Pli  1 : [ s 9 H , w 1 H , n 12 H , e 7 H ]
+Pli  2 : [ s 12 S , w 10 S , n 1 S , e 13 S ]
+Table : [  ]
+Test : call playersHaveColors and check rules R6
+Resultat : : e and w have no trump
+
+
