@@ -1,0 +1,13 @@
+
+Atout : H 
+Fonction : Belote001
+Moi : e 
+Bid : H 80 s 
+Mon jeu : [ 8 D , 9 D ]
+Pli  1 : [ s 11 H , w 8 H , n 7 H , e 10 H ]
+Pli  2 : [ s 9 H , w 12 H , n 1 H , e 7 D ]
+Table : [ e 13 D ]
+Test : call playersHaveColors and check rules R7
+Resultat : : n , s and east have no more trump ( H )
+
+

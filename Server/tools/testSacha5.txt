@@ -1,0 +1,15 @@
+Atout : H 
+Fonction : testRule7Sacha5
+Moi : s 
+Bid : H 110 n 
+Mon jeu : [ 1 D , 7 D , 7 C , 10 C ]
+Pli 1 : [ e 8 C , s 13 C , w 13 H , n 12 C ]
+Pli 2 : [ w 1 S , n 8 S , e 13 S , s 7 S ]
+Pli 3 : [ w 9 S , n 12 S , e 10 S , s 8 H ]
+Pli 4 : [ s 10 H , w 1 H , n 11 H , e 7 H ]
+Table : [ n 1 C , e 9 C ]
+Test : Atout , R7A
+Resultat : e et w n’ont plus de H 
+
+
+

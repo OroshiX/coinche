@@ -3,6 +3,7 @@ package fr.hornik.coinche.business
 import fr.hornik.coinche.model.Bid
 import fr.hornik.coinche.model.Card
 import fr.hornik.coinche.model.CardPlayed
+import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
 import fr.hornik.coinche.model.values.PlayerPosition
@@ -72,8 +73,8 @@ Atout :
     aR3 - Si le joueur X a joué un atout de valeur inférieure à l’atout noté a le plus fort du pli (a doit uniquement être parmi les cartes jouées avant le joueur X lors de ce pli), alors on sait qu’il n’a pas d’atout supérieur à a, on peut donc appliquer la règle R2 avec un plus petit nombre d’atouts. Exemple : C’est atout Coeur. Au tour 1 Nord a joué 10 de Coeur, Est a joué 8 de Coeur, Sud a joué Valet de Coeur, Ouest a joué 7 de Coeur. Plus tard au tour 3, la Dame de Coeur est jouée. De plus Nord (= le joueur qui calcule) possède dans son jeu le roi de Coeur. En parcourant les plis on voit qu’au tour 1, Est rentre dans les conditions de R3, on applique donc R2 avec les atouts inférieurs au 10 de Coeur. Or tous les coeurs inférieurs au 10 sont tombés (Roi dans la main, 8 et 7 au tour 1, Dame au tour 3), on en conclut que Est n’a plus d’atout.
     aR4 - (règle heuristique similaire à R3 couleur) Si le joueur X a mis un 9, un As ou un 10 d’atout alors que c’était une carte adjacente à la carte maîtresse et que cette carte maîtresse est à l’adversaire alors on considère que le joueur X n’a plus d’atout. Vraiment la même règle que R3 couleur, simplement elle s’applique pour 9, As et 10.
     aR5 - (règle heuristique légèrement similaire à R4 couleur) À n’appliquer que pour les adversaires, par pour le partenaire. Si le joueur X a mis un 9 d’atout, que la première carte du pli était de l’atout (ne pas faire si la première carte était de la couleur et que le joueur X devait couper) et que le valet d’atout n’est pas préalablement tombé, alors on considère que le joueur X ne possède plus que des atouts inférieurs au seuil auquel il était tenu. On applique alors R2 sur ces atouts inférieurs. Exemple : L’atout est Coeur. Au tour 1 Nord joue la Dame de Coeur, Est joue le 9 de Coeur, Sud joue le Valet de Coeur, Ouest joue le 7 de Coeur. Au tour 2 le 8 de Coeur est joué. En parcourant les plis on voit qu’au tour 1 Est rentre dans les conditions de R5, on applique donc R2 avec les atouts inférieurs à la Dame. Or tous les coeurs inférieurs à la Dame sont tombés (7 au tour 1 et 8 au tour 2), on en conclut que Est n’a plus d’atout.
-    *R6 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 100, qu’il ne reste plus qu’un seul atout dehors (en comptant comme tombés les atouts dans notre main) et que l’on a pas estimé avec les règles précédentes que le partenaire n’a plus d’atout (on estime qu’il lui reste de l’atout donc), alors on considère que c’est le partenaire qui possède ce dernier atout, on dit que les deux adversaires n’ont plus d’atouts. R6’ avec 2 atouts dehors et l’annonce initiale du partenaire >= 120.
-    *R7 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 110, que le partenaire (ou moi) a déjà lancé un tour d’atout (joué un atout en première carte d’un pli) et que 2 atouts ou plus ne provenant pas du partenaire sont tombés hors de ce tour d’atout (mes atouts en main font partie des cartes tombées), alors on considère que seul le partenaire possède les atouts restants, on estime que les deux adversaires n’ont plus d’atout. R7’ avec une annonce >= 120 et 1 atout non partenaire.
+    aR6 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 100, qu’il ne reste plus qu’un seul atout dehors (en comptant comme tombés les atouts dans notre main) et que l’on a pas estimé avec les règles précédentes que le partenaire n’a plus d’atout (on estime qu’il lui reste de l’atout donc), alors on considère que c’est le partenaire qui possède ce dernier atout, on dit que les deux adversaires n’ont plus d’atouts. R6’ avec 2 atouts dehors et l’annonce initiale du partenaire >= 120.
+    aR7 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 110, que le partenaire (ou moi) a déjà lancé un tour d’atout (joué un atout en première carte d’un pli) et que 2 atouts ou plus ne provenant pas du partenaire sont tombés hors de ce tour d’atout (mes atouts en main font partie des cartes tombées), alors on considère que seul le partenaire possède les atouts restants, on estime que les deux adversaires n’ont plus d’atout. R7’ avec une annonce >= 120 et 1 atout non partenaire.
 
 
 
@@ -478,6 +479,56 @@ fun trumpRule6(allPlayerColor: MutableMap<PlayerPosition, Boolean>,
 
 }
 
+/*
+    aR7 - Rule 7 Trump - Heuristic
+     If the initial bid was >= 110 and the attacking team already played one tour of trump
+                                                (played a trump as a first card of a trick)
+                                    and 2 or more  trumps are for sure not from the hand of the taker outside the tours
+                                                ( either in my hand or played by anoher player)
+        then we consider that all remaining trump belong to the taker
+
+        same rule apply with bid >= 120 et 1 trump outside.
+
+ */
+fun trumpRule7(atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               cardsInHand: List<Card>,
+               plis: List<List<CardPlayed>>,
+               preneur: PlayerPosition,
+               points: Int
+): MutableMap<PlayerPosition, Boolean> {
+
+    val nbTourAtout =
+            plis.filter { pli -> pli[0].card.color == atout && (pli[0].position == preneur || pli[0].position == preneur + 2) }.size
+
+    val nbAtoutsInMyHand = cardsInHand.filter { it.color == atout }.size
+    val nbAtoutPlayedPlus =
+            plis.flatten().filter { it.card.color == atout }.size + cardsInHand.filter { it.color == atout }.size
+
+    // all cards , not from the first tour of trump initiated by the attacking team , not played by taker
+
+    val nbTotalAtoutOutside = plis.flatten().filter { it.card.color == atout && it.position != preneur }.size
+    val nbAtoutFirstPliAtout = plis.filter { pli -> pli[0].card.color == atout && (pli[0].position == preneur || pli[0].position == preneur + 2) }.first().filter{it.card.color == atout && it.position != preneur}.size
+    val nbAtoutOutside = nbTotalAtoutOutside - nbAtoutFirstPliAtout
+
+    val threshold = if (points >= 120) 1 else 2
+
+    val nbBelotePlayed = plis.flatten()
+            .filter { card -> card.belote != BeloteValue.NONE && card.position != preneur && card.position != preneur + 2 }.size
+
+    // We apply the heuristic : no trump for the defense team
+    // We eliminate the case where defense team had belote but not yet rebelote
+    if (((nbAtoutOutside + nbAtoutsInMyHand) >= threshold) &&
+        (nbAtoutPlayedPlus >= 6) &&
+        (nbTourAtout >= 1) &&
+        (nbBelotePlayed != 1)) {
+        allPlayerColor[preneur + 1] = false
+        allPlayerColor[preneur + 3] = false
+    }
+    return allPlayerColor
+
+}
+
 fun playersHaveColor(color: CardColor, atout: CardColor,
                      firstBid: Bid,
                      listPlis: List<List<CardPlayed>>,
@@ -502,6 +553,8 @@ fun playersHaveColor(color: CardColor, atout: CardColor,
     //Rule 5 for trump is relevant only if partner took the first bid and only to evaluate opponents
     val tR5 = (color == atout)
     val tR6 = (color == atout) && (preneur == myPosition + 2) && (firstBid.curPoint() >= 100)
+    val tR7 = (color == atout) && (preneur == myPosition + 2) && (firstBid.curPoint() >= 110)
+
 
     val realGamePlayers = PlayerPosition.values().map { position ->
         Pair(position, CardValue.values().map { value -> Pair(value, unk) }.toMap().toMutableMap())
@@ -514,12 +567,28 @@ fun playersHaveColor(color: CardColor, atout: CardColor,
             }
         }
     }
+
+    // remove the cards played from the list of card in game
+
     for (pli in listPlis) {
         for (card in pli.filter { it.card.color == color }) {
             for (position in PlayerPosition.values()) {
                 realGamePlayers[position]!![card.card.value] = when (position) {
                     card.position -> yes
                     else -> no
+                }
+                // special case for belote and rebelote : if a plyer did announce belote with Queen nobody else can have the KING
+                // and vice-versa
+                if (card.belote != BeloteValue.NONE) {
+                    // this player did declare belote --> nobody else can have king or queen of atout
+                    for (oPosition in PlayerPosition.values().filter { it != card.position }) {
+                        realGamePlayers[oPosition]!![CardValue.KING] = no
+                        realGamePlayers[oPosition]!![CardValue.QUEEN] = no
+                    }
+                    val other = if (card.card.value == CardValue.QUEEN) CardValue.KING else CardValue.QUEEN
+                    if (realGamePlayers[card.position]!![other] == unk)
+                        realGamePlayers[card.position]!![other] = yes
+
                 }
             }
         }
@@ -607,6 +676,9 @@ fun playersHaveColor(color: CardColor, atout: CardColor,
         allPlayerColor = trumpRule6(allPlayerColor, preneur, firstBid.curPoint(), realGamePlayers,
                                     presenceInGameCardValue.filter { it.value }
                                             .map { it.key })
+    }
+    if (tR7) {
+        allPlayerColor = trumpRule7(atout, allPlayerColor, cardsInHand, listPlis, preneur, firstBid.curPoint())
     }
     // for my self I know my cards .... so no need to use any heuristic
     allPlayerColor[myPosition] = cardsInHand.any { it.color == color }
