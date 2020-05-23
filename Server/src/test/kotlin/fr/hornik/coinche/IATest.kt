@@ -964,6 +964,8 @@ class IATest {
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb = 0
         val atout = spade
+        val bid = SimpleBid(atout, 80)
+
         val myPosition = south
         val myCards = listOf(Card(seven, spade), Card(ace, heart), Card(queen, heart), Card(king, diamond),
                              Card(ace, diamond))
@@ -978,7 +980,8 @@ class IATest {
                               CardPlayed(Card(nine, heart), position = west),
                               CardPlayed(Card(seven, diamond), position = north))
         val onTable = listOf(CardPlayed(Card(king, heart), position = east))
-        val result = playersHaveColor(diamond, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+        val result = playersHaveColor(diamond, atout, bid,
+                                      plisNS.toList().sortedBy { it.first }.map { e -> e.second },
                                       myPosition,
                                       myCards)
 /*Resultat : west n’a pas de carreau*/
@@ -1012,6 +1015,8 @@ class IATest {
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb = 0
         val atout = heart
+        val bid = SimpleBid(atout, 80)
+
         val myPosition = north
         val myCards =
                 listOf(Card(seven, heart), Card(king, heart), Card(ten, heart), Card(jack, club), Card(eight, club))
@@ -1028,21 +1033,24 @@ class IATest {
                        CardPlayed(Card(king, club), position = south), CardPlayed(Card(queen, club), position = west))
         val onTable: List<CardPlayed> = listOf()
         var result =
-                playersHaveColor(heart, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(heart, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 
         /* Resultat : east , west and south have no club */
         var resultB =
                 (result[south] == result[west]) and (result[east] == result[west]) and (result[west] == false) and (result[north] == true)
         result =
-                playersHaveColor(club, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(club, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 
         resultB =
                 resultB and (result[south] == result[west]) and (result[east] == result[west]) and (result[west] == false) and (result[north] == true)
 
         result =
-                playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(spade, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 
         resultB =
@@ -1078,6 +1086,8 @@ Resultat : e has not any more S
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb = 0
         val atout = club
+        val bid = SimpleBid(atout, 80)
+
         val myPosition = west
         val myCards =
                 listOf(Card(seven, heart), Card(king, heart), Card(ten, heart), Card(queen, club), Card(king, club),
@@ -1090,7 +1100,8 @@ Resultat : e has not any more S
                        CardPlayed(Card(jack, spade), position = south), CardPlayed(Card(nine, spade), position = west))
         val onTable: List<CardPlayed> = listOf(CardPlayed(Card(ace, diamond), position = north))
         val result =
-                playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(spade, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 /*Resultat : east has not any more Spade */
 /* you need to check result here */
@@ -1119,6 +1130,8 @@ Resultat : e has not any more S
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb = 0
         val atout = club
+        val bid = SimpleBid(atout, 80)
+
         val myPosition = west
         val myCards =
                 listOf(Card(seven, heart), Card(king, heart), Card(ten, heart), Card(queen, club), Card(king, club),
@@ -1128,7 +1141,8 @@ Resultat : e has not any more S
                        CardPlayed(Card(ten, spade), position = east), CardPlayed(Card(king, spade), position = south))
         val onTable: List<CardPlayed> = listOf(CardPlayed(Card(ace, diamond), position = north))
         val result =
-                playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(spade, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 /*Resultat : east has not any more spade */
 /* you need to check result here */
@@ -1158,6 +1172,8 @@ Resultat : e has not any more S
         val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
         var nb = 0
         val atout = club
+        val bid = SimpleBid(atout, 80)
+
         val myPosition = south
         val myCards = listOf(Card(seven, diamond), Card(king, heart), Card(eight, heart), Card(eight, diamond),
                              Card(nine, club), Card(jack, heart), Card(jack, spade))
@@ -1167,7 +1183,8 @@ Resultat : e has not any more S
         val onTable: List<CardPlayed> =
                 listOf(CardPlayed(Card(jack, club), position = north), CardPlayed(Card(eight, club), position = east))
         val result =
-                playersHaveColor(spade, atout, plisNS.toList().sortedBy { it.first }.map { e -> e.second }, myPosition,
+                playersHaveColor(spade, atout, bid, plisNS.toList().sortedBy { it.first }.map { e -> e.second },
+                                 myPosition,
                                  myCards)
 /*Resultat : east has not any more spade */
 /* you need to check result here */
@@ -1483,7 +1500,7 @@ Resultat : e and n have not any more C
         /* Resultat : east and north have not any more club  */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1537,7 +1554,7 @@ Resultat : n and s have  not any more C
         /* Resultat : north and south have  not any more club  */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1596,7 +1613,7 @@ Resultat : e has not any more D
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1655,7 +1672,7 @@ Resultat : e has not any more D
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1716,7 +1733,7 @@ Resultat : : e has no H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1791,7 +1808,7 @@ Resultat : : s has no trump H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1851,7 +1868,7 @@ Resultat : : s has no trump H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1895,7 +1912,7 @@ Resultat : : s has no trump H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1940,7 +1957,7 @@ Resultat : : s has no trump H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -1984,7 +2001,7 @@ Resultat : : s has no trump H
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -2048,7 +2065,7 @@ Resultat : est et ouest n’ont plus d’atout
         /* Resultat : est et ouest n’ont plus d’atout */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -2110,7 +2127,7 @@ Resultat : est n’a plus d’atout
 
         //val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -2177,7 +2194,7 @@ Resultat : est n’a plus d’atout
 
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -2253,7 +2270,7 @@ Resultat : est n’a plus da’tout
         /* Resultat : est n’a plus da’tout */
         // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
         // val result = IARun.enchere(myPosition, listBids, myCards, 0)
-        val result = playersHaveColor(atout, atout, allCardPli, myPosition, myCards)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
 
 
         /* you need to check result here */
@@ -2268,4 +2285,116 @@ Resultat : est n’a plus da’tout
     }
 
 
+    /*
+Atout : H
+Fonction : testRule5Atout
+Moi : s
+Bid : H 80 s
+Mon jeu : [ 7 S , 7 C , 9 C , 13 H , 13 D ]
+Pli 1 : [ w 7 H , n 12 H , e 9 H , s 11 H ]
+Table : [ s 8 H ]
+Test : Atout , R5A
+Resultat : East n'a plus d'atout - on ne met pas un 9 comme ca ....
+
+*/
+
+    @Test
+    fun testtestRule5Atout() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+        val atout = heart
+        val myPosition = south
+        val bid = SimpleBid(heart, 80, south)
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south))
+        val myCards = mutableListOf(Card(seven, spade), Card(seven, club), Card(nine, club), Card(king, heart),
+                                    Card(king, diamond))
+        plisNS[nb++] = listOf(CardPlayed(Card(seven, heart), position = west),
+                              CardPlayed(Card(queen, heart), position = north),
+                              CardPlayed(Card(nine, heart), position = east),
+                              CardPlayed(Card(jack, heart), position = south))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(eight, heart), position = south))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : East n'a plus d'atout - on ne met pas un nine comme ca .... */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(!result[east]!! && result[north]!! && result[west]!! && result[south]!!) { "$nameTest FAIL $result is not accurate" }
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
+    /*
+  Atout : H
+  Fonction : Rule5Atout
+  Moi : s
+  Bid : H 80 s
+  Mon jeu : [ 7 S , 7 C , 9 C , 13 H , 11 H ]
+  Pli 1 : [ w 7 H , n 12 H , e 9 H , s 13 H ]
+  Pli 2 : [ e 1 C , s 8 H , w 9 C , n 8 C ]
+  Table : [  ]
+  Test : Atout , R5A
+  Resultat : East n'a plus d'atout - on ne met pas un 9 comme ca ....
+
+  */
+
+    @Test
+    fun testRule5Atout() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb=0
+
+        val atout=heart
+        val myPosition=south
+        val bid = SimpleBid( heart ,80, south )
+        val listBids: MutableList<Bid> = mutableListOf(bid, Pass(west), Pass(north), Pass(east), Pass(south) )
+        val myCards = mutableListOf( Card( seven , spade ) , Card( seven , club ) , Card( nine , club ) , Card( king , heart ) , Card( jack , heart ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( seven , heart ) , position= west  ) ,CardPlayed(Card( queen , heart ) , position= north  ) ,CardPlayed(Card( nine , heart ) , position= east  ) ,CardPlayed(Card( king , heart ) , position= south  ) )
+        plisNS[nb++] = listOf(CardPlayed(Card( ace , club ) , position= east  ) ,CardPlayed(Card( eight , heart ) , position= south  ) ,CardPlayed(Card( nine , club ) , position= west  ) ,CardPlayed(Card( eight , club ) , position= north  ) )
+        val onTable :MutableList<CardPlayed> = mutableListOf(  )
+        validateHand(myCards,bid = listBids.last{ (it is SimpleBid) ||  (it is General) || (it is Capot)},onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        //val result = TODO("Test : Atout , R5A")
+        /* Resultat : East n'a plus d'atout - on ne met pas un nine comme ca .... */
+        // val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+        // val result = IARun.enchere(myPosition, listBids, myCards, 0)
+        val result = playersHaveColor(atout, atout, bid, allCardPli, myPosition, myCards)
+
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+assert(!result[east]!! && result[north]!! && result[west]!! && result[south]!! ) { "$nameTest FAIL $result is not accurate" }
+//assert(result.value == heart && result.color == king ) { "$nameTest FAIL $result is not accurate" }
+//assert(result.curcolor()  == heart && result.curPoints == 80 ) { "$nameTest FAIL $result is not accurate" }
+
+            debugPrintln(dbgLevel.REGULAR,"$nameTest:PASS  we play  :$result ")
+
+        }
 }

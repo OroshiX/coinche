@@ -1,0 +1,9 @@
+Atout : H 
+Fonction : testRule5Atout
+Moi : s 
+Bid : H 80 s 
+Mon jeu : [ 7 S , 7 C , 9 C , 13 H , 13 D ]
+Pli 1 : [ w 7 H , n 12 H , e 9 H , s 11 H ]
+Table : [ s 8 H ]
+Test : Atout , R5A
+Resultat : East n'a plus d'atout - on ne met pas un 9 comme ca ....
