@@ -3,6 +3,7 @@ package fr.hornik.coinche.business
 import fr.hornik.coinche.model.Bid
 import fr.hornik.coinche.model.Card
 import fr.hornik.coinche.model.CardPlayed
+import fr.hornik.coinche.model.Pass
 import fr.hornik.coinche.model.values.BeloteValue
 import fr.hornik.coinche.model.values.CardColor
 import fr.hornik.coinche.model.values.CardValue
@@ -741,7 +742,7 @@ fun whatToPlay(myPosition: PlayerPosition,
     // Decide what function to call
 
     // first : who took first this color and with how many points ?
-    val bidPreneur = bids.first { it.curColor() == atout }
+    val bidPreneur = bids.first { !(it is Pass) && it.curColor() == atout }
     val preneur = bidPreneur.position
     val pointsPreneur = bidPreneur.curPoint()
 
