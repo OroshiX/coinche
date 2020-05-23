@@ -31,10 +31,10 @@ fun masterColor(color: CardColor, atout: CardColor, allCardsPlayed: List<CardPla
             else -> 8 - it.dominanceCouleur
         }
     }
-    if (remainColorCards.isEmpty()) {
-        return null
+    return if (remainColorCards.isEmpty()) {
+        null
     } else {
-        return Card(remainColorCards.first(), color)
+        Card(remainColorCards.first(), color)
     }
 }
 
@@ -70,8 +70,8 @@ Atout :
     aR1 - Si le joueur X n’a pas joué de l’atout alors que l’atout était demandé ou qu’il a joué d’une couleur différente de celle demandée alors que son partenaire n’était pas maître alors le joueur X n’a plus d’atout.
     R2 - DUPLICATE WITH R2 Si tous les atouts sont tombés (ceux que j’ai en main sont considérés tombés) alors le joueur X n’a plus d’atout.
     aR3 - Si le joueur X a joué un atout de valeur inférieure à l’atout noté a le plus fort du pli (a doit uniquement être parmi les cartes jouées avant le joueur X lors de ce pli), alors on sait qu’il n’a pas d’atout supérieur à a, on peut donc appliquer la règle R2 avec un plus petit nombre d’atouts. Exemple : C’est atout Coeur. Au tour 1 Nord a joué 10 de Coeur, Est a joué 8 de Coeur, Sud a joué Valet de Coeur, Ouest a joué 7 de Coeur. Plus tard au tour 3, la Dame de Coeur est jouée. De plus Nord (= le joueur qui calcule) possède dans son jeu le roi de Coeur. En parcourant les plis on voit qu’au tour 1, Est rentre dans les conditions de R3, on applique donc R2 avec les atouts inférieurs au 10 de Coeur. Or tous les coeurs inférieurs au 10 sont tombés (Roi dans la main, 8 et 7 au tour 1, Dame au tour 3), on en conclut que Est n’a plus d’atout.
-    *R4 - (règle heuristique similaire à R3 couleur) Si le joueur X a mis un 9, un As ou un 10 d’atout alors que c’était une carte adjacente à la carte maîtresse et que cette carte maîtresse est à l’adversaire alors on considère que le joueur X n’a plus d’atout. Vraiment la même règle que R3 couleur, simplement elle s’applique pour 9, As et 10.
-    *R5 - (règle heuristique légèrement similaire à R4 couleur) À n’appliquer que pour les adversaires, par pour le partenaire. Si le joueur X a mis un 9 d’atout, que la première carte du pli était de l’atout (ne pas faire si la première carte était de la couleur et que le joueur X devait couper) et que le valet d’atout n’est pas préalablement tombé, alors on considère que le joueur X ne possède plus que des atouts inférieurs au seuil auquel il était tenu. On applique alors R2 sur ces atouts inférieurs. Exemple : L’atout est Coeur. Au tour 1 Nord joue la Dame de Coeur, Est joue le 9 de Coeur, Sud joue le Valet de Coeur, Ouest joue le 7 de Coeur. Au tour 2 le 8 de Coeur est joué. En parcourant les plis on voit qu’au tour 1 Est rentre dans les conditions de R5, on applique donc R2 avec les atouts inférieurs à la Dame. Or tous les coeurs inférieurs à la Dame sont tombés (7 au tour 1 et 8 au tour 2), on en conclut que Est n’a plus d’atout.
+    aR4 - (règle heuristique similaire à R3 couleur) Si le joueur X a mis un 9, un As ou un 10 d’atout alors que c’était une carte adjacente à la carte maîtresse et que cette carte maîtresse est à l’adversaire alors on considère que le joueur X n’a plus d’atout. Vraiment la même règle que R3 couleur, simplement elle s’applique pour 9, As et 10.
+    aR5 - (règle heuristique légèrement similaire à R4 couleur) À n’appliquer que pour les adversaires, par pour le partenaire. Si le joueur X a mis un 9 d’atout, que la première carte du pli était de l’atout (ne pas faire si la première carte était de la couleur et que le joueur X devait couper) et que le valet d’atout n’est pas préalablement tombé, alors on considère que le joueur X ne possède plus que des atouts inférieurs au seuil auquel il était tenu. On applique alors R2 sur ces atouts inférieurs. Exemple : L’atout est Coeur. Au tour 1 Nord joue la Dame de Coeur, Est joue le 9 de Coeur, Sud joue le Valet de Coeur, Ouest joue le 7 de Coeur. Au tour 2 le 8 de Coeur est joué. En parcourant les plis on voit qu’au tour 1 Est rentre dans les conditions de R5, on applique donc R2 avec les atouts inférieurs à la Dame. Or tous les coeurs inférieurs à la Dame sont tombés (7 au tour 1 et 8 au tour 2), on en conclut que Est n’a plus d’atout.
     *R6 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 100, qu’il ne reste plus qu’un seul atout dehors (en comptant comme tombés les atouts dans notre main) et que l’on a pas estimé avec les règles précédentes que le partenaire n’a plus d’atout (on estime qu’il lui reste de l’atout donc), alors on considère que c’est le partenaire qui possède ce dernier atout, on dit que les deux adversaires n’ont plus d’atouts. R6’ avec 2 atouts dehors et l’annonce initiale du partenaire >= 120.
     *R7 - (règle heuristique) Si l’annonce initiale du partenaire est supérieure ou égale à 110, que le partenaire (ou moi) a déjà lancé un tour d’atout (joué un atout en première carte d’un pli) et que 2 atouts ou plus ne provenant pas du partenaire sont tombés hors de ce tour d’atout (mes atouts en main font partie des cartes tombées), alors on considère que seul le partenaire possède les atouts restants, on estime que les deux adversaires n’ont plus d’atout. R7’ avec une annonce >= 120 et 1 atout non partenaire.
 
@@ -387,12 +387,77 @@ fun trumpRule4(atout: CardColor,
     return allPlayerColor
 }
 
-fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<CardPlayed>>, myPosition: PlayerPosition,
+/*
+    Rule 5 Trump - Heuristic
+    similar to R4 color - to apply only if myPosition+ 2 took the bid, and only for opponent players
+     If player X (an opponent) played the 9 of trump and firs card of trick was trump and jack was not already played then consider that plyer  X has no trump lower than 9 and higher than minimu cvard to play.
+      Example : Trump is Heart
+                        Tour 1 : North play Queen Heart
+                                 East play 9 Heart
+                                 South play Jack Heart
+                                 West play 7 Heart
+                        Tour 2 8 Heart is played
+
+                         hence no trump lower than Queen exists in X game ... and there is no existing trump lower tha Quee (7 and 8 are down )
+                         so East has no longer trump
+ */
+fun trumpRule5(atout: CardColor,
+               allPlayerColor: MutableMap<PlayerPosition, Boolean>,
+               preneur: PlayerPosition,
+               realGamePlayer: Map<PlayerPosition, MutableMap<CardValue, CardInPlayerHand>>,
+               cardsInHand: List<Card>,
+               pli: List<CardPlayed>,
+               allRemainingTrump: List<CardValue>): MutableMap<PlayerPosition, Boolean> {
+
+    // if the pli was not about atout we cannot apply the rule
+    // Rule apply only if jack is still in game hence at least one of the players can have the nine
+
+    if ((pli[0].card.color != atout) || ((allRemainingTrump.none { it == CardValue.JACK }) && (cardsInHand.none { it.value == CardValue.JACK })))
+        return allPlayerColor
+
+    // this rule is relevant only to evaluate the defense team.
+    val nineCard =
+            pli.firstOrNull {
+                it.card.color == atout && it.card.value == CardValue.NINE &&
+                (it.position == preneur + 1 || it.position == preneur + 3)
+            }
+            ?: return allPlayerColor
+    val ninePos = pli.indexOf(nineCard)
+
+
+    if (ninePos == 3) {
+        // no conclusion to take, it was the last card of the trick
+        return allPlayerColor
+    }
+    var maxAtoutBeforeNine = CardValue.SEVEN
+
+    for (index in 0 until ninePos) {
+        if (pli[index].card.color == atout && pli[index].card.value.dominanceAtout >= maxAtoutBeforeNine.dominanceAtout) {
+            maxAtoutBeforeNine = pli[index].card.value
+
+        }
+    }
+    for (value in CardValue.values()
+            .filter {
+                (it.dominanceAtout > maxAtoutBeforeNine.dominanceAtout) and
+                        (it.dominanceAtout < CardValue.NINE.dominanceAtout)
+            }) {
+        realGamePlayer[nineCard.position]!![value] = CardInPlayerHand.NO
+    }
+    return allPlayerColor
+
+}
+
+fun playersHaveColor(color: CardColor, atout: CardColor,
+                     firstBid: Bid,
+                     listPlis: List<List<CardPlayed>>,
+                     myPosition: PlayerPosition,
                      cardsInHand: List<Card>): Map<PlayerPosition, Boolean> {
 
     val unk = CardInPlayerHand.UNK
     val yes = CardInPlayerHand.YES
     val no = CardInPlayerHand.NO
+    val preneur = firstBid.position
     // By default all players have all colors
     var allPlayerColor = PlayerPosition.values().map { Pair(it, true) }.toMap().toMutableMap()
     val cR1 = true
@@ -404,6 +469,8 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
     val tR2 = (color == atout)
     val tR3 = (color == atout)
     val tR4 = (color == atout)
+    //Rule 5 for trump is relevant only if partner took the first bid and only to evaluate opponents
+    val tR5 = (color == atout)
 
     val realGamePlayers = PlayerPosition.values().map { position ->
         Pair(position, CardValue.values().map { value -> Pair(value, unk) }.toMap().toMutableMap())
@@ -485,6 +552,11 @@ fun playersHaveColor(color: CardColor, atout: CardColor, listPlis: List<List<Car
                                         presenceInGameCardValue.filter { it.key.dominanceAtout >= CardValue.QUEEN.dominanceAtout && it.value }
                                                 .map { it.key })
         }
+        if (tR5) {
+            allPlayerColor = trumpRule5(color, allPlayerColor, preneur, realGamePlayers, cardsInHand, pli,
+                                        presenceInGameCardValue
+                                                .map { it.key })
+        }
         // the card was played , it's not anymore a master card
 
         pli.filter { it.card.color == color }.forEach { e -> presenceInGameCardValue[e.card.value] = false }
@@ -560,9 +632,9 @@ fun whatToPlay(myPosition: PlayerPosition,
     // Decide what function to call
 
     // first : who took first this color and with how many points ?
-    val pairPreneur = bids.filter { it.curColor() == atout }.map { Pair(it.position, it.curPoint()) }.first()
-    val preneur = pairPreneur.first
-    val pointsPreneur = pairPreneur.second
+    val bidPreneur = bids.first { it.curColor() == atout }
+    val preneur = bidPreneur.position
+    val pointsPreneur = bidPreneur.curPoint()
 
     when (preneur) {
         // My Partner is the first announcer for this color
@@ -570,11 +642,11 @@ fun whatToPlay(myPosition: PlayerPosition,
             if (onTable.size == 0) {
                 //it's my turn to play
                 debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} calling first to play ")
-                return firstToPlay(myPosition, cardsInHand, pointsPreneur, bids, atout, allCardPli,
-                                   list3Dominantes, listMyDominantes)
+                return firstToPlay(myPosition, cardsInHand, bidPreneur, pointsPreneur, bids, atout,
+                                   allCardPli, list3Dominantes, listMyDominantes)
             } else {
                 debugPrintln(dbgLevel.DEBUG, "$nameFunction:${getLineNumber()} calling nth to play ")
-                return nthToPlay(myPosition, cardsInHand, atout, allCardPli,
+                return nthToPlay(myPosition, cardsInHand, bidPreneur, atout, allCardPli,
                                  missingPoints, currBid, list3Dominantes, listMyDominantes, maxAtout)
 
             }
@@ -646,6 +718,7 @@ Il me reste donc maintenant des cartes (soit en ayant fait les 3 critères ou ju
  */
 fun firstToPlay(myPosition: PlayerPosition,
                 cardsInHand: MutableList<Card>,
+                bidPreneur: Bid,
                 pointsFirstAnnounce: Int,
                 bids: MutableList<Bid>,
                 atout: CardColor,
@@ -670,7 +743,8 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
 
     // Determine who has still what color from differents heuristics + data
     val mapColorPlayerRemain =
-            CardColor.values().map { e -> Pair(e, playersHaveColor(e, atout, allCardPli, myPosition, cardsInHand)) }
+            CardColor.values()
+                    .map { e -> Pair(e, playersHaveColor(e, atout, bidPreneur, allCardPli, myPosition, cardsInHand)) }
                     .toMap()
 
     // this will be the card we will return
@@ -788,8 +862,9 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
             //map of color present in the hand of next player but trump
             val otherPlayerColor = localCards.filter { it.color != atout }.map { card ->
                 Pair(card.color,
-                     playersHaveColor(color = card.color, atout = atout, listPlis = allCardPli,
-                                      myPosition = myPosition, cardsInHand = cardsInHand)[myPosition + 1])
+                     playersHaveColor(color = card.color, atout = atout, firstBid = bidPreneur,
+                                      listPlis = allCardPli, myPosition = myPosition,
+                                      cardsInHand = cardsInHand)[myPosition + 1])
             }.toMap()
 
             // this is the list of color candidate for playing in this case ( color not in hand of next player)
@@ -973,6 +1048,7 @@ Sinon je joue l’atout le plus fort, 9 excepté, si je n’ai plus que le 9 je 
 
 fun nthToPlay(myPosition: PlayerPosition,
               cardsInHand: MutableList<Card>,
+              bidPreneur: Bid,
               atout: CardColor,
               allCardPli: List<List<CardPlayed>>,
               missingPoints: Int,
@@ -987,7 +1063,8 @@ fun nthToPlay(myPosition: PlayerPosition,
     var aCard: Card?
 
     val mapColorPlayerRemain =
-            CardColor.values().map { e -> Pair(e, playersHaveColor(e, atout, allCardPli, myPosition, cardsInHand)) }
+            CardColor.values()
+                    .map { e -> Pair(e, playersHaveColor(e, atout, bidPreneur, allCardPli, myPosition, cardsInHand)) }
                     .toMap()
 
     // allCardPli cannot be empty since we are not the first player to play
