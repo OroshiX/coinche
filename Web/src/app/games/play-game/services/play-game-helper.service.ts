@@ -104,7 +104,7 @@ export class PlayGameHelperService {
     );
   }
 
-  buildEmojiCard(card: PlayCard | CardView, belote?: string): EmojiCardLabel {
+  buildEmojiCard(card: PlayCard | CardView, belote?: string, isFirst?: boolean): EmojiCardLabel {
     let label: string;
     if (!!card && card.value) {
       const tmp = cardValueEntriesList
@@ -113,8 +113,8 @@ export class PlayGameHelperService {
       const tmp1 = tmp[0];
       label = ['ACE', 'KING', 'QUEEN', 'JACK'].includes(tmp1) ? tmp1.charAt(0) : card?.value.toString();
 
-      const emojiBelote = ' 👸🏻';
-      const emojiRebelote = ' 🤴🏻';
+      const emojiBelote = ' 👑';
+      const emojiRebelote = ' 👑👑';
       const emojiClub = ' ♣️';
       const emojiDiam = ' ♦️';
       const emojiSpade = ' ♠️';
@@ -127,11 +127,12 @@ export class PlayGameHelperService {
       const emojiB = belote === 'BELOTE' ?
         emojiBelote : belote === 'REBELOTE' ?
           emojiRebelote : '';
+      const emojiF = isFirst ? ' *' : '';
       return new EmojiCardLabel({
         cardLabel: label,
         cardColor: card.color,
         cardEmoji: emojiC,
-        cardLabelEmoji: label.concat(emojiC).concat(emojiB),
+        cardLabelEmoji: label.concat(emojiC).concat(emojiB).concat(emojiF),
         isBlack: (card.color === CARD_COLOR.CLUB || card.color === CARD_COLOR.SPADE)
       });
     }

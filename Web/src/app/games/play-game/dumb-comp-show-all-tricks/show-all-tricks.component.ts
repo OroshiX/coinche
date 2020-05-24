@@ -58,7 +58,7 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ShowAllTricksDialogComponent, {
-      width: '500px',
+      width: '630px',
       data: this.dataToDialog
     });
 
@@ -87,15 +87,28 @@ export class ShowAllTricksComponent implements OnInit, OnDestroy {
         map(res => res.map((tr: AllTrickFlat[]) => {
           const rowTrickMap = new Map<string, EmojiCardLabel | string>();
           const listPlayerPosOrdered = this.helper.playersPositionRefOrderedByMyPosZero(this.myPosition);
-          tr.map(el => {
+          tr.map((el, index) => {
+            let indexFirstPlayer: number;
+            if (index === 0) {
+              indexFirstPlayer = listPlayerPosOrdered.findIndex(p => p=== el.position);
+            }
+
             const id = listPlayerPosOrdered.findIndex((p, idx) => p === el.position);
             if (id === 0) {
               this.campList.push(el.camp);
             }
-            const emojiLabel = this.helper.buildEmojiCard(new PlayCard({
-              color: el.color,
-              value: el.value
-            }), el.belote);
+            let emojiLabel: any;
+            if (id === indexFirstPlayer) {
+              emojiLabel = this.helper.buildEmojiCard(new PlayCard({
+                color: el.color,
+                value: el.value
+              }), el.belote, true);
+            } else {
+              emojiLabel = this.helper.buildEmojiCard(new PlayCard({
+                color: el.color,
+                value: el.value
+              }), el.belote, false);
+            }
             rowTrickMap.set(id.toString(), emojiLabel);
           });
           return rowTrickMap;

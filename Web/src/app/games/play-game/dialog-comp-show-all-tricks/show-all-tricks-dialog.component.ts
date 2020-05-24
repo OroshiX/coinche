@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Trick } from '../../../shared/models/game';
 
-export const FIELD1_WIDTH_SMALL = 95;
+export const FIELD1_WIDTH_SMALL = 120;
 
 export interface DialogData {
   allTrickData: Trick[],
@@ -37,44 +37,51 @@ export class ShowAllTricksDialogComponent implements OnInit, AfterViewInit {
     this.field1Width = FIELD1_WIDTH_SMALL;
 
     this.columnDefs = [
-      {headerName: this.nicknames[0], field: 'player1', width: this.field1Width,
-        cellStyle(params){
+      {
+        headerName: this.nicknames[0], field: 'player1', width: this.field1Width,
+        cellStyle(params) {
           if (params.value.includes('♥️') || params.value.includes('♦️')) {
-            return {color:'red', 'margin-right': '0'}
+            return {color: 'red'};
           } else {
-            return {color: 'black', 'margin-right': '0'}
+            return {color: 'black'};
           }
-        }},
-      {headerName: this.nicknames[1], field: 'player2', width: this.field1Width,
-        cellStyle(params){
+        }
+      },
+      {
+        headerName: this.nicknames[1], field: 'player2', width: this.field1Width,
+        cellStyle(params) {
           if (params.value.includes('♥️') || params.value.includes('♦️')) {
-            return {color:'red', 'margin-right': '0'}
+            return {color: 'red'};
           } else {
-            return {color: 'black', 'margin-right': '0'}
+            return {color: 'black'};
           }
-        }},
-      {headerName: this.nicknames[2], field: 'player3', width: this.field1Width,
-        cellStyle(params){
+        }
+      },
+      {
+        headerName: this.nicknames[2], field: 'player3', width: this.field1Width,
+        cellStyle(params) {
           if (params.value.includes('♥️') || params.value.includes('♦️')) {
-            return {color:'red'}
+            return {color: 'red'};
           } else {
-            return {color: 'black'}
+            return {color: 'black'};
           }
-        }},
-      {headerName: this.nicknames[3], field: 'player4', width: this.field1Width,
-        cellStyle(params){
+        }
+      },
+      {
+        headerName: this.nicknames[3], field: 'player4', width: this.field1Width,
+        cellStyle(params) {
           if (params.value.includes('♥️') || params.value.includes('♦️')) {
-            return {color:'red'}
+            return {color: 'red'};
           } else {
-            return {color: 'black'}
+            return {color: 'black'};
           }
-        }},
+        }
+      },
       {headerName: 'Camp', field: 'camp', width: this.field1Width}
     ];
   }
 
   ngAfterViewInit(): void {
   }
-
 
 }
