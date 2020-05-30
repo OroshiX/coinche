@@ -313,7 +313,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
             statLostContract(setOfGames, listOf(east,west),setOfGames.currentBid)
             statWinContract(setOfGames, listOf(north,south),setOfGames.currentBid)
         }
-        if (setOfGames.currentBid is Capot)
+        //if (setOfGames.currentBid is Capot)
         setOfGames.bids.clear()
         setOfGames.currentBid = Pass()
         setOfGames.players.onEach { it.cardsInHand.clear() }
