@@ -2818,4 +2818,71 @@ Resultat : : result should be different from 9 of C
 
     }
 
+
+    /*
+
+
+Atout : C
+Fonction : AtoutClub
+Moi : s
+Bid : C 120 s
+Mon jeu : [ 7 H , 1 H , 8 H , 10 S , 9 S , 12 D , 13 S  ]
+Table : [ w 13 D ]
+Test : should not crash bids : Pass( e ) , Simple( S 110 s ) , Pass ( w ) , Simple ( C 120 n ) , Pass ( e ) , Simple ( C 130 s )
+Resultat : : result should be ....
+
+
+
+*/
+
+    @Test
+    fun testAtoutClub() {
+        val nameTest = object {}.javaClass.enclosingMethod.name
+        val oldTraceLevel = traceLevel
+        val plisEW: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        val plisNS: MutableMap<Int, List<CardPlayed>> = mutableMapOf()
+        var nb = 0
+
+
+        val atout = club
+        val myPosition = south
+        val bid = SimpleBid(club, 120, south)
+        val listBids: MutableList<Bid> = mutableListOf(Pass(east),
+                                                       SimpleBid(spade, 110, south),
+                                                       Pass(west),
+                                                       SimpleBid(club, 120, north),
+                                                       Pass(east),
+                                                       SimpleBid(club, 130, south),
+                                                       Pass(west),
+                                                       Pass(north),
+                                                       Pass(east))
+        val myCards = mutableListOf(Card(seven, heart), Card(ace, heart), Card(eight, heart), Card(ten, spade),
+                                    Card(nine, spade), Card(queen, diamond), Card(king, spade))
+        val onTable: MutableList<CardPlayed> = mutableListOf(CardPlayed(Card(king, diamond), position = west))
+        validateHand(myCards, bid = listBids.last { (it is SimpleBid) || (it is General) || (it is Capot) },
+                     onTable = onTable)
+        val nbPlis = plisEW.size + plisNS.size
+        var currentPli: Map<Int, MutableList<CardPlayed>> = mapOf()
+        if (onTable.isNotEmpty()) {
+            currentPli = listOf(Pair(nbPlis, onTable)).toMap()
+        }
+        val allCardPli = (plisEW + plisNS + currentPli).toSortedMap().map { it.value }
+
+        /* Resultat : : result should be ....  */
+
+
+        val result = whatToPlay(myPosition, myCards, listBids, atout, onTable, plisNS, plisEW)
+
+
+        /* you need to check result here */
+
+        traceLevel = oldTraceLevel
+        assert(result != null && result.value == queen && result.color == diamond) { "$nameTest FAIL $result is not accurate" }
+
+
+        debugPrintln(dbgLevel.REGULAR, "$nameTest:PASS  we play  :$result ")
+
+    }
+
+
 }

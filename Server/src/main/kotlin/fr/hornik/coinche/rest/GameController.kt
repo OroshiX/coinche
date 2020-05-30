@@ -47,9 +47,19 @@ class GameController(@Autowired val data: DataManagement,
         return set.toTable(user.uid)
     }
 
+    @GetMapping("/{userId}/getStatistic",
+                produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun getStat(@PathVariable("userId") userId: String, @PathVariable("gameID") gameId: String): Statistic {
+
+
+        if (user.uid.isBlank()) throw NotAuthenticatedException()
+
+        return data.getStat(uid=userId)
+    }
+
     @PostMapping("/{gameId}/playCard",
-            produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun playCard(@PathVariable gameId: String, @RequestBody card: Card) : CardPlayed {
+                 produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun playCard(@PathVariable gameId: String, @RequestBody card: Card): CardPlayed {
         val game = data.getGameOrThrow(gameId)
         if (!inGame(game, user)) throw NotInGameException(gameId)
         if (game.state != TableState.PLAYING) throw NotValidStateException(

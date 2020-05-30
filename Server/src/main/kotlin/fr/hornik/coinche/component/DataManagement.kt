@@ -16,6 +16,7 @@ import java.util.*
 @Service
 class DataManagement(@Autowired private val fire: FireApp) {
     final val sets: MutableList<SetOfGames> = mutableListOf()
+    final val statistics: MutableList<Statistic> = mutableListOf()
 
     /*
         for debugging reason it can be useful to comment previous line and uncomment these 3 lines
@@ -103,9 +104,12 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     init {
         sets.addAll(fire.getAllGames())
+        statistics.addAll(fire.getAllStats())
         // This is to disable automatic games in test environement and not mess up with prod DB due to conflict with automatic players
-        if (productionAction)
+        if (productionAction) {
             timer.schedule(timeoutTask, 0, 1000)
+
+        }
 
     }
 
@@ -126,11 +130,113 @@ class DataManagement(@Autowired private val fire: FireApp) {
     fun createGame(setOfGames: SetOfGames, user: User): SetOfGames {
         fire.saveGame(setOfGames, true)
         sets.add(setOfGames)
+        statCreateGame(setOfGames, user)
         return setOfGames
     }
 
-    fun updateStat(setOfGames: SetOfGames) {
-        fire.saveStatistics(setOfGames)
+
+    // Functions around update of Statistics
+
+
+    // Get statistic for a User or a uid - at least one of them needs to be not null
+    // by default will use the user in priority on uid
+    fun getStat(user: User? = null, uid: String = ""): Statistic {
+        val nameFunction = object {}.javaClass.enclosingMethod.name
+        val uidString: String
+
+        uidString = when {
+            user != null -> {
+                user.uid
+            }
+            uid.isNotBlank() -> uid
+            else -> {
+                debugPrintln(dbgLevel.REGULAR, "Error no user given in $nameFunction")
+                ""
+            }
+        }
+
+
+        var aStat = statistics.firstOrNull() { it.uid == uidString }
+        if (aStat == null) {
+            aStat = Statistic(uidString)
+            //if uid is blank, it's a bug , better not do anything with this bad uid
+            // do not create stat with bad uid
+            // we got a new Statistic object .... we will fake usage but not really do anything with it.
+            if (uidString.isNotBlank()) statistics.add(aStat)
+        }
+        return aStat
+    }
+
+    fun statJoinGame(setOfGames: SetOfGames, user: User, save: Boolean = false) {
+
+        getStat(user = user).nbGamesJoined++
+        if (save) statUpdate(setOfGames)
+    }
+
+    fun statCreateGame(setOfGames: SetOfGames, user: User, save: Boolean = false) {
+        getStat(user = user).nbCreatedGames++
+
+        if (save) statUpdate(setOfGames)
+    }
+
+
+    fun statStartContract(setOfGames: SetOfGames, save: Boolean = false) {
+        for (uid in setOfGames.players.map { it.uid }) {
+            getStat(uid = uid).nbContract
+        }
+
+        if (save) statUpdate(setOfGames)
+    }
+
+    fun statWinGame(setOfGames: SetOfGames, listUserId: List<String>, save: Boolean = false) {
+
+        for (uid in listUserId) {
+            getStat(uid = uid).nbWinGame++
+        }
+        if (save) statUpdate(setOfGames)
+
+    }
+
+    fun statLostGame(setOfGames: SetOfGames, listUserId: List<String>, save: Boolean = false) {
+
+        for (uid in listUserId) {
+            getStat(uid = uid).nbLostGame++
+        }
+        if (save) statUpdate(setOfGames)
+
+    }
+
+    fun statWinContract(setOfGames: SetOfGames, listUserId: List<String>, bid:Bid,save: Boolean = false) {
+
+        for (uid in listUserId) {
+            val stat = getStat(uid=uid)
+            var avg=(stat.averageContractWin*stat.nbWinContract + bid.curPoint())
+                    stat.nbWinContract++
+            avg = stat.nbWinContract++.toFloat()
+            if (bid is Capot) stat.nbCapot++
+        }
+
+        if (save) statUpdate(setOfGames)
+    }
+
+    fun statLostContract(setOfGames: SetOfGames, listUserId: List<String>, bid:Bid, save: Boolean = false) {
+
+        for (uid in listUserId) {
+            getStat(uid = uid).nbWinContract++
+        }
+
+        if (save) statUpdate(setOfGames)
+    }
+
+    fun statEndGame(setOfGames: SetOfGames, save: Boolean = false) {
+        for (uid in setOfGames.players.map { it.uid }) {
+            getStat(uid = uid).nbEndedGames++
+        }
+        if (save) statUpdate(setOfGames)
+    }
+
+    fun statUpdate(setOfGames: SetOfGames) {
+        fire.saveStatistics(statistics.filter { setOfGames.players.map { player -> player.uid }.contains(it.uid) })
     }
 
     /**
@@ -146,6 +252,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
         // somebody did join the game - we reset the timer.
         setOfGames.whoseTurnTimeLastChg = System.currentTimeMillis()
         val player = setOfGames.addPlayer(user.uid, user.nickname)
+        statJoinGame(setOfGames, user)
         if (setOfGames.isFull()) {
             // Time to distribute
             distribute(setOfGames)
@@ -173,7 +280,7 @@ class DataManagement(@Autowired private val fire: FireApp) {
                     firstDealOfCards(dealer, allSpreads.random())
                 else
                     dealCards(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value }, 10,
-                            allSpreads.random(), dealer)
+                              allSpreads.random(), dealer)
         setOfGames.players.first { it.position == PlayerPosition.NORTH }.cardsInHand =
                 hands[0].toMutableList()
         setOfGames.players.first { it.position == PlayerPosition.EAST }.cardsInHand =
@@ -187,8 +294,26 @@ class DataManagement(@Autowired private val fire: FireApp) {
 
     private fun scoreAndCleanupAfterGame(setOfGames: SetOfGames) {
 
-        setOfGames.score += calculateScoreGame(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value },
-                setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
+
+        val east = setOfGames.players.first { it.position == PlayerPosition.EAST }.uid
+        val west = setOfGames.players.first { it.position == PlayerPosition.WEST }.uid
+        val north = setOfGames.players.first { it.position == PlayerPosition.NORTH }.uid
+        val south = setOfGames.players.first { it.position == PlayerPosition.SOUTH }.uid
+
+        val score = calculateScoreGame(setOfGames.plisCampNS.map { it.value }, setOfGames.plisCampEW.map { it.value },
+                                       setOfGames.whoWonLastTrick!!, setOfGames.currentBid)
+        setOfGames.score += score
+        if (score.eastWest > score.northSouth) {
+            statWinContract(setOfGames, listOf(east,west),setOfGames.currentBid)
+            statLostContract(setOfGames, listOf(north,south),setOfGames.currentBid)
+
+
+
+        } else {
+            statLostContract(setOfGames, listOf(east,west),setOfGames.currentBid)
+            statWinContract(setOfGames, listOf(north,south),setOfGames.currentBid)
+        }
+        if (setOfGames.currentBid is Capot)
         setOfGames.bids.clear()
         setOfGames.currentBid = Pass()
         setOfGames.players.onEach { it.cardsInHand.clear() }
@@ -224,15 +349,18 @@ class DataManagement(@Autowired private val fire: FireApp) {
         if ((!isValidBid(setOfGames.bids, bid)) || (bid.position != me.position)) throw InvalidBidException(bid)
 
 
-        val iaBid = IARun.enchere(me.position, setOfGames.bids, setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
+        val iaBid = IARun.enchere(me.position, setOfGames.bids,
+                                  setOfGames.players.first { it.position == setOfGames.whoseTurn }.cardsInHand, 0)
         if ((iaBid.curColor() != bid.curColor()) || (iaBid.curPoint() != bid.curPoint())) {
-            debugPrintln(dbgLevel.DEBUG, "****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $iaBid ")
+            debugPrintln(dbgLevel.DEBUG,
+                         "****************Player ${setOfGames.whoseTurn} did bid $bid I'd prefer to bid $iaBid ")
         }
 
         // We dont expect the client application to fill correctly the annonce we are coinch'ing
         // and we can compute it here so .... annonce is not checked in the function isValidBid .... so we can do it either before or after.
         if (bid is Coinche) {
-            setOfGames.bids.add(Coinche(annonce = getCurrentBid(setOfGames.bids), position = bid.position, surcoinche = bid.surcoinche))
+            setOfGames.bids.add(Coinche(annonce = getCurrentBid(setOfGames.bids), position = bid.position,
+                                        surcoinche = bid.surcoinche))
         } else {
             setOfGames.bids.add(bid)
         }
@@ -251,7 +379,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 // Everybody did pass - we need to put all cards in plisCamp before a new deal
                 for (i in 0..3) {
                     setOfGames.plisCampNS[i * 2] = setOfGames.players[i].cardsInHand.take(4).map { e -> CardPlayed(e) }
-                    setOfGames.plisCampNS[i * 2 + 1] = setOfGames.players[i].cardsInHand.takeLast(4).map { e -> CardPlayed(e) }
+                    setOfGames.plisCampNS[i * 2 + 1] =
+                            setOfGames.players[i].cardsInHand.takeLast(4).map { e -> CardPlayed(e) }
 
                     setOfGames.players[i].cardsInHand.clear()
                 }
@@ -313,12 +442,14 @@ class DataManagement(@Autowired private val fire: FireApp) {
             TableState.BIDDING,
             TableState.PLAYING -> {
                 // First check there are 32 cards ( pli / hands ) 8 belongs to each players
-                val nbCards: MutableMap<PlayerPosition, Int> = PlayerPosition.values().map { Pair(it, 0) }.toMap().toMutableMap()
+                val nbCards: MutableMap<PlayerPosition, Int> =
+                        PlayerPosition.values().map { Pair(it, 0) }.toMap().toMutableMap()
 
                 for (position in PlayerPosition.values()) {
                     val player = setOfGames.players.firstOrNull { it.position == position }
                     if (player == null) {
-                        debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id} null player at position $position")
+                        debugPrintln(dbgLevel.REGULAR,
+                                     "COHERENCY DID FAIL FOR ${setOfGames.id} null player at position $position")
                         returnValue = false
                     }
                     // there are several more efficient way to do it , but we really want to check coherency and potential bug
@@ -330,15 +461,17 @@ class DataManagement(@Autowired private val fire: FireApp) {
                     for (pli in setOfGames.plisCampEW.values) {
                         nbCards[position] = nbCards[position]!! + pli.filter { it.position == position }.size
                     }
-                    if (setOfGames.onTable.size != 4 ) {
+                    if (setOfGames.onTable.size != 4) {
                         // if there are 4 cards on table , they are already in plisCampNS or plisCampEW
-                        nbCards[position] = nbCards[position]!! + setOfGames.onTable.filter { it.position == position }.size
+                        nbCards[position] =
+                                nbCards[position]!! + setOfGames.onTable.filter { it.position == position }.size
                     }
 
 
                 }
                 if (nbCards.any { it.value != 8 }) {
-                    debugPrintln(dbgLevel.REGULAR, "COHERENCY DID FAIL FOR ${setOfGames.id} \n Players dont have 8 cards $nbCards")
+                    debugPrintln(dbgLevel.REGULAR,
+                                 "COHERENCY DID FAIL FOR ${setOfGames.id} \n Players dont have 8 cards $nbCards")
                     returnValue = false
                 }
             }
@@ -346,10 +479,10 @@ class DataManagement(@Autowired private val fire: FireApp) {
         return returnValue
     }
 
-    fun allCheckCoherency() : String? {
+    fun allCheckCoherency(): String? {
         for (setOfGames in sets)
             if (!checkCoherency(setOfGames)) {
-                debugPrintln(dbgLevel.REGULAR,"Coherency error on $setOfGames detected stopping check")
+                debugPrintln(dbgLevel.REGULAR, "Coherency error on $setOfGames detected stopping check")
                 return setOfGames.id
             }
         return ""
@@ -374,10 +507,12 @@ class DataManagement(@Autowired private val fire: FireApp) {
                         theCardToCheck = card)) {
             throw NotAuthorizedOperation("The card $card is not valid")
         }
-        val beloteValue: BeloteValue = isBelote(card, myCards, myPosition, setOfGames.currentBid, setOfGames.plisCampNS, setOfGames.plisCampEW)
+        val beloteValue: BeloteValue =
+                isBelote(card, myCards, myPosition, setOfGames.currentBid, setOfGames.plisCampNS, setOfGames.plisCampEW)
 
         if (beloteValue != BeloteValue.NONE) {
-            debugPrintln(dbgLevel.DEBUG, "***********${user.nickname}($myPosition) is playing $beloteValue playing $card")
+            debugPrintln(dbgLevel.DEBUG,
+                         "***********${user.nickname}($myPosition) is playing $beloteValue playing $card")
         }
         val returnValue = CardPlayed(card, beloteValue, myPosition)
         setOfGames.onTable.add(returnValue)
@@ -404,7 +539,8 @@ class DataManagement(@Autowired private val fire: FireApp) {
                 }
             }
         } else {
-            val valid = allValidCardsToPlay(setOfGames.nextPlayer().cardsInHand, setOfGames.currentBid, setOfGames.onTable)
+            val valid =
+                    allValidCardsToPlay(setOfGames.nextPlayer().cardsInHand, setOfGames.currentBid, setOfGames.onTable)
 
             // still cards to play, need to set playable to the right value for next player
             for (mcard in setOfGames.nextPlayer().cardsInHand) {

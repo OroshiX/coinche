@@ -1,0 +1,12 @@
+
+
+Atout : C 
+Fonction : AtoutClub
+Moi : s 
+Bid : C 120 s 
+Mon jeu : [ 7 H , 1 H , 8 H , 10 S , 9 S , 12 D , 13 S  ]
+Table : [ w 13 D ]
+Test : should not crash bids : Pass( e ) , Simple( S 110 s ) , Pass ( w ) , Simple ( C 120 n ) , Pass ( e ) , Simple ( C 130 s )
+Resultat : : result should be .... 
+
+

@@ -32,7 +32,7 @@ class FireApp {
         const val COLLECTION_PLAYERS_SETS = "playersSets"
         const val COLLECTION_PLAYERS = "players"
         const val COLLECTION_STATISTIQUES = "statistics"
-        var statisticLocale = true
+        var statisticLocale = false
     }
 
     init {
@@ -59,32 +59,22 @@ class FireApp {
         return addedDocRef.get().id
     }
 
-    fun getStatistic(uid: String = ""): Statistic {
-        if (statisticLocale) {
-            //emulation of firebase
-            return Statistic("uid", 0, 0, 0, 0)
-        } else {
-            // we need to look in firebase
-            return Statistic()
-        }
-    }
 
-    fun saveStatistics(setOfGames: SetOfGames) {
+    fun saveStatistics(stats :List<Statistic>) {
         val nameFunction = object {}.javaClass.enclosingMethod.name
         val oldTraceLevel = traceLevel
         traceLevel = dbgLevel.ALL
         // we should call this function everytime we end a game
 
-        for (uid in setOfGames.players.map { it.uid }) {
-            val aStatistic = getStatistic(uid)
+        for (aStat in stats) {
             // update statistic with the right value
 
             // write statistics in the DB
             if (DataManagement.productionAction) {
-                val future: ApiFuture<WriteResult> = db.collection(COLLECTION_STATISTIQUES).document(uid)
-                        .set(aStatistic)
+                val future: ApiFuture<WriteResult> = db.collection(COLLECTION_STATISTIQUES).document(aStat.uid)
+                        .set(aStat)
                 // println("saveStatistique : " + future.get().getUpdateTime() + "future:" +future.toString())
-                val arg = aStatistic.toString()
+                val arg = aStat.toString()
                 debugPrintln(dbgLevel.DEBUG, "JSON from saveTable ${arg}")
 
             } else {
@@ -229,6 +219,23 @@ class FireApp {
 
     }
 
+    fun getAllStats():List<Statistic> {
+        val listStats = mutableListOf<Statistic>()
+
+        val listDocuments = db.collection(COLLECTION_STATISTIQUES).listDocuments()
+        for (docRef in listDocuments) {
+            val documentSnapshot = docRef.get().get()
+            if (documentSnapshot.exists()) {
+                val jsonString = JsonMapper.serializeJson(documentSnapshot.data)
+                JsonSerialize.fromJson<Statistic>(jsonString).let {
+                    listStats.add (it.copy(uid = documentSnapshot.id))
+                }
+            }
+        }
+        return listStats
+
+    }
+
     fun getAllGames(): List<SetOfGames> {
         val sets = mutableListOf<SetOfGames>()
         val listDocuments = db.collection(COLLECTION_SETS).listDocuments()
@@ -241,6 +248,7 @@ class FireApp {
                 }
             }
         }
+
         return sets
     }
 }

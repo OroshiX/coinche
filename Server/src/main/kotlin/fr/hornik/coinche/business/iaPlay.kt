@@ -509,7 +509,11 @@ fun trumpRule7(atout: CardColor,
     // all cards , not from the first tour of trump initiated by the attacking team , not played by taker
 
     val nbTotalAtoutOutside = plis.flatten().filter { it.card.color == atout && it.position != preneur }.size
-    val nbAtoutFirstPliAtout = plis.filter { pli -> pli[0].card.color == atout && (pli[0].position == preneur || pli[0].position == preneur + 2) }.first().filter{it.card.color == atout && it.position != preneur}.size
+    val nbAtoutFirstPliAtout =
+            if (plis.any { pli -> pli[0].card.color == atout && (pli[0].position == preneur || pli[0].position == preneur + 2) }) {
+                plis.first { pli -> pli[0].card.color == atout && (pli[0].position == preneur || pli[0].position == preneur + 2) }
+                        .filter { it.card.color == atout && it.position != preneur }.size
+            } else 0
     val nbAtoutOutside = nbTotalAtoutOutside - nbAtoutFirstPliAtout
 
     val threshold = if (points >= 120) 1 else 2

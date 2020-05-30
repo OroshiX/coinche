@@ -10,7 +10,6 @@ import fr.hornik.coinche.util.debugPrintln
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
-import fr.hornik.coinche.util.traceLevel
 
 class DataTest {
 
@@ -51,9 +50,24 @@ class DataTest {
         dataManagement.joinGame(set, Toto, "firstnameToto")
         dataManagement.joinGame(set, Tutu, "firstnameTutu")
         dataManagement.joinGame(set, Tata, "firstnameTata")
-        dataManagement.updateStat(set)
+        dataManagement.statUpdate(set)
     }
 
+    @Test
+    fun testGetStat() {
+        //get User in priority on UID
+
+        val uid = "ToId"
+        val uid1 = "TaId"
+        val stat = dataManagement.getStat(uid="ToId")
+        val user = User(uid,"TOTO")
+        val stat1 = dataManagement.getStat(user=user)
+        val stat2 = dataManagement.getStat(user=user,uid=uid)
+        val stat3 = dataManagement.getStat(user=user,uid=uid1)
+        val stat4 = dataManagement.getStat(uid=uid1)
+        val stat5 = dataManagement.getStat(uid=uid)
+        debugPrintln(dbgLevel.REGULAR, "Statistic for ToId is \n\tstat=$stat (uid=$uid), \n\tstat1=$stat1(user=$user), \n\tstat2=$stat2(user=$user,uid=$uid)\n\tstat3=$stat3((user=$user,uid=$uid1)\n\tstat4=$stat4(ui=$uid1)")
+    }
 
     @Test
     fun testPlayCard() {
