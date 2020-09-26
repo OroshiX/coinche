@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/service/network/fire_auth_service.dart';
 import 'package:FlutterCoinche/service/network/my_auth_user.dart';
+import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
@@ -34,6 +35,11 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
     signUp = false;
+    ServerCommunication.isLoggedIn().then((value) {
+      if (value.isLoggedIn) {
+        Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
+      }
+    });
     super.initState();
   }
 

@@ -5,6 +5,7 @@ import 'package:FlutterCoinche/.env.dart';
 import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
+import 'package:FlutterCoinche/domain/dto/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:requests/requests.dart';
 
@@ -98,5 +99,16 @@ class ServerCommunication {
       throw r.json();
     }
     return true;
+  }
+
+  static Future<Login> isLoggedIn() async {
+    var url = "$_baseUrl/lobby/isLoggedIn";
+    print("connect to $url");
+    var r = await Requests.get(url, timeoutSeconds: 30);
+    if (r.hasError) {
+      throw r.json();
+    }
+    var login = Login.fromJson(jsonDecode(r.content()));
+    return login;
   }
 }
