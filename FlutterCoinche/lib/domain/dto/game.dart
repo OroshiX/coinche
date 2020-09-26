@@ -25,7 +25,7 @@ class Game extends Equatable {
   final PlayerPosition winnerLastTrick;
   final List<CardPlayed> lastTrick;
 
-  Game(
+  const Game(
       {this.id,
       this.nicknames = const Nicknames(),
       this.cards = const [],
@@ -64,8 +64,6 @@ class Game extends Equatable {
         winnerLastTrick,
         lastTrick
       ];
-
-
 
   Game copy({
     String withId,

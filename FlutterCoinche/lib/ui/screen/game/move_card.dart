@@ -40,8 +40,8 @@ class MoveCardState extends State<MoveCard>
   void initState() {
     super.initState();
     lastRequestTimestamp = DateTime.now().millisecondsSinceEpoch;
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _initAnim(OffsetAndRotation.zero(lastRequestTimestamp));
     _cardModel = widget.card;
   }
@@ -61,7 +61,7 @@ class MoveCardState extends State<MoveCard>
     }
     lastRequestTimestamp = destination.timestamp;
     print("time: $destination");
-    if(!shouldAnim) {
+    if (!shouldAnim) {
       origin = destination;
     }
     if (origin == null) {
@@ -76,6 +76,7 @@ class MoveCardState extends State<MoveCard>
               .animate(_controller);
       _offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
           .animate(_controller);
+      _controller.fling();
     });
     _controller.forward(from: 0);
   }

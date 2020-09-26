@@ -1,4 +1,5 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
+import 'package:FlutterCoinche/service/network/fire_auth_service.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/games_bloc.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
@@ -43,7 +44,7 @@ class AllGamesScreen extends StatelessWidget {
           IconButton(
               icon: Icon(Icons.exit_to_app),
               onPressed: () {
-                ServerCommunication.logout().then(
+                getFireAuthService().signOut(context).then(
                     (value) => Navigator.of(context)
                         .pushReplacementNamed(LoginScreen.routeName),
                     onError: (error) => FlushbarHelper.createError(

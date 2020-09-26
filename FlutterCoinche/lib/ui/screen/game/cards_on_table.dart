@@ -17,6 +17,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 
 class CardsOnTable extends StatelessWidget {
   static int nbBuild = 0;
+  static int inFunction = 0;
   final double maxHeightCard, minHeightCard;
   final double minPadding;
 
@@ -96,7 +97,12 @@ class CardsOnTable extends StatelessWidget {
                 }
               }
 
-              void _initState({ReactiveModel<Game> model}) {
+              void _initState({
+                ReactiveModel<Game> model,
+//                    bool fromInit = false
+              }) {
+                print("in function ${++inFunction}");
+
                 /// Init values
                 myPosition = model.state.myPosition;
                 posTableToCardinal = getPosTableToCardinal(myPosition);
@@ -163,7 +169,9 @@ class CardsOnTable extends StatelessWidget {
                   if (cardsOnTable.length != 4) {
                     currentCardsOnTable = cardsOnTable;
                     firstRender = false;
+//                    if (!fromInit) {
                     model.setState((g) => orderedCards = tmpOrderedCards);
+//                    }
                     return;
                   }
                 }
@@ -228,7 +236,9 @@ class CardsOnTable extends StatelessWidget {
                 }
                 currentCardsOnTable = cardsOnTable;
                 firstRender = false;
+//                if (!fromInit) {
                 model.setState((g) => orderedCards = tmpOrderedCards);
+//                }
               }
 
               return StateBuilder<Game>(
@@ -245,6 +255,9 @@ class CardsOnTable extends StatelessWidget {
                 onSetState: (context, model) {
                   _initState(model: model);
                 },
+                didChangeDependencies: (context, model) {
+                  _initState(model: model);
+                },
                 builderWithChild: (context, model, child) {
                   if (model.state.state != TableState.PLAYING &&
                       model.state.state != TableState.BETWEEN_GAMES &&
@@ -256,14 +269,12 @@ class CardsOnTable extends StatelessWidget {
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
                   child: Stack(
-                    children: [
-                      for (var i = 0; i < orderedCards.length; i++)
-                        ManagedStateCard(
-                          axisDirection: orderedCards[i]?.key,
-                          cardWidth: cardWidth,
-                          cardHeight: cardHeight,
-                        ),
-                    ],
+                    children: orderedCards
+                        .map((e) => ManagedStateCard(
+                            axisDirection: e.key,
+                            cardWidth: cardWidth,
+                            cardHeight: cardHeight))
+                        .toList(),
                   ),
                 ),
               );

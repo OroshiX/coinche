@@ -69,7 +69,6 @@ extension TablePosition on AxisDirection {
           break;
       }
     }
-    print("getAvatar: $file");
     return file;
   }
 
