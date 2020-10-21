@@ -1,16 +1,14 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
-import 'package:FlutterCoinche/state/games_bloc.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DialogNewGame extends StatefulWidget {
-  final GamesBloc gamesProvider;
-
-  const DialogNewGame({Key key, @required this.gamesProvider})
-      : super(key: key);
+  const DialogNewGame({Key key}) : super(key: key);
 
   @override
   _DialogNewGameState createState() => _DialogNewGameState();
@@ -72,9 +70,9 @@ class _DialogNewGameState extends State<DialogNewGame> {
                 ServerCommunication.createGame(_controller.text +
                         (_automated ? GameEmpty.automatedString : ""))
                     .then((value) {
-                  widget.gamesProvider.changeGame(value.id);
+                  context.read<GameModel>().changeGame(value.id);
                   Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(StatedGameScreen.routeName);
+                  Navigator.of(context).pushNamed(GameScreenProvided.routeName);
                 },
                         onError: (error) => Flushbar(
                               message: "Oh no! Please check your connection",

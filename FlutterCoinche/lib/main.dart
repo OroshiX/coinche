@@ -1,16 +1,18 @@
-import 'package:FlutterCoinche/state/games_bloc.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
-import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
+import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
 import 'package:FlutterCoinche/ui/screen/login_screen.dart';
 import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
-import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(BlocProvider(
-      creator: (BuildContext context, BlocCreatorBag bag) => GamesBloc(),
-      child: MyApp()));
+  runApp(ChangeNotifierProvider(
+    create: (context) => GameModel(),
+    builder: (context, child) => MyApp(),
+    lazy: false,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginScreen.routeName: (context) => LoginScreen(),
         AllGamesScreen.routeName: (context) => AllGamesScreen(),
-        StatedGameScreen.routeName: (context) => StatedGameScreen(),
+        GameScreenProvided.routeName: (context) => GameScreenProvided(),
         TestingOfflineGame.routeName: (context) => TestingOfflineGame(),
       },
       home: LoginScreen(),

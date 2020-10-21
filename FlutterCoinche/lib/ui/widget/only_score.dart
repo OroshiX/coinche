@@ -1,17 +1,18 @@
 import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/player_position.dart'
     show PlayerPosition;
 import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:FlutterCoinche/domain/dto/score.dart';
-import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
 import 'package:FlutterCoinche/domain/logic/calculus.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/widget/dot_player.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:tuple/tuple.dart';
 
 class OnlyScoreWidget extends StatelessWidget {
   final Bid currentBid;
@@ -29,27 +30,27 @@ class OnlyScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<PlayerPosition, Color> playerPosToColor;
     final Map<AxisDirection, Color> mapColor = Injector.get<PosTableToColor>()
         .value
         .map((key, value) => MapEntry(key, value.item1));
     const textSize = 14.0;
     const dotSize = 7.0;
-    return StateBuilder<Game>(
-      models: [RM.get<Game>()],
-      tag: [Aspects.SCORE, Aspects.MY_POSITION],
-      builder: (_, model) {
-        final Score score = model.state.score;
-        playerPosToColor = getCardinalToPosTable(model.state.myPosition)
-            .map((key, value) => MapEntry(key, mapColor[value]));
-        return NeumorphicNoStateWidget(
-          borderRadius: 10,
-          sizeShadow: SizeShadow.SMALL,
-          pressed: false,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: IntrinsicWidth(
-              child: Column(
+    return NeumorphicNoStateWidget(
+      borderRadius: 10,
+      sizeShadow: SizeShadow.SMALL,
+      pressed: false,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: IntrinsicWidth(
+          child: Selector<GameModel, Tuple2<Score, Map<PlayerPosition, Color>>>(
+            selector: (ctx, gm) => Tuple2(
+                gm.game.score,
+                getCardinalToPosTable(gm.game.myPosition)
+                    .map((key, value) => MapEntry(key, mapColor[value]))),
+            builder: (context, value, child) {
+              final Score score = value.item1;
+              final playerPosToColor = value.item2;
+              return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
@@ -105,11 +106,11 @@ class OnlyScoreWidget extends StatelessWidget {
                     ],
                   )
                 ],
-              ),
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

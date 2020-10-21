@@ -1,9 +1,10 @@
-import 'package:FlutterCoinche/domain/dto/game.dart';
+import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/widget/card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class CardsInHandWidget extends StatelessWidget {
   final double cardHeight, cardWidth, screenWidth;
@@ -19,24 +20,20 @@ class CardsInHandWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder<Game>(
-      models: [RM.get<Game>()],
-      tag: [
-        Aspects.CARDS,
-        Aspects.MY_POSITION,
-        Aspects.NEXT_PLAYER,
-        Aspects.STATE
-      ],
-      builder: (context, model) {
-        final cards = model.state.cards;
-        final me = model.state.myPosition;
-        final nextPlayer = model.state.nextPlayer;
-        final myTurn = me == nextPlayer;
-        final inPlayMode = model.state.state == TableState.PLAYING;
-        return Container(
-            height: cardHeight + paddingVertical * 2,
-            width: screenWidth,
-            child: ListView.builder(
+    return Container(
+        height: cardHeight + paddingVertical * 2,
+        width: screenWidth,
+        child: Selector<GameModel, Tuple3<bool, List<CardModel>, bool>>(
+          // myTurn, cards, inPlayMode
+          selector: (ctx, gM) => Tuple3(
+              gM.game.myPosition == gM.game.nextPlayer,
+              gM.game.cards,
+              gM.game.state == TableState.PLAYING),
+          builder: (context, value, child) {
+            final myTurn = value.item1;
+            final cards = value.item2;
+            final inPlayMode = value.item3;
+            return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: cards.length,
                 itemBuilder: (context, index) {
@@ -98,8 +95,8 @@ class CardsInHandWidget extends StatelessWidget {
                           displayPlayable: inPlayMode && myTurn,
                         )),
                   );
-                }));
-      },
-    );
+                });
+          },
+        ));
   }
 }

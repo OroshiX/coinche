@@ -1,13 +1,14 @@
-import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
 import 'package:FlutterCoinche/ui/widget/only_score.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class BigScoreWidget extends StatelessWidget {
   final Future<dynamic> Function(BuildContext context) quit;
@@ -16,14 +17,13 @@ class BigScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder<Game>(
-      models: [RM.get<Game>()],
-      tag: [Aspects.STATE],
-      builder: (context, model) {
-        final state = model.state.state;
+    return Selector<GameModel, Tuple2<TableState, bool>>(
+      selector: (ctx, gm) => Tuple2(gm.game.state, gm.game.isWon()),
+      builder: (context, model, child) {
+        final state = model.item1;
         if (state != TableState.BETWEEN_GAMES && state != TableState.ENDED)
           return SizedBox();
-        final bool won = model.state.isWon();
+        final bool won = model.item2;
         return LayoutBuilder(
           builder: (context, constraints) {
             return Stack(children: [
