@@ -7,6 +7,7 @@ import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/domain/dto/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:requests/requests.dart';
 
 class ServerCommunication {
@@ -75,7 +76,12 @@ class ServerCommunication {
     return true;
   }
 
-  static Future<void> joinGame({String gameId, String nickname}) async {
+  static Future<void> joinGame({
+    String gameId,
+    String nickname,
+    @required void Function() onSuccess,
+    @required OnErrorFunction onError,
+  }) async {
     var url = "$_baseUrl/lobby/joinGame";
     var r = await Requests.post(url,
         queryParameters: {
@@ -84,7 +90,7 @@ class ServerCommunication {
         },
         timeoutSeconds: 60);
     if (r.hasError) {
-      throw r.json();
+      onError(r.content());
     }
   }
 
@@ -112,3 +118,5 @@ class ServerCommunication {
     return login;
   }
 }
+
+typedef OnErrorFunction = void Function(String message);

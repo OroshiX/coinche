@@ -13,4 +13,9 @@ class CardWonOrCenter extends Tuple4<CardModel, AxisDirection, int, bool> {
             timestamp == null
                 ? DateTime.now().millisecondsSinceEpoch
                 : timestamp, shouldAnim);
+
+  CardModel get cardModel => item1;
+  AxisDirection get position => item2;
+  int get timeStamp => item3;
+  bool get shouldAnim => item4;
 }

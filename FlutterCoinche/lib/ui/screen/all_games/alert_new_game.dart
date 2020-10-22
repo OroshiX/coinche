@@ -1,6 +1,7 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/game_model.dart';
+import 'package:FlutterCoinche/state/login_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
 import 'package:flushbar/flushbar.dart';
@@ -70,7 +71,9 @@ class _DialogNewGameState extends State<DialogNewGame> {
                 ServerCommunication.createGame(_controller.text +
                         (_automated ? GameEmpty.automatedString : ""))
                     .then((value) {
-                  context.read<GameModel>().changeGame(value.id);
+                  context.read<GameModel>().changeGame(
+                      idGame: value.id,
+                      userUid: context.read<LoginModel>().user.uid);
                   Navigator.of(context).pop();
                   Navigator.of(context).pushNamed(GameScreenProvided.routeName);
                 },

@@ -6,6 +6,7 @@ import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class BidsAnimated extends StatefulWidget {
   final TableState tableState;
@@ -157,15 +158,14 @@ class BidsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<GameModel, TableState>(
-      selector: (ctx, gameModel) => gameModel.game.state,
-      builder: (context, playerPosStatePosTable, child) {
-        var bidsOfPosition =
-            context.read<GameModel>().game.bidsOfPosition(posTable);
+    return Selector<GameModel, Tuple2<TableState, List<Bid>>>(
+      selector: (ctx, gameModel) =>
+          Tuple2(gameModel.game.state, gameModel.game.bidsOfPosition(posTable)),
+      builder: (context, tableStateBids, child) {
         return BidsAnimated(
-            tableState: playerPosStatePosTable,
+            tableState: tableStateBids.item1,
             posTable: posTable,
-            bidsOfPosition: bidsOfPosition,
+            bidsOfPosition: tableStateBids.item2,
             widthAvatar: widthAvatar,
             heightAvatar: heightAvatar);
       },

@@ -13,7 +13,7 @@ class GamesBloc implements Bloc {
   final BehaviorSubject<Game> _gameController =
       BehaviorSubject<Game>.seeded(Game());
 
-  AudioCache audioCache;
+  AudioCache _audioCache;
 
   ValueStream<Game> get game => _gameController;
 
@@ -25,26 +25,26 @@ class GamesBloc implements Bloc {
 
   GamesBloc() {
     _allMyGames = BehaviorSubject();
-    audioCache = AudioCache(
+    _audioCache = AudioCache(
         prefix: "sounds/",
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
-    audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
+    _audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
   }
 
   void playError() {
-    audioCache.play("bad.mp3", volume: 0.7);
+    _audioCache.play("bad.mp3", volume: 0.7);
   }
 
   void playSoftButton() {
-    audioCache.play("click.mp3", volume: 0.2);
+    _audioCache.play("click.mp3", volume: 0.2);
   }
 
   void playHardButton() {
-    audioCache.play("clic.mp3", volume: 0.3);
+    _audioCache.play("clic.mp3", volume: 0.3);
   }
 
   void playPlop() {
-    audioCache.play("buttonPush.mp3", volume: 0.5);
+    _audioCache.play("buttonPush.mp3", volume: 0.5);
   }
 
   void addAllMyGames(List<GameEmpty> games) {

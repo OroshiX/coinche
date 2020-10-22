@@ -16,7 +16,9 @@ class AllGamesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _refreshData(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _refreshData(context);
+    });
     return Selector<GameModel, String>(
       selector: (ctx, gameModel) => gameModel.error,
       builder: (context, value, child) {

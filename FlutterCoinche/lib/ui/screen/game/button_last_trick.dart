@@ -28,10 +28,10 @@ class ButtonLastTrick extends StatelessWidget {
         getCardinalToPosTable(gm.game.myPosition),
       ),
       builder: (context, value, child) {
-        var mapColor = context
-            .read<PosTableToColor>()
-            .value
-            .map((key, value) => MapEntry(key, value.item1));
+        Map<AxisDirection, Color> mapColor =
+            context.select<PosTableToColor, Map<AxisDirection, Color>>(
+                (posTableToColor) => posTableToColor.value
+                    .map((key, value) => MapEntry(key, value.item1)));
 
         final winner = value.item1;
         final List<CardPlayed> lastTrick = value.item2;

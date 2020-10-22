@@ -1,16 +1,15 @@
 import 'package:FlutterCoinche/service/network/fire_auth_service.dart';
 import 'package:FlutterCoinche/service/network/my_auth_user.dart';
-import 'package:FlutterCoinche/service/network/server_communication.dart';
-import 'package:FlutterCoinche/state/games_bloc.dart';
+import 'package:FlutterCoinche/state/login_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
-import 'package:bloc_provider/bloc_provider.dart';
 import 'package:flushbar/flushbar_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = "/login";
@@ -35,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
     signUp = false;
-    ServerCommunication.isLoggedIn().then((value) {
-      if (value.isLoggedIn) {
+    context.read<LoginModel>().checkLoggedFuture.then((value) {
+      if (context.read<LoginModel>().loggedIn) {
         Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
       }
     });
@@ -92,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _showSuccess(
         "You are now signed in as ${user.displayName != null ? user.displayName : user.email}, and we set user!");
 
-    BlocProvider.of<GamesBloc>(context).setUser(user);
+    context.read<LoginModel>().setUser(user);
 
     Navigator.of(context).popUntil((route) => route.isFirst);
     // navigate to other page

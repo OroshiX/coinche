@@ -8,11 +8,11 @@ import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
-import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
+import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
 import 'package:FlutterCoinche/ui/screen/game/table_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class TestingOfflineGame extends StatelessWidget {
@@ -25,33 +25,32 @@ class TestingOfflineGame extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           color: colorLightBlue,
-          child: Injector(
-            inject: [
-              Inject(() => Game()),
-              Inject.future(() => getPosTableToColors(),
-                  initialValue: PosTableToColor({
-                    AxisDirection.down:
-                        Tuple2(Colors.red, "images/vampire.svg"),
-                    AxisDirection.right:
-                        Tuple2(Colors.redAccent, "images/vampire.svg"),
-                    AxisDirection.up: Tuple2(Colors.pink, "images/vampire.svg"),
-                    AxisDirection.left:
-                        Tuple2(Colors.pinkAccent, "images/vampire.svg"),
-                  })),
-            ],
-            builder: (ctx) {
-              final rmGame = RM.get<Game>();
-              final rmPos = RM.get<PosTableToColor>();
-              return Stack(children: [
-                StateBuilder<Game>(
-                  observe: () => RM.create(_init()),
-                  builder: (_, initModel) => WhenRebuilder<Game>(
-                    models: [rmPos],
-                    onData: (data) => TableWidget(
-                        quit: (context) => showDialog(context: context)),
-                    onWaiting: () => CircularProgressIndicator(),
-                    onIdle: () => Text("idle: $rmGame, $rmPos"),
-                    onError: (error) => Text("error: $error"),
+          child: MultiProvider(
+              providers: [
+                ChangeNotifierProvider(
+                  create: (context) => GameModel(),
+                  lazy: false,
+                ),
+                FutureProvider(
+                    create: (context) => getPosTableToColors(),
+                    initialData: PosTableToColor({
+                      AxisDirection.down:
+                          Tuple2(Colors.red, "images/vampire.svg"),
+                      AxisDirection.right:
+                          Tuple2(Colors.redAccent, "images/vampire.svg"),
+                      AxisDirection.up:
+                          Tuple2(Colors.pink, "images/vampire.svg"),
+                      AxisDirection.left:
+                          Tuple2(Colors.pinkAccent, "images/vampire.svg"),
+                    })),
+              ],
+              child: Stack(children: [
+                ChangeNotifierProvider(
+                  create: (context) => GameModel(),
+                  child: Consumer<PosTableToColor>(
+                    builder: (context, value, child) => TableWidget(
+                      quit: (context) => showDialog(context: context),
+                    ),
                   ),
                 ),
                 Positioned(
@@ -59,28 +58,26 @@ class TestingOfflineGame extends StatelessWidget {
                   child: Column(children: [
                     RaisedButton(
                       onPressed: () {
-                        rmGame.setValue(() => _init());
+                        context.read<GameModel>().game = _init();
                       },
                       child: Text("Init"),
                     ),
                     FlatButton(
                         onPressed: () {
-                          _addACardFor(rmGame);
+                          _addACardFor(context.read<GameModel>());
                         },
                         child: Text("Add a card on table")),
                   ]),
                 ),
-              ]);
-            },
-          )),
+              ]))),
     );
   }
 
-  _addACardFor(ReactiveModel<Game> rmGame) {
+  void _addACardFor(GameModel rmGame) {
     PlayerPosition winner = PlayerPosition.values[Random().nextInt(4)];
-    Game g = rmGame.value.copy(
-        withOnTable: rmGame.value.onTable.toList(),
-        withLastTrick: rmGame.value.onTable.toList(),
+    Game g = rmGame.game.copy(
+        withOnTable: rmGame.game.onTable.toList(),
+        withLastTrick: rmGame.game.onTable.toList(),
         withWinnerLastTrick: winner);
     bool changedWinner = false;
     if (g.onTable.length == 4) {
@@ -92,12 +89,7 @@ class TestingOfflineGame extends StatelessWidget {
     } else {
       g.onTable.add(getRandomCardTable(_next(g.onTable.last.position)));
     }
-
-    rmGame.setValue(
-      () => g,
-      filterTags: [Aspects.ON_TABLE, if (changedWinner) Aspects.LAST_TRICK],
-      onSetState: (context) => print("setState in testing"),
-    );
+    rmGame.game = g;
   }
 
   PlayerPosition _next(PlayerPosition playerPosition) {

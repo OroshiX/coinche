@@ -10,9 +10,9 @@ class MyAuthUser {
   MyAuthUser({
     @required this.uid,
     @required this.displayName,
-    @required this.email,
-    @required this.isEmailVerified,
-    @required this.isAnonymous,
+    this.email,
+    this.isEmailVerified,
+    this.isAnonymous,
   });
 
   @override

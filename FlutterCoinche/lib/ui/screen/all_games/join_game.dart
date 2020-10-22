@@ -1,6 +1,6 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/service/network/server_communication.dart';
 import 'package:FlutterCoinche/state/game_model.dart';
+import 'package:FlutterCoinche/state/login_model.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
 import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
@@ -20,17 +20,19 @@ class JoinGame extends StatelessWidget {
       child: NeumorphicWidget(
         onTap: () {
           // join game
-          ServerCommunication.joinGame(
-            gameId: game.id,
-          ).then((_) {
-            context.read<GameModel>().changeGame(game.id);
-            Navigator.of(context).pushNamed(GameScreenProvided.routeName);
-          }, onError: (error) {
-            FlushbarHelper.createError(
-                    message: "Cannot join game ${game.id}: $error",
-                    duration: Duration(seconds: 4))
-                .show(context);
-          });
+          context.read<GameModel>().joinGame(
+                gameId: game.id,
+                userUid: context.read<LoginModel>().user.uid,
+                onSuccess: () {
+                  Navigator.of(context).pushNamed(GameScreenProvided.routeName);
+                },
+                onError: (message) {
+                  FlushbarHelper.createError(
+                          message: "Cannot join game ${game.id}: $message",
+                          duration: Duration(seconds: 4))
+                      .show(context);
+                },
+              );
         },
         child: OneGame(
           game: game,

@@ -5,8 +5,9 @@ import 'package:FlutterCoinche/domain/dto/bid.dart';
 import 'package:FlutterCoinche/domain/dto/card.dart';
 import 'package:FlutterCoinche/domain/dto/game.dart';
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/service/network/my_auth_user.dart';
 import 'package:FlutterCoinche/service/network/server_communication.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
@@ -25,14 +26,29 @@ class GameModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  AudioCache _audioCache;
+
   Game _game;
+
   Game get game => _game;
+
+  set game(Game value) {
+    _game = value;
+    notifyListeners();
+  }
+
   List<GameEmpty> _games;
+
   List<GameEmpty> get allGames => UnmodifiableListView(_games);
-  MyAuthUser _myAuthUser;
   StreamSubscription<Game> _subscription;
+
   GameModel() {
     _game = Game();
+    _games = [];
+    _audioCache = AudioCache(
+        prefix: "sounds/",
+        fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
+    // _audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
   }
 
   set allGames(List<GameEmpty> value) {
@@ -44,17 +60,28 @@ class GameModel extends ChangeNotifier {
     error = null;
   }
 
-  void setUser(MyAuthUser myAuthUser) {
-    this._myAuthUser = myAuthUser;
-  }
-
   Future<void> refreshGames() {
     return ServerCommunication.allGames().then((value) => allGames = value,
         onError: (message) => error = message);
   }
 
+  void joinGame(
+      {@required String gameId,
+      @required String userUid,
+      @required void Function() onSuccess,
+      @required OnErrorFunction onError}) {
+    ServerCommunication.joinGame(
+      gameId: gameId,
+      onError: onError,
+      onSuccess: () {
+        changeGame(idGame: gameId, userUid: userUid);
+        onSuccess();
+      },
+    );
+  }
+
   /// Call setUser before this
-  void changeGame(String idGame) {
+  void changeGame({@required String idGame, @required String userUid}) {
     if (_subscription != null) {
       _subscription.cancel();
     }
@@ -62,7 +89,7 @@ class GameModel extends ChangeNotifier {
         .collection('playersSets')
         .document(idGame)
         .collection('players')
-        .document(_myAuthUser.uid)
+        .document(userUid)
         .snapshots()
         .map((event) => Game.fromJson(event.data))
         .listen((event) {
@@ -86,10 +113,6 @@ class GameModel extends ChangeNotifier {
     });
   }
 
-  void _playError() {
-    // TODO play a sound
-  }
-
   void bid(Bid bid) {
     ServerCommunication.bid(bid, game.id).then((value) {
       success = "Bid $value placed";
@@ -100,5 +123,21 @@ class GameModel extends ChangeNotifier {
 
   void clearSuccess() {
     success = null;
+  }
+
+  void _playError() {
+    _audioCache.play("bad.mp3", volume: 0.7);
+  }
+
+  void playSoftButton() {
+    _audioCache.play("click.mp3", volume: 0.2);
+  }
+
+  void playHardButton() {
+    _audioCache.play("clic.mp3", volume: 0.3);
+  }
+
+  void playPlop() {
+    _audioCache.play("buttonPush.mp3", volume: 0.5);
   }
 }

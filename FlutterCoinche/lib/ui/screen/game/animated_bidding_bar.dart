@@ -24,10 +24,10 @@ class AnimatedBiddingBar extends StatelessWidget {
     return Selector<GameModel, Tuple3<bool, String, String>>(
       // bidding? , success, error
       selector: (ctx, gm) {
-        if (gm.game.state == TableState.PLAYING) {
-          key.currentState.minPoints = 80;
-          key.currentState.points = 80;
-        }
+        // if (gm.game.state == TableState.PLAYING) {
+        //   key.currentState.minPoints = 80;
+        //   key.currentState.points = 80;
+        // }
         return Tuple3(
             gm.game.state == TableState.BIDDING, gm.success, gm.error);
       },
@@ -57,11 +57,8 @@ class AnimatedBiddingBar extends StatelessWidget {
           child: AnimatedOpacity(
             duration: Duration(milliseconds: 500),
             opacity: isBidding ? 1 : 0,
-            child: BiddingBar(
+            child: BiddingBarProvided(
               key: key,
-              onBid: (Bid bid) {
-                context.read<GameModel>().bid(bid);
-              },
             ),
           ),
         );

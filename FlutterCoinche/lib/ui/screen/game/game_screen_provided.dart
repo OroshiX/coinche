@@ -13,22 +13,24 @@ class GameScreenProvided extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return WillPopScope(
-      onWillPop: () async {
-        return (await _quit(context)) ?? false;
-      },
-      child: Container(
-        color: colorLightBlue,
-        child: FutureProvider<PosTableToColor>(
-          builder: (context, child) => _top(context),
-          lazy: false,
-          initialData: PosTableToColor({
-            AxisDirection.down: Tuple2(Colors.red, "images/vampire.svg"),
-            AxisDirection.right: Tuple2(Colors.redAccent, "images/vampire.svg"),
-            AxisDirection.up: Tuple2(Colors.pink, "images/vampire.svg"),
-            AxisDirection.left: Tuple2(Colors.pinkAccent, "images/vampire.svg"),
-          }),
-          create: (BuildContext context) => getPosTableToColors(),
+    return Material(
+      child: WillPopScope(
+        onWillPop: () async {
+          return (await _quit(context)) ?? false;
+        },
+        child: Container(
+          color: colorLightBlue,
+          child: FutureProvider<PosTableToColor>(
+            builder: (context, child) => _top(context),
+            lazy: false,
+            initialData: PosTableToColor({
+              AxisDirection.down: Tuple2(Colors.red, "images/vampire.svg"),
+              AxisDirection.right: Tuple2(Colors.redAccent, "images/vampire.svg"),
+              AxisDirection.up: Tuple2(Colors.pink, "images/vampire.svg"),
+              AxisDirection.left: Tuple2(Colors.pinkAccent, "images/vampire.svg"),
+            }),
+            create: (BuildContext context) => getPosTableToColors(),
+          ),
         ),
       ),
     );

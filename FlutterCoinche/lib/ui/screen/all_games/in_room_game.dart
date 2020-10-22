@@ -1,5 +1,6 @@
 import 'package:FlutterCoinche/domain/dto/game_empty.dart';
 import 'package:FlutterCoinche/state/game_model.dart';
+import 'package:FlutterCoinche/state/login_model.dart';
 import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
 import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
 import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
@@ -17,7 +18,8 @@ class InRoomGame extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16),
       child: NeumorphicWidget(
         onTap: () {
-          context.read<GameModel>().changeGame(game.id);
+          context.read<GameModel>().changeGame(
+              idGame: game.id, userUid: context.read<LoginModel>().user.uid);
           Navigator.of(context).pushNamed(GameScreenProvided.routeName);
         },
         child: OneGame(
