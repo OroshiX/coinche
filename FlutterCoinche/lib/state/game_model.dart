@@ -46,7 +46,7 @@ class GameModel extends ChangeNotifier {
     _game = Game();
     _games = [];
     _audioCache = AudioCache(
-        prefix: "sounds/",
+        prefix: "assets/sounds/",
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
     // _audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
   }
