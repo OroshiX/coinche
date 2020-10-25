@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:coinche/.env.dart';
 import 'package:coinche/domain/dto/bid.dart';
@@ -9,72 +10,70 @@ import 'package:coinche/domain/dto/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:requests/requests.dart';
-import 'dart:developer' as dev;
 
 class ServerCommunication {
   static final String _baseUrl = environment["baseUrl"];
 
-  static Future<bool> sendToken(IdTokenResult idTokenResult) async {
+  static Future<void> sendToken(IdTokenResult idTokenResult,
+      {@required void Function() onSuccess, @required OnError onError}) async {
     var url = '$_baseUrl/loginToken';
-    print("connecting to Server $url");
 
-    var response = await Requests.post(url,
+    var r = await Requests.post(url,
         body: idTokenResult.token, bodyEncoding: RequestBodyEncoding.PlainText);
-    if (response.hasError) {
-      print("problem sending token: ${response.statusCode}");
-      return false;
-    }
-    print("success sending token");
-    return true;
+    if (_dealHasError(r, onError: onError)) return;
+    onSuccess();
   }
 
-  static Future<List<GameEmpty>> allGames() async {
+  static Future<void> allGames(
+      {@required void Function(List<GameEmpty> games) onSuccess,
+      @required OnError onError}) async {
     var url = '$_baseUrl/lobby/allGames';
-    print("connecting to Server $url");
 
-    var r = await Requests.get(url, timeoutSeconds: 60);
-    if (r.hasError) {
-      throw "Error getting allGames: ${r.content()}";
-    }
-    List<dynamic> dynList = jsonDecode(r.content());
-
-    List<GameEmpty> games = dynList.map((i) => GameEmpty.fromJson(i)).toList();
-    print(games);
-    return games;
+    var r = await _get(url, onError: onError);
+    if (_dealHasError(r, onError: onError)) return;
+    _convertToJsonList(r,
+        transform: (e) => GameEmpty.fromJson(e),
+        onSuccess: onSuccess,
+        onError: onError);
   }
 
-  static Future<bool> logout() async {
+  static Future<void> logout({
+    @required OnError onError,
+    @required void Function() onSuccess,
+  }) async {
     var url = "$_baseUrl/logout";
-    var response = await Requests.post(url);
-    if (response.statusCode == 200) {
-      return true;
-    }
-    return false;
+    var r = await _post(url, onError: onError);
+    if (_dealHasError(r, onError: onError)) return;
+    onSuccess();
   }
 
-  static Future<GameEmpty> createGame(String gameName) async {
+  static Future<void> createGame(String gameName,
+      {@required OnError onError,
+      @required void Function(GameEmpty) onSuccess}) async {
     var url = "$_baseUrl/lobby/createGame";
     print("connect to $url");
     var r = await Requests.post(url,
         body: gameName,
-        timeoutSeconds: 60,
+        timeoutSeconds: 10,
         bodyEncoding: RequestBodyEncoding.PlainText);
-    if (r.hasError) {
-      throw "Error creating game: ${r.content()}";
-    }
-    var game = GameEmpty.fromJson(jsonDecode(r.content()));
-    return game;
+    if (_dealHasError(r, onError: onError)) return;
+    _convertToJson(r,
+        transform: (e) => GameEmpty.fromJson(e),
+        onSuccess: onSuccess,
+        onError: onError);
   }
 
-  static Future<bool> playCard(CardModel data, String gameId) async {
+  static Future<void> playCard(
+    CardModel data,
+    String gameId, {
+    @required void Function() onSuccess,
+    @required OnError onError,
+  }) async {
     var url = "$_baseUrl/games/$gameId/playCard";
     print("connect to $url");
-    var r = await Requests.post(url,
-        body: data, timeoutSeconds: 60, bodyEncoding: RequestBodyEncoding.JSON);
-    if (r.hasError) {
-      throw r.json();
-    }
-    return true;
+    var r = await _post(url, onError: onError, body: data.toJson());
+    if (_dealHasError(r, onError: onError)) return;
+    onSuccess();
   }
 
   static Future<void> joinGame({
@@ -84,28 +83,29 @@ class ServerCommunication {
     @required OnError onError,
   }) async {
     var url = "$_baseUrl/lobby/joinGame";
-    var r = await Requests.post(url,
-        queryParameters: {
-          "gameId": gameId,
-          if (nickname != null) "nickname": nickname
-        },
-        timeoutSeconds: 60);
-    if (r.hasError) {
-      onError(r.content());
-    }
+    var r = await _post(
+      url,
+      queryParameters: {
+        "gameId": gameId,
+        if (nickname != null) "nickname": nickname
+      },
+      onError: onError,
+    );
+    if (_dealHasError(r, onError: onError)) return;
+    onSuccess();
   }
 
-  static Future<bool> bid(Bid bid, String gameId) async {
+  static Future<void> bid(
+    Bid bid,
+    String gameId, {
+    @required OnError onError,
+    @required void Function() onSuccess,
+  }) async {
     var url = "$_baseUrl/games/$gameId/announceBid";
     print("connect to $url");
-    var r = await Requests.post(url,
-        body: bid.toJson(),
-        timeoutSeconds: 60,
-        bodyEncoding: RequestBodyEncoding.JSON);
-    if (r.hasError) {
-      throw r.json();
-    }
-    return true;
+    var r = await _post(url, onError: onError, body: bid.toJson());
+    if (_dealHasError(r, onError: onError)) return;
+    onSuccess();
   }
 
   static Future<void> isLoggedIn(
@@ -125,21 +125,27 @@ class ServerCommunication {
 
   // region helpers
   static Future<Response> _post(String url,
-      {Map<String, dynamic> body, @required OnError onErrorFunction}) async {
+      {Map<String, dynamic> body,
+      @required OnError onError,
+      Map<String, dynamic> queryParameters}) async {
     if (kDebugMode) {
       print("Connecting to server $url [POST], body: $body");
     }
     Response r;
     try {
-      r = await Requests.post(url, body: body, timeoutSeconds: 10);
+      r = await Requests.post(url,
+          body: body,
+          timeoutSeconds: 10,
+          bodyEncoding: RequestBodyEncoding.JSON,
+          queryParameters: queryParameters);
       if (kDebugMode) {
         dev.log("content for $url: ${r.content()}");
       }
       if (r.hasError) {
-        onErrorFunction(r.content());
+        onError(r.content());
       }
     } catch (e) {
-      onErrorFunction("Connection error");
+      onError("Connection error");
     }
     return r;
   }

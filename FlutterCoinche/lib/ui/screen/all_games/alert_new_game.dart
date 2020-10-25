@@ -68,18 +68,21 @@ class _DialogNewGameState extends State<DialogNewGame> {
         FlatButton(
             onPressed: () {
               if (formKey.currentState.validate()) {
-                ServerCommunication.createGame(_controller.text +
-                        (_automated ? GameEmpty.automatedString : ""))
-                    .then((value) {
-                  context.read<GameModel>().changeGame(
-                      idGame: value.id,
-                      userUid: context.read<LoginModel>().user.uid);
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushNamed(GameScreenProvided.routeName);
-                },
-                        onError: (error) => Flushbar(
-                              message: "Oh no! Please check your connection",
-                            ).show(context));
+                ServerCommunication.createGame(
+                  _controller.text +
+                      (_automated ? GameEmpty.automatedString : ""),
+                  onSuccess: (GameEmpty gameEmpty) {
+                    context.read<GameModel>().changeGame(
+                        idGame: gameEmpty.id,
+                        userUid: context.read<LoginModel>().user.uid);
+                    Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .pushNamed(GameScreenProvided.routeName);
+                  },
+                  onError: (message) {
+                    Flushbar(message: message).show(context);
+                  },
+                );
               }
             },
             child: Text("OK"))

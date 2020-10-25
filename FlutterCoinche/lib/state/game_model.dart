@@ -61,8 +61,14 @@ class GameModel extends ChangeNotifier {
   }
 
   Future<void> refreshGames() {
-    return ServerCommunication.allGames().then((value) => allGames = value,
-        onError: (message) => error = message);
+    return ServerCommunication.allGames(
+      onSuccess: (games) {
+        allGames = games;
+      },
+      onError: (message) {
+        error = message;
+      },
+    );
   }
 
   void joinGame(
@@ -105,20 +111,28 @@ class GameModel extends ChangeNotifier {
   }
 
   void playCard(CardModel cardModel) {
-    ServerCommunication.playCard(cardModel, game.id).then((value) {},
-        onError: (message) {
-      _playError();
-      //                   BlocProvider.of<GamesBloc>(context).playError();
-      error = message;
-    });
+    ServerCommunication.playCard(
+      cardModel,
+      game.id,
+      onError: (message) {
+        _playError();
+        error = message;
+      },
+      onSuccess: () {},
+    );
   }
 
   void bid(Bid bid) {
-    ServerCommunication.bid(bid, game.id).then((value) {
-      success = "Bid $value placed";
-    }, onError: (message) {
-      error = message;
-    });
+    ServerCommunication.bid(
+      bid,
+      game.id,
+      onSuccess: () {
+        success = "Bid placed";
+      },
+      onError: (message) {
+        error = message;
+      },
+    );
   }
 
   void clearSuccess() {

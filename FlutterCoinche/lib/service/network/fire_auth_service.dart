@@ -2,6 +2,7 @@ import 'package:coinche/service/network/my_auth_user.dart';
 import 'package:coinche/service/network/server_communication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -43,12 +44,23 @@ class FireAuthService with ChangeNotifier {
   }
 
   Future<bool> _sendTokenIdToServer(IdTokenResult tokenId) {
-    print("Send: ${tokenId.token}");
-    return ServerCommunication.sendToken(tokenId);
+    return ServerCommunication.sendToken(tokenId, onSuccess: () {
+      // todo
+      if (kDebugMode) print("sent successfully token");
+    }, onError: (message) {
+      // todo
+      print("Problem sending token ${tokenId.token} to server");
+    });
   }
 
   Future<bool> _logoutFromServer() {
-    return ServerCommunication.logout();
+    return ServerCommunication.logout(onSuccess: () {
+      // todo deal with success logout
+      if (kDebugMode) print("logged out");
+    }, onError: (String message) {
+      // todo deal with error
+      print(message);
+    });
   }
 
   Future<MyAuthUser> signInWithCredentials(
