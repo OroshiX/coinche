@@ -1,7 +1,7 @@
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/ui/widget/card_widget.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/ui/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:FlutterCoinche/.env.dart';
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/domain/dto/login.dart';
+import 'package:coinche/.env.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/domain/dto/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:requests/requests.dart';

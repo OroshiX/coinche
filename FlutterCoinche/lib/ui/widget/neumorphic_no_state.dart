@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:flutter/material.dart';
 
 const double kBlur1 = 2,

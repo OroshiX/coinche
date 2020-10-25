@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/domain/dto/belote.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/belote.dart';
+import 'package:coinche/domain/dto/player_position.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 

@@ -1,7 +1,7 @@
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/in_room_game.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/join_game.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/ui/screen/all_games/in_room_game.dart';
+import 'package:coinche/ui/screen/all_games/join_game.dart';
 import 'package:flutter/material.dart';
 
 class ListGames extends StatelessWidget {

@@ -1,15 +1,15 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/domain/extensions/CardWonOrCenter.dart';
-import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
-import 'package:FlutterCoinche/domain/logic/calculus.dart';
-import 'package:FlutterCoinche/state/cards_on_table_model.dart';
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/screen/game/table/managed_state_card.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:coinche/domain/extensions/cards_extension.dart';
+import 'package:coinche/domain/logic/calculus.dart';
+import 'package:coinche/state/cards_on_table_model.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/ui/resources/dimens.dart';
+import 'package:coinche/ui/screen/game/table/managed_state_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

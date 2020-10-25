@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/service/network/my_auth_user.dart';
-import 'package:FlutterCoinche/service/network/server_communication.dart';
+import 'package:coinche/service/network/my_auth_user.dart';
+import 'package:coinche/service/network/server_communication.dart';
 import 'package:flutter/foundation.dart';
 
 class LoginModel extends ChangeNotifier {

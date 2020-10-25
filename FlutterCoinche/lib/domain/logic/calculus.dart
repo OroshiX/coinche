@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/player_position.dart';
 import 'package:flutter/material.dart';
 
 PlayerPosition _getPlayerPositionTop(PlayerPosition myPosition) {

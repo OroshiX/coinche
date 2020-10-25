@@ -1,9 +1,9 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/nicknames.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/score.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/nicknames.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/score.dart';
+import 'package:coinche/domain/dto/table_state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 

@@ -1,16 +1,16 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/game.dart';
-import 'package:FlutterCoinche/domain/dto/nicknames.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/game/table/table_widget.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/game.dart';
+import 'package:coinche/domain/dto/nicknames.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/pos_table_to_colors.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/extensions/cards_extension.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/ui/screen/game/table/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';

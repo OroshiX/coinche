@@ -1,4 +1,4 @@
-import 'package:FlutterCoinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tuple/tuple.dart';
 

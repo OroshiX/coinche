@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/table_state.dart';
 import 'package:flutter/cupertino.dart';
 
 extension CardsExtension on List<CardModel> {

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:FlutterCoinche/domain/dto/game.dart';
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/service/network/my_auth_user.dart';
+import 'package:coinche/domain/dto/game.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/service/network/my_auth_user.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_provider/bloc_provider.dart';

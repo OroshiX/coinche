@@ -1,7 +1,7 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/game.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/logic/calculus.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/game.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/logic/calculus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 

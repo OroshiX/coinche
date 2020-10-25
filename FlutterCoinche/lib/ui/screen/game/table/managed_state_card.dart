@@ -1,11 +1,11 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/extensions/CardWonOrCenter.dart';
-import 'package:FlutterCoinche/state/cards_on_table_model.dart';
-import 'package:FlutterCoinche/ui/screen/game/table/animated_card.dart';
-import 'package:FlutterCoinche/ui/screen/game/table/move_card.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:coinche/state/cards_on_table_model.dart';
+import 'package:coinche/ui/screen/game/table/animated_card.dart';
+import 'package:coinche/ui/screen/game/table/move_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

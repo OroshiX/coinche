@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/ui/widget/card_widget.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/ui/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 
 class CardOnTable extends StatefulWidget {

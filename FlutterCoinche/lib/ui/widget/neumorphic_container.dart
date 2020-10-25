@@ -1,4 +1,4 @@
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class NeumorphicWidget extends StatefulWidget {

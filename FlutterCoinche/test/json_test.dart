@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

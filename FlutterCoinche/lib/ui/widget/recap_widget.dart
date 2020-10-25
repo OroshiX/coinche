@@ -1,7 +1,7 @@
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

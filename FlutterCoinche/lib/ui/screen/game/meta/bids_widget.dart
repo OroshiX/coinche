@@ -1,8 +1,8 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/extensions/game_extensions.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/ui/resources/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

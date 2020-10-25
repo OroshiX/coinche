@@ -1,7 +1,7 @@
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/widget/dot_player.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/ui/widget/dot_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';

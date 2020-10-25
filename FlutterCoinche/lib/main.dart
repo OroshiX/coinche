@@ -1,9 +1,9 @@
-import 'package:FlutterCoinche/state/game_model.dart';
-import 'package:FlutterCoinche/state/login_model.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/all_games_screen.dart';
-import 'package:FlutterCoinche/ui/screen/game/game_screen_provided.dart';
-import 'package:FlutterCoinche/ui/screen/login_screen.dart';
-import 'package:FlutterCoinche/ui/screen/testing_offline_game.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/state/login_model.dart';
+import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
+import 'package:coinche/ui/screen/game/game_screen_provided.dart';
+import 'package:coinche/ui/screen/login_screen.dart';
+import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

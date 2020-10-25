@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/game.dart';
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/service/network/server_communication.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/game.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/service/network/server_communication.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -69,7 +69,7 @@ class GameModel extends ChangeNotifier {
       {@required String gameId,
       @required String userUid,
       @required void Function() onSuccess,
-      @required OnErrorFunction onError}) {
+      @required OnError onError}) {
     ServerCommunication.joinGame(
       gameId: gameId,
       onError: onError,

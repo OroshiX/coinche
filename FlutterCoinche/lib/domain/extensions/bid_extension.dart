@@ -1,6 +1,6 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/logic/calculus.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/logic/calculus.dart';
 
 extension BidExtension on List<Bid> {
   bool canCoinche(PlayerPosition me) =>

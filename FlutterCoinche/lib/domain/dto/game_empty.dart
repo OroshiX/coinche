@@ -1,4 +1,4 @@
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
+import 'package:coinche/domain/dto/table_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game_empty.g.dart';
