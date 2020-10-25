@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/game.dart';
@@ -47,7 +50,7 @@ class GameModel extends ChangeNotifier {
     _audioCache = AudioCache(
         prefix: "assets/sounds/",
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
-    // _audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
+    _audioCache.loadAll(["bad.mp3", "click.mp3", "clic.mp3", "buttonPush.mp3"]);
   }
 
   set allGames(List<GameEmpty> value) {
