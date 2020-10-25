@@ -18,8 +18,8 @@ extension GameExtensions on Game {
     if (!listEquals(old.onTable, onTable)) res.add(Aspects.ON_TABLE);
     if (old.nextPlayer != nextPlayer) res.add(Aspects.NEXT_PLAYER);
     if (old.myPosition != myPosition) res.add(Aspects.MY_POSITION);
-    if (old.lastTrick != lastTrick || old.winnerLastTrick != winnerLastTrick)
-      res.add(Aspects.LAST_TRICK);
+    if (!listEquals(old.lastTrick, lastTrick) ||
+        old.winnerLastTrick != winnerLastTrick) res.add(Aspects.LAST_TRICK);
     if (old.currentBid != currentBid) res.add(Aspects.CURRENT_BID);
     if (this._getChangeBid(old, AxisDirection.up)) res.add(Aspects.BIDS_TOP);
     if (this._getChangeBid(old, AxisDirection.right))

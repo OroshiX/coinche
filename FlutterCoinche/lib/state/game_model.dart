@@ -6,10 +6,9 @@ import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/game.dart';
 import 'package:coinche/domain/dto/game_empty.dart';
 import 'package:coinche/service/network/server_communication.dart';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:coinche/domain/extensions/game_extensions.dart';
+import 'dart:developer' as dev;
 
 class GameModel extends ChangeNotifier {
   String _error;
@@ -99,8 +98,10 @@ class GameModel extends ChangeNotifier {
         .snapshots()
         .map((event) => Game.fromJson(event.data))
         .listen((event) {
-      _game = event;
-      notifyListeners();
+      if (kDebugMode) {
+        dev.log("Change of game aspects: ${event.different(game)}");
+      }
+      game = event;
     });
   }
 

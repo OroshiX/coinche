@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tuple/tuple.dart';
 
 class CardsOnTable extends StatefulWidget {
   static int nbBuild = 0;
@@ -31,7 +32,6 @@ class CardsOnTable extends StatefulWidget {
 
 class _CardsOnTableState extends State<CardsOnTable> {
   CardPlayed cardLeft, cardTop, cardRight, cardMe;
-  PlayerPosition myPosition;
   Map<AxisDirection, PlayerPosition> posTableToCardinal;
   List<CardPlayed> currentCardsOnTable = [];
   bool firstRender = true;
@@ -58,27 +58,41 @@ class _CardsOnTableState extends State<CardsOnTable> {
           create: (context) => CardsOnTableModel(),
           child: Consumer<CardsOnTableModel>(
             builder: (context, cardsOnTableModel, child) {
-              return Selector<GameModel, TableState>(
-                selector: (ctx, gameModel) => gameModel.game.state,
-                builder: (context, state, child) {
-                  if (state != TableState.PLAYING &&
-                      state != TableState.BETWEEN_GAMES &&
-                      state != TableState.ENDED) return SizedBox();
-
-                  return child;
+              return Selector<
+                  GameModel,
+                  Tuple5<TableState, PlayerPosition, List<CardPlayed>,
+                      List<CardPlayed>, PlayerPosition>>(
+                // TableState, myPos, onTable, lastTrick, winnerLast
+                selector: (ctx, gameModel) => Tuple5(
+                    gameModel.game.state,
+                    gameModel.game.myPosition,
+                    gameModel.game.onTable,
+                    gameModel.game.lastTrick,
+                    gameModel.game.winnerLastTrick),
+                builder: (context, statePos, child) {
+                  if (statePos.item1 != TableState.PLAYING &&
+                      statePos.item1 != TableState.BETWEEN_GAMES &&
+                      statePos.item1 != TableState.ENDED) return SizedBox();
+                  _initState(
+                    cardsOnTableModel: cardsOnTableModel,
+                    me: statePos.item2,
+                    cardsOnTable: statePos.item3,
+                    lastTrick: statePos.item4,
+                    winnerLast: statePos.item5,
+                  );
+                  return Container(
+                    width: constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    child: Stack(
+                      children: orderedCards
+                          .map((e) => ManagedStateCard(
+                              axisDirection: e.key,
+                              cardWidth: cardWidth,
+                              cardHeight: cardHeight))
+                          .toList(),
+                    ),
+                  );
                 },
-                child: Container(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  child: Stack(
-                    children: orderedCards
-                        .map((e) => ManagedStateCard(
-                            axisDirection: e.key,
-                            cardWidth: cardWidth,
-                            cardHeight: cardHeight))
-                        .toList(),
-                  ),
-                ),
               );
             },
           ),
@@ -114,17 +128,18 @@ class _CardsOnTableState extends State<CardsOnTable> {
   }
 
   void _initState({
-    GameModel gameModel,
-    CardsOnTableModel cardsOnTableModel,
+    @required List<CardPlayed> cardsOnTable,
+    @required CardsOnTableModel cardsOnTableModel,
+    @required PlayerPosition me,
+    @required List<CardPlayed> lastTrick,
+    @required PlayerPosition winnerLast,
 //                    bool fromInit = false
   }) {
     print("in function ${++CardsOnTable.inFunction}");
 
     /// Init values
-    myPosition = gameModel.game.myPosition;
-    posTableToCardinal = getPosTableToCardinal(myPosition);
+    posTableToCardinal = getPosTableToCardinal(me);
 
-    List<CardPlayed> cardsOnTable = gameModel.game.onTable;
     if (listEquals(currentCardsOnTable, cardsOnTable)) return;
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     final newCardLeft =
@@ -142,8 +157,6 @@ class _CardsOnTableState extends State<CardsOnTable> {
         up: newCardTop,
         me: newCardMe);
 
-    final lastTrick = gameModel.game.lastTrick;
-    final winnerLast = gameModel.game.winnerLastTrick;
     final initial = lastTrick == null ||
         lastTrick.isEmpty ||
         winnerLast == null ||
@@ -192,7 +205,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
         return;
       }
     }
-    final cardinalToPosTable = getCardinalToPosTable(myPosition);
+    final cardinalToPosTable = getCardinalToPosTable(me);
     final posWinner = cardinalToPosTable[winnerLast];
     if (cardsOnTable.length == 4) {
       // First put the last card on the table
