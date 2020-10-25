@@ -9,7 +9,7 @@ import 'package:FlutterCoinche/domain/logic/calculus.dart';
 import 'package:FlutterCoinche/state/cards_on_table_model.dart';
 import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/screen/game/managed_state_card.dart';
+import 'package:FlutterCoinche/ui/screen/game/table/managed_state_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

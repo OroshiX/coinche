@@ -1,5 +1,5 @@
 import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/ui/screen/game/animated_card.dart';
+import 'package:FlutterCoinche/ui/screen/game/table/animated_card.dart';
 import 'package:FlutterCoinche/ui/widget/card_widget.dart';
 import 'package:FlutterCoinche/ui/widget/translated_transition.dart';
 import 'package:flutter/material.dart';

@@ -10,7 +10,7 @@ import 'package:FlutterCoinche/domain/dto/table_state.dart';
 import 'package:FlutterCoinche/domain/extensions/cards_extension.dart';
 import 'package:FlutterCoinche/state/game_model.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/game/table_widget.dart';
+import 'package:FlutterCoinche/ui/screen/game/table/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';

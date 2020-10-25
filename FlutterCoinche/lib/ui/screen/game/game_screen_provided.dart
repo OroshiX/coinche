@@ -1,7 +1,7 @@
 import 'package:FlutterCoinche/domain/dto/player_position.dart';
 import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
 import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/game/table_widget.dart';
+import 'package:FlutterCoinche/ui/screen/game/table/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
