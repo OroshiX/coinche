@@ -9,6 +9,7 @@ import 'package:FlutterCoinche/domain/dto/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:requests/requests.dart';
+import 'dart:developer' as dev;
 
 class ServerCommunication {
   static final String _baseUrl = environment["baseUrl"];
@@ -80,7 +81,7 @@ class ServerCommunication {
     String gameId,
     String nickname,
     @required void Function() onSuccess,
-    @required OnErrorFunction onError,
+    @required OnError onError,
   }) async {
     var url = "$_baseUrl/lobby/joinGame";
     var r = await Requests.post(url,
@@ -107,16 +108,111 @@ class ServerCommunication {
     return true;
   }
 
-  static Future<Login> isLoggedIn() async {
+  static Future<void> isLoggedIn(
+      {@required void Function(Login login) onSuccess,
+      @required OnError onError}) async {
     var url = "$_baseUrl/lobby/isLoggedIn";
-    print("connect to $url");
-    var r = await Requests.get(url, timeoutSeconds: 30);
-    if (r.hasError) {
-      throw r.json();
-    }
-    var login = Login.fromJson(jsonDecode(r.content()));
-    return login;
+
+    var r = await _get(url, onError: onError);
+    if (_dealHasError(r, onError: onError)) return;
+    _convertToJson(
+      r,
+      transform: (e) => Login.fromJson(e),
+      onSuccess: onSuccess,
+      onError: onError,
+    );
   }
+
+  // region helpers
+  static Future<Response> _post(String url,
+      {Map<String, dynamic> body, @required OnError onErrorFunction}) async {
+    if (kDebugMode) {
+      print("Connecting to server $url [POST], body: $body");
+    }
+    Response r;
+    try {
+      r = await Requests.post(url, body: body, timeoutSeconds: 10);
+      if (kDebugMode) {
+        dev.log("content for $url: ${r.content()}");
+      }
+      if (r.hasError) {
+        onErrorFunction(r.content());
+      }
+    } catch (e) {
+      onErrorFunction("Connection error");
+    }
+    return r;
+  }
+
+  static Future<Response> _get(String url, {@required OnError onError}) async {
+    if (kDebugMode) {
+      print("Connecting to server $url [GET]");
+    }
+    Response r;
+    try {
+      r = await Requests.get(url, timeoutSeconds: 10);
+      if (kDebugMode) {
+        dev.log("content for $url: ${r.content()}");
+      }
+      if (r.hasError) {
+        onError(r.content());
+      }
+    } catch (e) {
+      onError("Connection error");
+    }
+    return r;
+  }
+
+  static bool _dealHasError(Response r, {@required OnError onError}) {
+    if (r == null) return true;
+    if (r.statusCode >= 400) {
+      onError(_getMessage(r));
+      print("Has error");
+      return true;
+    }
+    return false;
+  }
+
+  static String _getMessage(Response r) {
+    switch (r.statusCode) {
+      case 403:
+        return "Authentication required";
+      default:
+        return "Connection error";
+    }
+  }
+
+  static void _convertToJson<T>(Response r,
+      {@required T Function(dynamic e) transform,
+      @required void Function(T res) onSuccess,
+      @required OnError onError}) {
+    if (r.content() == null) {
+      onError("No content");
+      return;
+    }
+    try {
+      onSuccess(transform(jsonDecode(r.content())));
+    } catch (e) {
+      print(e);
+      onError(
+          "Your application is out of date and cannot function properly anymore, please update your application to the last version");
+    }
+  }
+
+  static void _convertToJsonList<T>(Response r,
+      {@required T Function(dynamic e) transform,
+      @required void Function(List<T> res) onSuccess,
+      @required void Function(String message) onError}) {
+    try {
+      List<dynamic> list = jsonDecode(r.content());
+      onSuccess(list?.map((e) => transform(e))?.toList() ?? []);
+    } catch (e) {
+      print(e);
+      onError(
+          "Your application is out of date and cannot function properly anymore, please update your application to the last version");
+    }
+  }
+  // endregion
 }
 
-typedef OnErrorFunction = void Function(String message);
+typedef OnError = void Function(String message);

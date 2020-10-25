@@ -12,6 +12,13 @@ class LoginModel extends ChangeNotifier {
 
   Future<void> get checkLoggedFuture => _futureLogged;
   bool get loggedIn => _loggedIn;
+  String _error;
+  String get error => _error;
+  set error(String message) {
+    _error = message;
+    notifyListeners();
+  }
+
   set loggedIn(value) {
     _loggedIn = value;
     notifyListeners();
@@ -23,12 +30,17 @@ class LoginModel extends ChangeNotifier {
   }
 
   Future<void> _checkLoggedIn() {
-    return ServerCommunication.isLoggedIn().then((value) {
-      if (value.isLoggedIn) {
-        _user = MyAuthUser(uid: value.uid, displayName: value.nickName);
-      }
-      loggedIn = value.isLoggedIn;
-    });
+    return ServerCommunication.isLoggedIn(
+      onSuccess: (value) {
+        if (value.isLoggedIn) {
+          _user = MyAuthUser(uid: value.uid, displayName: value.nickName);
+        }
+        loggedIn = value.isLoggedIn;
+      },
+      onError: (message) {
+        error = message;
+      },
+    );
   }
 
   void setUser(MyAuthUser user) {
