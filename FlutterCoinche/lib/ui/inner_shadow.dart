@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:universal_platform/universal_platform.dart';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -87,7 +87,7 @@ class RenderInnerShadow extends RenderProxyBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null) {
-      if (Platform.isIOS && !showIos) {
+      if (UniversalPlatform.isIOS && !showIos) {
         // Don'use inner shadow on iOS
         context.paintChild(child, offset);
         return;
