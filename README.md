@@ -7,3 +7,5 @@ The directories are:
 For the server in Kotlin
 * Web
 For the Angular web application
+* FlutterCoinche
+For the flutter client (Android/iOS)
