@@ -2,7 +2,7 @@ import 'package:coinche/domain/dto/table_state.dart';
 import 'package:coinche/state/game_model.dart';
 import 'package:coinche/ui/resources/dimens.dart';
 import 'package:coinche/ui/widget/bidding_bar/bidding_bar.dart';
-import 'package:flushbar/flushbar_helper.dart';
+import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
@@ -36,14 +36,12 @@ class AnimatedBiddingBar extends StatelessWidget {
         final bool isBidding = value.item1;
         if (error != null) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            FlushbarHelper.createError(message: "Error placing bid: $error")
-                .show(context);
+            FlushUtil.showError(context, "Error placing bid: $error");
             context.read<GameModel>().clearError();
           });
         } else if (success != null) {
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            FlushbarHelper.createSuccess(message: "bid $success placed")
-                .show(context);
+            FlushUtil.showSuccess(context, "bid $success placed");
             context.read<GameModel>().clearSuccess();
           });
         }

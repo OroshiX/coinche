@@ -26,25 +26,24 @@ dependencies:
   firebase_storage: ^3.1.6 # for firebase storage
   cloud_firestore: ^0.13.7 # Firestore
   firebase_core: ^0.4.5
+  # UI
   flutter_signin_button: ^1.1.0 # for sign in buttons
-  flushbar: ^1.10.4
-  http: ^0.12.2
-  requests: ^3.3.0 # For cookie-aware http requests
-  json_annotation: ^3.1.0 # for json
-  rxdart: ^0.23.1
-  bloc_provider: ^0.7.0+1
-  audioplayers: ^0.16.1
+  flash: ^1.3.1 # for alerting UI (snackbar, toast, dialogs)
   flutter_login: ^1.0.14 # animations and visuals for login
   flutter_svg: ^0.19.0
   auto_size_text: ^2.1.0
+  # HTTP
+  http: ^0.12.2
+  requests: ^3.3.0 # For cookie-aware http requests
+  json_annotation: ^3.1.0 # for json
+
+  audioplayers: ^0.16.1
   shared_preferences: ^0.5.12
   universal_platform: ^0.1.3 # working with web too (instead of dart:io)
   tuple: ^1.0.3
   equatable: ^1.2.5 # for simple .equals()
   quiver: ^2.1.3 # For hash2 function, and other utilities
   provider: ^4.3.2+2
-  states_rebuilder: ^2.3.1 # For state management improved
-  animator: ^2.0.1 # For simpler explicit animations
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0

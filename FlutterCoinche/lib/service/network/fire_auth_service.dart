@@ -43,7 +43,7 @@ class FireAuthService with ChangeNotifier {
         androidMinimumVersion: "1");
   }
 
-  Future<bool> _sendTokenIdToServer(IdTokenResult tokenId) {
+  Future<void> _sendTokenIdToServer(IdTokenResult tokenId) {
     return ServerCommunication.sendToken(tokenId, onSuccess: () {
       // todo
       if (kDebugMode) print("sent successfully token");

@@ -4,7 +4,7 @@ import 'package:coinche/state/game_model.dart';
 import 'package:coinche/state/login_model.dart';
 import 'package:coinche/ui/resources/colors.dart';
 import 'package:coinche/ui/screen/game/game_screen_provided.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +80,7 @@ class _DialogNewGameState extends State<DialogNewGame> {
                         .pushNamed(GameScreenProvided.routeName);
                   },
                   onError: (message) {
-                    Flushbar(message: message).show(context);
+                    FlushUtil.showError(context, message);
                   },
                 );
               }

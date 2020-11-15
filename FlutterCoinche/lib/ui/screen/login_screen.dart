@@ -4,7 +4,7 @@ import 'package:coinche/state/login_model.dart';
 import 'package:coinche/ui/resources/colors.dart';
 import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
-import 'package:flushbar/flushbar_helper.dart';
+import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -100,11 +100,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _showError(error) {
     print(error);
-    FlushbarHelper.createError(message: error.toString()).show(context);
+    FlushUtil.showError(context, error.toString());
   }
 
   _showSuccess(String message) {
-    FlushbarHelper.createSuccess(message: message).show(context);
+    FlushUtil.showSuccess(context, message);
   }
 
   @override

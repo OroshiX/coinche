@@ -6,7 +6,7 @@ import 'package:coinche/ui/screen/all_games/list_games.dart';
 import 'package:coinche/ui/screen/login_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:coinche/ui/widget/neu_round_inset.dart';
-import 'package:flushbar/flushbar_helper.dart';
+import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +25,7 @@ class AllGamesScreen extends StatelessWidget {
         if (value != null) {
           String error = value;
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            FlushbarHelper.createError(message: "Error getting games: $error")
-                .show(context);
+            FlushUtil.showError(context, "Error getting games: $error");
             context.read<GameModel>().clearError();
           });
         }
@@ -58,8 +57,9 @@ class AllGamesScreen extends StatelessWidget {
                     getFireAuthService().signOut(context).then(
                         (value) => Navigator.of(context)
                             .pushReplacementNamed(LoginScreen.routeName),
-                        onError: (error) => FlushbarHelper.createError(
-                            message: "Couldn't logout: $error"));
+                        onError: (error) {
+                      FlushUtil.showError(context, "Couldn't logout: $error");
+                    });
                   }),
             ],
           ),
