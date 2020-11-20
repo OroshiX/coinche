@@ -1,29 +1,29 @@
-import 'package:coinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:coinche/domain/extensions/card_won_or_center.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 class CardsOnTableModel extends ChangeNotifier {
-  CardWonOrCenter _left, _right, _up, _down;
+  late CardWonOrCenter _left, _right, _up, _down;
   CardWonOrCenter get left => _left;
   CardWonOrCenter get right => _right;
   CardWonOrCenter get up => _up;
   CardWonOrCenter get down => _down;
-  set left(v) {
+  set left(CardWonOrCenter v) {
     _left = v;
     notifyListeners();
   }
 
-  set right(v) {
+  set right(CardWonOrCenter v) {
     _right = v;
     notifyListeners();
   }
 
-  set up(v) {
+  set up(CardWonOrCenter v) {
     _up = v;
     notifyListeners();
   }
 
-  set down(v) {
+  set down(CardWonOrCenter v) {
     _down = v;
     notifyListeners();
   }
@@ -38,8 +38,6 @@ class CardsOnTableModel extends ChangeNotifier {
         return down;
       case AxisDirection.left:
         return left;
-      default:
-        return null;
     }
   }
 

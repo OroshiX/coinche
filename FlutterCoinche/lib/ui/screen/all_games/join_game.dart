@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class JoinGame extends StatelessWidget {
   final GameEmpty game;
 
-  const JoinGame({Key key, this.game}) : super(key: key);
+  const JoinGame({Key? key, required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +22,10 @@ class JoinGame extends StatelessWidget {
           // join game
           context.read<GameModel>().joinGame(
                 gameId: game.id,
-                userUid: context.read<LoginModel>().user.uid,
+                userUid: context.read<LoginModel>().user?.uid,
                 onSuccess: () {
-                  Navigator.of(context).pushNamed(GameScreenProvided.routeName);
+                  Navigator.of(context)
+                      ?.pushNamed(GameScreenProvided.routeName);
                 },
                 onError: (message) {
                   FlushUtil.showError(

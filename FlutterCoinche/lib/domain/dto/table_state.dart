@@ -2,15 +2,15 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum TableState {
   @JsonValue("JOINING")
-  JOINING,
+  joining,
   @JsonValue("DISTRIBUTING")
-  DISTRIBUTING,
+  distributing,
   @JsonValue("BIDDING")
-  BIDDING,
+  bidding,
   @JsonValue("PLAYING")
-  PLAYING,
+  playing,
   @JsonValue("BETWEEN_GAMES")
-  BETWEEN_GAMES,
+  betweenGames,
   @JsonValue("ENDED")
-  ENDED
+  ended
 }

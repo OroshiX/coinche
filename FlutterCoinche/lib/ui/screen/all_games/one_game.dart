@@ -8,24 +8,24 @@ import 'package:flutter/material.dart';
 class OneGame extends StatelessWidget {
   final GameEmpty game;
 
-  const OneGame({Key key, this.game}) : super(key: key);
+  const OneGame({Key? key, required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color color;
+    Color color = Colors.red;
     switch (game.state) {
-      case TableState.JOINING:
+      case TableState.joining:
         color = Colors.blue;
         break;
-      case TableState.DISTRIBUTING:
-      case TableState.BIDDING:
-      case TableState.PLAYING:
+      case TableState.distributing:
+      case TableState.bidding:
+      case TableState.playing:
         color = Colors.orange;
         break;
-      case TableState.BETWEEN_GAMES:
+      case TableState.betweenGames:
         color = Colors.amber;
         break;
-      case TableState.ENDED:
+      case TableState.ended:
         color = Colors.blueGrey;
         break;
     }

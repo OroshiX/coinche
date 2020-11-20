@@ -13,7 +13,7 @@ import 'package:tuple/tuple.dart';
 class BigScoreWidget extends StatelessWidget {
   final Future<dynamic> Function(BuildContext context) quit;
 
-  const BigScoreWidget({Key key, @required this.quit}) : super(key: key);
+  const BigScoreWidget({Key? key, required this.quit}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,9 @@ class BigScoreWidget extends StatelessWidget {
       selector: (ctx, gm) => Tuple2(gm.game.state, gm.game.isWon()),
       builder: (context, model, child) {
         final state = model.item1;
-        if (state != TableState.BETWEEN_GAMES && state != TableState.ENDED)
+        if (state != TableState.betweenGames && state != TableState.ended) {
           return SizedBox();
+        }
         final bool won = model.item2;
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -48,13 +49,13 @@ class BigScoreWidget extends StatelessWidget {
                         SizedBox(
                           height: 10,
                         ),
-                        if (state == TableState.ENDED)
+                        if (state == TableState.ended)
                           Text(
                             "You ${won ? "won! 😄" : "lost 😢\nI promise you'll get your revenge! 😈"}",
                             style: TextStyle(
                                 color: colorTextDark, fontSize: won ? 20 : 18),
                           ),
-                        if (state == TableState.ENDED)
+                        if (state == TableState.ended)
                           SizedBox(
                             height: 10,
                           ),
@@ -66,13 +67,13 @@ class BigScoreWidget extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             NeumorphicWidget(
-                              sizeShadow: SizeShadow.MEDIUM,
+                              sizeShadow: SizeShadow.medium,
                               onTap: () async {
-                                if (state == TableState.BETWEEN_GAMES) {
+                                if (state == TableState.betweenGames) {
                                   var isQuit = (await quit(context)) ?? false;
-                                  if (isQuit) Navigator.of(context).pop();
+                                  if (isQuit) Navigator.of(context)?.pop();
                                 } else {
-                                  Navigator.of(context).pop();
+                                  Navigator.of(context)?.pop();
                                 }
                               },
                               child: Padding(

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 
 class RotatedTransition extends AnimatedWidget {
   final Widget child;
-
-  RotatedTransition(
-      {Key key, @required this.child, @required Animation<double> animation})
+  final Animation<double> animation;
+  RotatedTransition({Key? key, required this.child, required this.animation})
       : super(key: key, listenable: animation);
 
   @override
   Widget build(BuildContext context) {
-    final Animation<double> animation = listenable;
     return Transform.rotate(
       angle: animation.value,
       child: child,

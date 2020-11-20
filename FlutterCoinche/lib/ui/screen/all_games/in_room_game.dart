@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class InRoomGame extends StatelessWidget {
   final GameEmpty game;
 
-  const InRoomGame({Key key, this.game}) : super(key: key);
+  const InRoomGame({Key? key, required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +19,8 @@ class InRoomGame extends StatelessWidget {
       child: NeumorphicWidget(
         onTap: () {
           context.read<GameModel>().changeGame(
-              idGame: game.id, userUid: context.read<LoginModel>().user.uid);
-          Navigator.of(context).pushNamed(GameScreenProvided.routeName);
+              idGame: game.id, userUid: context.read<LoginModel>().user?.uid);
+          Navigator.of(context)?.pushNamed(GameScreenProvided.routeName);
         },
         child: OneGame(
           game: game,

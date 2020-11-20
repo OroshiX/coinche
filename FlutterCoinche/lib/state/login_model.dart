@@ -3,29 +3,28 @@ import 'package:coinche/service/network/server_communication.dart';
 import 'package:flutter/foundation.dart';
 
 class LoginModel extends ChangeNotifier {
-  bool _loggedIn;
+  bool _loggedIn = false;
 
-  Future<void> _futureLogged;
+  late Future<void> _futureLogged;
 
-  MyAuthUser _user;
-  MyAuthUser get user => _user;
+  MyAuthUser? _user;
+  MyAuthUser? get user => _user;
 
   Future<void> get checkLoggedFuture => _futureLogged;
   bool get loggedIn => _loggedIn;
-  String _error;
-  String get error => _error;
-  set error(String message) {
+  String? _error;
+  String? get error => _error;
+  set error(String? message) {
     _error = message;
     notifyListeners();
   }
 
-  set loggedIn(value) {
+  set loggedIn(bool value) {
     _loggedIn = value;
     notifyListeners();
   }
 
   LoginModel() {
-    _loggedIn = false;
     _futureLogged = _checkLoggedIn();
   }
 

@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RecapWidget extends StatelessWidget {
-  const RecapWidget({Key key}) : super(key: key);
+  const RecapWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return NeumorphicNoStateWidget(
       pressed: false,
       borderRadius: 10,
-      sizeShadow: SizeShadow.MEDIUM,
+      sizeShadow: SizeShadow.medium,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 class TableWidget extends StatefulWidget {
   final Future<dynamic> Function(BuildContext) quit;
 
-  TableWidget({@required this.quit});
+  TableWidget({required this.quit});
 
   @override
   _TableWidgetState createState() => _TableWidgetState();
@@ -34,13 +34,13 @@ class _TableWidgetState extends State<TableWidget> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    const double widthContainerName = 65;
-    const double heightContainer = 104;
+    const widthContainerName = 65.0;
+    const heightContainer = 104.0;
 
-    final double cardWidth = getCardWidth(screenSize);
-    final double cardHeight = cardWidth * golden;
-    final double marginCardsPosition = getMarginCardsPosition(screenSize);
-    final double paddingHeightCards = getPaddingHeightCard(screenSize);
+    final cardWidth = getCardWidth(screenSize);
+    final cardHeight = cardWidth * golden;
+    final marginCardsPosition = getMarginCardsPosition(screenSize);
+    final paddingHeightCards = getPaddingHeightCard(screenSize);
 
     return Stack(children: [
       Column(
@@ -61,13 +61,13 @@ class _TableWidgetState extends State<TableWidget> {
                             },
                             onTapExit: () async {
                               var quit = (await widget.quit(context)) ?? false;
-                              if (quit) Navigator.of(context).pop();
+                              if (quit) Navigator.of(context)?.pop();
                             },
                           )
                         : LandscapeScoreWidget(
                             onTapExit: () async {
                               var quit = (await widget.quit(context)) ?? false;
-                              if (quit) Navigator.of(context).pop();
+                              if (quit) Navigator.of(context)?.pop();
                             },
                             onTapMessages: () {
                               // TODO messages

@@ -7,9 +7,9 @@ class MiddleArea extends StatelessWidget {
   final Size screenSize;
 
   const MiddleArea({
-    @required this.cardWidth,
-    @required this.cardHeight,
-    @required this.screenSize,
+    required this.cardWidth,
+    required this.cardHeight,
+    required this.screenSize,
   });
 
   @override

@@ -13,14 +13,14 @@ class AnimatedBiddingBar extends StatelessWidget {
   final double widthContainerName;
 
   const AnimatedBiddingBar(
-      {Key key, @required this.screenSize, @required this.widthContainerName})
+      {Key? key, required this.screenSize, required this.widthContainerName})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final key = GlobalKey<BiddingBarState>();
 
-    return Selector<GameModel, Tuple3<bool, String, String>>(
+    return Selector<GameModel, Tuple3<bool, String?, String?>>(
       // bidding? , success, error
       selector: (ctx, gm) {
         // if (gm.game.state == TableState.PLAYING) {
@@ -28,19 +28,19 @@ class AnimatedBiddingBar extends StatelessWidget {
         //   key.currentState.points = 80;
         // }
         return Tuple3(
-            gm.game.state == TableState.BIDDING, gm.success, gm.error);
+            gm.game.state == TableState.bidding, gm.success, gm.error);
       },
       builder: (context, value, child) {
-        final String success = value.item2;
-        final String error = value.item3;
+        final success = value.item2;
+        final error = value.item3;
         final bool isBidding = value.item1;
         if (error != null) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
             FlushUtil.showError(context, "Error placing bid: $error");
             context.read<GameModel>().clearError();
           });
         } else if (success != null) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
             FlushUtil.showSuccess(context, "bid $success placed");
             context.read<GameModel>().clearSuccess();
           });

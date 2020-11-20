@@ -3,7 +3,8 @@ import 'package:coinche/state/game_model.dart';
 import 'package:coinche/ui/resources/colors.dart';
 import 'package:coinche/ui/screen/all_games/alert_new_game.dart';
 import 'package:coinche/ui/screen/all_games/list_games.dart';
-import 'package:coinche/ui/screen/login_screen.dart';
+import 'package:coinche/ui/screen/login/login_manual_screen.dart';
+import 'package:coinche/ui/screen/login/login_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:coinche/ui/widget/neu_round_inset.dart';
 import 'package:coinche/util/flush_util.dart';
@@ -16,15 +17,15 @@ class AllGamesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       _refreshData(context);
     });
-    return Selector<GameModel, String>(
+    return Selector<GameModel, String?>(
       selector: (ctx, gameModel) => gameModel.error,
       builder: (context, value, child) {
         if (value != null) {
-          String error = value;
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          var error = value;
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
             FlushUtil.showError(context, "Error getting games: $error");
             context.read<GameModel>().clearError();
           });
@@ -49,14 +50,14 @@ class AllGamesScreen extends StatelessWidget {
                   icon: Icon(Icons.cake),
                   onPressed: () {
                     Navigator.of(context)
-                        .pushNamed(TestingOfflineGame.routeName);
+                        ?.pushNamed(TestingOfflineGame.routeName);
                   }),
               IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () {
                     getFireAuthService().signOut(context).then(
                         (value) => Navigator.of(context)
-                            .pushReplacementNamed(LoginScreen.routeName),
+                            ?.pushReplacementNamed(LoginManualScreen.routeName),
                         onError: (error) {
                       FlushUtil.showError(context, "Couldn't logout: $error");
                     });

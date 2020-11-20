@@ -7,55 +7,79 @@ import 'package:flutter/foundation.dart';
 
 extension GameExtensions on Game {
   List<Aspects> different(Game old) {
-    if (old == null) return Aspects.values;
-    List<Aspects> res = [];
-    if (old.id != id) res.add(Aspects.ID);
-    if (!setEquals(old.cards.toSet(), cards.toSet())) res.add(Aspects.CARDS);
-    if (old.score != score) res.add(Aspects.SCORE);
-    if (old.state != state) res.add(Aspects.STATE);
-    if (!listEquals(old.bids, bids)) res.add(Aspects.ALL_BIDS);
-    if (old.nicknames != nicknames) res.add(Aspects.NICKNAMES);
-    if (!listEquals(old.onTable, onTable)) res.add(Aspects.ON_TABLE);
-    if (old.nextPlayer != nextPlayer) res.add(Aspects.NEXT_PLAYER);
-    if (old.myPosition != myPosition) res.add(Aspects.MY_POSITION);
+    // if (old == null) return Aspects.values;
+    var res = <Aspects>[];
+    if (old.id != id) res.add(Aspects.id);
+    if (!setEquals(old.cards.toSet(), cards.toSet())) {
+      res.add(Aspects.cards);
+    }
+    if (old.score != score) {
+      res.add(Aspects.score);
+    }
+    if (old.state != state) {
+      res.add(Aspects.state);
+    }
+    if (!listEquals(old.bids, bids)) {
+      res.add(Aspects.allBids);
+    }
+    if (old.nicknames != nicknames) {
+      res.add(Aspects.nicknames);
+    }
+    if (!listEquals(old.onTable, onTable)) {
+      res.add(Aspects.onTable);
+    }
+    if (old.nextPlayer != nextPlayer) {
+      res.add(Aspects.nextPlayer);
+    }
+    if (old.myPosition != myPosition) {
+      res.add(Aspects.myPosition);
+    }
     if (!listEquals(old.lastTrick, lastTrick) ||
-        old.winnerLastTrick != winnerLastTrick) res.add(Aspects.LAST_TRICK);
-    if (old.currentBid != currentBid) res.add(Aspects.CURRENT_BID);
-    if (this._getChangeBid(old, AxisDirection.up)) res.add(Aspects.BIDS_TOP);
-    if (this._getChangeBid(old, AxisDirection.right))
-      res.add(Aspects.BIDS_RIGHT);
-    if (this._getChangeBid(old, AxisDirection.left)) res.add(Aspects.BIDS_LEFT);
-    if (this._getChangeBid(old, AxisDirection.down))
-      res.add(Aspects.BIDS_BOTTOM);
+        old.winnerLastTrick != winnerLastTrick) {
+      res.add(Aspects.lastTrick);
+    }
+    if (old.currentBid != currentBid) {
+      res.add(Aspects.currentBid);
+    }
+    if (_getChangeBid(old, AxisDirection.up)) {
+      res.add(Aspects.bidsTop);
+    }
+    if (_getChangeBid(old, AxisDirection.right)) {
+      res.add(Aspects.bidsRight);
+    }
+    if (_getChangeBid(old, AxisDirection.left)) res.add(Aspects.bidsLeft);
+    if (_getChangeBid(old, AxisDirection.down)) {
+      res.add(Aspects.bidsBottom);
+    }
     return res;
   }
 
   bool isWon() {
     final northWon = (score.northSouth - score.eastWest) > 0;
     return northWon &&
-            (myPosition == PlayerPosition.NORTH ||
-                myPosition == PlayerPosition.SOUTH) ||
+            (myPosition == PlayerPosition.north ||
+                myPosition == PlayerPosition.south) ||
         !northWon &&
-            (myPosition == PlayerPosition.EAST ||
-                myPosition == PlayerPosition.WEST);
+            (myPosition == PlayerPosition.east ||
+                myPosition == PlayerPosition.west);
   }
 
-  bool _getChangeBid(Game old, AxisDirection posTable) {
-    if (old == null || this.bids == null) return null;
+  bool _getChangeBid(Game? old, AxisDirection posTable) {
+    if (old == null || bids == null) return false;
     final oldBids = old.bidsOfPosition(posTable);
     final newBids = bidsOfPosition(posTable);
     final change = changeBid(oldBids, newBids, posTable);
     return change != null;
   }
 
-  static Change changeBid(
-      List<Bid> oldBids, List<Bid> newBids, AxisDirection posTable) {
-    if (oldBids == null || newBids == null) return null;
+  static Change? changeBid(
+      List<Bid> oldBids, List<Bid>? newBids, AxisDirection posTable) {
+    if (newBids == null) return null;
     final oldLength = oldBids.length;
     final newLength = newBids.length;
     if (oldLength == newLength) return null;
-    TypeChange typeChange =
-        oldLength > newLength ? TypeChange.DELETE : TypeChange.INSERT;
+    var typeChange =
+        oldLength > newLength ? TypeChange.delete : TypeChange.insert;
     return Change(typeChange, (oldLength - newLength).abs());
   }
 
@@ -73,37 +97,36 @@ class Change {
   const Change(this.typeChange, this.nbChanges);
 }
 
-enum TypeChange { INSERT, DELETE }
+enum TypeChange { insert, delete }
 
 enum Aspects {
-  ID,
-  CARDS,
-  STATE,
-  ALL_BIDS,
-  BIDS_LEFT,
-  BIDS_RIGHT,
-  BIDS_TOP,
-  BIDS_BOTTOM,
-  SCORE,
-  NICKNAMES,
-  ON_TABLE,
-  NEXT_PLAYER,
-  MY_POSITION,
-  CURRENT_BID,
-  LAST_TRICK,
-  COLORS,
+  id,
+  cards,
+  state,
+  allBids,
+  bidsLeft,
+  bidsRight,
+  bidsTop,
+  bidsBottom,
+  score,
+  nicknames,
+  onTable,
+  nextPlayer,
+  myPosition,
+  currentBid,
+  lastTrick,
+  colors,
 }
 
 Aspects fromPositionBid(AxisDirection posTable) {
   switch (posTable) {
     case AxisDirection.up:
-      return Aspects.BIDS_TOP;
+      return Aspects.bidsTop;
     case AxisDirection.right:
-      return Aspects.BIDS_RIGHT;
+      return Aspects.bidsRight;
     case AxisDirection.down:
-      return Aspects.BIDS_BOTTOM;
+      return Aspects.bidsBottom;
     case AxisDirection.left:
-      return Aspects.BIDS_LEFT;
+      return Aspects.bidsLeft;
   }
-  return Aspects.ALL_BIDS;
 }

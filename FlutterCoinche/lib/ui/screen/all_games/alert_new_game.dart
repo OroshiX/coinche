@@ -9,21 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DialogNewGame extends StatefulWidget {
-  const DialogNewGame({Key key}) : super(key: key);
+  const DialogNewGame({Key? key}) : super(key: key);
 
   @override
   _DialogNewGameState createState() => _DialogNewGameState();
 }
 
 class _DialogNewGameState extends State<DialogNewGame> {
-  bool _automated;
+  bool _automated = false;
   final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _automated = false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +31,7 @@ class _DialogNewGameState extends State<DialogNewGame> {
             children: [
               TextFormField(
                 controller: _controller,
-                validator: (value) => value.isNotEmpty
+                validator: (value) => (value?.isNotEmpty ?? false)
                     ? null
                     : "Please submit a name for the game",
               ),
@@ -67,17 +61,17 @@ class _DialogNewGameState extends State<DialogNewGame> {
       actions: <Widget>[
         FlatButton(
             onPressed: () {
-              if (formKey.currentState.validate()) {
+              if (formKey.currentState?.validate() ?? false) {
                 ServerCommunication.createGame(
                   _controller.text +
                       (_automated ? GameEmpty.automatedString : ""),
                   onSuccess: (GameEmpty gameEmpty) {
                     context.read<GameModel>().changeGame(
                         idGame: gameEmpty.id,
-                        userUid: context.read<LoginModel>().user.uid);
-                    Navigator.of(context).pop();
+                        userUid: context.read<LoginModel>().user?.uid);
+                    Navigator.of(context)?.pop();
                     Navigator.of(context)
-                        .pushNamed(GameScreenProvided.routeName);
+                        ?.pushNamed(GameScreenProvided.routeName);
                   },
                   onError: (message) {
                     FlushUtil.showError(context, message);

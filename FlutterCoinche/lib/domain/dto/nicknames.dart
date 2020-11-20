@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -29,13 +30,13 @@ class Nicknames extends Equatable {
 
   String fromPosition(PlayerPosition playerPosition) {
     switch (playerPosition) {
-      case PlayerPosition.NORTH:
+      case PlayerPosition.north:
         return north;
-      case PlayerPosition.SOUTH:
+      case PlayerPosition.south:
         return south;
-      case PlayerPosition.EAST:
+      case PlayerPosition.east:
         return east;
-      case PlayerPosition.WEST:
+      case PlayerPosition.west:
         return west;
     }
     return "<empty>";

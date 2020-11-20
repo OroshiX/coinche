@@ -1,3 +1,4 @@
+import 'package:coinche/error/exceptions.dart';
 import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/service/network/my_auth_user.dart';
 import 'package:coinche/state/login_model.dart';
@@ -19,91 +20,102 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  double height, width;
-  FireAuthService userRepository;
-  TextEditingController emailController,
-      passwordController,
-      password2Controller;
-
-  bool signUp;
+  late FireAuthService _userRepository;
+  // late TextEditingController _emailController,
+  //     _passwordController,
+  //     _password2Controller;
+  //
+  // late bool _signUp;
 
   @override
   void initState() {
-    userRepository = getFireAuthService();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
-    password2Controller = TextEditingController();
-    signUp = false;
+    _userRepository = getFireAuthService();
+    // _emailController = TextEditingController();
+    // _passwordController = TextEditingController();
+    // _password2Controller = TextEditingController();
+    // _signUp = false;
     context.read<LoginModel>().checkLoggedFuture.then((value) {
       if (context.read<LoginModel>().loggedIn) {
-        Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
+        Navigator.of(context)?.pushReplacementNamed(AllGamesScreen.routeName);
       }
     });
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
-  }
-
-  _resetPassword(String email) {
-    userRepository.resetPassword(email).then((value) {
+  Future<String?> _resetPassword(String email) {
+    return _userRepository.resetPassword(email).then((value) {
       _showSuccess(
           "An email was sent to this address: $email. Please check it, and come back after");
       print("reset ok");
-    }).catchError((error) => _showError(error));
+      return null;
+    }).catchError((error) {
+      _showError(error);
+      return null;
+    });
   }
 
-  _signUp(String email, String password) {
-    userRepository
+  Future<String?> _doSignUp(String email, String password) {
+    return _userRepository
         .signUp(context, email: email, password: password)
         .then((MyAuthUser user) {
       if (!user.isEmailVerified) {
         // send a confirmation email
-        userRepository.sendEmailVerification(context, email).then((value) {
+        _userRepository.sendEmailVerification(context, email).then((value) {
           _showSuccess(
               "An email was sent to this address: $email. Please check it, and come back after");
-        }).catchError((error) => _showError(error));
+        }).catchError((error) {
+          _showError(error);
+          return null;
+        });
       } else {
         _loginSuccess(user);
+        return null;
       }
-    }).catchError((error) => _showError(error));
+    }).catchError((error) {
+      _showError(error);
+      return null;
+    });
   }
 
-  _signInWithCredentials(String email, String password) {
-    userRepository
-        .signInWithCredentials(context, email, password)
-        .then((user) async {
-      _loginSuccess(user);
-    }).catchError((error) => _showError(error));
+  Future<String?> _signInWithCredentials(String email, String password) async {
+    MyAuthUser myAuthUser;
+    try {
+      myAuthUser =
+          await _userRepository.signInWithCredentials(context, email, password);
+      _loginSuccess(myAuthUser);
+      return null;
+    } on ServerErrors catch (e) {
+      _showError(e.cause);
+      return null;
+    } catch (e) {
+      return "Unknown error";
+    }
   }
 
-  _googleSignIn() {
-    userRepository.signInWithGoogle(context).then((value) {
-      _loginSuccess(value);
-    }).catchError((error) => _showError(error));
+  void _googleSignIn() {
+    _userRepository
+        .signInWithGoogle(context)
+        .then(_loginSuccess)
+        .catchError(_showError);
   }
 
-  _loginSuccess(MyAuthUser user) {
+  void _loginSuccess(MyAuthUser user) {
     _showSuccess(
-        "You are now signed in as ${user.displayName != null ? user.displayName : user.email}, and we set user!");
+        "You are now signed in as ${user.displayName ?? user.email}, and we set user!");
 
     context.read<LoginModel>().setUser(user);
 
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(context)?.popUntil((route) => route.isFirst);
     // navigate to other page
-    Navigator.of(context).pushReplacementNamed(AllGamesScreen.routeName);
+    Navigator.of(context)?.pushReplacementNamed(AllGamesScreen.routeName);
   }
 
-  _showError(error) {
+  void _showError(error) {
     print(error);
     FlushUtil.showError(context, error.toString());
   }
 
-  _showSuccess(String message) {
+  void _showSuccess(String message) {
     FlushUtil.showSuccess(context, message);
   }
 
@@ -115,10 +127,10 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         FlutterLogin(
           onSignup: (LoginData loginData) =>
-              _signUp(loginData.name, loginData.password),
+              _doSignUp(loginData.name, loginData.password),
           onLogin: (LoginData loginData) =>
               _signInWithCredentials(loginData.name, loginData.password),
-          onRecoverPassword: (String email) => _resetPassword(email),
+          onRecoverPassword: _resetPassword,
           messages: LoginMessages(
             usernameHint: "Email",
             passwordHint: "Password",
@@ -199,7 +211,8 @@ class _LoginScreenState extends State<LoginScreen> {
               highlightElevation: 6,
             ),
           ),
-          emailValidator: (value) {
+          emailValidator: (String? value) {
+            if (value == null) return "Please fill your email";
             var regex = RegExp(
                 r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
             if (!regex.hasMatch(value)) return "Email format invalid";
@@ -214,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Center(
             child: SignInButton(
               Buttons.Google,
-              onPressed: () => _googleSignIn(),
+              onPressed: _googleSignIn,
             ),
           ),
         ),
@@ -223,7 +236,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: RaisedButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(TestingOfflineGame.routeName);
+                  Navigator.of(context)
+                      ?.pushNamed(TestingOfflineGame.routeName);
                 },
                 child: Text("Test"),
               ),

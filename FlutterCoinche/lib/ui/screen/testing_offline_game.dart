@@ -74,18 +74,18 @@ class TestingOfflineGame extends StatelessWidget {
   }
 
   void _addACardFor(GameModel rmGame) {
-    PlayerPosition winner = PlayerPosition.values[Random().nextInt(4)];
+    var winner = PlayerPosition.values[Random().nextInt(4)];
     Game g = rmGame.game.copy(
         withOnTable: rmGame.game.onTable.toList(),
         withLastTrick: rmGame.game.onTable.toList(),
         withWinnerLastTrick: winner);
-    bool changedWinner = false;
+    var changedWinner = false;
     if (g.onTable.length == 4) {
       g.onTable.clear();
       changedWinner = true;
       g.onTable.add(getRandomCardTable(_next(winner)));
     } else if (g.onTable.isEmpty) {
-      g.onTable.add(getRandomCardTable(PlayerPosition.NORTH));
+      g.onTable.add(getRandomCardTable(PlayerPosition.north));
     } else {
       g.onTable.add(getRandomCardTable(_next(g.onTable.last.position)));
     }
@@ -94,16 +94,15 @@ class TestingOfflineGame extends StatelessWidget {
 
   PlayerPosition _next(PlayerPosition playerPosition) {
     switch (playerPosition) {
-      case PlayerPosition.NORTH:
-        return PlayerPosition.EAST;
-      case PlayerPosition.SOUTH:
-        return PlayerPosition.WEST;
-      case PlayerPosition.EAST:
-        return PlayerPosition.SOUTH;
-      case PlayerPosition.WEST:
-        return PlayerPosition.NORTH;
+      case PlayerPosition.north:
+        return PlayerPosition.east;
+      case PlayerPosition.south:
+        return PlayerPosition.west;
+      case PlayerPosition.east:
+        return PlayerPosition.south;
+      case PlayerPosition.west:
+        return PlayerPosition.north;
     }
-    return null;
   }
 
   Game _init() {
@@ -116,9 +115,9 @@ class TestingOfflineGame extends StatelessWidget {
             Nicknames(north: "me", east: "toto", south: "south", west: "west"),
         cards: [randomCard(), randomCard()],
         id: "toto",
-        state: TableState.PLAYING,
-        myPosition: PlayerPosition.NORTH,
+        state: TableState.playing,
+        myPosition: PlayerPosition.north,
         currentBid: SimpleBid(
-            points: 80, color: CardColor.CLUB, position: PlayerPosition.WEST));
+            points: 80, color: CardColor.club, position: PlayerPosition.west));
   }
 }

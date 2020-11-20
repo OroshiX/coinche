@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/domain/dto/table_state.dart';
-import 'package:coinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:coinche/domain/extensions/card_won_or_center.dart';
 import 'package:coinche/domain/extensions/cards_extension.dart';
 import 'package:coinche/domain/logic/calculus.dart';
 import 'package:coinche/state/cards_on_table_model.dart';
@@ -16,96 +16,144 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
-class CardsOnTable extends StatefulWidget {
+class CardsOnTable extends StatelessWidget {
+  final double minPadding;
+  final double? maxHeightCard;
+  final double minHeightCard;
+
+  const CardsOnTable(
+      {Key? key,
+      double? maxHeightCard,
+      this.minPadding = 0,
+      double? minHeightCard})
+      : this.maxHeightCard = maxHeightCard ?? 400,
+        this.minHeightCard = minHeightCard ?? 20,
+        assert((minHeightCard ?? 20) <= (maxHeightCard ?? 400)),
+        super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final availableSpace = min(constraints.maxWidth, constraints.maxHeight);
+        final minCardHeight =
+            max(minHeightCard, availableSpace / 2 - minPadding);
+        double cardHeight;
+        if (maxHeightCard == null) {
+          cardHeight = minCardHeight;
+        } else {
+          cardHeight = min(maxHeightCard!, minCardHeight);
+        }
+        final cardWidth = cardHeight / golden; // Golden ratio / nombre d'or
+        return Container(
+          width: constraints.maxWidth,
+          height: constraints.maxHeight,
+          child: ChangeNotifierProvider(
+            create: (context) => CardsOnTableModel(),
+            child: Selector<
+                GameModel,
+                Tuple5<TableState, PlayerPosition, List<CardPlayed>,
+                    List<CardPlayed>, PlayerPosition>>(
+              selector: (ctx, gameModel) => Tuple5(
+                  gameModel.game.state,
+                  gameModel.game.myPosition,
+                  gameModel.game.onTable,
+                  gameModel.game.lastTrick,
+                  gameModel.game.winnerLastTrick),
+              builder: (context, statePos, child) {
+                if (statePos.item1 != TableState.playing &&
+                    statePos.item1 != TableState.betweenGames &&
+                    statePos.item1 != TableState.ended) return SizedBox();
+                return _CardsOnTable(
+                  cardWidth: cardWidth,
+                  cardHeight: cardHeight,
+                  lastTrick: statePos.item4,
+                  myPosition: statePos.item2,
+                  onTable: statePos.item3,
+                  winnerLastTrick: statePos.item5,
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CardsOnTable extends StatefulWidget {
   static int nbBuild = 0;
   static int inFunction = 0;
-  final double maxHeightCard, minHeightCard;
-  final double minPadding;
 
-  CardsOnTable(
-      {this.maxHeightCard = 400, this.minPadding, this.minHeightCard = 20})
-      : assert(minHeightCard <= maxHeightCard);
+  final double cardWidth;
+  final double cardHeight;
+  final PlayerPosition myPosition;
+  final List<CardPlayed> onTable;
+  final List<CardPlayed>? lastTrick;
+  final PlayerPosition? winnerLastTrick;
+  _CardsOnTable(
+      {required this.cardWidth,
+      required this.cardHeight,
+      required this.myPosition,
+      required this.onTable,
+      required this.lastTrick,
+      required this.winnerLastTrick});
 
   @override
   _CardsOnTableState createState() => _CardsOnTableState();
 }
 
-class _CardsOnTableState extends State<CardsOnTable> {
-  CardPlayed cardLeft, cardTop, cardRight, cardMe;
-  Map<AxisDirection, PlayerPosition> posTableToCardinal;
+class _CardsOnTableState extends State<_CardsOnTable> {
+  CardPlayed? cardLeft, cardTop, cardRight, cardMe;
+  late Map<AxisDirection, PlayerPosition> _posTableToCardinal;
   List<CardPlayed> currentCardsOnTable = [];
   bool firstRender = true;
-  List<MapEntry<AxisDirection, CardPlayed>> orderedCards =
+  List<MapEntry<AxisDirection, CardPlayed?>> orderedCards =
       List.generate(4, (index) => MapEntry(AxisDirection.values[index], null));
 
   @override
+  void initState() {
+    super.initState();
+    final me = context.read<GameModel>().game.myPosition;
+
+    /// Init values
+    _posTableToCardinal = getPosTableToCardinal(me);
+    _initState(
+        winnerLast: widget.winnerLastTrick,
+        lastTrick: widget.lastTrick,
+        cardsOnTable: widget.onTable,
+        me: widget.myPosition,
+        fromInit: true);
+  }
+
+  @override
+  void didUpdateWidget(covariant _CardsOnTable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _initState(
+      me: widget.myPosition,
+      cardsOnTable: widget.onTable,
+      lastTrick: widget.lastTrick,
+      winnerLast: widget.winnerLastTrick,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print("[CardsOnTable] build ${++CardsOnTable.nbBuild}");
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final availableSpace = min(constraints.maxWidth, constraints.maxHeight);
-        final minCardHeight =
-            max(widget.minHeightCard, availableSpace / 2 - widget.minPadding);
-        double cardHeight;
-        if (widget.maxHeightCard == null) {
-          cardHeight = minCardHeight;
-        } else {
-          cardHeight = min(widget.maxHeightCard, minCardHeight);
-        }
-        final cardWidth = cardHeight / golden; // Golden ratio / nombre d'or
-        return Container(
-            child: ChangeNotifierProvider(
-          create: (context) => CardsOnTableModel(),
-          child: Consumer<CardsOnTableModel>(
-            builder: (context, cardsOnTableModel, child) {
-              return Selector<
-                  GameModel,
-                  Tuple5<TableState, PlayerPosition, List<CardPlayed>,
-                      List<CardPlayed>, PlayerPosition>>(
-                // TableState, myPos, onTable, lastTrick, winnerLast
-                selector: (ctx, gameModel) => Tuple5(
-                    gameModel.game.state,
-                    gameModel.game.myPosition,
-                    gameModel.game.onTable,
-                    gameModel.game.lastTrick,
-                    gameModel.game.winnerLastTrick),
-                builder: (context, statePos, child) {
-                  if (statePos.item1 != TableState.PLAYING &&
-                      statePos.item1 != TableState.BETWEEN_GAMES &&
-                      statePos.item1 != TableState.ENDED) return SizedBox();
-                  _initState(
-                    cardsOnTableModel: cardsOnTableModel,
-                    me: statePos.item2,
-                    cardsOnTable: statePos.item3,
-                    lastTrick: statePos.item4,
-                    winnerLast: statePos.item5,
-                  );
-                  return Container(
-                    width: constraints.maxWidth,
-                    height: constraints.maxHeight,
-                    child: Stack(
-                      children: orderedCards
-                          .map((e) => ManagedStateCard(
-                              axisDirection: e.key,
-                              cardWidth: cardWidth,
-                              cardHeight: cardHeight))
-                          .toList(),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ));
-      },
+    print("[CardsOnTable] build ${++_CardsOnTable.nbBuild}");
+    return Stack(
+      children: orderedCards
+          .map((e) => ManagedStateCard(
+              axisDirection: e.key,
+              cardWidth: widget.cardWidth,
+              cardHeight: widget.cardHeight))
+          .toList(),
     );
   }
 
   void _putLastCardOnTable(List<CardPlayed> cardsOnTable,
       Map<PlayerPosition, AxisDirection> cardinalToPosTable, int timestamp,
-      {@required CardsOnTableModel cardsOnTableModel}) {
+      {required CardsOnTableModel cardsOnTableModel}) {
     final lastCard = cardsOnTable.last;
-    final AxisDirection last = cardinalToPosTable[lastCard.position];
+    final last = cardinalToPosTable[lastCard.position]!;
     final newValue = CardWonOrCenter(
         cardModel: lastCard.card,
         position: null,
@@ -127,29 +175,24 @@ class _CardsOnTableState extends State<CardsOnTable> {
     }
   }
 
-  void _initState({
-    @required List<CardPlayed> cardsOnTable,
-    @required CardsOnTableModel cardsOnTableModel,
-    @required PlayerPosition me,
-    @required List<CardPlayed> lastTrick,
-    @required PlayerPosition winnerLast,
-//                    bool fromInit = false
-  }) {
-    print("in function ${++CardsOnTable.inFunction}");
-
-    /// Init values
-    posTableToCardinal = getPosTableToCardinal(me);
-
+  void _initState(
+      {required List<CardPlayed> cardsOnTable,
+      required PlayerPosition me,
+      required List<CardPlayed>? lastTrick,
+      required PlayerPosition? winnerLast,
+      bool fromInit = false}) {
+    print("in function ${++_CardsOnTable.inFunction}");
+    CardsOnTableModel cardsOnTableModel = context.read<CardsOnTableModel>();
     if (listEquals(currentCardsOnTable, cardsOnTable)) return;
-    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    var timestamp = DateTime.now().millisecondsSinceEpoch;
     final newCardLeft =
-        cardsOnTable.atPosition(AxisDirection.left, posTableToCardinal);
+        cardsOnTable.atPosition(AxisDirection.left, _posTableToCardinal);
     final newCardTop =
-        cardsOnTable.atPosition(AxisDirection.up, posTableToCardinal);
+        cardsOnTable.atPosition(AxisDirection.up, _posTableToCardinal);
     final newCardRight =
-        cardsOnTable.atPosition(AxisDirection.right, posTableToCardinal);
+        cardsOnTable.atPosition(AxisDirection.right, _posTableToCardinal);
     final newCardMe =
-        cardsOnTable.atPosition(AxisDirection.down, posTableToCardinal);
+        cardsOnTable.atPosition(AxisDirection.down, _posTableToCardinal);
     final tmpOrderedCards = calculateOrderedCards(
         cardsOnTable: cardsOnTable,
         left: newCardLeft,
@@ -167,7 +210,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
       if (cardLeft != newCardLeft) {
         cardLeft = newCardLeft;
         cardsOnTableModel.left = CardWonOrCenter(
-            cardModel: cardLeft.card,
+            cardModel: cardLeft?.card,
             position: null,
             timestamp: timestamp,
             shouldAnim: !firstRender);
@@ -175,7 +218,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
       if (cardMe != newCardMe) {
         cardMe = newCardMe;
         cardsOnTableModel.down = CardWonOrCenter(
-            cardModel: cardMe.card,
+            cardModel: cardMe?.card,
             position: null,
             timestamp: timestamp,
             shouldAnim: !firstRender);
@@ -183,7 +226,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
       if (cardRight != newCardRight) {
         cardRight = newCardRight;
         cardsOnTableModel.right = CardWonOrCenter(
-            cardModel: cardRight.card,
+            cardModel: cardRight?.card,
             position: null,
             timestamp: timestamp,
             shouldAnim: !firstRender);
@@ -191,7 +234,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
       if (cardTop != newCardTop) {
         cardTop = newCardTop;
         cardsOnTableModel.up = CardWonOrCenter(
-            cardModel: cardTop.card,
+            cardModel: cardTop?.card,
             position: null,
             timestamp: timestamp,
             shouldAnim: !firstRender);
@@ -232,7 +275,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
     if (cardLeft == null && newCardLeft != null) {
       cardLeft = newCardLeft;
       cardsOnTableModel.left = CardWonOrCenter(
-          cardModel: cardLeft.card,
+          cardModel: newCardLeft.card,
           position: null,
           timestamp: timestamp,
           shouldAnim: !firstRender);
@@ -240,7 +283,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
     if (cardRight == null && newCardRight != null) {
       cardRight = newCardRight;
       cardsOnTableModel.right = CardWonOrCenter(
-          cardModel: cardRight.card,
+          cardModel: newCardRight.card,
           position: null,
           timestamp: timestamp,
           shouldAnim: !firstRender);
@@ -248,7 +291,7 @@ class _CardsOnTableState extends State<CardsOnTable> {
     if (cardTop == null && newCardTop != null) {
       cardTop = newCardTop;
       cardsOnTableModel.up = CardWonOrCenter(
-          cardModel: cardTop.card,
+          cardModel: newCardTop.card,
           position: null,
           timestamp: timestamp,
           shouldAnim: !firstRender);
@@ -256,28 +299,32 @@ class _CardsOnTableState extends State<CardsOnTable> {
     if (cardMe == null && newCardMe != null) {
       cardMe = newCardMe;
       cardsOnTableModel.down = CardWonOrCenter(
-          cardModel: cardMe.card,
+          cardModel: newCardMe.card,
           position: null,
           timestamp: timestamp,
           shouldAnim: !firstRender);
     }
     currentCardsOnTable = cardsOnTable;
     firstRender = false;
-//                if (!fromInit) {
+    if (!fromInit) {
 //                 cardsOnTableModel.setState((g) =>
-    // TODO idem ordered cards
-    orderedCards = tmpOrderedCards;
-    // );
-//                }
+      // TODO idem ordered cards
+      setState(() {
+        orderedCards = tmpOrderedCards;
+      });
+      // );
+    } else {
+      orderedCards = tmpOrderedCards;
+    }
   }
 
-  List<MapEntry<AxisDirection, CardPlayed>> calculateOrderedCards(
-      {@required List<CardPlayed> cardsOnTable,
-      @required CardPlayed left,
-      @required CardPlayed right,
-      @required CardPlayed up,
-      @required CardPlayed me}) {
-    final res = List<MapEntry<AxisDirection, CardPlayed>>(4);
+  List<MapEntry<AxisDirection, CardPlayed?>> calculateOrderedCards(
+      {required List<CardPlayed> cardsOnTable,
+      required CardPlayed? left,
+      required CardPlayed? right,
+      required CardPlayed? up,
+      required CardPlayed? me}) {
+    final res = List<MapEntry<AxisDirection?, CardPlayed?>?>.filled(4, null);
     var index = cardsOnTable
         .indexWhere((element) => element.position == left?.position);
     if (index != -1) {
@@ -300,13 +347,14 @@ class _CardsOnTableState extends State<CardsOnTable> {
     }
     // Fill empty indexes with missing values
     final unusedKeys = AxisDirection.values.toList();
-    res.map((e) => e?.key).forEach((element) => unusedKeys.remove(element));
+    res.map((e) => e?.key).forEach(unusedKeys.remove);
     while (unusedKeys.isNotEmpty) {
-      int index = res.indexOf(null);
+      var index = res.indexOf(null);
       if (index == -1) break;
       res[index] = MapEntry(unusedKeys.first, null);
       unusedKeys.removeAt(0);
     }
-    return res;
+    var list = res.map((e) => MapEntry(e!.key!, e.value)).toList();
+    return list;
   }
 }

@@ -21,7 +21,7 @@ void main() {
           height: 60,
           child: CardWidget(
             card: CardModel(
-                color: CardColor.CLUB, playable: true, value: CardValue.KING),
+                color: CardColor.club, playable: true, value: CardValue.king),
             width: 40,
             height: 60,
             displayPlayable: true,

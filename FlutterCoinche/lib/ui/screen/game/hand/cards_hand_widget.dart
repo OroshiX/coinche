@@ -12,10 +12,10 @@ class CardsInHandWidget extends StatelessWidget {
   final double paddingVertical;
 
   const CardsInHandWidget({
-    @required this.cardHeight,
-    @required this.cardWidth,
-    @required this.screenWidth,
-    @required this.paddingVertical,
+    required this.cardHeight,
+    required this.cardWidth,
+    required this.screenWidth,
+    required this.paddingVertical,
   });
 
   @override
@@ -28,7 +28,7 @@ class CardsInHandWidget extends StatelessWidget {
           selector: (ctx, gM) => Tuple3(
               gM.game.myPosition == gM.game.nextPlayer,
               gM.game.cards,
-              gM.game.state == TableState.PLAYING),
+              gM.game.state == TableState.playing),
           builder: (context, value, child) {
             final myTurn = value.item1;
             final cards = value.item2;
@@ -56,12 +56,12 @@ class CardsInHandWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
-                                    color: Colors.grey[800],
+                                    color: Colors.grey[800]!,
                                     offset: Offset(1, 1),
                                     blurRadius: 4,
                                     spreadRadius: 1),
                                 BoxShadow(
-                                    color: Colors.grey[600],
+                                    color: Colors.grey[600]!,
                                     offset: Offset(-3, -3),
                                     blurRadius: 0,
                                     spreadRadius: 2)

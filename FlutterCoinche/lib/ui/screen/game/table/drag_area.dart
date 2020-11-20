@@ -10,17 +10,18 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class DragArea extends StatelessWidget {
-  final double maxHeightCard, minHeightCard;
+  final double? maxHeightCard;
+  final double minHeightCard;
   final double minPadding;
 
   final Size screenSize;
 
   const DragArea({
-    Key key,
-    @required this.screenSize,
+    Key? key,
+    required this.screenSize,
     this.maxHeightCard = 400,
     this.minHeightCard = 20,
-    @required this.minPadding,
+    required this.minPadding,
   }) : super(key: key);
 
   @override
@@ -34,7 +35,7 @@ class DragArea extends StatelessWidget {
         if (maxHeightCard == null) {
           cardHeight = minCardHeight;
         } else {
-          cardHeight = min(maxHeightCard, minCardHeight);
+          cardHeight = min(maxHeightCard!, minCardHeight);
         }
         final cardWidth = cardHeight / golden; // Golden ratio / nombre d'or
 
@@ -42,34 +43,37 @@ class DragArea extends StatelessWidget {
           selector: (context, gm) =>
               Tuple2(gm.game.myPosition, gm.game.nextPlayer),
           builder: (context, value, child) => DragTarget<CardModel>(
-            onWillAccept: (data) {
+            onWillAccept: (CardModel? data) {
               // if it is my turn and the card is playable
               return value.item1 == value.item2 &&
-                  data.playable != null &&
-                  data.playable;
+                  data?.playable != null &&
+                  data?.playable == true;
             },
             onAccept: (data) {
               context.read<GameModel>().playCard(data);
             },
-            builder: (context, candidateData, rejectedData) {
+            builder: (context, List<CardModel?> candidateData, rejectedData) {
               if (candidateData.isNotEmpty) {
-                return SizedBox.expand(
-                  child: Center(
-                    child: Transform.translate(
-                      offset: Offset(0, cardHeight * 2 / 2),
-                      child: Container(
-                        width: cardWidth,
-                        height: cardHeight,
-                        child: CardWidget(
-                          displayPlayable: false,
-                          card: candidateData.last,
-                          height: cardHeight,
+                var last = candidateData.last;
+                if (last != null) {
+                  return SizedBox.expand(
+                    child: Center(
+                      child: Transform.translate(
+                        offset: Offset(0, cardHeight * 2 / 2),
+                        child: Container(
                           width: cardWidth,
+                          height: cardHeight,
+                          child: CardWidget(
+                            displayPlayable: false,
+                            card: last,
+                            height: cardHeight,
+                            width: cardWidth,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
               if (rejectedData.isNotEmpty) {
                 return SizedBox.expand(

@@ -8,22 +8,22 @@ class NeumorphicWidget extends StatefulWidget {
   final bool interactable;
   final bool alwaysPressedPosition;
 
-  final void Function() onTap;
+  final void Function()? onTap;
 
   NeumorphicWidget(
-      {this.child,
+      {required this.child,
       this.borderRadius = 20,
-      this.sizeShadow = SizeShadow.LARGE,
+      this.sizeShadow = SizeShadow.large,
       this.interactable = true,
       this.alwaysPressedPosition = false,
-      @required this.onTap});
+      required this.onTap});
 
   @override
   _NeumorphicWidgetState createState() => _NeumorphicWidgetState();
 }
 
 class _NeumorphicWidgetState extends State<NeumorphicWidget> {
-  bool _isPressed;
+  late bool _isPressed;
 
   @override
   void initState() {
@@ -56,8 +56,8 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 
   void _onTap() {
-    if (widget.interactable && widget.onTap != null) {
-      widget.onTap();
+    if (widget.interactable) {
+      widget.onTap?.call();
     }
   }
 
@@ -90,4 +90,4 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 }
 
-enum SizeShadow { SMALL, MEDIUM, LARGE }
+enum SizeShadow { small, medium, large }

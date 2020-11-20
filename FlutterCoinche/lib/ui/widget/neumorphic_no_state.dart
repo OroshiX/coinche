@@ -10,18 +10,18 @@ const double kBlur1 = 2,
     kSpread2 = -0.25;
 
 BoxDecoration buildNeumorphicDecoration({
-  double borderRadius,
-  SizeShadow sizeShadow,
-  bool pressed,
+  double borderRadius = 20,
+  SizeShadow sizeShadow = SizeShadow.medium,
+  bool pressed = false,
 }) {
-  double blur1 = kBlur1,
+  var blur1 = kBlur1,
       spread1 = kSpread1,
       offset1 = kOffset1,
       blur2 = kBlur2,
       offset2 = kOffset2,
       spread2 = kSpread2;
   switch (sizeShadow) {
-    case SizeShadow.MEDIUM:
+    case SizeShadow.medium:
       blur1 *= 2;
       spread1 *= 2;
       offset1 *= 2;
@@ -29,7 +29,7 @@ BoxDecoration buildNeumorphicDecoration({
       offset2 *= 2;
       spread2 *= 2;
       break;
-    case SizeShadow.LARGE:
+    case SizeShadow.large:
       blur1 *= 4;
       spread1 *= 4;
       offset1 *= 4;
@@ -62,7 +62,7 @@ BoxDecoration buildNeumorphicDecoration({
           ? [
               boxShadowLight,
               BoxShadow(
-                  color: Color.lerp(colorShadow, Colors.white, 0.4),
+                  color: Color.lerp(colorShadow, Colors.white, 0.4)!,
                   blurRadius: blur2 / 4,
                   spreadRadius: spread2 / 4,
                   offset: Offset(offset2 / 8, offset2 / 8))
@@ -84,11 +84,11 @@ class NeumorphicNoStateWidget extends StatelessWidget {
   final bool pressed;
 
   const NeumorphicNoStateWidget(
-      {Key key,
+      {Key? key,
       this.borderRadius = 20,
-      this.sizeShadow = SizeShadow.LARGE,
+      this.sizeShadow = SizeShadow.large,
       this.pressed = false,
-      this.child})
+      required this.child})
       : super(key: key);
 
   @override

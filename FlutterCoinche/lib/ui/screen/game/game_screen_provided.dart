@@ -43,11 +43,11 @@ class GameScreenProvided extends StatelessWidget {
         title: Text("Exit game?"),
         actions: [
           FlatButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => Navigator.of(context)?.pop(false),
               child: Text("No, stay here")),
           FlatButton(
               onPressed: () {
-                Navigator.of(context).pop(true);
+                Navigator.of(context)?.pop(true);
                 SystemChrome.restoreSystemUIOverlays();
               },
               child: Text("Yes, exit!"))

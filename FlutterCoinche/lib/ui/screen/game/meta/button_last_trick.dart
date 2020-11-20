@@ -13,13 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ButtonLastTrick extends StatelessWidget {
-  const ButtonLastTrick({Key key}) : super(key: key);
+  const ButtonLastTrick({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Selector<
         GameModel,
-        Tuple4<PlayerPosition, List<CardPlayed>, TableState,
+        Tuple4<PlayerPosition?, List<CardPlayed>, TableState,
             Map<PlayerPosition, AxisDirection>>>(
       selector: (ctx, gm) => Tuple4(
         gm.game.winnerLastTrick,
@@ -36,7 +36,7 @@ class ButtonLastTrick extends StatelessWidget {
         final winner = value.item1;
         final List<CardPlayed> lastTrick = value.item2;
         return Visibility(
-          visible: value.item3 == TableState.PLAYING && winner != null,
+          visible: value.item3 == TableState.playing && winner != null,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: NeumorphicWidget(
@@ -91,7 +91,7 @@ class ButtonLastTrick extends StatelessWidget {
                       "Last Trick",
                       style: TextStyle(color: colorTextDark),
                     )),
-                sizeShadow: SizeShadow.SMALL,
+                sizeShadow: SizeShadow.small,
                 borderRadius: 10,
                 interactable: true),
           ),

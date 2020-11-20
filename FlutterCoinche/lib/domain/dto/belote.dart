@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum BeloteValue {
   @JsonValue("BELOTE")
-  BELOTE,
+  belote,
   @JsonValue("REBELOTE")
-  REBELOTE,
+  rebelote,
   @JsonValue(null)
-  NONE
+  none
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer' as dev;
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -8,29 +9,28 @@ import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/game.dart';
 import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/domain/extensions/game_extensions.dart';
 import 'package:coinche/service/network/server_communication.dart';
 import 'package:flutter/foundation.dart';
-import 'package:coinche/domain/extensions/game_extensions.dart';
-import 'dart:developer' as dev;
 
 class GameModel extends ChangeNotifier {
-  String _error;
-  String get error => _error;
-  String _success;
-  String get success => _success;
-  set success(String success) {
+  String? _error;
+  String? get error => _error;
+  String? _success;
+  String? get success => _success;
+  set success(String? success) {
     _success = success;
     notifyListeners();
   }
 
-  set error(String value) {
+  set error(String? value) {
     _error = value;
     notifyListeners();
   }
 
-  AudioCache _audioCache;
+  late AudioCache _audioCache;
 
-  Game _game;
+  Game _game = Game();
 
   Game get game => _game;
 
@@ -39,14 +39,12 @@ class GameModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<GameEmpty> _games;
+  List<GameEmpty> _games = [];
 
   List<GameEmpty> get allGames => UnmodifiableListView(_games);
-  StreamSubscription<Game> _subscription;
+  StreamSubscription<Game>? _subscription;
 
   GameModel() {
-    _game = Game();
-    _games = [];
     _audioCache = AudioCache(
         prefix: "assets/sounds/",
         fixedPlayer: AudioPlayer(mode: PlayerMode.LOW_LATENCY));
@@ -74,10 +72,10 @@ class GameModel extends ChangeNotifier {
   }
 
   void joinGame(
-      {@required String gameId,
-      @required String userUid,
-      @required void Function() onSuccess,
-      @required OnError onError}) {
+      {required String gameId,
+      required String? userUid,
+      required void Function() onSuccess,
+      required OnError onError}) {
     ServerCommunication.joinGame(
       gameId: gameId,
       onError: onError,
@@ -89,10 +87,9 @@ class GameModel extends ChangeNotifier {
   }
 
   /// Call setUser before this
-  void changeGame({@required String idGame, @required String userUid}) {
-    if (_subscription != null) {
-      _subscription.cancel();
-    }
+  void changeGame({required String idGame, required String? userUid}) {
+    _subscription?.cancel();
+
     _subscription = Firestore.instance
         .collection('playersSets')
         .document(idGame)

@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/ui/resources/colors.dart';
@@ -15,7 +16,7 @@ class Bid {
   String type;
 
   @JsonKey(name: "position")
-  PlayerPosition position;
+  final PlayerPosition position;
 
   Bid({this.position, @required this.type});
 
@@ -128,11 +129,11 @@ class Bid {
   }
 
   @override
-  bool operator ==(other) {
+  bool operator ==(dynamic other) {
     if (identical(this, other)) return true;
     if (runtimeType != other.runtimeType || other is! Bid) return false;
     Bid bid = other;
-    if (bid.type != this.type) return false;
+    if (bid.type != type) return false;
     if (this is SimpleBid) return this as SimpleBid == bid;
     if (this is General) return this as General == bid;
     if (this is Capot) return this as Capot == bid;
@@ -154,8 +155,8 @@ class Bid {
 
 @JsonSerializable()
 class SimpleBid extends Bid {
-  int points;
-  CardColor color;
+  final int points;
+  final CardColor color;
 
   SimpleBid({this.points, this.color, PlayerPosition position})
       : super(position: position, type: "SimpleBid");
@@ -163,6 +164,7 @@ class SimpleBid extends Bid {
   factory SimpleBid.fromJson(Map<String, dynamic> json) =>
       _$SimpleBidFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() {
     print("We are in toJson of SimpleBid");
     return _$SimpleBidToJson(this);
@@ -174,7 +176,7 @@ class SimpleBid extends Bid {
   }
 
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is SimpleBid &&
           runtimeType == other.runtimeType &&
@@ -189,8 +191,8 @@ class SimpleBid extends Bid {
 
 @JsonSerializable()
 class General extends Bid {
-  CardColor color;
-  bool belote;
+  final CardColor color;
+  final bool belote;
 
   General({this.color, this.belote, PlayerPosition position})
       : super(position: position, type: "General");
@@ -198,6 +200,7 @@ class General extends Bid {
   factory General.fromJson(Map<String, dynamic> json) =>
       _$GeneralFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$GeneralToJson(this);
 
   @override
@@ -206,7 +209,7 @@ class General extends Bid {
   }
 
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is General &&
           runtimeType == other.runtimeType &&
@@ -221,14 +224,15 @@ class General extends Bid {
 
 @JsonSerializable()
 class Capot extends Bid {
-  CardColor color;
-  bool belote;
+  final CardColor color;
+  final bool belote;
 
   Capot({this.color, this.belote, PlayerPosition position})
       : super(position: position, type: "Capot");
 
   factory Capot.fromJson(Map<String, dynamic> json) => _$CapotFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$CapotToJson(this);
 
   @override
@@ -237,7 +241,7 @@ class Capot extends Bid {
   }
 
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Capot &&
           runtimeType == other.runtimeType &&
@@ -252,8 +256,8 @@ class Capot extends Bid {
 
 @JsonSerializable()
 class Coinche extends Bid {
-  Bid annonce;
-  bool surcoinche;
+  final Bid annonce;
+  final bool surcoinche;
 
   Coinche({this.annonce, this.surcoinche, PlayerPosition position})
       : super(position: position, type: "Coinche");
@@ -261,6 +265,7 @@ class Coinche extends Bid {
   factory Coinche.fromJson(Map<String, dynamic> json) =>
       _$CoincheFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$CoincheToJson(this);
 
   @override
@@ -269,7 +274,7 @@ class Coinche extends Bid {
   }
 
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Coinche &&
           runtimeType == other.runtimeType &&
@@ -288,6 +293,7 @@ class Pass extends Bid {
 
   factory Pass.fromJson(Map<String, dynamic> json) => _$PassFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$PassToJson(this);
 
   @override
@@ -296,7 +302,7 @@ class Pass extends Bid {
   }
 
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Pass &&
           runtimeType == other.runtimeType &&

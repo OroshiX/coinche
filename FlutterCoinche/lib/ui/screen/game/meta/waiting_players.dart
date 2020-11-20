@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class WaitingPlayersWidget extends StatelessWidget {
-  const WaitingPlayersWidget({Key key}) : super(key: key);
+  const WaitingPlayersWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Selector<GameModel, TableState>(
       selector: (context, gameModel) => gameModel.game.state,
       builder: (context, state, child) {
-        final joining = state == TableState.JOINING;
+        final joining = state == TableState.joining;
         return AnimatedOpacity(
           opacity: joining ? 1 : 0,
           duration: Duration(milliseconds: 400),

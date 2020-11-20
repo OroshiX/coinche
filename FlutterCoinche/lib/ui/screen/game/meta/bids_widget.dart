@@ -11,15 +11,15 @@ import 'package:tuple/tuple.dart';
 class BidsAnimated extends StatefulWidget {
   final TableState tableState;
   final AxisDirection posTable;
-  final List<Bid> bidsOfPosition;
+  final List<Bid>? bidsOfPosition;
   final double heightAvatar, widthAvatar;
   const BidsAnimated(
-      {Key key,
-      this.tableState,
-      this.posTable,
+      {Key? key,
+      required this.tableState,
+      required this.posTable,
       this.bidsOfPosition,
-      this.heightAvatar,
-      this.widthAvatar})
+      required this.heightAvatar,
+      required this.widthAvatar})
       : super(key: key);
 
   @override
@@ -38,18 +38,18 @@ class _BidsAnimatedState extends State<BidsAnimated> {
     final changeBids =
         GameExtensions.changeBid(currentBids, newBids, widget.posTable);
     if (changeBids == null) return;
-    if (changeBids.typeChange == TypeChange.INSERT) {
+    if (changeBids.typeChange == TypeChange.insert && newBids != null) {
       for (var i = 0; i < changeBids.nbChanges; i++) {
         final indexInsert = currentBids.length;
         currentBids.add(newBids[indexInsert]);
-        _key.currentState.insertItem(indexInsert);
+        _key.currentState?.insertItem(indexInsert);
       }
     } else {
       // remove N bids
       for (var i = 0; i < changeBids.nbChanges; i++) {
         final indexRemove = currentBids.length - 1;
         currentBids.removeAt(indexRemove);
-        _key.currentState.removeItem(
+        _key.currentState?.removeItem(
             indexRemove,
             (context, animation) => Container(
                   width: 30,
@@ -67,9 +67,9 @@ class _BidsAnimatedState extends State<BidsAnimated> {
 
   @override
   Widget build(BuildContext context) {
-    final TableState state = widget.tableState;
+    final state = widget.tableState;
     Alignment alignment;
-    double dx = 0, dy = 0;
+    var dx = 0.0, dy = 0.0;
     switch (widget.posTable) {
       case AxisDirection.up:
         alignment = Alignment.topCenter;
@@ -96,7 +96,7 @@ class _BidsAnimatedState extends State<BidsAnimated> {
           constraints: BoxConstraints(maxWidth: width, maxHeight: height),
           child: AnimatedOpacity(
             opacity:
-                (state != TableState.BIDDING || currentBids.isEmpty) ? 0 : 1,
+                (state != TableState.bidding || currentBids.isEmpty) ? 0 : 1,
             duration: Duration(milliseconds: 200),
             child: Container(
               decoration: BoxDecoration(color: colorLightBlue, boxShadow: [
@@ -150,10 +150,10 @@ class BidsWidget extends StatelessWidget {
   final double widthAvatar, heightAvatar;
 
   const BidsWidget(
-      {Key key,
-      @required this.posTable,
-      @required this.widthAvatar,
-      @required this.heightAvatar})
+      {Key? key,
+      required this.posTable,
+      required this.widthAvatar,
+      required this.heightAvatar})
       : super(key: key);
 
   @override

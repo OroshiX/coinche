@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
-import 'package:coinche/domain/extensions/CardWonOrCenter.dart';
+import 'package:coinche/domain/extensions/card_won_or_center.dart';
 import 'package:coinche/state/cards_on_table_model.dart';
 import 'package:coinche/ui/screen/game/table/animated_card.dart';
 import 'package:coinche/ui/screen/game/table/move_card.dart';
@@ -17,22 +17,21 @@ class ManagedStateCard extends StatelessWidget {
   static const String offset = "-offset", rotate = "-rotate";
 
   ManagedStateCard({
-    Key key,
-    @required this.axisDirection,
-    @required this.cardWidth,
-    @required this.cardHeight,
-  })  : assert(axisDirection != null, "Axis direction is null!"),
-        offsetRotationName = axisDirection.simpleName() + offset + rotate,
+    Key? key,
+    required this.axisDirection,
+    required this.cardWidth,
+    required this.cardHeight,
+  })   : offsetRotationName = axisDirection.simpleName() + offset + rotate,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    CardModel cardModel;
+    CardModel? cardModel;
 
     final keyCard = GlobalKey<MoveCardState>();
     void _onChangedState(
-        CardWonOrCenter cardWonOrCenter, MoveCardState moveCard) {
+        CardWonOrCenter cardWonOrCenter, MoveCardState? moveCard) {
       if (moveCard == null) {
         print("not yet initialized");
         return;
@@ -43,7 +42,7 @@ class ManagedStateCard extends StatelessWidget {
         assert(cardWonOrCenter.position != null,
             "we should win the card $cardModel, but the position of the winner is null");
         print("winning card $cardModel [case1]");
-        _winPli(cardWonOrCenter.position, moveCard, size,
+        _winPli(cardWonOrCenter.position!, moveCard, size,
             timestamp: cardWonOrCenter.timeStamp,
             shouldAnim: cardWonOrCenter.shouldAnim);
         return;
@@ -53,7 +52,7 @@ class ManagedStateCard extends StatelessWidget {
       if (cardWonOrCenter.cardModel == null &&
           cardWonOrCenter.position != null) {
         print("winning card $cardModel [case2]");
-        _winPli(cardWonOrCenter.position, moveCard, size,
+        _winPli(cardWonOrCenter.position!, moveCard, size,
             timestamp: cardWonOrCenter.timeStamp,
             shouldAnim: cardWonOrCenter.shouldAnim);
         return;
@@ -87,9 +86,9 @@ class ManagedStateCard extends StatelessWidget {
     );
   }
 
-  _winPli(AxisDirection winnerPosTable, MoveCardState moveCardState,
+  void _winPli(AxisDirection winnerPosTable, MoveCardState moveCardState,
       Size screenSize,
-      {@required int timestamp, @required bool shouldAnim}) {
+      {required int timestamp, required bool shouldAnim}) {
     print("$winnerPosTable is Winning trick");
     moveCardState.setAnim(
         _offsetAndRotationPlayer(winnerPosTable, screenSize, timestamp),
@@ -97,9 +96,9 @@ class ManagedStateCard extends StatelessWidget {
         shouldAnim: shouldAnim);
   }
 
-  _putInCenter(
-      MoveCardState moveCardState, CardModel cardModel, Size screenSize,
-      {@required int timestamp, @required bool shouldAnim}) {
+  void _putInCenter(
+      MoveCardState moveCardState, CardModel? cardModel, Size screenSize,
+      {required int timestamp, required bool shouldAnim}) {
     moveCardState.setAnim(_offsetRotationCenter(timestamp),
         origin: _offsetAndRotationPlayer(axisDirection, screenSize, timestamp),
         shouldAnim: shouldAnim);
@@ -120,7 +119,6 @@ class ManagedStateCard extends StatelessWidget {
       case AxisDirection.left:
         return Offset(-cardHeight / 2, 0);
     }
-    return Offset.zero;
   }
 
   double get _getRotationCenter {
@@ -132,7 +130,6 @@ class ManagedStateCard extends StatelessWidget {
       case AxisDirection.left:
         return pi / 2;
     }
-    return 0;
   }
 
   OffsetAndRotation _offsetAndRotationPlayer(
@@ -152,7 +149,6 @@ class ManagedStateCard extends StatelessWidget {
       case AxisDirection.left:
         return Offset(-(screenSize.width + cardWidth) / 2, 0);
     }
-    return Offset.zero;
   }
 
   double _getRotationPli(AxisDirection winnerPosTable) {
@@ -164,6 +160,5 @@ class ManagedStateCard extends StatelessWidget {
       case AxisDirection.left:
         return pi / 2;
     }
-    return 0;
   }
 }

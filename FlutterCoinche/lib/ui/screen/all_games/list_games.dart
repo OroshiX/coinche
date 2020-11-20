@@ -7,13 +7,9 @@ import 'package:flutter/material.dart';
 class ListGames extends StatelessWidget {
   final List<GameEmpty> games;
 
-  final Future<void> Function(BuildContext context)
-      onRefresh;
+  final Future<void> Function(BuildContext context) onRefresh;
 
-  const ListGames(
-      {Key key,
-      @required this.games,
-      @required this.onRefresh})
+  const ListGames({Key? key, required this.games, required this.onRefresh})
       : super(key: key);
 
   @override
@@ -45,12 +41,12 @@ class ListGames extends StatelessWidget {
             );
           }
           if (index <= inRoomGames.length) {
-            GameEmpty gameInRoom = inRoomGames[index - 1];
+            var gameInRoom = inRoomGames[index - 1];
             return InRoomGame(
               game: gameInRoom,
             );
           }
-          GameEmpty game = toJoin[index - inRoomGames.length - 2];
+          var game = toJoin[index - inRoomGames.length - 2];
           return JoinGame(
             game: game,
           );

@@ -13,17 +13,16 @@ class CardWidget extends StatelessWidget {
   final double width, height;
 
   CardWidget(
-      {@required this.card,
+      {required this.card,
       this.displayPlayable = true,
-      @required this.width,
-      @required this.height})
-      : assert(card != null, "card is null in cardWidget");
+      required this.width,
+      required this.height});
 
   @override
   Widget build(BuildContext context) {
     final big = isBigCardWidth(cardWidth: width);
     return NeumorphicNoStateWidget(
-      sizeShadow: big ? SizeShadow.LARGE : SizeShadow.MEDIUM,
+      sizeShadow: big ? SizeShadow.large : SizeShadow.medium,
       borderRadius: big ? 20 : 10,
       pressed: false,
       child: CardContent(
@@ -42,13 +41,12 @@ class CardContent extends StatelessWidget {
   final double width, height;
 
   const CardContent(
-      {Key key,
-      @required this.card,
+      {Key? key,
+      required this.card,
       this.displayPlayable = true,
-      @required this.width,
-      @required this.height})
-      : assert(card != null),
-        super(key: key);
+      required this.width,
+      required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

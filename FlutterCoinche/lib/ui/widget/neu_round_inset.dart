@@ -8,20 +8,15 @@ class NeuRoundInset extends StatefulWidget {
   final Widget child;
   final VoidCallback onTap;
 
-  const NeuRoundInset({Key key, this.onTap, this.child}) : super(key: key);
+  const NeuRoundInset({Key? key, required this.onTap, required this.child})
+      : super(key: key);
 
   @override
   _NeuRoundInsetState createState() => _NeuRoundInsetState();
 }
 
 class _NeuRoundInsetState extends State<NeuRoundInset> {
-  bool _isPressed;
-
-  @override
-  void initState() {
-    super.initState();
-    _isPressed = false;
-  }
+  bool _isPressed = false;
 
   void _onPointerDown(TapDownDetails event) {
     setState(() {
@@ -60,14 +55,14 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
           decoration: buildNeumorphicDecoration(
             borderRadius: 50,
             pressed: _isPressed,
-            sizeShadow: SizeShadow.LARGE,
+            sizeShadow: SizeShadow.large,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TweenAnimationBuilder(
               curve: curve,
               tween: Tween<double>(begin: 1, end: _isPressed ? 1 : 5),
-              builder: (_, d, __) => InnerShadow(
+              builder: (_, double d, __) => InnerShadow(
                 color: colorShadow,
                 offset: Offset(d, d),
                 blur: 2,

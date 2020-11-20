@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 
 class FlushUtil {
   static void showError(BuildContext context, String message,
-      {void Function() onClickAction, String action}) {
+      {void Function()? onClickAction, String? action}) {
     showFlash(
       context: context,
       persistent: true,
+      duration: Duration(seconds: 3),
       builder: (context, controller) {
         return Flash(
           controller: controller,
@@ -27,7 +28,7 @@ class FlushUtil {
             ),
             shouldIconPulse: false,
             leftBarIndicatorColor: Colors.pink,
-            primaryAction: onClickAction != null
+            primaryAction: onClickAction != null && action != null
                 ? FlatButton(
                     onPressed: onClickAction,
                     child: Text(action),
@@ -42,7 +43,7 @@ class FlushUtil {
   static void showSuccess(BuildContext context, String message) {
     showFlash(
       context: context,
-      persistent: false,
+      persistent: true,
       duration: Duration(milliseconds: 300),
       builder: (context, controller) {
         return Flash(

@@ -6,17 +6,16 @@ import 'package:flutter/material.dart';
 
 class MoveCard extends StatefulWidget {
   final double cardWidth, cardHeight;
-  final CardModel card;
+  final CardModel? card;
   final String offsetAndRotationName;
 
   const MoveCard(
-      {Key key,
-      @required this.cardWidth,
-      @required this.cardHeight,
-      @required this.card,
-      @required this.offsetAndRotationName})
-      : assert(offsetAndRotationName != null, "name offsetAndRotation is null"),
-        super(key: key);
+      {Key? key,
+      required this.cardWidth,
+      required this.cardHeight,
+      required this.card,
+      required this.offsetAndRotationName})
+      : super(key: key);
 
   @override
   MoveCardState createState() => MoveCardState();
@@ -24,13 +23,13 @@ class MoveCard extends StatefulWidget {
 
 class MoveCardState extends State<MoveCard>
     with SingleTickerProviderStateMixin {
-  Animation<double> _rotation;
-  Animation<Offset> _offset;
-  AnimationController _controller;
-  CardModel _cardModel;
-  int lastRequestTimestamp;
+  Animation<double>? _rotation;
+  Animation<Offset>? _offset;
+  late AnimationController _controller;
+  late CardModel? _cardModel;
+  late int lastRequestTimestamp;
 
-  set cardModel(CardModel value) {
+  set cardModel(CardModel? value) {
     setState(() {
       _cardModel = value;
     });
@@ -46,13 +45,15 @@ class MoveCardState extends State<MoveCard>
     _cardModel = widget.card;
   }
 
-  void _initAnim(OffsetAndRotation destination, {OffsetAndRotation origin}) {
+  void _initAnim(
+    OffsetAndRotation destination,
+  ) {
     print("init anim to $destination");
     setAnim(destination);
   }
 
   void setAnim(OffsetAndRotation destination,
-      {OffsetAndRotation origin, bool shouldAnim = true}) {
+      {OffsetAndRotation? origin, bool shouldAnim = true}) {
 //    assert(!shouldAnim || origin != null)
     if (destination.timestamp < lastRequestTimestamp && shouldAnim) {
       print(
@@ -64,15 +65,15 @@ class MoveCardState extends State<MoveCard>
     if (!shouldAnim) {
       origin = destination;
     }
-    if (origin == null) {
-      origin = _offset != null && _rotation != null
-          ? OffsetAndRotation(
-              _offset.value, _rotation.value, lastRequestTimestamp)
-          : destination;
-    }
+
+    origin ??= _offset != null && _rotation != null
+        ? OffsetAndRotation(
+            _offset!.value, _rotation!.value, lastRequestTimestamp)
+        : destination;
+
     setState(() {
       _rotation =
-          Tween<double>(begin: origin.rotation, end: destination.rotation)
+          Tween<double>(begin: origin!.rotation, end: destination.rotation)
               .animate(_controller);
       _offset = Tween<Offset>(begin: origin.offset, end: destination.offset)
           .animate(_controller);
@@ -83,18 +84,28 @@ class MoveCardState extends State<MoveCard>
 
   @override
   Widget build(BuildContext context) {
-    return TranslatedTransition(
-      animation: _offset,
-      child: RotatedTransition(
-        animation: _rotation,
-        child: Center(
-          child: _cardModel != null
-              ? CardWidget(
-                  card: _cardModel,
-                  width: widget.cardWidth,
-                  height: widget.cardHeight)
-              : SizedBox(),
+    var child = Center(
+        child: _cardModel != null
+            ? CardWidget(
+                card: _cardModel!,
+                width: widget.cardWidth,
+                height: widget.cardHeight)
+            : SizedBox());
+    if (_offset == null || _rotation == null) {
+      // todo get real offset and rotation
+      return Transform.translate(
+        offset: Offset(0, 0),
+        child: Transform.rotate(
+          angle: 0,
+          child: child,
         ),
+      );
+    }
+    return TranslatedTransition(
+      animation: _offset!,
+      child: RotatedTransition(
+        animation: _rotation!,
+        child: child,
       ),
     );
   }

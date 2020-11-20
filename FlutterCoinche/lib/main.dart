@@ -1,8 +1,12 @@
+// @dart=2.9
+// todo remove this when null safety has arrived in build_runner
 import 'package:coinche/state/game_model.dart';
 import 'package:coinche/state/login_model.dart';
 import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/game/game_screen_provided.dart';
-import 'package:coinche/ui/screen/login_screen.dart';
+import 'package:coinche/ui/screen/login/login_manual_screen.dart';
+import 'package:coinche/ui/screen/splash/splash_screen.dart';
+import 'package:coinche/ui/screen/login/login_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,8 +45,10 @@ class MyApp extends StatelessWidget {
           AllGamesScreen.routeName: (context) => AllGamesScreen(),
           GameScreenProvided.routeName: (context) => GameScreenProvided(),
           TestingOfflineGame.routeName: (context) => TestingOfflineGame(),
+          SplashScreen.routeName: (context) => SplashScreen(),
+          LoginManualScreen.routeName: (context) => LoginManualScreen(),
         },
-        home: LoginScreen(),
+        home: SplashScreen(),
       ),
     );
   }

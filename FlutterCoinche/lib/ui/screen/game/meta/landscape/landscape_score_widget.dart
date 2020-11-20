@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class LandscapeScoreWidget extends StatelessWidget {
-  final Function onTapExit, onTapMessages;
+  final void Function() onTapExit, onTapMessages;
 
   const LandscapeScoreWidget(
-      {@required this.onTapExit, @required this.onTapMessages});
+      {required this.onTapExit, required this.onTapMessages});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class LandscapeScoreWidget extends StatelessWidget {
               children: [
                 NeumorphicWidget(
                   onTap: onTapExit,
-                  sizeShadow: SizeShadow.SMALL,
+                  sizeShadow: SizeShadow.small,
                   child: Padding(
                     padding: const EdgeInsets.all(paddingButton),
                     child: Icon(
@@ -57,7 +57,7 @@ class LandscapeScoreWidget extends StatelessWidget {
                 ),
                 NeumorphicWidget(
                   onTap: onTapMessages,
-                  sizeShadow: SizeShadow.SMALL,
+                  sizeShadow: SizeShadow.small,
                   child: Padding(
                     padding: const EdgeInsets.all(paddingButton),
                     child: Icon(
@@ -73,12 +73,12 @@ class LandscapeScoreWidget extends StatelessWidget {
           Padding(
             padding:
                 const EdgeInsets.only(left: 4.0, right: 4, top: 4, bottom: 4),
-            child: Selector<GameModel, Bid>(
+            child: Selector<GameModel, Bid?>(
               selector: (ctx, gm) {
                 final state = gm.game.state;
                 final Bid currentBidGame = gm.game.currentBid;
-                final Bid currentBid =
-                    state != TableState.PLAYING ? null : currentBidGame;
+                final currentBid =
+                    state != TableState.playing ? null : currentBidGame;
                 return currentBid;
               },
               builder: (context, value, child) => OnlyScoreWidget(

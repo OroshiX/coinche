@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PortraitScoreWidget extends StatelessWidget {
-  final Function onTapExit, onTapMessages;
+  final void Function() onTapExit, onTapMessages;
 
   const PortraitScoreWidget({
-    @required this.onTapExit,
-    @required this.onTapMessages,
+    required this.onTapExit,
+    required this.onTapMessages,
   });
 
   @override
@@ -40,7 +40,7 @@ class PortraitScoreWidget extends StatelessWidget {
               children: [
                 NeumorphicWidget(
                   onTap: onTapExit,
-                  sizeShadow: SizeShadow.SMALL,
+                  sizeShadow: SizeShadow.small,
                   child: Padding(
                     padding: const EdgeInsets.all(paddingButton),
                     child: Icon(
@@ -55,7 +55,7 @@ class PortraitScoreWidget extends StatelessWidget {
                 ),
                 NeumorphicWidget(
                   onTap: onTapMessages,
-                  sizeShadow: SizeShadow.SMALL,
+                  sizeShadow: SizeShadow.small,
                   child: Padding(
                     padding: const EdgeInsets.all(paddingButton),
                     child: Icon(
@@ -70,12 +70,12 @@ class PortraitScoreWidget extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 4.0, right: 4),
-            child: Selector<GameModel, Bid>(
+            child: Selector<GameModel, Bid?>(
               selector: (ctx, gm) {
                 final state = gm.game.state;
                 final Bid currentBidGame = gm.game.currentBid;
-                final Bid currentBid =
-                    state != TableState.PLAYING ? null : currentBidGame;
+                final currentBid =
+                    state != TableState.playing ? null : currentBidGame;
                 return currentBid;
               },
               builder: (context, value, child) => OnlyScoreWidget(

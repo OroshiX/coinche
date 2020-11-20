@@ -12,10 +12,10 @@ import 'package:flutter/foundation.dart';
 import 'package:requests/requests.dart';
 
 class ServerCommunication {
-  static final String _baseUrl = environment["baseUrl"];
+  static final String _baseUrl = environment["baseUrl"] ?? "";
 
   static Future<void> sendToken(IdTokenResult idTokenResult,
-      {@required void Function() onSuccess, @required OnError onError}) async {
+      {required void Function() onSuccess, required OnError onError}) async {
     var url = '$_baseUrl/loginToken';
 
     var r = await Requests.post(url,
@@ -25,8 +25,8 @@ class ServerCommunication {
   }
 
   static Future<void> allGames(
-      {@required void Function(List<GameEmpty> games) onSuccess,
-      @required OnError onError}) async {
+      {required void Function(List<GameEmpty> games) onSuccess,
+      required OnError onError}) async {
     var url = '$_baseUrl/lobby/allGames';
 
     var r = await _get(url, onError: onError);
@@ -38,8 +38,8 @@ class ServerCommunication {
   }
 
   static Future<void> logout({
-    @required OnError onError,
-    @required void Function() onSuccess,
+    required OnError onError,
+    required void Function() onSuccess,
   }) async {
     var url = "$_baseUrl/logout";
     var r = await _post(url, onError: onError);
@@ -48,8 +48,8 @@ class ServerCommunication {
   }
 
   static Future<void> createGame(String gameName,
-      {@required OnError onError,
-      @required void Function(GameEmpty) onSuccess}) async {
+      {required OnError onError,
+      required void Function(GameEmpty) onSuccess}) async {
     var url = "$_baseUrl/lobby/createGame";
     print("connect to $url");
     var r = await Requests.post(url,
@@ -66,8 +66,8 @@ class ServerCommunication {
   static Future<void> playCard(
     CardModel data,
     String gameId, {
-    @required void Function() onSuccess,
-    @required OnError onError,
+    required void Function() onSuccess,
+    required OnError onError,
   }) async {
     var url = "$_baseUrl/games/$gameId/playCard";
     print("connect to $url");
@@ -77,10 +77,10 @@ class ServerCommunication {
   }
 
   static Future<void> joinGame({
-    String gameId,
-    String nickname,
-    @required void Function() onSuccess,
-    @required OnError onError,
+    required String gameId,
+    String? nickname,
+    required void Function() onSuccess,
+    required OnError onError,
   }) async {
     var url = "$_baseUrl/lobby/joinGame";
     var r = await _post(
@@ -98,8 +98,8 @@ class ServerCommunication {
   static Future<void> bid(
     Bid bid,
     String gameId, {
-    @required OnError onError,
-    @required void Function() onSuccess,
+    required OnError onError,
+    required void Function() onSuccess,
   }) async {
     var url = "$_baseUrl/games/$gameId/announceBid";
     print("connect to $url");
@@ -109,8 +109,8 @@ class ServerCommunication {
   }
 
   static Future<void> isLoggedIn(
-      {@required void Function(Login login) onSuccess,
-      @required OnError onError}) async {
+      {required void Function(Login login) onSuccess,
+      required OnError onError}) async {
     var url = "$_baseUrl/lobby/isLoggedIn";
 
     var r = await _get(url, onError: onError);
@@ -124,14 +124,14 @@ class ServerCommunication {
   }
 
   // region helpers
-  static Future<Response> _post(String url,
-      {Map<String, dynamic> body,
-      @required OnError onError,
-      Map<String, dynamic> queryParameters}) async {
+  static Future<Response?> _post(String url,
+      {Map<String, dynamic>? body,
+      required OnError onError,
+      Map<String, dynamic>? queryParameters}) async {
     if (kDebugMode) {
       print("Connecting to server $url [POST], body: $body");
     }
-    Response r;
+    Response? r;
     try {
       r = await Requests.post(url,
           body: body,
@@ -150,11 +150,11 @@ class ServerCommunication {
     return r;
   }
 
-  static Future<Response> _get(String url, {@required OnError onError}) async {
+  static Future<Response?> _get(String url, {required OnError onError}) async {
     if (kDebugMode) {
       print("Connecting to server $url [GET]");
     }
-    Response r;
+    Response? r;
     try {
       r = await Requests.get(url, timeoutSeconds: 10);
       if (kDebugMode) {
@@ -169,7 +169,7 @@ class ServerCommunication {
     return r;
   }
 
-  static bool _dealHasError(Response r, {@required OnError onError}) {
+  static bool _dealHasError(Response? r, {required OnError onError}) {
     if (r == null) return true;
     if (r.statusCode >= 400) {
       onError(_getMessage(r));
@@ -179,8 +179,8 @@ class ServerCommunication {
     return false;
   }
 
-  static String _getMessage(Response r) {
-    switch (r.statusCode) {
+  static String _getMessage(Response? r) {
+    switch (r?.statusCode) {
       case 403:
         return "Authentication required";
       default:
@@ -188,11 +188,11 @@ class ServerCommunication {
     }
   }
 
-  static void _convertToJson<T>(Response r,
-      {@required T Function(dynamic e) transform,
-      @required void Function(T res) onSuccess,
-      @required OnError onError}) {
-    if (r.content() == null) {
+  static void _convertToJson<T>(Response? r,
+      {required T Function(dynamic e) transform,
+      required void Function(T res) onSuccess,
+      required OnError onError}) {
+    if (r == null || r.content() == null) {
       onError("No content");
       return;
     }
@@ -205,13 +205,13 @@ class ServerCommunication {
     }
   }
 
-  static void _convertToJsonList<T>(Response r,
-      {@required T Function(dynamic e) transform,
-      @required void Function(List<T> res) onSuccess,
-      @required void Function(String message) onError}) {
+  static void _convertToJsonList<T>(Response? r,
+      {required T Function(dynamic e) transform,
+      required void Function(List<T> res) onSuccess,
+      required void Function(String message) onError}) {
     try {
-      List<dynamic> list = jsonDecode(r.content());
-      onSuccess(list?.map((e) => transform(e))?.toList() ?? []);
+      List<dynamic>? list = r == null ? [] : jsonDecode(r.content());
+      onSuccess(list?.map((e) => transform(e)).toList() ?? []);
     } catch (e) {
       print(e);
       onError(

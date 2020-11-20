@@ -1,6 +1,5 @@
 import 'package:coinche/domain/dto/bid.dart';
-import 'package:coinche/domain/dto/player_position.dart'
-    show PlayerPosition;
+import 'package:coinche/domain/dto/player_position.dart' show PlayerPosition;
 import 'package:coinche/domain/dto/pos_table_to_colors.dart';
 import 'package:coinche/domain/dto/score.dart';
 import 'package:coinche/domain/logic/calculus.dart';
@@ -14,12 +13,12 @@ import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 class OnlyScoreWidget extends StatelessWidget {
-  final Bid currentBid;
+  final Bid? currentBid;
 
   final double minWidth;
 
   const OnlyScoreWidget(
-      {Key key, @required this.currentBid, @required this.minWidth})
+      {Key? key, required this.currentBid, required this.minWidth})
       : assert(currentBid == null ||
             currentBid is SimpleBid ||
             currentBid is Capot ||
@@ -33,21 +32,21 @@ class OnlyScoreWidget extends StatelessWidget {
     const dotSize = 7.0;
     return NeumorphicNoStateWidget(
       borderRadius: 10,
-      sizeShadow: SizeShadow.SMALL,
+      sizeShadow: SizeShadow.small,
       pressed: false,
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: IntrinsicWidth(
           child: Consumer<PosTableToColor>(
             builder: (context, posTableToColor, child) {
-              final Map<AxisDirection, Color> mapColor = posTableToColor.value
+              final mapColor = posTableToColor.value
                   .map((key, value) => MapEntry(key, value.item1));
               return Selector<GameModel,
                   Tuple2<Score, Map<PlayerPosition, Color>>>(
                 selector: (ctx, gm) => Tuple2(
                     gm.game.score,
                     getCardinalToPosTable(gm.game.myPosition)
-                        .map((key, value) => MapEntry(key, mapColor[value]))),
+                        .map((key, value) => MapEntry(key, mapColor[value]!))),
                 builder: (context, value, child) {
                   final Score score = value.item1;
                   final playerPosToColor = value.item2;
@@ -57,10 +56,10 @@ class OnlyScoreWidget extends StatelessWidget {
                       SizedBox(
                         width: minWidth,
                       ),
-                      if (currentBid != null)
-                        currentBid.getReadableBidRow(textSize,
-                            dotSize: dotSize,
-                            cardinalToPosTable: playerPosToColor),
+                      currentBid?.getReadableBidRow(textSize,
+                              dotSize: dotSize,
+                              cardinalToPosTable: playerPosToColor) ??
+                          SizedBox(),
                       if (currentBid != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 4.0, bottom: 4),
@@ -77,14 +76,14 @@ class OnlyScoreWidget extends StatelessWidget {
                           TableRow(children: [
                             DotPlayer(
                               dotSize: dotSize,
-                              color: playerPosToColor[PlayerPosition.NORTH],
+                              color: playerPosToColor[PlayerPosition.north],
                             ),
                             DotPlayer(
                               dotSize: dotSize,
-                              color: playerPosToColor[PlayerPosition.SOUTH],
+                              color: playerPosToColor[PlayerPosition.south],
                             ),
                             Text(
-                              score?.northSouth?.toString() ?? "",
+                              score.northSouth?.toString() ?? "",
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                   color: colorTextDark, fontSize: textSize),
@@ -93,14 +92,14 @@ class OnlyScoreWidget extends StatelessWidget {
                           TableRow(children: [
                             DotPlayer(
                               dotSize: dotSize,
-                              color: playerPosToColor[PlayerPosition.EAST],
+                              color: playerPosToColor[PlayerPosition.east],
                             ),
                             DotPlayer(
                               dotSize: dotSize,
-                              color: playerPosToColor[PlayerPosition.WEST],
+                              color: playerPosToColor[PlayerPosition.west],
                             ),
                             Text(
-                              score?.eastWest?.toString() ?? "",
+                              score.eastWest?.toString() ?? "",
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                   color: colorTextDark, fontSize: textSize),

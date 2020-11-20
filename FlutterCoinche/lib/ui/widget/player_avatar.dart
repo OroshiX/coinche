@@ -19,11 +19,11 @@ class PlayerAvatar extends StatelessWidget {
   final AxisDirection posTable;
 
   const PlayerAvatar(
-      {Key key,
-      @required this.autoSizeGroup,
-      @required this.width,
-      @required this.height,
-      @required this.posTable})
+      {Key? key,
+      required this.autoSizeGroup,
+      required this.width,
+      required this.height,
+      required this.posTable})
       : super(key: key);
 
   @override
@@ -33,13 +33,13 @@ class PlayerAvatar extends StatelessWidget {
       width: portrait ? width : 130,
       height: portrait ? height : width,
       child: NeumorphicNoStateWidget(
-        sizeShadow: SizeShadow.SMALL,
+        sizeShadow: SizeShadow.small,
         borderRadius: 2,
         pressed: true,
         child: Selector<PosTableToColor, Tuple2<Color, String>>(
           selector: (ctx, posTableToColor) => Tuple2(
-              posTableToColor.value[posTable].item1,
-              posTableToColor.value[posTable].item2),
+              posTableToColor.value[posTable]!.item1,
+              posTableToColor.value[posTable]!.item2),
           builder: (context, modelColor, child) {
             final Color color = modelColor.item1;
             final String avatar = modelColor.item2;
@@ -48,7 +48,7 @@ class PlayerAvatar extends StatelessWidget {
               selector: (ctx, gm) {
                 final me = gm.game.myPosition;
                 final map = getPosTableToCardinal(me);
-                bool myTurn = gm.game.nextPlayer == map[posTable];
+                var myTurn = gm.game.nextPlayer == map[posTable];
                 String nick = gm.game.nicknames.fromPosition(map[posTable]);
                 return Tuple2(myTurn, nick);
               },
@@ -142,10 +142,10 @@ class _BoxName extends StatelessWidget {
   final Color color;
 
   const _BoxName(
-      {Key key,
-      @required this.nick,
-      @required this.autoSizeGroup,
-      @required this.color})
+      {Key? key,
+      required this.nick,
+      required this.autoSizeGroup,
+      required this.color})
       : super(key: key);
 
   @override
@@ -198,7 +198,7 @@ class _RoundAvatar extends StatelessWidget {
   final Color color;
   final String pictureSvg;
 
-  const _RoundAvatar({Key key, @required this.color, @required this.pictureSvg})
+  const _RoundAvatar({Key? key, required this.color, required this.pictureSvg})
       : super(key: key);
 
   @override
