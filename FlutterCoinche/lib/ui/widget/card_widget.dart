@@ -8,7 +8,7 @@ import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
-  final CardModel card;
+  final CardModel? card;
   final bool displayPlayable;
   final double width, height;
 
@@ -36,7 +36,7 @@ class CardWidget extends StatelessWidget {
 }
 
 class CardContent extends StatelessWidget {
-  final CardModel card;
+  final CardModel? card;
   final bool displayPlayable;
   final double width, height;
 
@@ -50,8 +50,8 @@ class CardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = getAssetImageFromColor(card.color);
-    final letter = getLetterFromValue(card.value);
+    final image = getAssetImageFromColor(card?.color);
+    final letter = getLetterFromValue(card?.value);
     final marginValue = getPaddingInCard(cardWidth: width);
 
     return Container(
@@ -70,9 +70,9 @@ class CardContent extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: getSizeSuitIcon(cardWidth: width),
                 ),
-                if (card.playable != null &&
+                if (card?.playable != null &&
                     displayPlayable &&
-                    (card.playable ?? false))
+                    (card?.playable ?? false))
                   Icon(Icons.check)
               ],
             )),

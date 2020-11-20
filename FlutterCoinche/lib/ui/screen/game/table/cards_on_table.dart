@@ -9,7 +9,8 @@ import 'package:coinche/domain/logic/calculus.dart';
 import 'package:coinche/state/cards_on_table_model.dart';
 import 'package:coinche/state/game_model.dart';
 import 'package:coinche/ui/resources/dimens.dart';
-import 'package:coinche/ui/screen/game/table/managed_state_card.dart';
+import 'package:coinche/ui/widget/card_widget.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -134,17 +135,92 @@ class _CardsOnTableState extends State<_CardsOnTable> {
       lastTrick: widget.lastTrick,
       winnerLast: widget.winnerLastTrick,
     );
+    _orderCards();
+  }
+
+  void _orderCards() {
+    if (_posTableToCardinal[AxisDirection.left] != null) {
+      var i = widget.onTable.indexWhere((element) =>
+          element.position == _posTableToCardinal[AxisDirection.left]);
+      if (i != -1) {
+        cardLeft = widget.onTable[i];
+      } else {
+        cardLeft = null;
+      }
+    } else {
+      cardLeft = null;
+    }
+    if (_posTableToCardinal[AxisDirection.up] != null) {
+      var i = widget.onTable.indexWhere((element) =>
+          element.position == _posTableToCardinal[AxisDirection.up]);
+      if (i != -1) {
+        cardTop = widget.onTable[i];
+      } else {
+        cardTop = null;
+      }
+    } else {
+      cardTop = null;
+    }
+    if (_posTableToCardinal[AxisDirection.right] != null) {
+      var i = widget.onTable.indexWhere((element) =>
+          element.position == _posTableToCardinal[AxisDirection.right]);
+      if (i != -1) {
+        cardRight = widget.onTable[i];
+      } else {
+        cardRight = null;
+      }
+    } else {
+      cardRight = null;
+    }
+    if (_posTableToCardinal[AxisDirection.down] != null) {
+      var i = widget.onTable.indexWhere((element) =>
+          element.position == _posTableToCardinal[AxisDirection.down]);
+      if (i != -1) {
+        cardMe = widget.onTable[i];
+      } else {
+        cardMe = null;
+      }
+    } else {
+      cardMe = null;
+    }
+
+    var index = widget.onTable
+        .indexWhere((element) => element.position == cardLeft?.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.left, cardLeft);
+    }
+    index = widget.onTable
+        .indexWhere((element) => element.position == cardRight?.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.right, cardRight);
+    }
+    index = widget.onTable
+        .indexWhere((element) => element.position == cardMe?.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.down, cardMe);
+    }
+    index = widget.onTable
+        .indexWhere((element) => element.position == cardTop?.position);
+    if (index != -1) {
+      orderedCards[index] = MapEntry(AxisDirection.up, cardTop);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     print("[CardsOnTable] build ${++_CardsOnTable.nbBuild}");
+
     return Stack(
       children: orderedCards
-          .map((e) => ManagedStateCard(
-              axisDirection: e.key,
-              cardWidth: widget.cardWidth,
-              cardHeight: widget.cardHeight))
+          .map((e) => _positionWidget(
+                e.key,
+                widget.cardWidth,
+                widget.cardHeight,
+                cardLeft: cardLeft,
+                cardMe: cardMe,
+                cardRight: cardRight,
+                cardTop: cardTop,
+              ))
           .toList(),
     );
   }
@@ -315,6 +391,101 @@ class _CardsOnTableState extends State<_CardsOnTable> {
       // );
     } else {
       orderedCards = tmpOrderedCards;
+    }
+  }
+
+  Widget _positionWidget(
+    AxisDirection axisDirection,
+    double cardWidth,
+    double cardHeight, {
+    CardPlayed? cardTop,
+    CardPlayed? cardRight,
+    CardPlayed? cardMe,
+    CardPlayed? cardLeft,
+  }) {
+    final duration = Duration(seconds: 2);
+    switch (axisDirection) {
+      case AxisDirection.up:
+        return AnimatedOpacity(
+          duration: duration,
+          opacity: cardTop != null ? 1 : 0,
+          child: Align(
+            alignment: Alignment.center,
+            child: Transform.translate(
+              offset: Offset(0, -cardHeight / 2),
+              child: NeumorphicNoStateWidget(
+                child: CardContent(
+                  width: cardWidth,
+                  height: cardHeight,
+                  card: cardTop?.card,
+                  displayPlayable: false,
+                ),
+              ),
+            ),
+          ),
+        );
+      case AxisDirection.right:
+        return AnimatedOpacity(
+          opacity: cardRight != null ? 1 : 0,
+          duration: duration,
+          child: Align(
+            alignment: Alignment.center,
+            child: Transform.translate(
+              offset: Offset(cardHeight / 2, 0),
+              child: NeumorphicNoStateWidget(
+                child: RotatedBox(
+                  quarterTurns: 1,
+                  child: CardContent(
+                    width: cardWidth,
+                    height: cardHeight,
+                    card: cardRight?.card,
+                    displayPlayable: false,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      case AxisDirection.down:
+        return AnimatedOpacity(
+          opacity: cardMe != null ? 1 : 0,
+          duration: duration,
+          child: Align(
+            alignment: Alignment.center,
+            child: Transform.translate(
+              offset: Offset(0, cardHeight / 2),
+              child: CardWidget(
+                card: cardMe?.card,
+                displayPlayable: false,
+                height: cardHeight,
+                width: cardWidth,
+              ),
+            ),
+          ),
+        );
+      case AxisDirection.left:
+        // for left
+        return AnimatedOpacity(
+          opacity: cardLeft != null ? 1 : 0,
+          duration: duration,
+          child: Align(
+            alignment: Alignment.center,
+            child: Transform.translate(
+              offset: Offset(-cardHeight / 2, 0),
+              child: NeumorphicNoStateWidget(
+                child: RotatedBox(
+                  quarterTurns: 3,
+                  child: CardContent(
+                    card: cardLeft?.card,
+                    displayPlayable: false,
+                    height: cardHeight,
+                    width: cardWidth,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
     }
   }
 
