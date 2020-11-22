@@ -403,7 +403,7 @@ class _CardsOnTableState extends State<_CardsOnTable> {
     CardPlayed? cardMe,
     CardPlayed? cardLeft,
   }) {
-    final duration = Duration(seconds: 2);
+    final duration = Duration(milliseconds: 200);
     switch (axisDirection) {
       case AxisDirection.up:
         return AnimatedOpacity(

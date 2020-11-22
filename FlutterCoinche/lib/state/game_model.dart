@@ -9,6 +9,7 @@ import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/game.dart';
 import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/domain/extensions/cards_extension.dart';
 import 'package:coinche/domain/extensions/game_extensions.dart';
 import 'package:coinche/service/network/server_communication.dart';
 import 'package:flutter/foundation.dart';
@@ -36,6 +37,7 @@ class GameModel extends ChangeNotifier {
 
   set game(Game value) {
     _game = value;
+    _game.cards.sortCards(_game.state, _game.currentBid);
     notifyListeners();
   }
 
