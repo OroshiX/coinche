@@ -1,12 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:coinche/domain/dto/pos_table_to_colors.dart';
 import 'package:coinche/domain/logic/calculus.dart';
 import 'package:coinche/state/game_model.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/inner_shadow.dart';
-import 'package:coinche/ui/resources/colors.dart';
 import 'package:coinche/ui/widget/dot_player.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

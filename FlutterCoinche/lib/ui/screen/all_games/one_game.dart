@@ -1,7 +1,7 @@
 import 'package:coinche/domain/dto/game_empty.dart';
 import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/inner_shadow.dart';
-import 'package:coinche/ui/resources/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

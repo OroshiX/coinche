@@ -8,7 +8,7 @@ import 'package:coinche/domain/extensions/cards_extension.dart';
 import 'package:coinche/domain/logic/calculus.dart';
 import 'package:coinche/state/cards_on_table_model.dart';
 import 'package:coinche/state/game_model.dart';
-import 'package:coinche/ui/resources/dimens.dart';
+import 'package:coinche/theme/dimens.dart';
 import 'package:coinche/ui/widget/card_widget.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/cupertino.dart';

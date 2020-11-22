@@ -1,10 +1,9 @@
 import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/state/game_model.dart';
-import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/screen/all_games/alert_new_game.dart';
 import 'package:coinche/ui/screen/all_games/list_games.dart';
 import 'package:coinche/ui/screen/login/login_manual_screen.dart';
-import 'package:coinche/ui/screen/login/login_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:coinche/ui/widget/neu_round_inset.dart';
 import 'package:coinche/util/flush_util.dart';

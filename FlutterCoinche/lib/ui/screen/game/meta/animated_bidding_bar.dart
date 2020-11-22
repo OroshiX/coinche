@@ -1,6 +1,6 @@
 import 'package:coinche/domain/dto/table_state.dart';
 import 'package:coinche/state/game_model.dart';
-import 'package:coinche/ui/resources/dimens.dart';
+import 'package:coinche/theme/dimens.dart';
 import 'package:coinche/ui/widget/bidding_bar/bidding_bar.dart';
 import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';

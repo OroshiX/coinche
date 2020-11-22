@@ -1,15 +1,15 @@
-import 'package:coinche/ui/resources/dimens.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:coinche/theme/dimens.dart';
+import 'package:coinche/ui/screen/game/hand/cards_hand_widget.dart';
 import 'package:coinche/ui/screen/game/meta/animated_bidding_bar.dart';
 import 'package:coinche/ui/screen/game/meta/bids_widget.dart';
 import 'package:coinche/ui/screen/game/meta/button_last_trick.dart';
-import 'package:coinche/ui/screen/game/hand/cards_hand_widget.dart';
 import 'package:coinche/ui/screen/game/meta/landscape/landscape_score_widget.dart';
-import 'package:coinche/ui/screen/game/middle_area.dart';
 import 'package:coinche/ui/screen/game/meta/portrait/portrait_score_widget.dart';
 import 'package:coinche/ui/screen/game/meta/waiting_players.dart';
+import 'package:coinche/ui/screen/game/middle_area.dart';
 import 'package:coinche/ui/widget/big_score_widget.dart';
 import 'package:coinche/ui/widget/player_avatar.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:coinche/domain/dto/card.dart';
-import 'package:coinche/ui/resources/colors.dart';
-import 'package:coinche/ui/resources/dimens.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/theme/dimens.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';

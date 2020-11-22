@@ -8,11 +8,8 @@ class CardWonOrCenter extends Tuple4<CardModel?, AxisDirection?, int, bool> {
       required AxisDirection? position,
       int? timestamp,
       bool shouldAnim = true})
-      : super(
-            cardModel,
-            position,
-            timestamp ?? DateTime.now().millisecondsSinceEpoch,
-            shouldAnim);
+      : super(cardModel, position,
+            timestamp ?? DateTime.now().millisecondsSinceEpoch, shouldAnim);
 
   CardModel? get cardModel => item1;
   AxisDirection? get position => item2;

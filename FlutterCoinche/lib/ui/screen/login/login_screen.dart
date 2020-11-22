@@ -2,7 +2,7 @@ import 'package:coinche/error/exceptions.dart';
 import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/service/network/my_auth_user.dart';
 import 'package:coinche/state/login_model.dart';
-import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/testing_offline_game.dart';
 import 'package:coinche/util/flush_util.dart';

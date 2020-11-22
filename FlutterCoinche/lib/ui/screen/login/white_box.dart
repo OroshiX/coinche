@@ -8,7 +8,8 @@ class WhiteBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8), borderRadius: BorderRadius.circular(10)),
+          color: Colors.white.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.all(20),
       child: child,
     );

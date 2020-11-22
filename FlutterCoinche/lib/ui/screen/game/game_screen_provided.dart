@@ -1,6 +1,6 @@
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/domain/dto/pos_table_to_colors.dart';
-import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/screen/game/table/table_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,9 +25,11 @@ class GameScreenProvided extends StatelessWidget {
             lazy: false,
             initialData: PosTableToColor({
               AxisDirection.down: Tuple2(Colors.red, "images/vampire.svg"),
-              AxisDirection.right: Tuple2(Colors.redAccent, "images/vampire.svg"),
+              AxisDirection.right:
+                  Tuple2(Colors.redAccent, "images/vampire.svg"),
               AxisDirection.up: Tuple2(Colors.pink, "images/vampire.svg"),
-              AxisDirection.left: Tuple2(Colors.pinkAccent, "images/vampire.svg"),
+              AxisDirection.left:
+                  Tuple2(Colors.pinkAccent, "images/vampire.svg"),
             }),
             create: (BuildContext context) => getPosTableToColors(),
           ),

@@ -2,7 +2,7 @@ import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/table_state.dart';
 import 'package:coinche/domain/extensions/game_extensions.dart';
 import 'package:coinche/state/game_model.dart';
-import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/state/game_model.dart';
-import 'package:coinche/ui/resources/dimens.dart';
+import 'package:coinche/theme/dimens.dart';
 import 'package:coinche/ui/widget/card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

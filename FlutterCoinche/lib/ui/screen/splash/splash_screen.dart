@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:coinche/state/login_model.dart';
-import 'package:coinche/ui/resources/colors.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/login/login_manual_screen.dart';
 import 'package:flutter/material.dart';
