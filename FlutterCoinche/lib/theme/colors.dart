@@ -12,3 +12,7 @@ const Color colorGradient2 = Color(0xFFccdfed);
 final Color colorGradientMiddle =
     Color.lerp(colorGradient1, colorGradient2, 0.5)!;
 const Color colorShadow = Color(0xFF92b6d8);
+const List<Color> kGradientLightBlue = [
+  Color(0xFFE0EAFC),
+  Color(0xFFCFDEF3),
+];
