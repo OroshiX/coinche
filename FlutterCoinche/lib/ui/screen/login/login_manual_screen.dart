@@ -7,6 +7,7 @@ import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/login/login_screen.dart';
 import 'package:coinche/ui/screen/login/sign_up.dart';
 import 'package:coinche/ui/widget/animated_toggle_button.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -35,7 +36,11 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Coinche", style: textStyleTitleLogin,)),
+        title: Center(
+            child: Text(
+          "Coinche",
+          style: textStyleTitleLogin,
+        )),
         flexibleSpace: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -57,7 +62,6 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: 20),
-
                 Padding(
                   padding: const EdgeInsets.only(top: 24, left: 10, right: 10),
                   child: SizedBox(
@@ -124,7 +128,53 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
                               _loginSuccess(context, user);
                             },
                             onSentEmailVerification: (email) {
-                              // todo show confirmation page, saying that you should check your emails
+                              OverlayEntry? entry;
+                              entry = OverlayEntry(
+                                builder: (context) {
+                                  return Material(
+                                    color: kColorShadow.withOpacity(0.3),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 20, horizontal: 20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                  "Please check your email address ($email). An email has been sent to you. You will then be able to login"),
+                                              SizedBox(height: 10),
+                                              NeumorphicWidget(
+                                                borderRadius: 20,
+                                                sizeShadow: SizeShadow.medium,
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 8,
+                                                      horizontal: 16),
+                                                  child:
+                                                      Text("Ok".toUpperCase()),
+                                                ),
+                                                onTap: () {
+                                                  entry?.remove();
+                                                },
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                              // show confirmation page, saying that you should check your emails
+                              Overlay.of(context)?.insert(entry);
                             },
                             userRepository: _userRepository,
                             controllerEmail: _controllerEmail,
