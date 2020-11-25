@@ -2,11 +2,14 @@ import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/service/network/my_auth_user.dart';
 import 'package:coinche/state/login_model.dart';
 import 'package:coinche/theme/colors.dart';
+import 'package:coinche/theme/text_styles.dart';
 import 'package:coinche/ui/screen/all_games/all_games_screen.dart';
 import 'package:coinche/ui/screen/login/login_screen.dart';
 import 'package:coinche/ui/screen/login/sign_up.dart';
+import 'package:coinche/ui/widget/animated_toggle_button.dart';
 import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 class LoginManualScreen extends StatefulWidget {
@@ -24,7 +27,7 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
   final formKey = GlobalKey<FormState>(),
       formKeySignup = GlobalKey<FormState>();
 
-  var _signUp = true;
+  var _signUp = false;
 
   final _pageController = PageController();
 
@@ -36,46 +39,89 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
         decoration: BoxDecoration(
             gradient: LinearGradient(
           colors: kGradientLightBlue,
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         )),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Coinche"),
-            Switch(
-              value: _signUp,
-              onChanged: (bool value) {
-                _pageController.animateToPage(value ? 1 : 0,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.fastOutSlowIn);
-                setState(() {
-                  _signUp = value;
-                });
-              },
+            SizedBox(height: 20),
+            Text(
+              "Coinche",
+              style: textStyleTitleLogin,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 24, left: 10, right: 10),
+              child: SizedBox(
+                height: 50,
+                child: AnimatedToggleButton(
+                  on: _signUp,
+                  textOn: Center(
+                    child: Text(
+                      "Sign up",
+                      textAlign: TextAlign.center,
+                      style: textStyleSwitchLogin,
+                    ),
+                  ),
+                  textOff: Center(
+                      child: Text(
+                    "Login",
+                    style: textStyleSwitchLogin,
+                    textAlign: TextAlign.center,
+                  )),
+                  toggleOnOff: (on) {
+                    _pageController.animateToPage(on ? 1 : 0,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.fastOutSlowIn);
+                    setState(() {
+                      _signUp = on;
+                    });
+                  },
+                ),
+              ),
             ),
             Expanded(
-              child: PageView(controller: _pageController, children: [
-                LoginScreen(
-                  controllerEmail: _controllerEmail,
-                  controllerPassword: _controllerPassword,
-                  onError: (error) => _showError(context, error),
-                  onSuccess: (user) => _loginSuccess(context, user),
-                  userRepository: _userRepository,
-                ),
-                SignUp(
-                    onError: (error) => _showError(context, error),
-                    onSuccess: (user) {
-                      _loginSuccess(context, user);
-                    },
-                    onSentEmailVerification: (email) {
-                      // todo show confirmation page, saying that you should check your emails
-                    },
-                    userRepository: _userRepository,
-                    controllerEmail: _controllerEmail,
-                    controllerPassword: _controllerPassword,
-                    controllerPassword2: _controllerPassword2),
-              ]),
+              child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (value) {
+                    switch (value) {
+                      case 0:
+                        if (_signUp != false) {
+                          setState(() {
+                            _signUp = false;
+                          });
+                        }
+                        break;
+                      case 1:
+                        if (_signUp != true) {
+                          setState(() {
+                            _signUp = true;
+                          });
+                        }
+                        break;
+                    }
+                  },
+                  children: [
+                    LoginScreen(
+                      controllerEmail: _controllerEmail,
+                      controllerPassword: _controllerPassword,
+                      onError: (error) => _showError(context, error),
+                      onSuccess: (user) => _loginSuccess(context, user),
+                      userRepository: _userRepository,
+                    ),
+                    SignUp(
+                        onError: (error) => _showError(context, error),
+                        onSuccess: (user) {
+                          _loginSuccess(context, user);
+                        },
+                        onSentEmailVerification: (email) {
+                          // todo show confirmation page, saying that you should check your emails
+                        },
+                        userRepository: _userRepository,
+                        controllerEmail: _controllerEmail,
+                        controllerPassword: _controllerPassword,
+                        controllerPassword2: _controllerPassword2),
+                  ]),
             ),
           ],
         ),
