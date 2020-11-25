@@ -29,7 +29,6 @@ dependencies:
   # UI
   flutter_signin_button: ^1.1.0 # for sign in buttons
   flash: ^1.3.1 # for alerting UI (snackbar, toast, dialogs)
-  flutter_login: ^1.0.14 # animations and visuals for login
   flutter_svg: ^0.19.0
   auto_size_text: ^2.1.0
   # HTTP
