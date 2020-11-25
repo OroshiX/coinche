@@ -40,7 +40,7 @@ class _DialogNewGameState extends State<DialogNewGame> {
                 children: [
                   Text(
                     "Allow bots?",
-                    style: TextStyle(color: colorTextDark),
+                    style: TextStyle(color: kColorTextDark),
                   ),
                   SizedBox(
                     width: 10,

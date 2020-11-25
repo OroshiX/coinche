@@ -52,17 +52,17 @@ BoxDecoration buildNeumorphicDecoration({
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            pressed ? colorGradient2 : colorGradient1,
-            colorGradientMiddle,
-            colorGradientMiddle,
-            pressed ? colorGradient1 : colorGradient2,
+            pressed ? kColorGradient2 : kColorGradient1,
+            kColorGradientMiddle,
+            kColorGradientMiddle,
+            pressed ? kColorGradient1 : kColorGradient2,
           ]),
       borderRadius: BorderRadius.circular(borderRadius),
       boxShadow: pressed
           ? [
               boxShadowLight,
               BoxShadow(
-                  color: Color.lerp(colorShadow, Colors.white, 0.4)!,
+                  color: Color.lerp(kColorShadow, Colors.white, 0.4)!,
                   blurRadius: blur2 / 4,
                   spreadRadius: spread2 / 4,
                   offset: Offset(offset2 / 8, offset2 / 8))
@@ -70,7 +70,7 @@ BoxDecoration buildNeumorphicDecoration({
           : [
               boxShadowLight,
               BoxShadow(
-                  color: colorShadow,
+                  color: kColorShadow,
                   blurRadius: blur2,
                   offset: Offset(offset2, offset2),
                   spreadRadius: spread2)

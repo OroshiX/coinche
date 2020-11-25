@@ -39,7 +39,7 @@ class AllGamesScreen extends StatelessWidget {
             },
             child: Icon(
               Icons.add,
-              color: colorTextDark,
+              color: kColorTextDark,
             ),
           ),
           appBar: AppBar(
@@ -65,7 +65,7 @@ class AllGamesScreen extends StatelessWidget {
           ),
           body: SafeArea(
               child: Container(
-                  color: colorGradient1,
+                  color: kColorGradient1,
                   child: Consumer<GameModel>(
                     builder: (context, value, child) {
                       if (value.allGames.isEmpty) {

@@ -39,19 +39,19 @@ class OneGame extends StatelessWidget {
           padding: const EdgeInsets.only(left: 23.0, top: 4),
           child: Text(
             game.state.toString().split(".").last,
-            style: TextStyle(color: colorTextDark, fontStyle: FontStyle.italic),
+            style: TextStyle(color: kColorTextDark, fontStyle: FontStyle.italic),
           ),
         ),
         ListTile(
           title: Text(
             "Game: ${game.name.toString().replaceAll(GameEmpty.automatedString, "")}",
             style: TextStyle(
-                color: colorTextDark,
+                color: kColorTextDark,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
           leading: InnerShadow(
-            color: colorShadow,
+            color: kColorShadow,
             blur: 2,
             offset: Offset(2, 2),
             child: InnerShadow(
@@ -62,11 +62,11 @@ class OneGame extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorGradient2,
+                    color: kColorGradient2,
                   ),
                   child: Text(
                     game.hasBots ? "🤖" : "🙂",
-                    style: TextStyle(color: colorTextDark, fontSize: 26),
+                    style: TextStyle(color: kColorTextDark, fontSize: 26),
                   )),
             ),
           ),
@@ -78,7 +78,7 @@ class OneGame extends StatelessWidget {
             children: [
               Text(
                 game.nbJoined.toString(),
-                style: TextStyle(color: colorText, fontSize: 18),
+                style: TextStyle(color: kColorText, fontSize: 18),
               ),
               SizedBox(
                 width: 2,

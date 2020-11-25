@@ -95,7 +95,7 @@ class Bid {
       children: [
         Text(
           readableValueBid(),
-          style: TextStyle(fontSize: fontSize, color: colorTextDark),
+          style: TextStyle(fontSize: fontSize, color: kColorTextDark),
         ),
         if (this is! Pass)
           Image.asset(
@@ -108,7 +108,7 @@ class Bid {
             " (x${(this as Coinche).surcoinche ? 4 : 2})",
             style: TextStyle(
               fontSize: fontSize,
-              color: colorTextDark,
+              color: kColorTextDark,
             ),
           ),
         if (displayBy)
@@ -116,7 +116,7 @@ class Bid {
             " by ",
             style: TextStyle(
               fontSize: fontSize,
-              color: colorTextDark,
+              color: kColorTextDark,
             ),
           ),
         if (displayBy)

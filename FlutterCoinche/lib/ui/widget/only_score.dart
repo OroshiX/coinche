@@ -64,7 +64,7 @@ class OnlyScoreWidget extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4.0, bottom: 4),
                           child: Container(
-                            color: colorText,
+                            color: kColorText,
                             height: 1,
                           ),
                         ),
@@ -86,7 +86,7 @@ class OnlyScoreWidget extends StatelessWidget {
                               score.northSouth?.toString() ?? "",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                  color: colorTextDark, fontSize: textSize),
+                                  color: kColorTextDark, fontSize: textSize),
                             ),
                           ]),
                           TableRow(children: [
@@ -102,7 +102,7 @@ class OnlyScoreWidget extends StatelessWidget {
                               score.eastWest?.toString() ?? "",
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                  color: colorTextDark, fontSize: textSize),
+                                  color: kColorTextDark, fontSize: textSize),
                             ),
                           ])
                         ],

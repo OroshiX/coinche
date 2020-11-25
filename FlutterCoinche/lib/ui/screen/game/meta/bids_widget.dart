@@ -99,10 +99,10 @@ class _BidsAnimatedState extends State<BidsAnimated> {
                 (state != TableState.bidding || currentBids.isEmpty) ? 0 : 1,
             duration: Duration(milliseconds: 200),
             child: Container(
-              decoration: BoxDecoration(color: colorLightBlue, boxShadow: [
+              decoration: BoxDecoration(color: kColorBeauBlue, boxShadow: [
                 BoxShadow(
                     offset: Offset(2, 2),
-                    color: colorShadow,
+                    color: kColorShadow,
                     spreadRadius: 2,
                     blurRadius: 4),
                 BoxShadow(
@@ -123,7 +123,7 @@ class _BidsAnimatedState extends State<BidsAnimated> {
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Container(
                         padding: const EdgeInsets.all(2),
-                        color: index % 2 == 0 ? colorGradient2 : colorGradient1,
+                        color: index % 2 == 0 ? kColorGradient2 : kColorGradient1,
                         child: LimitedBox(
                           maxWidth: 80,
                           maxHeight: 40,

@@ -63,7 +63,7 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
               curve: curve,
               tween: Tween<double>(begin: 1, end: _isPressed ? 1 : 5),
               builder: (_, double d, __) => InnerShadow(
-                color: colorShadow,
+                color: kColorShadow,
                 offset: Offset(d, d),
                 blur: 2,
                 child: InnerShadow(
@@ -73,7 +73,7 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
                   child: Container(
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: colorGradient1,
+                        color: kColorGradient1,
                         borderRadius: BorderRadius.circular(50)),
                     child: widget.child,
                   ),

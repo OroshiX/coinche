@@ -19,7 +19,7 @@ class GameScreenProvided extends StatelessWidget {
           return (await _quit(context)) ?? false;
         },
         child: Container(
-          color: colorLightBlue,
+          color: kColorBeauBlue,
           child: FutureProvider<PosTableToColor>(
             builder: (context, child) => _top(context),
             lazy: false,

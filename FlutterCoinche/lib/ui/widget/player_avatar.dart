@@ -163,7 +163,7 @@ class _BoxName extends StatelessWidget {
       ),
       child: InnerShadow(
         offset: Offset(2, 3),
-        color: colorShadow,
+        color: kColorShadow,
         blur: 2,
         child: InnerShadow(
           offset: Offset(-2, -1),
@@ -172,14 +172,14 @@ class _BoxName extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: colorLightBlue,
+              color: kColorBeauBlue,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(
               child: AutoSizeText(
                 nick,
                 maxLines: 2,
-                style: TextStyle(color: colorTextDark),
+                style: TextStyle(color: kColorTextDark),
                 group: autoSizeGroup,
                 minFontSize: 8,
                 maxFontSize: 20,
@@ -220,7 +220,7 @@ class _RoundAvatar extends StatelessWidget {
           color: Colors.white,
           child: Container(
             decoration:
-                BoxDecoration(color: colorLightBlue, shape: BoxShape.circle),
+                BoxDecoration(color: kColorBeauBlue, shape: BoxShape.circle),
             child: ClipOval(
               child: SvgPicture.asset(
                 pictureSvg,

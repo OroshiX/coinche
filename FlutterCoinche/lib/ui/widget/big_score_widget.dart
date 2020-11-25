@@ -32,7 +32,7 @@ class BigScoreWidget extends StatelessWidget {
                 child: Container(
                   width: constraints.maxWidth,
                   height: constraints.maxHeight,
-                  color: colorShadow.withAlpha(125),
+                  color: kColorShadow.withAlpha(125),
                 ),
               ),
               Center(
@@ -44,7 +44,7 @@ class BigScoreWidget extends StatelessWidget {
                       children: [
                         Text(
                           "Score",
-                          style: TextStyle(color: colorTextDark, fontSize: 20),
+                          style: TextStyle(color: kColorTextDark, fontSize: 20),
                         ),
                         SizedBox(
                           height: 10,
@@ -53,7 +53,7 @@ class BigScoreWidget extends StatelessWidget {
                           Text(
                             "You ${won ? "won! 😄" : "lost 😢\nI promise you'll get your revenge! 😈"}",
                             style: TextStyle(
-                                color: colorTextDark, fontSize: won ? 20 : 18),
+                                color: kColorTextDark, fontSize: won ? 20 : 18),
                           ),
                         if (state == TableState.ended)
                           SizedBox(
@@ -80,7 +80,7 @@ class BigScoreWidget extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Icon(
                                   Icons.exit_to_app,
-                                  color: colorTextDark,
+                                  color: kColorTextDark,
                                 ),
                               ),
                             )

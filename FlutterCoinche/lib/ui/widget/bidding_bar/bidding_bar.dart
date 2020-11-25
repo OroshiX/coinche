@@ -125,14 +125,14 @@ class BiddingBarState extends State<BiddingBar> {
                     padding: const EdgeInsets.all(2),
                     child: Icon(
                       Icons.remove,
-                      color: colorText,
+                      color: kColorText,
                     ),
                   ),
                 ),
               ),
               Text(
                 _points.toString(),
-                style: TextStyle(color: colorText),
+                style: TextStyle(color: kColorText),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -140,7 +140,7 @@ class BiddingBarState extends State<BiddingBar> {
                   sizeShadow: SizeShadow.medium,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: Icon(Icons.add, color: colorText),
+                    child: Icon(Icons.add, color: kColorText),
                   ),
                   onTap: () {
                     _gamesModel.playPlop();
@@ -183,7 +183,7 @@ class BiddingBarState extends State<BiddingBar> {
                   }),
               Text(
                 "Belote-ed",
-                style: TextStyle(color: colorText),
+                style: TextStyle(color: kColorText),
               )
             ],
           ),
@@ -319,7 +319,7 @@ class BiddingBarState extends State<BiddingBar> {
             padding: EdgeInsets.all(8),
             child: Text(
               "Coinche",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -348,7 +348,7 @@ class BiddingBarState extends State<BiddingBar> {
             padding: const EdgeInsets.all(8),
             child: Text(
               "Surcoinche",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -374,7 +374,7 @@ class BiddingBarState extends State<BiddingBar> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Pass",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -418,7 +418,7 @@ class BiddingBarState extends State<BiddingBar> {
                           padding: getPaddingButtonTypeBid(screenSize),
                           child: Text(
                             "Normal",
-                            style: TextStyle(color: colorText),
+                            style: TextStyle(color: kColorText),
                           ),
                         ),
                       ),
@@ -439,7 +439,7 @@ class BiddingBarState extends State<BiddingBar> {
                         child: Container(
                           padding: getPaddingButtonTypeBid(screenSize),
                           child:
-                              Text("Capot", style: TextStyle(color: colorText)),
+                              Text("Capot", style: TextStyle(color: kColorText)),
                         ),
                       ),
                     ),
@@ -459,7 +459,7 @@ class BiddingBarState extends State<BiddingBar> {
                         child: Container(
                           padding: getPaddingButtonTypeBid(screenSize),
                           child: Text("General",
-                              style: TextStyle(color: colorText)),
+                              style: TextStyle(color: kColorText)),
                         ),
                       ),
                     ),
@@ -492,7 +492,7 @@ class BiddingBarState extends State<BiddingBar> {
                 sizeShadow: SizeShadow.small,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Bid", style: TextStyle(color: colorText)),
+                  child: Text("Bid", style: TextStyle(color: kColorText)),
                 ),
               ),
             ],

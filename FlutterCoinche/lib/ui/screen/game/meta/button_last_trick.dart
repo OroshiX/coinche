@@ -89,7 +89,7 @@ class ButtonLastTrick extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                     child: Text(
                       "Last Trick",
-                      style: TextStyle(color: colorTextDark),
+                      style: TextStyle(color: kColorTextDark),
                     )),
                 sizeShadow: SizeShadow.small,
                 borderRadius: 10,

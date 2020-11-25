@@ -87,7 +87,7 @@ class CardContent extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                        color: colorText,
+                        color: kColorText,
                         fontSize: getTextSizeCard(cardWidth: width),
                       ),
                     ),
@@ -107,7 +107,7 @@ class CardContent extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                          color: colorText,
+                          color: kColorText,
                           fontSize: getTextSizeCard(cardWidth: width)),
                     ),
                     Image.asset(

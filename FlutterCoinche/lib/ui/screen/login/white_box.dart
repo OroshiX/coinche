@@ -13,7 +13,7 @@ class WhiteBox extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-                color: colorShadow,
+                color: kColorShadow,
                 blurRadius: 10,
                 offset: Offset(5, 2),
                 spreadRadius: 2)

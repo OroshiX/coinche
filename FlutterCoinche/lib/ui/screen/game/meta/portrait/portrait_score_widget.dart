@@ -46,7 +46,7 @@ class PortraitScoreWidget extends StatelessWidget {
                     child: Icon(
                       Icons.exit_to_app,
                       size: iconSize,
-                      color: colorTextDark,
+                      color: kColorTextDark,
                     ),
                   ),
                 ),
@@ -61,7 +61,7 @@ class PortraitScoreWidget extends StatelessWidget {
                     child: Icon(
                       Icons.message,
                       size: iconSize,
-                      color: colorTextDark,
+                      color: kColorTextDark,
                     ),
                   ),
                 )

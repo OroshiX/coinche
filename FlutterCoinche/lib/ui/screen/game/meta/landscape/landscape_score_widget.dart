@@ -48,7 +48,7 @@ class LandscapeScoreWidget extends StatelessWidget {
                     child: Icon(
                       Icons.exit_to_app,
                       size: iconSize,
-                      color: colorTextDark,
+                      color: kColorTextDark,
                     ),
                   ),
                 ),
@@ -63,7 +63,7 @@ class LandscapeScoreWidget extends StatelessWidget {
                     child: Icon(
                       Icons.message,
                       size: iconSize,
-                      color: colorTextDark,
+                      color: kColorTextDark,
                     ),
                   ),
                 )

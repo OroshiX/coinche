@@ -25,7 +25,7 @@ class ListGames extends StatelessWidget {
             return ListTile(
               title: Text(
                 "In game",
-                style: TextStyle(color: colorTextDark, fontSize: 20),
+                style: TextStyle(color: kColorTextDark, fontSize: 20),
               ),
             );
           }
@@ -34,7 +34,7 @@ class ListGames extends StatelessWidget {
               title: Text(
                 "Join",
                 style: TextStyle(
-                  color: colorTextDark,
+                  color: kColorTextDark,
                   fontSize: 20,
                 ),
               ),
