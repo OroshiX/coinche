@@ -59,13 +59,11 @@ class FireAuthService extends ChangeNotifier {
     });
   }
 
-  Future<void> _logoutFromServer() {
+  Future<void> _logoutFromServer(
+      {required void Function() onSuccess,
+      required void Function(String message) onError}) {
     return ServerCommunication.logout(
-        onSuccess: () {
-          // todo deal with success logout
-          if (kDebugMode) print("logged out");
-        },
-        onError: print); //todo deal with error
+        onSuccess: onSuccess, onError: onError);
   }
 
   Future<MyAuthUser> signInWithCredentials(
@@ -124,11 +122,12 @@ class FireAuthService extends ChangeNotifier {
         isAnonymous: firebaseUser.isAnonymous);
   }
 
-  Future<bool> signOut(BuildContext context) async {
+  Future<void> signOut(BuildContext context,
+      {required void Function() onSuccess,
+      required void Function(String message) onError}) async {
     await _auth.signOut();
-    await _logoutFromServer();
+    await _logoutFromServer(onSuccess: onSuccess, onError: onError);
     notifyListeners();
-    return true;
   }
 
   Future<MyAuthUser> signUp(BuildContext context,

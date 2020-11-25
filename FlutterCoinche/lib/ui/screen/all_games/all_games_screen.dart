@@ -54,12 +54,17 @@ class AllGamesScreen extends StatelessWidget {
               IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () {
-                    getFireAuthService().signOut(context).then(
-                        (value) => Navigator.of(context)
-                            ?.pushReplacementNamed(LoginManualScreen.routeName),
-                        onError: (error) {
-                      FlushUtil.showError(context, "Couldn't logout: $error");
-                    });
+                    getFireAuthService().signOut(
+                      context,
+                      onSuccess: () {
+                        Navigator.of(context)
+                            ?.pushReplacementNamed(LoginManualScreen.routeName);
+                      },
+                      onError: (message) {
+                        FlushUtil.showError(
+                            context, "Couldn't logout: $message");
+                      },
+                    );
                   }),
             ],
           ),
