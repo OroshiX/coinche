@@ -4,6 +4,7 @@ import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/util/list_util.dart';
 import 'package:flutter/cupertino.dart';
 
 extension CardsExtension on List<CardModel> {
@@ -21,10 +22,8 @@ extension CardsExtension on List<CardModel> {
 extension CardsPlayedExtension on List<CardPlayed> {
   CardPlayed? atPosition(AxisDirection posTable,
       Map<AxisDirection, PlayerPosition> posTableToCardinal) {
-    var i = indexWhere(
+    return firstWhereOrNull(
         (element) => element.position == posTableToCardinal[posTable]);
-    if (i == -1) return null;
-    return this[i];
   }
 }
 

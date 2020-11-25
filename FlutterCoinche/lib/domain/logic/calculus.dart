@@ -1,6 +1,7 @@
 import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:flutter/material.dart';
+import 'package:coinche/util/list_util.dart';
 
 PlayerPosition _getPlayerPositionTop(PlayerPosition myPosition) {
   switch (myPosition) {
@@ -15,10 +16,8 @@ PlayerPosition _getPlayerPositionTop(PlayerPosition myPosition) {
   }
 }
 
-Bid? getPlayerBid(List<Bid> bids, PlayerPosition position) {
-  var i = bids.lastIndexWhere((element) => element.position == position);
-  return i == -1 ? null : bids[i];
-}
+Bid? getPlayerBid(List<Bid> bids, PlayerPosition position) =>
+    bids.lastWhereOrNull((element) => element.position == position);
 
 PlayerPosition _getPlayerPositionLeft(PlayerPosition myPosition) {
   switch (myPosition) {

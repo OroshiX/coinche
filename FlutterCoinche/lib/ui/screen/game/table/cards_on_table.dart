@@ -11,6 +11,7 @@ import 'package:coinche/state/game_model.dart';
 import 'package:coinche/theme/dimens.dart';
 import 'package:coinche/ui/widget/card_widget.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/util/list_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,16 +20,16 @@ import 'package:tuple/tuple.dart';
 
 class CardsOnTable extends StatelessWidget {
   final double minPadding;
-  final double? maxHeightCard;
-  final double minHeightCard;
+  final double? maxHeight;
+  final double minHeight;
 
   const CardsOnTable(
       {Key? key,
       double? maxHeightCard,
       this.minPadding = 0,
       double? minHeightCard})
-      : this.maxHeightCard = maxHeightCard ?? 400,
-        this.minHeightCard = minHeightCard ?? 20,
+      : maxHeight = maxHeightCard ?? 400,
+        minHeight = minHeightCard ?? 20,
         assert((minHeightCard ?? 20) <= (maxHeightCard ?? 400)),
         super(key: key);
   @override
@@ -36,13 +37,12 @@ class CardsOnTable extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final availableSpace = min(constraints.maxWidth, constraints.maxHeight);
-        final minCardHeight =
-            max(minHeightCard, availableSpace / 2 - minPadding);
+        final minCardHeight = max(minHeight, availableSpace / 2 - minPadding);
         double cardHeight;
-        if (maxHeightCard == null) {
+        if (maxHeight == null) {
           cardHeight = minCardHeight;
         } else {
-          cardHeight = min(maxHeightCard!, minCardHeight);
+          cardHeight = min(maxHeight!, minCardHeight);
         }
         final cardWidth = cardHeight / golden; // Golden ratio / nombre d'or
         return Container(
@@ -140,46 +140,26 @@ class _CardsOnTableState extends State<_CardsOnTable> {
 
   void _orderCards() {
     if (_posTableToCardinal[AxisDirection.left] != null) {
-      var i = widget.onTable.indexWhere((element) =>
+      cardLeft = widget.onTable.firstWhereOrNull((element) =>
           element.position == _posTableToCardinal[AxisDirection.left]);
-      if (i != -1) {
-        cardLeft = widget.onTable[i];
-      } else {
-        cardLeft = null;
-      }
     } else {
       cardLeft = null;
     }
     if (_posTableToCardinal[AxisDirection.up] != null) {
-      var i = widget.onTable.indexWhere((element) =>
+      cardTop = widget.onTable.firstWhereOrNull((element) =>
           element.position == _posTableToCardinal[AxisDirection.up]);
-      if (i != -1) {
-        cardTop = widget.onTable[i];
-      } else {
-        cardTop = null;
-      }
     } else {
       cardTop = null;
     }
     if (_posTableToCardinal[AxisDirection.right] != null) {
-      var i = widget.onTable.indexWhere((element) =>
+      cardRight = widget.onTable.firstWhereOrNull((element) =>
           element.position == _posTableToCardinal[AxisDirection.right]);
-      if (i != -1) {
-        cardRight = widget.onTable[i];
-      } else {
-        cardRight = null;
-      }
     } else {
       cardRight = null;
     }
     if (_posTableToCardinal[AxisDirection.down] != null) {
-      var i = widget.onTable.indexWhere((element) =>
+      cardMe = widget.onTable.firstWhereOrNull((element) =>
           element.position == _posTableToCardinal[AxisDirection.down]);
-      if (i != -1) {
-        cardMe = widget.onTable[i];
-      } else {
-        cardMe = null;
-      }
     } else {
       cardMe = null;
     }

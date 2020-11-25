@@ -1,6 +1,7 @@
 import 'package:coinche/domain/dto/bid.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/domain/logic/calculus.dart';
+import 'package:coinche/util/list_util.dart';
 
 extension BidExtension on List<Bid> {
   bool canCoinche(PlayerPosition me) =>
@@ -12,23 +13,18 @@ extension BidExtension on List<Bid> {
   }
 
   Coinche? get _coinche {
-    var i = lastIndexWhere((element) => element is Coinche);
-    if (i == -1) return null;
-    return this[i] as Coinche;
+    return lastWhereOrNull((element) => element is Coinche) as Coinche?;
   }
 
   Bid? lastBidCapotGeneral() {
-    var i = lastIndexWhere((element) =>
+    return lastWhereOrNull((element) =>
         element is SimpleBid || element is Capot || element is General);
-    if (i == -1) return null;
-    return this[i];
   }
 
   Bid? _lastBidCapotGeneralOpposite(PlayerPosition me) {
-    var i = lastIndexWhere((element) =>
+    var lastBid = lastWhereOrNull((element) =>
         element is SimpleBid || element is Capot || element is General);
-    if (i == -1) return null;
-    var lastBid = this[i];
+    if (lastBid == null) return null;
     if (!oppositeTeam(me).contains(lastBid.position)) {
       return null;
     }
