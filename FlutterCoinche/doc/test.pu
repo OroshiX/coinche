@@ -1,0 +1,93 @@
+/' PlantUML file '/
+@startuml
+skinparam ConditionEndStyle hline
+!pragma useVerticalIf off
+start
+partition "Login process" {
+if (is logged) then (yes)
+else (no)
+  :Login Screen;
+  if (registered?) then (no)
+    :sign up;
+  else (yes)
+    if (validated email?) then (yes)
+    else (no)
+      :Send email validation;
+    endif
+      :sign in;
+  endif
+endif
+}
+:All games screen;
+->Click;
+partition "Before the game" {
+if(existing game?) then (yes)
+if (joined?) then (yes)
+  :Go to the game;
+else (no)
+  :Join the game;
+endif
+else (no)
+:Create and
+join game;
+endif
+}
+:In game screen,
+listening to Firebase
+events;
+stop
+@enduml
+
+@startuml
+(*) -> "{{
+salt
+  {
+    {
+      Coinche
+      {/ <b>Login</b> | Signup }
+      {SI
+        {<&envelope-closed>| "Email    "
+        <&lock-locked>|"Password "}
+      [Sign in]
+      Forgot Password? Click here
+      ---
+      [Sign in with Google]
+      }
+    }
+  }
+}}" as C
+C -->[Click on signup] "{{
+salt
+{
+  Coinche
+  {/ Login | <b>Signup</b> }
+  {SI{<&envelope-closed>| "Email           "
+  <&lock-locked>|"Password        "
+  <&lock-locked>|"Confirm password"
+  }
+  [Sign up]
+  }
+  }
+}
+}}" as s
+@enduml
+@startuml
+header Last modified on 2020-11-24
+footer Some footer
+title Tasks to do
+legend
+The legend
+or not
+end legend
+
+[Re-faire les animations] as [Anim] lasts 14 days
+[Page de login] as [L] lasts 3 days
+
+Project starts 2020-11-24
+today is 2020-11-24 and is colored in #AAF
+sunday are closed
+saturday are closed
+[Anim] starts 2020-11-24
+[L] starts at [Anim]'s start
+
+@enduml
