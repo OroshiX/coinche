@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 const Color kColorDark = Color(0xFF353535);
@@ -36,3 +39,56 @@ const List<Color> kGradientLightBlue = [
   Color(0xFFE0EAFC),
   Color(0xFFCFDEF3),
 ];
+const List<Color> kGradientPinkDark = [kColorPastelPink, kColorAmaranthRed];
+const List<Color> kGradientPink = [kColorSalmonPink, kColorCerise];
+const List<Color> kGradientPinkLight = [kColorNadeshikoPink, kColorSpanishPink];
+const List<Color> kGradientPinkUnsaturated = [
+  kColorApricot,
+  kColorMelon,
+  kColorPastelPink,
+  kColorEnglishLavender,
+  kColorOldLavender
+];
+const List<Color> kGradientPinkUnsaturated1 = [kColorApricot, kColorMelon];
+
+const List<Color> kGradientFullPink = [
+  kColorSalmonPink,
+  kColorPastelPink,
+  kColorCerise,
+  kColorAmaranthRed
+];
+
+// region helpers
+MaterialColor generateMaterialColor(Color color) {
+  return MaterialColor(color.value, {
+    50: _tintColor(color, 0.9),
+    100: _tintColor(color, 0.8),
+    200: _tintColor(color, 0.6),
+    300: _tintColor(color, 0.4),
+    400: _tintColor(color, 0.2),
+    500: color,
+    600: _shadeColor(color, 0.1),
+    700: _shadeColor(color, 0.2),
+    800: _shadeColor(color, 0.3),
+    900: _shadeColor(color, 0.4),
+  });
+}
+
+int _tintValue(int value, double factor) =>
+    max(0, min((value + ((255 - value) * factor)).round(), 255));
+
+Color _tintColor(Color color, double factor) => Color.fromRGBO(
+    _tintValue(color.red, factor),
+    _tintValue(color.green, factor),
+    _tintValue(color.blue, factor),
+    1);
+
+int _shadeValue(int value, double factor) =>
+    max(0, min(value - (value * factor).round(), 255));
+
+Color _shadeColor(Color color, double factor) => Color.fromRGBO(
+    _shadeValue(color.red, factor),
+    _shadeValue(color.green, factor),
+    _shadeValue(color.blue, factor),
+    1);
+// endregion
