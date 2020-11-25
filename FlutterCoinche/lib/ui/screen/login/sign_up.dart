@@ -1,8 +1,10 @@
 import 'package:coinche/error/exceptions.dart';
 import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/service/network/my_auth_user.dart';
+import 'package:coinche/theme/text_styles.dart';
 import 'package:coinche/ui/screen/login/text_field_round.dart';
-import 'package:coinche/ui/screen/login/white_box.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -30,7 +32,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final _formKeySignup = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   var _hiddenPassword1 = true;
 
@@ -38,95 +40,111 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKeySignup,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 30, right: 30, top: 40, bottom: 25),
-              child: WhiteBox(
-                  child: Column(
-                children: [
-                  TextFieldRound(
-                    validator: (value) {
-                      if (value == null) {
-                        return "Please fill your email";
-                      }
-                      var regex = RegExp(
-                          r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
-                      if (!regex.hasMatch(value)) {
-                        return "Email format invalid";
-                      }
-                      return null;
-                    },
-                    iconData: Icons.email_outlined,
-                    hint: "Email",
-                    controller: widget.controllerEmail,
-                  ),
-                  Divider(),
-                  TextFieldRound(
-                      hint: "Password",
-                      hidden: _hiddenPassword1,
-                      iconData: Icons.lock_outlined,
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Please fill your password";
-                        }
-                        if (value.length < 8) {
-                          return "Password too short";
-                        }
-                        return null;
-                      },
-                      suffix: IconButton(
-                        icon: Icon(Icons.visibility_outlined),
-                        onPressed: () {
-                          setState(() {
-                            _hiddenPassword1 = !_hiddenPassword1;
-                          });
-                        },
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 30, right: 30, top: 40, bottom: 20),
+                child: NeumorphicNoStateWidget(
+                    pressed: true,
+                    sizeShadow: SizeShadow.large,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 10, bottom: 30),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFieldRound(
+                            validator: (value) {
+                              if (value == null) {
+                                return "Please fill your email";
+                              }
+                              var regex = RegExp(
+                                  r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
+                              if (!regex.hasMatch(value)) {
+                                return "Email format invalid";
+                              }
+                              return null;
+                            },
+                            iconData: Icons.email_outlined,
+                            hint: "Email",
+                            controller: widget.controllerEmail,
+                          ),
+                          SizedBox(height: 16),
+                          TextFieldRound(
+                              hint: "Password",
+                              hidden: _hiddenPassword1,
+                              iconData: Icons.lock_outlined,
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please fill your password";
+                                }
+                                if (value.length < 8) {
+                                  return "Password too short";
+                                }
+                                return null;
+                              },
+                              suffixIcon: Icons.visibility_outlined,
+                              onPressedSuffix: () {
+                                setState(() {
+                                  _hiddenPassword1 = !_hiddenPassword1;
+                                });
+                              },
+                              controller: widget.controllerPassword),
+                          SizedBox(height: 16),
+                          TextFieldRound(
+                              hint: "Password",
+                              hidden: _hiddenPassword2,
+                              iconData: Icons.lock_outlined,
+                              validator: (String? value) {
+                                if (value != widget.controllerPassword.text) {
+                                  return "The passwords don't match";
+                                }
+                                return null;
+                              },
+                              suffixIcon: Icons.visibility_outlined,
+                              onPressedSuffix: () {
+                                setState(() {
+                                  _hiddenPassword2 = !_hiddenPassword2;
+                                });
+                              },
+                              controller: widget.controllerPassword2),
+                        ],
                       ),
-                      controller: widget.controllerPassword),
-                  TextFieldRound(
-                      hint: "Password",
-                      hidden: _hiddenPassword2,
-                      iconData: Icons.lock_outlined,
-                      validator: (String? value) {
-                        if (value != widget.controllerPassword.text) {
-                          return "The passwords don't match";
-                        }
-                        return null;
-                      },
-                      suffix: IconButton(
-                        icon: Icon(Icons.visibility_outlined),
-                        onPressed: () {
-                          setState(() {
-                            _hiddenPassword2 = !_hiddenPassword2;
-                          });
-                        },
-                      ),
-                      controller: widget.controllerPassword2),
-                ],
-              )),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: Center(
-                child: RaisedButton(
-                    onPressed: () {
-                      if (_formKeySignup.currentState?.validate() == true) {
-                        _doSignUp(context, widget.controllerEmail.text,
-                            widget.controllerPassword.text);
-                      }
-                    },
-                    child: Text("Sign up")),
+                    )),
               ),
-            )
-          ],
-        ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: Center(
+                  child: NeumorphicWidget(
+                      sizeShadow: SizeShadow.medium,
+                      borderRadius: 60,
+                      onTap: () {
+                        if (_formKey.currentState?.validate() == true) {
+                          _doSignUp(context, widget.controllerEmail.text,
+                              widget.controllerPassword.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 10),
+                        child: Text(
+                          "Sign up",
+                          style: textStyleButtonLogin,
+                        ),
+                      )),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

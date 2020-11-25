@@ -27,6 +27,10 @@ const Color kColorMelon = Color(0xFFFFB3A2);
 const Color kColorEnglishLavender = Color(0xFFB5838D);
 const Color kColorOldLavender = Color(0xFF6d6875);
 
+const Color kColorBlue1 = Color(0xFFDAE9F5);
+const Color kColorBlue2 = Color(0xFFBCDEE7);
+const Color kColorBlue3 = Color(0xFFE6F2F5);
+
 const Color kColorText = Color(0xFF8897b0);
 const Color kColorTextDark = Color(0xFF6d727d);
 
@@ -50,6 +54,7 @@ const List<Color> kGradientPinkUnsaturated = [
   kColorOldLavender
 ];
 const List<Color> kGradientPinkUnsaturated1 = [kColorApricot, kColorMelon];
+const List<Color> kGradientBlue = [kColorBlue1, kColorBlue2, kColorBlue3];
 
 const List<Color> kGradientFullPink = [
   kColorSalmonPink,

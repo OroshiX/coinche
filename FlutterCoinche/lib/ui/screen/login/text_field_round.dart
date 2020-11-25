@@ -6,7 +6,8 @@ class TextFieldRound extends StatelessWidget {
   final String? Function(String? value) validator;
   final TextEditingController? controller;
   final bool hidden;
-  final Widget? suffix;
+  final IconData? suffixIcon;
+  final void Function()? onPressedSuffix;
 
   const TextFieldRound(
       {Key? key,
@@ -15,20 +16,40 @@ class TextFieldRound extends StatelessWidget {
       required this.validator,
       this.controller,
       this.hidden = false,
-      this.suffix})
+      this.suffixIcon,
+      this.onPressedSuffix})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      validator: validator,
-      obscureText: hidden,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        hintText: hint,
-        prefixIcon: Icon(iconData),
-        suffix: suffix,
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white24, borderRadius: BorderRadius.circular(50)),
+      padding: const EdgeInsets.only(left: 20, right: 4, top: 3, bottom: 3),
+      child: TextFormField(
+        validator: validator,
+        obscureText: hidden,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          isCollapsed: true,
+          isDense: true,
+          hintText: hint,
+          icon: Icon(
+            iconData,
+            size: 24,
+          ),
+          suffix: Padding(
+            padding: const EdgeInsets.only(right: 10, top: 2),
+            child: InkWell(
+              child: Icon(
+                suffixIcon,
+                size: 25,
+              ),
+              onTap: onPressedSuffix,
+            ),
+          ),
+        ),
+        controller: controller,
       ),
-      controller: controller,
     );
   }
 }

@@ -34,96 +34,107 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Center(child: Text("Coinche", style: textStyleTitleLogin,)),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: kGradientLightBlue,
+                  end: Alignment.topCenter,
+                  begin: Alignment.bottomCenter)),
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-          colors: kGradientLightBlue,
+          colors: kGradientBlue,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         )),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 20),
-            Text(
-              "Coinche",
-              style: textStyleTitleLogin,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 24, left: 10, right: 10),
-              child: SizedBox(
-                height: 50,
-                child: AnimatedToggleButton(
-                  on: _signUp,
-                  textOn: Center(
-                    child: Text(
-                      "Sign up",
-                      textAlign: TextAlign.center,
-                      style: textStyleSwitchLogin,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 20),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 24, left: 10, right: 10),
+                  child: SizedBox(
+                    height: 60,
+                    child: AnimatedToggleButton(
+                      on: _signUp,
+                      textOn: Center(
+                        child: Text(
+                          "Sign up",
+                          textAlign: TextAlign.center,
+                          style: textStyleSwitchLogin,
+                        ),
+                      ),
+                      textOff: Center(
+                          child: Text(
+                        "Login",
+                        style: textStyleSwitchLogin,
+                        textAlign: TextAlign.center,
+                      )),
+                      toggleOnOff: (on) {
+                        _pageController.animateToPage(on ? 1 : 0,
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.fastOutSlowIn);
+                        setState(() {
+                          _signUp = on;
+                        });
+                      },
                     ),
                   ),
-                  textOff: Center(
-                      child: Text(
-                    "Login",
-                    style: textStyleSwitchLogin,
-                    textAlign: TextAlign.center,
-                  )),
-                  toggleOnOff: (on) {
-                    _pageController.animateToPage(on ? 1 : 0,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.fastOutSlowIn);
-                    setState(() {
-                      _signUp = on;
-                    });
-                  },
                 ),
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (value) {
-                    switch (value) {
-                      case 0:
-                        if (_signUp != false) {
-                          setState(() {
-                            _signUp = false;
-                          });
+                LimitedBox(
+                  maxHeight: 500,
+                  child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (value) {
+                        switch (value) {
+                          case 0:
+                            if (_signUp != false) {
+                              setState(() {
+                                _signUp = false;
+                              });
+                            }
+                            break;
+                          case 1:
+                            if (_signUp != true) {
+                              setState(() {
+                                _signUp = true;
+                              });
+                            }
+                            break;
                         }
-                        break;
-                      case 1:
-                        if (_signUp != true) {
-                          setState(() {
-                            _signUp = true;
-                          });
-                        }
-                        break;
-                    }
-                  },
-                  children: [
-                    LoginScreen(
-                      controllerEmail: _controllerEmail,
-                      controllerPassword: _controllerPassword,
-                      onError: (error) => _showError(context, error),
-                      onSuccess: (user) => _loginSuccess(context, user),
-                      userRepository: _userRepository,
-                    ),
-                    SignUp(
-                        onError: (error) => _showError(context, error),
-                        onSuccess: (user) {
-                          _loginSuccess(context, user);
-                        },
-                        onSentEmailVerification: (email) {
-                          // todo show confirmation page, saying that you should check your emails
-                        },
-                        userRepository: _userRepository,
-                        controllerEmail: _controllerEmail,
-                        controllerPassword: _controllerPassword,
-                        controllerPassword2: _controllerPassword2),
-                  ]),
+                      },
+                      children: [
+                        LoginScreen(
+                          controllerEmail: _controllerEmail,
+                          controllerPassword: _controllerPassword,
+                          onError: (error) => _showError(context, error),
+                          onSuccess: (user) => _loginSuccess(context, user),
+                          userRepository: _userRepository,
+                        ),
+                        SignUp(
+                            onError: (error) => _showError(context, error),
+                            onSuccess: (user) {
+                              _loginSuccess(context, user);
+                            },
+                            onSentEmailVerification: (email) {
+                              // todo show confirmation page, saying that you should check your emails
+                            },
+                            userRepository: _userRepository,
+                            controllerEmail: _controllerEmail,
+                            controllerPassword: _controllerPassword,
+                            controllerPassword2: _controllerPassword2),
+                      ]),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

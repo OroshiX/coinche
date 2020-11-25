@@ -1,4 +1,5 @@
 import 'package:coinche/theme/colors.dart';
+import 'package:coinche/ui/inner_shadow.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,9 @@ class AnimatedToggleButton extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final o = 3.0;
+    final blurTop = 6.0;
+    final blurBottom = 5.0;
     return LayoutBuilder(
       builder: (context, constraints) {
         final midWidth = constraints.maxWidth / 2;
@@ -32,46 +36,61 @@ class AnimatedToggleButton extends StatelessWidget {
               }
             }
           },
-          onHorizontalDragDown: (DragDownDetails details) {},
-          child: Container(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            decoration: BoxDecoration(
-                color: kColorGradientMiddle,
-                borderRadius: BorderRadius.circular(60)),
-            child: Stack(
-              children: [
-                AnimatedPositioned(
-                  curve: Curves.fastOutSlowIn,
-                  duration: Duration(milliseconds: 300),
-                  left: on ? midWidth : 0,
-                  right: on ? 0 : midWidth,
-                  child: SizedBox(
-                    width: midWidth,
-                    height: constraints.maxHeight,
-                    child: NeumorphicNoStateWidget(
-                      sizeShadow: SizeShadow.small,
-                      pressed: false,
-                      borderRadius: 60,
-                      child: SizedBox(),
+          child: InnerShadow(
+            color: kColorShadow,
+            offset: Offset(o, o),
+            blur: blurTop,
+            child: InnerShadow(
+              color: Colors.white,
+              offset: Offset(-o, -o),
+              blur: blurBottom,
+              child: Container(
+                width: constraints.maxWidth, // - 2 * o,
+                height: constraints.maxHeight, // - 2 * o,
+                decoration: BoxDecoration(
+                    color: kColorGradientMiddle,
+                    borderRadius: BorderRadius.circular(80)),
+                padding: EdgeInsets.symmetric(
+                  vertical: (blurBottom + blurTop) / 2 + o,
+                  horizontal: (blurBottom + blurTop) / 2 + o,
+                ),
+                child: Stack(
+                  children: [
+                    AnimatedPositioned(
+                      curve: Curves.fastOutSlowIn,
+                      duration: Duration(milliseconds: 300),
+                      left: on ? midWidth : 0,
+                      right: on ? 0 : midWidth,
+                      bottom: 0,
+                      top: 0,
+                      child: SizedBox(
+                        width: midWidth,
+                        height: constraints.maxHeight,
+                        child: NeumorphicNoStateWidget(
+                          sizeShadow: SizeShadow.small,
+                          pressed: false,
+                          borderRadius: 80,
+                          child: SizedBox(),
+                        ),
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      left: 0,
+                      right: midWidth,
+                      child: textOff ?? SizedBox(),
+                      top: 0,
+                      bottom: 0,
+                    ),
+                    Positioned(
+                      right: 0,
+                      left: midWidth,
+                      child: textOn ?? SizedBox(),
+                      top: 0,
+                      bottom: 0,
+                    )
+                  ],
                 ),
-                Positioned(
-                  left: 0,
-                  right: midWidth,
-                  child: textOff ?? SizedBox(),
-                  top: 0,
-                  bottom: 0,
-                ),
-                Positioned(
-                  right: 0,
-                  left: midWidth,
-                  child: textOn ?? SizedBox(),
-                  top: 0,
-                  bottom: 0,
-                )
-              ],
+              ),
             ),
           ),
         );
