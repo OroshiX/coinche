@@ -17,9 +17,10 @@ class ServerCommunication {
   static Future<void> sendToken(IdTokenResult idTokenResult,
       {required void Function() onSuccess, required OnError onError}) async {
     var url = '$_baseUrl/loginToken';
-
-    var r = await Requests.post(url,
-        body: idTokenResult.token, bodyEncoding: RequestBodyEncoding.PlainText);
+    var r = await _post(url,
+        body: idTokenResult.token,
+        bodyEncoding: RequestBodyEncoding.PlainText,
+        onError: onError);
     if (_dealHasError(r, onError: onError)) return;
     onSuccess();
   }
@@ -52,10 +53,10 @@ class ServerCommunication {
       required void Function(GameEmpty) onSuccess}) async {
     var url = "$_baseUrl/lobby/createGame";
     print("connect to $url");
-    var r = await Requests.post(url,
+    var r = await _post(url,
         body: gameName,
-        timeoutSeconds: 10,
-        bodyEncoding: RequestBodyEncoding.PlainText);
+        bodyEncoding: RequestBodyEncoding.PlainText,
+        onError: onError);
     if (_dealHasError(r, onError: onError)) return;
     _convertToJson(r,
         transform: (e) => GameEmpty.fromJson(e),
@@ -125,9 +126,10 @@ class ServerCommunication {
 
   // region helpers
   static Future<Response?> _post(String url,
-      {Map<String, dynamic>? body,
+      {dynamic body,
       required OnError onError,
-      Map<String, dynamic>? queryParameters}) async {
+      Map<String, dynamic>? queryParameters,
+      RequestBodyEncoding bodyEncoding = RequestBodyEncoding.JSON}) async {
     if (kDebugMode) {
       print("Connecting to server $url [POST], body: $body");
     }
@@ -136,7 +138,7 @@ class ServerCommunication {
       r = await Requests.post(url,
           body: body,
           timeoutSeconds: 10,
-          bodyEncoding: RequestBodyEncoding.JSON,
+          bodyEncoding: bodyEncoding,
           queryParameters: queryParameters);
       if (kDebugMode) {
         dev.log("content for $url: ${r.content()}");
