@@ -129,9 +129,7 @@ class GameModel extends ChangeNotifier {
     ServerCommunication.bid(
       bid,
       game.id,
-      onSuccess: () {
-        success = "Bid placed";
-      },
+      onSuccess: () {},
       onError: (message) {
         error = message;
       },
