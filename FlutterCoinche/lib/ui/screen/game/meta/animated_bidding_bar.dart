@@ -20,29 +20,23 @@ class AnimatedBiddingBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final key = GlobalKey<BiddingBarState>();
 
-    return Selector<GameModel, Tuple3<bool, String?, String?>>(
+    return Selector<GameModel, Tuple2<bool, String?>>(
       // bidding? , success, error
       selector: (ctx, gm) {
         // if (gm.game.state == TableState.PLAYING) {
         //   key.currentState.minPoints = 80;
         //   key.currentState.points = 80;
         // }
-        return Tuple3(
-            gm.game.state == TableState.bidding, gm.success, gm.error);
+        return Tuple2(
+            gm.game.state == TableState.bidding, gm.error);
       },
       builder: (context, value, child) {
-        final success = value.item2;
-        final error = value.item3;
+        final error = value.item2;
         final bool isBidding = value.item1;
         if (error != null) {
           WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
             FlushUtil.showError(context, "Error placing bid: $error");
             context.read<GameModel>().clearError();
-          });
-        } else if (success != null) {
-          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-            FlushUtil.showSuccess(context, "bid $success placed");
-            context.read<GameModel>().clearSuccess();
           });
         }
         return AnimatedPositioned(
