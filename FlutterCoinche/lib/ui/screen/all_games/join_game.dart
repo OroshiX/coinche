@@ -1,18 +1,17 @@
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/service/network/server_communication.dart';
-import 'package:FlutterCoinche/state/games_bloc.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/one_game.dart';
-import 'package:FlutterCoinche/ui/screen/game/stated_game_screen.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
-import 'package:flushbar/flushbar_helper.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/state/login_model.dart';
+import 'package:coinche/ui/screen/all_games/one_game.dart';
+import 'package:coinche/ui/screen/game/game_screen_provided.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/util/flush_util.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class JoinGame extends StatelessWidget {
   final GameEmpty game;
 
-  final GamesBloc gamesProvider;
-
-  const JoinGame({Key key, this.game, this.gamesProvider}) : super(key: key);
+  const JoinGame({Key? key, required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,17 +20,18 @@ class JoinGame extends StatelessWidget {
       child: NeumorphicWidget(
         onTap: () {
           // join game
-          ServerCommunication.joinGame(
-            gameId: game.id,
-          ).then((_) {
-            gamesProvider.changeGame(game.id);
-            Navigator.of(context).pushNamed(StatedGameScreen.routeName);
-          }, onError: (error) {
-            FlushbarHelper.createError(
-                    message: "Cannot join game ${game.id}: $error",
-                    duration: Duration(seconds: 4))
-                .show(context);
-          });
+          context.read<GameModel>().joinGame(
+                gameId: game.id,
+                userUid: context.read<LoginModel>().user?.uid,
+                onSuccess: () {
+                  Navigator.of(context)
+                      ?.pushNamed(GameScreenProvided.routeName);
+                },
+                onError: (message) {
+                  FlushUtil.showError(
+                      context, "Cannot join game ${game.id}: $message");
+                },
+              );
         },
         child: OneGame(
           game: game,

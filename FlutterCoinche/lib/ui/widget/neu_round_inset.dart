@@ -1,27 +1,22 @@
-import 'package:FlutterCoinche/ui/inner_shadow.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/ui/inner_shadow.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class NeuRoundInset extends StatefulWidget {
   final Widget child;
   final VoidCallback onTap;
 
-  const NeuRoundInset({Key key, this.onTap, this.child}) : super(key: key);
+  const NeuRoundInset({Key? key, required this.onTap, required this.child})
+      : super(key: key);
 
   @override
   _NeuRoundInsetState createState() => _NeuRoundInsetState();
 }
 
 class _NeuRoundInsetState extends State<NeuRoundInset> {
-  bool _isPressed;
-
-  @override
-  void initState() {
-    super.initState();
-    _isPressed = false;
-  }
+  bool _isPressed = false;
 
   void _onPointerDown(TapDownDetails event) {
     setState(() {
@@ -60,15 +55,15 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
           decoration: buildNeumorphicDecoration(
             borderRadius: 50,
             pressed: _isPressed,
-            sizeShadow: SizeShadow.LARGE,
+            sizeShadow: SizeShadow.large,
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TweenAnimationBuilder(
               curve: curve,
               tween: Tween<double>(begin: 1, end: _isPressed ? 1 : 5),
-              builder: (_, d, __) => InnerShadow(
-                color: colorShadow,
+              builder: (_, double d, __) => InnerShadow(
+                color: kColorShadow,
                 offset: Offset(d, d),
                 blur: 2,
                 child: InnerShadow(
@@ -78,7 +73,7 @@ class _NeuRoundInsetState extends State<NeuRoundInset> {
                   child: Container(
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                        color: colorGradient1,
+                        color: kColorGradient1,
                         borderRadius: BorderRadius.circular(50)),
                     child: widget.child,
                   ),

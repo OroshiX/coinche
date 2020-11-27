@@ -1,3 +1,4 @@
+//@dart=2.9
 import 'package:json_annotation/json_annotation.dart';
 
 part 'login.g.dart';
@@ -7,7 +8,9 @@ class Login {
   final String nickName;
   final bool isLoggedIn;
 
-  const Login({this.nickName, this.isLoggedIn});
+  final String uid;
+
+  const Login({this.nickName, this.isLoggedIn, this.uid});
 
   factory Login.fromJson(Map<String, dynamic> json) => _$LoginFromJson(json);
 

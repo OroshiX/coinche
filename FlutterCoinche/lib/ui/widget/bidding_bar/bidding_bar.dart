@@ -1,25 +1,28 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/game.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/extensions/bid_extension.dart';
-import 'package:FlutterCoinche/domain/extensions/game_extensions.dart';
-import 'package:FlutterCoinche/state/games_bloc.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
-import 'package:bloc_provider/bloc_provider.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/game.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/extensions/bid_extension.dart';
+import 'package:coinche/state/game_model.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/theme/dimens.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:provider/provider.dart';
 
 class BiddingBar extends StatefulWidget {
   final void Function(Bid bid) onBid;
 
   final BidType initialBidType;
+  final Game game;
 
-  const BiddingBar({Key key, this.onBid, this.initialBidType = BidType.Simple})
+  const BiddingBar(
+      {Key? key,
+      required this.onBid,
+      this.initialBidType = BidType.simple,
+      required this.game})
       : super(key: key);
 
   @override
@@ -27,15 +30,26 @@ class BiddingBar extends StatefulWidget {
 }
 
 class BiddingBarState extends State<BiddingBar> {
-  int _points;
-  CardColor _cardColor;
+  late int _points;
+  late CardColor _cardColor;
 
-  bool _belote;
+  late bool _belote;
 
-  BidType bidType;
-  GamesBloc _gamesBloc;
+  late BidType bidType;
+  late GameModel _gamesModel;
 
-  int _minPoints;
+  late int _minPoints;
+
+  @override
+  void initState() {
+    super.initState();
+    _gamesModel = context.read<GameModel>();
+    _points = 80;
+    _belote = false;
+    bidType = widget.initialBidType;
+    _cardColor = CardColor.heart;
+    _whenChangingState(widget.game, init: true);
+  }
 
   set minPoints(int min) {
     _minPoints = min;
@@ -55,16 +69,6 @@ class BiddingBarState extends State<BiddingBar> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _gamesBloc = BlocProvider.of<GamesBloc>(context);
-    _points = 80;
-    _belote = false;
-    bidType = widget.initialBidType;
-    _cardColor = CardColor.HEART;
-  }
-
   Widget _getDropDownSuit(Size screenSize) {
     return DropdownButtonHideUnderline(
       child: DropdownButton<CardColor>(
@@ -80,10 +84,12 @@ class BiddingBarState extends State<BiddingBar> {
                     ),
                   )))
               .toList(),
-          onChanged: (cardColor) {
-            setState(() {
-              _cardColor = cardColor;
-            });
+          onChanged: (CardColor? cardColor) {
+            if (cardColor != null) {
+              setState(() {
+                _cardColor = cardColor;
+              });
+            }
           }),
     );
   }
@@ -93,7 +99,7 @@ class BiddingBarState extends State<BiddingBar> {
       padding: const EdgeInsets.only(top: 8.0, bottom: 8),
       child: NeumorphicNoStateWidget(
         borderRadius: 10,
-        sizeShadow: SizeShadow.SMALL,
+        sizeShadow: SizeShadow.small,
         pressed: true,
         child: Padding(
           padding: getPaddingCapot(screenSize),
@@ -106,9 +112,9 @@ class BiddingBarState extends State<BiddingBar> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: NeumorphicWidget(
-                  sizeShadow: SizeShadow.MEDIUM,
+                  sizeShadow: SizeShadow.medium,
                   onTap: () {
-                    _gamesBloc.playHardButton();
+                    _gamesModel.playHardButton();
                     if (_points > minPoints) {
                       setState(() {
                         _points -= 10;
@@ -119,25 +125,25 @@ class BiddingBarState extends State<BiddingBar> {
                     padding: const EdgeInsets.all(2),
                     child: Icon(
                       Icons.remove,
-                      color: colorText,
+                      color: kColorText,
                     ),
                   ),
                 ),
               ),
               Text(
                 _points.toString(),
-                style: TextStyle(color: colorText),
+                style: TextStyle(color: kColorText),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: NeumorphicWidget(
-                  sizeShadow: SizeShadow.MEDIUM,
+                  sizeShadow: SizeShadow.medium,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: Icon(Icons.add, color: colorText),
+                    child: Icon(Icons.add, color: kColorText),
                   ),
                   onTap: () {
-                    _gamesBloc.playPlop();
+                    _gamesModel.playPlop();
                     if (_points < 160) {
                       setState(() {
                         _points += 10;
@@ -157,7 +163,7 @@ class BiddingBarState extends State<BiddingBar> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8),
       child: NeumorphicNoStateWidget(
-        sizeShadow: SizeShadow.SMALL,
+        sizeShadow: SizeShadow.small,
         pressed: true,
         borderRadius: 10,
         child: Padding(
@@ -170,14 +176,14 @@ class BiddingBarState extends State<BiddingBar> {
               Switch(
                   value: _belote,
                   onChanged: (value) {
-                    _gamesBloc.playSoftButton();
+                    _gamesModel.playSoftButton();
                     setState(() {
                       _belote = value;
                     });
                   }),
               Text(
                 "Belote-ed",
-                style: TextStyle(color: colorText),
+                style: TextStyle(color: kColorText),
               )
             ],
           ),
@@ -186,15 +192,15 @@ class BiddingBarState extends State<BiddingBar> {
     );
   }
 
-  List<Bid> bids;
-  PlayerPosition me, nextPlayer;
-  bool enabledBid, canSurcoinche, canCoinche;
-  Bid lastBid;
+  List<Bid>? bids;
+  late PlayerPosition me, nextPlayer;
+  bool enabledBid = false, canSurcoinche = false, canCoinche = false;
+  Bid? lastBid;
 
-  _whenChangingState(ReactiveModel<Game> model, {bool init = false}) {
-    bids = model.state.bids;
-    me = model.state.myPosition;
-    nextPlayer = model.state.nextPlayer;
+  void _whenChangingState(Game game, {bool init = false}) {
+    bids = game.bids;
+    me = game.myPosition;
+    nextPlayer = game.nextPlayer;
     enabledBid = nextPlayer == me;
 
     canSurcoinche = bids?.canSurcoinche(me) ?? false;
@@ -215,99 +221,96 @@ class BiddingBarState extends State<BiddingBar> {
   }
 
   @override
+  void didUpdateWidget(covariant BiddingBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.game != widget.game) {
+      _whenChangingState(widget.game);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final portrait = MediaQuery.of(context).orientation == Orientation.portrait;
-    return StateBuilder<Game>(
-      models: [RM.get<Game>()],
-      tag: [Aspects.ALL_BIDS, Aspects.MY_POSITION, Aspects.NEXT_PLAYER],
-      initState: (context, model) {
-        _whenChangingState(model, init: true);
-      },
-      onSetState: (context, model) {
-        _whenChangingState(model);
-      },
-      builder: (context, model) {
-        return Container(
-          padding: const EdgeInsets.only(left: 2),
-          child: portrait
-              ? IntrinsicWidth(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+
+    return Container(
+      padding: const EdgeInsets.only(left: 2),
+      child: portrait
+          ? IntrinsicWidth(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _coincheWidget(
-                              canCoinche: canCoinche,
-                              lastSimpleBid: lastBid,
-                              me: me),
-                          _surcoincheWidget(
-                              canSurcoinche: canSurcoinche,
-                              lastSimpleBid: lastBid,
-                              me: me),
-                          _passWidget(me: me, enabledBid: enabledBid)
-                        ],
-                      ),
-                      SizedBox(
-                        height: isLargeScreen(screenSize) ? 10 : 5,
-                      ),
-                      _mainWidget(screenSize,
-                          me: me, minPoints: _minPoints, enabledBid: enabledBid)
+                      _coincheWidget(
+                          canCoinche: canCoinche,
+                          lastSimpleBid: lastBid,
+                          me: me),
+                      _surcoincheWidget(
+                          canSurcoinche: canSurcoinche,
+                          lastSimpleBid: lastBid,
+                          me: me),
+                      _passWidget(me: me, enabledBid: enabledBid)
                     ],
                   ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    _mainWidget(screenSize,
-                        me: me, minPoints: _minPoints, enabledBid: enabledBid),
-                    SizedBox(
-                      width: isLargeScreen(screenSize) ? 20 : 10,
-                    ),
-                    IntrinsicWidth(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          _coincheWidget(
-                              canCoinche: canCoinche,
-                              lastSimpleBid: lastBid,
-                              me: me),
-                          _surcoincheWidget(
-                              canSurcoinche: canSurcoinche,
-                              lastSimpleBid: lastBid,
-                              me: me),
-                          _passWidget(me: me, enabledBid: enabledBid),
-                        ],
-                      ),
-                    ),
-                  ],
+                  SizedBox(
+                    height: isLargeScreen(screenSize) ? 10 : 5,
+                  ),
+                  _mainWidget(screenSize,
+                      me: me, minPoints: _minPoints, enabledBid: enabledBid)
+                ],
+              ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                _mainWidget(screenSize,
+                    me: me, minPoints: _minPoints, enabledBid: enabledBid),
+                SizedBox(
+                  width: isLargeScreen(screenSize) ? 20 : 10,
                 ),
-        );
-      },
+                IntrinsicWidth(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      _coincheWidget(
+                          canCoinche: canCoinche,
+                          lastSimpleBid: lastBid,
+                          me: me),
+                      _surcoincheWidget(
+                          canSurcoinche: canSurcoinche,
+                          lastSimpleBid: lastBid,
+                          me: me),
+                      _passWidget(me: me, enabledBid: enabledBid),
+                    ],
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
   Widget _coincheWidget(
-      {@required bool canCoinche,
-      @required Bid lastSimpleBid,
-      @required PlayerPosition me}) {
+      {required bool canCoinche,
+      required Bid? lastSimpleBid,
+      required PlayerPosition me}) {
     return Visibility(
       visible: canCoinche,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: NeumorphicWidget(
-          sizeShadow: SizeShadow.SMALL,
+          sizeShadow: SizeShadow.small,
           onTap: () {
-            _gamesBloc.playPlop();
+            _gamesModel.playPlop();
             widget.onBid(Coinche(
                 position: me, surcoinche: false, annonce: lastSimpleBid));
           },
@@ -316,7 +319,7 @@ class BiddingBarState extends State<BiddingBar> {
             padding: EdgeInsets.all(8),
             child: Text(
               "Coinche",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -326,17 +329,17 @@ class BiddingBarState extends State<BiddingBar> {
   }
 
   Widget _surcoincheWidget(
-      {@required bool canSurcoinche,
-      @required Bid lastSimpleBid,
-      @required PlayerPosition me}) {
+      {required bool canSurcoinche,
+      required Bid? lastSimpleBid,
+      required PlayerPosition me}) {
     return Visibility(
       visible: canSurcoinche,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: NeumorphicWidget(
-          sizeShadow: SizeShadow.SMALL,
+          sizeShadow: SizeShadow.small,
           onTap: () {
-            _gamesBloc.playPlop();
+            _gamesModel.playPlop();
             widget.onBid(Coinche(
                 position: me, surcoinche: true, annonce: lastSimpleBid));
           },
@@ -345,7 +348,7 @@ class BiddingBarState extends State<BiddingBar> {
             padding: const EdgeInsets.all(8),
             child: Text(
               "Surcoinche",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -354,24 +357,24 @@ class BiddingBarState extends State<BiddingBar> {
     );
   }
 
-  Widget _passWidget({@required PlayerPosition me, @required bool enabledBid}) {
+  Widget _passWidget({required PlayerPosition me, required bool enabledBid}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Visibility(
         visible: enabledBid,
         child: NeumorphicWidget(
           interactable: enabledBid,
-          sizeShadow: SizeShadow.SMALL,
+          sizeShadow: SizeShadow.small,
           borderRadius: 5,
           onTap: () {
-            _gamesBloc.playPlop();
+            _gamesModel.playPlop();
             widget.onBid(Pass(position: me));
           },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
               "Pass",
-              style: TextStyle(color: colorText),
+              style: TextStyle(color: kColorText),
               textAlign: TextAlign.center,
             ),
           ),
@@ -381,13 +384,13 @@ class BiddingBarState extends State<BiddingBar> {
   }
 
   Widget _mainWidget(Size screenSize,
-      {@required PlayerPosition me,
-      @required int minPoints,
-      @required bool enabledBid}) {
+      {required PlayerPosition me,
+      required int minPoints,
+      required bool enabledBid}) {
     return NeumorphicNoStateWidget(
       borderRadius: getBorderRadiusBidding(screenSize),
       sizeShadow:
-          isLargeScreen(screenSize) ? SizeShadow.LARGE : SizeShadow.MEDIUM,
+          isLargeScreen(screenSize) ? SizeShadow.large : SizeShadow.medium,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IntrinsicWidth(
@@ -401,21 +404,21 @@ class BiddingBarState extends State<BiddingBar> {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      _gamesBloc.playSoftButton();
+                      _gamesModel.playSoftButton();
                       setState(() {
-                        bidType = BidType.Simple;
+                        bidType = BidType.simple;
                       });
                     },
                     child: Padding(
                       padding: getPaddingBetweenButtonsTypeBid(screenSize),
                       child: NeumorphicNoStateWidget(
-                        sizeShadow: SizeShadow.SMALL,
-                        pressed: bidType == BidType.Simple,
+                        sizeShadow: SizeShadow.small,
+                        pressed: bidType == BidType.simple,
                         child: Container(
                           padding: getPaddingButtonTypeBid(screenSize),
                           child: Text(
                             "Normal",
-                            style: TextStyle(color: colorText),
+                            style: TextStyle(color: kColorText),
                           ),
                         ),
                       ),
@@ -423,40 +426,40 @@ class BiddingBarState extends State<BiddingBar> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _gamesBloc.playSoftButton();
+                      _gamesModel.playSoftButton();
                       setState(() {
-                        bidType = BidType.Capot;
+                        bidType = BidType.capot;
                       });
                     },
                     child: Padding(
                       padding: getPaddingBetweenButtonsTypeBid(screenSize),
                       child: NeumorphicNoStateWidget(
-                        sizeShadow: SizeShadow.SMALL,
-                        pressed: bidType == BidType.Capot,
+                        sizeShadow: SizeShadow.small,
+                        pressed: bidType == BidType.capot,
                         child: Container(
                           padding: getPaddingButtonTypeBid(screenSize),
                           child:
-                              Text("Capot", style: TextStyle(color: colorText)),
+                              Text("Capot", style: TextStyle(color: kColorText)),
                         ),
                       ),
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
-                      _gamesBloc.playSoftButton();
+                      _gamesModel.playSoftButton();
                       setState(() {
-                        bidType = BidType.Generale;
+                        bidType = BidType.generale;
                       });
                     },
                     child: Padding(
                       padding: getPaddingBetweenButtonsTypeBid(screenSize),
                       child: NeumorphicNoStateWidget(
-                        sizeShadow: SizeShadow.SMALL,
-                        pressed: bidType == BidType.Generale,
+                        sizeShadow: SizeShadow.small,
+                        pressed: bidType == BidType.generale,
                         child: Container(
                           padding: getPaddingButtonTypeBid(screenSize),
                           child: Text("General",
-                              style: TextStyle(color: colorText)),
+                              style: TextStyle(color: kColorText)),
                         ),
                       ),
                     ),
@@ -467,17 +470,17 @@ class BiddingBarState extends State<BiddingBar> {
               NeumorphicWidget(
                 onTap: () {
                   Bid bid;
-                  _gamesBloc.playPlop();
+                  _gamesModel.playPlop();
                   switch (bidType) {
-                    case BidType.Simple:
+                    case BidType.simple:
                       bid = SimpleBid(
                           points: _points, color: _cardColor, position: me);
                       break;
-                    case BidType.Capot:
+                    case BidType.capot:
                       bid = Capot(
                           color: _cardColor, position: me, belote: _belote);
                       break;
-                    case BidType.Generale:
+                    case BidType.generale:
                       bid = General(
                           color: _cardColor, position: me, belote: _belote);
                       break;
@@ -486,10 +489,10 @@ class BiddingBarState extends State<BiddingBar> {
                 },
                 borderRadius: 3,
                 interactable: enabledBid,
-                sizeShadow: SizeShadow.SMALL,
+                sizeShadow: SizeShadow.small,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text("Bid", style: TextStyle(color: colorText)),
+                  child: Text("Bid", style: TextStyle(color: kColorText)),
                 ),
               ),
             ],
@@ -499,17 +502,38 @@ class BiddingBarState extends State<BiddingBar> {
     );
   }
 
-  Widget _getTab(BidType bidType, Size screenSize, {int minPoints}) {
+  Widget _getTab(BidType bidType, Size screenSize, {required int minPoints}) {
     switch (bidType) {
-      case BidType.Simple:
+      case BidType.simple:
         return _normalTabBar(screenSize, minPoints);
-      case BidType.Capot:
+      case BidType.capot:
         return _capotGeneraleTabView(false, screenSize);
-      case BidType.Generale:
+      case BidType.generale:
         return _capotGeneraleTabView(true, screenSize);
     }
-    return SizedBox();
   }
 }
 
-enum BidType { Simple, Capot, Generale }
+class BiddingBarProvided extends StatelessWidget {
+  final BidType initialBidType;
+
+  const BiddingBarProvided({
+    Key? key,
+    this.initialBidType = BidType.simple,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GameModel>(
+      builder: (context, gameModel, child) => BiddingBar(
+        initialBidType: initialBidType,
+        onBid: (bid) {
+          gameModel.bid(bid);
+        },
+        game: gameModel.game,
+      ),
+    );
+  }
+}
+
+enum BidType { simple, capot, generale }

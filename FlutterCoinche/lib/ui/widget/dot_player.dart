@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DotPlayer extends StatelessWidget {
-  final double dotSize;
-  final Color color;
+  final double? dotSize;
+  final Color? color;
 
-  const DotPlayer({Key key, this.dotSize, this.color}) : super(key: key);
+  const DotPlayer({Key? key, this.dotSize, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,29 +1,28 @@
 import 'dart:math';
 
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/resources/dimens.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_container.dart';
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/theme/dimens.dart';
+import 'package:coinche/ui/widget/neumorphic_container.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
-  final CardModel card;
+  final CardModel? card;
   final bool displayPlayable;
   final double width, height;
 
   CardWidget(
-      {@required this.card,
+      {required this.card,
       this.displayPlayable = true,
-      @required this.width,
-      @required this.height})
-      : assert(card != null, "card is null in cardWidget");
+      required this.width,
+      required this.height});
 
   @override
   Widget build(BuildContext context) {
     final big = isBigCardWidth(cardWidth: width);
     return NeumorphicNoStateWidget(
-      sizeShadow: big ? SizeShadow.LARGE : SizeShadow.MEDIUM,
+      sizeShadow: big ? SizeShadow.large : SizeShadow.medium,
       borderRadius: big ? 20 : 10,
       pressed: false,
       child: CardContent(
@@ -37,23 +36,22 @@ class CardWidget extends StatelessWidget {
 }
 
 class CardContent extends StatelessWidget {
-  final CardModel card;
+  final CardModel? card;
   final bool displayPlayable;
   final double width, height;
 
   const CardContent(
-      {Key key,
-      @required this.card,
+      {Key? key,
+      required this.card,
       this.displayPlayable = true,
-      @required this.width,
-      @required this.height})
-      : assert(card != null),
-        super(key: key);
+      required this.width,
+      required this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final image = getAssetImageFromColor(card.color);
-    final letter = getLetterFromValue(card.value);
+    final image = getAssetImageFromColor(card?.color);
+    final letter = getLetterFromValue(card?.value);
     final marginValue = getPaddingInCard(cardWidth: width);
 
     return Container(
@@ -72,9 +70,9 @@ class CardContent extends StatelessWidget {
                   fit: BoxFit.contain,
                   width: getSizeSuitIcon(cardWidth: width),
                 ),
-                if (card.playable != null &&
+                if (card?.playable != null &&
                     displayPlayable &&
-                    (card.playable ?? false))
+                    (card?.playable ?? false))
                   Icon(Icons.check)
               ],
             )),
@@ -89,7 +87,7 @@ class CardContent extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                        color: colorText,
+                        color: kColorText,
                         fontSize: getTextSizeCard(cardWidth: width),
                       ),
                     ),
@@ -109,7 +107,7 @@ class CardContent extends StatelessWidget {
                     Text(
                       letter,
                       style: TextStyle(
-                          color: colorText,
+                          color: kColorText,
                           fontSize: getTextSizeCard(cardWidth: width)),
                     ),
                     Image.asset(

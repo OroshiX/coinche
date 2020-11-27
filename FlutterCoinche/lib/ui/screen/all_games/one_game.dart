@@ -1,31 +1,31 @@
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
-import 'package:FlutterCoinche/ui/inner_shadow.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/domain/dto/table_state.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/ui/inner_shadow.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OneGame extends StatelessWidget {
   final GameEmpty game;
 
-  const OneGame({Key key, this.game}) : super(key: key);
+  const OneGame({Key? key, required this.game}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color color;
+    Color color = Colors.red;
     switch (game.state) {
-      case TableState.JOINING:
+      case TableState.joining:
         color = Colors.blue;
         break;
-      case TableState.DISTRIBUTING:
-      case TableState.BIDDING:
-      case TableState.PLAYING:
+      case TableState.distributing:
+      case TableState.bidding:
+      case TableState.playing:
         color = Colors.orange;
         break;
-      case TableState.BETWEEN_GAMES:
+      case TableState.betweenGames:
         color = Colors.amber;
         break;
-      case TableState.ENDED:
+      case TableState.ended:
         color = Colors.blueGrey;
         break;
     }
@@ -39,19 +39,19 @@ class OneGame extends StatelessWidget {
           padding: const EdgeInsets.only(left: 23.0, top: 4),
           child: Text(
             game.state.toString().split(".").last,
-            style: TextStyle(color: colorTextDark, fontStyle: FontStyle.italic),
+            style: TextStyle(color: kColorTextDark, fontStyle: FontStyle.italic),
           ),
         ),
         ListTile(
           title: Text(
             "Game: ${game.name.toString().replaceAll(GameEmpty.automatedString, "")}",
             style: TextStyle(
-                color: colorTextDark,
+                color: kColorTextDark,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
           leading: InnerShadow(
-            color: colorShadow,
+            color: kColorShadow,
             blur: 2,
             offset: Offset(2, 2),
             child: InnerShadow(
@@ -62,11 +62,11 @@ class OneGame extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: colorGradient2,
+                    color: kColorGradient2,
                   ),
                   child: Text(
                     game.hasBots ? "🤖" : "🙂",
-                    style: TextStyle(color: colorTextDark, fontSize: 26),
+                    style: TextStyle(color: kColorTextDark, fontSize: 26),
                   )),
             ),
           ),
@@ -78,7 +78,7 @@ class OneGame extends StatelessWidget {
             children: [
               Text(
                 game.nbJoined.toString(),
-                style: TextStyle(color: colorText, fontSize: 18),
+                style: TextStyle(color: kColorText, fontSize: 18),
               ),
               SizedBox(
                 width: 2,

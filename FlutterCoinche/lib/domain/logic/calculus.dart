@@ -1,54 +1,48 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/player_position.dart';
 import 'package:flutter/material.dart';
+import 'package:coinche/util/list_util.dart';
 
 PlayerPosition _getPlayerPositionTop(PlayerPosition myPosition) {
   switch (myPosition) {
-    case PlayerPosition.SOUTH:
-      return PlayerPosition.NORTH;
-    case PlayerPosition.NORTH:
-      return PlayerPosition.SOUTH;
-    case PlayerPosition.EAST:
-      return PlayerPosition.WEST;
-    case PlayerPosition.WEST:
-      return PlayerPosition.EAST;
+    case PlayerPosition.south:
+      return PlayerPosition.north;
+    case PlayerPosition.north:
+      return PlayerPosition.south;
+    case PlayerPosition.east:
+      return PlayerPosition.west;
+    case PlayerPosition.west:
+      return PlayerPosition.east;
   }
-  return null;
 }
 
-Bid getPlayerBid(List<Bid> bids, PlayerPosition position) {
-  return bids?.lastWhere(
-    (element) => element.position == position,
-    orElse: () => null,
-  );
-}
+Bid? getPlayerBid(List<Bid> bids, PlayerPosition position) =>
+    bids.lastWhereOrNull((element) => element.position == position);
 
 PlayerPosition _getPlayerPositionLeft(PlayerPosition myPosition) {
   switch (myPosition) {
-    case PlayerPosition.SOUTH:
-      return PlayerPosition.WEST;
-    case PlayerPosition.NORTH:
-      return PlayerPosition.EAST;
-    case PlayerPosition.EAST:
-      return PlayerPosition.SOUTH;
-    case PlayerPosition.WEST:
-      return PlayerPosition.NORTH;
+    case PlayerPosition.south:
+      return PlayerPosition.west;
+    case PlayerPosition.north:
+      return PlayerPosition.east;
+    case PlayerPosition.east:
+      return PlayerPosition.south;
+    case PlayerPosition.west:
+      return PlayerPosition.north;
   }
-  return null;
 }
 
 PlayerPosition _getPlayerPositionRight(PlayerPosition myPosition) {
   switch (myPosition) {
-    case PlayerPosition.SOUTH:
-      return PlayerPosition.EAST;
-    case PlayerPosition.NORTH:
-      return PlayerPosition.WEST;
-    case PlayerPosition.EAST:
-      return PlayerPosition.NORTH;
-    case PlayerPosition.WEST:
-      return PlayerPosition.SOUTH;
+    case PlayerPosition.south:
+      return PlayerPosition.east;
+    case PlayerPosition.north:
+      return PlayerPosition.west;
+    case PlayerPosition.east:
+      return PlayerPosition.north;
+    case PlayerPosition.west:
+      return PlayerPosition.south;
   }
-  return null;
 }
 
 Map<AxisDirection, PlayerPosition> getPosTableToCardinal(
@@ -61,7 +55,8 @@ Map<AxisDirection, PlayerPosition> getPosTableToCardinal(
   };
 }
 
-Map<PlayerPosition, AxisDirection> getCardinalToPosTable(PlayerPosition myPosition) {
+Map<PlayerPosition, AxisDirection> getCardinalToPosTable(
+    PlayerPosition myPosition) {
   return {
     _getPlayerPositionLeft(myPosition): AxisDirection.left,
     _getPlayerPositionRight(myPosition): AxisDirection.right,
@@ -72,23 +67,22 @@ Map<PlayerPosition, AxisDirection> getCardinalToPosTable(PlayerPosition myPositi
 
 List<PlayerPosition> oppositeTeam(PlayerPosition myPosition) {
   switch (myPosition) {
-    case PlayerPosition.NORTH:
-    case PlayerPosition.SOUTH:
-      return [PlayerPosition.EAST, PlayerPosition.WEST];
-    case PlayerPosition.EAST:
-    case PlayerPosition.WEST:
-      return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
+    case PlayerPosition.north:
+    case PlayerPosition.south:
+      return [PlayerPosition.east, PlayerPosition.west];
+    case PlayerPosition.east:
+    case PlayerPosition.west:
+      return [PlayerPosition.north, PlayerPosition.south];
   }
-  return [];
 }
+
 List<PlayerPosition> myTeam(PlayerPosition myPosition) {
   switch (myPosition) {
-    case PlayerPosition.NORTH:
-    case PlayerPosition.SOUTH:
-      return [PlayerPosition.NORTH, PlayerPosition.SOUTH];
-    case PlayerPosition.EAST:
-    case PlayerPosition.WEST:
-      return [PlayerPosition.EAST, PlayerPosition.WEST];
+    case PlayerPosition.north:
+    case PlayerPosition.south:
+      return [PlayerPosition.north, PlayerPosition.south];
+    case PlayerPosition.east:
+    case PlayerPosition.west:
+      return [PlayerPosition.east, PlayerPosition.west];
   }
-  return [];
 }

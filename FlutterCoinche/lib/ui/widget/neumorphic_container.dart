@@ -1,4 +1,4 @@
-import 'package:FlutterCoinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/material.dart';
 
 class NeumorphicWidget extends StatefulWidget {
@@ -8,31 +8,35 @@ class NeumorphicWidget extends StatefulWidget {
   final bool interactable;
   final bool alwaysPressedPosition;
 
-  final void Function() onTap;
+  final void Function()? onTap;
 
   NeumorphicWidget(
-      {this.child,
+      {Key? key,
+      required this.child,
       this.borderRadius = 20,
-      this.sizeShadow = SizeShadow.LARGE,
+      this.sizeShadow = SizeShadow.large,
       this.interactable = true,
       this.alwaysPressedPosition = false,
-      @required this.onTap});
+      required this.onTap})
+      : super(key: key);
 
   @override
-  _NeumorphicWidgetState createState() => _NeumorphicWidgetState();
+  NeumorphicWidgetState createState() => NeumorphicWidgetState();
 }
 
-class _NeumorphicWidgetState extends State<NeumorphicWidget> {
-  bool _isPressed;
+class NeumorphicWidgetState extends State<NeumorphicWidget> {
+  late bool _isPressed;
+  late bool isInteractable;
 
   @override
   void initState() {
     super.initState();
     _isPressed = widget.alwaysPressedPosition;
+    isInteractable = widget.interactable;
   }
 
   void _onPointerDown(TapDownDetails event) {
-    if (widget.interactable) {
+    if (isInteractable) {
       setState(() {
         _isPressed = true;
       });
@@ -40,7 +44,7 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 
   void _onPointerUp(TapUpDetails event) {
-    if (widget.interactable) {
+    if (isInteractable) {
       setState(() {
         _isPressed = false;
       });
@@ -48,7 +52,7 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 
   void _onTapCancel() {
-    if (widget.interactable) {
+    if (isInteractable) {
       setState(() {
         _isPressed = false;
       });
@@ -56,8 +60,8 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 
   void _onTap() {
-    if (widget.interactable && widget.onTap != null) {
-      widget.onTap();
+    if (isInteractable) {
+      widget.onTap?.call();
     }
   }
 
@@ -76,7 +80,7 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
           sizeShadow: widget.sizeShadow,
         ),
         duration: const Duration(milliseconds: 200),
-        child: widget.interactable
+        child: isInteractable
             ? widget.child
             : ClipRRect(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -90,4 +94,4 @@ class _NeumorphicWidgetState extends State<NeumorphicWidget> {
   }
 }
 
-enum SizeShadow { SMALL, MEDIUM, LARGE }
+enum SizeShadow { small, medium, large }

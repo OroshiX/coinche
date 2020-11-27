@@ -1,5 +1,5 @@
-import 'package:FlutterCoinche/ui/screen/game/cards_on_table.dart';
-import 'package:FlutterCoinche/ui/screen/game/drag_area.dart';
+import 'package:coinche/ui/screen/game/table/cards_on_table.dart';
+import 'package:coinche/ui/screen/game/table/drag_area.dart';
 import 'package:flutter/material.dart';
 
 class MiddleArea extends StatelessWidget {
@@ -7,9 +7,9 @@ class MiddleArea extends StatelessWidget {
   final Size screenSize;
 
   const MiddleArea({
-    @required this.cardWidth,
-    @required this.cardHeight,
-    @required this.screenSize,
+    required this.cardWidth,
+    required this.cardHeight,
+    required this.screenSize,
   });
 
   @override

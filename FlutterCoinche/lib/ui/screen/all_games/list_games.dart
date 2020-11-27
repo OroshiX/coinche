@@ -1,22 +1,15 @@
-import 'package:FlutterCoinche/domain/dto/game_empty.dart';
-import 'package:FlutterCoinche/state/games_bloc.dart';
-import 'package:FlutterCoinche/ui/resources/colors.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/in_room_game.dart';
-import 'package:FlutterCoinche/ui/screen/all_games/join_game.dart';
+import 'package:coinche/domain/dto/game_empty.dart';
+import 'package:coinche/theme/colors.dart';
+import 'package:coinche/ui/screen/all_games/in_room_game.dart';
+import 'package:coinche/ui/screen/all_games/join_game.dart';
 import 'package:flutter/material.dart';
 
 class ListGames extends StatelessWidget {
   final List<GameEmpty> games;
 
-  final GamesBloc gamesProvider;
-  final Future<void> Function(GamesBloc gamesBloc, BuildContext context)
-      onRefresh;
+  final Future<void> Function(BuildContext context) onRefresh;
 
-  const ListGames(
-      {Key key,
-      @required this.games,
-      @required this.gamesProvider,
-      @required this.onRefresh})
+  const ListGames({Key? key, required this.games, required this.onRefresh})
       : super(key: key);
 
   @override
@@ -24,7 +17,7 @@ class ListGames extends StatelessWidget {
     final inRoomGames = games.where((element) => element.inRoom).toList();
     final toJoin = games.where((element) => !element.inRoom).toList();
     return RefreshIndicator(
-      onRefresh: () => onRefresh(gamesProvider, context),
+      onRefresh: () => onRefresh(context),
       child: ListView.builder(
         itemCount: games.length + 2,
         itemBuilder: (context, index) {
@@ -32,7 +25,7 @@ class ListGames extends StatelessWidget {
             return ListTile(
               title: Text(
                 "In game",
-                style: TextStyle(color: colorTextDark, fontSize: 20),
+                style: TextStyle(color: kColorTextDark, fontSize: 20),
               ),
             );
           }
@@ -41,22 +34,20 @@ class ListGames extends StatelessWidget {
               title: Text(
                 "Join",
                 style: TextStyle(
-                  color: colorTextDark,
+                  color: kColorTextDark,
                   fontSize: 20,
                 ),
               ),
             );
           }
           if (index <= inRoomGames.length) {
-            GameEmpty gameInRoom = inRoomGames[index - 1];
+            var gameInRoom = inRoomGames[index - 1];
             return InRoomGame(
               game: gameInRoom,
-              gamesProvider: gamesProvider,
             );
           }
-          GameEmpty game = toJoin[index - inRoomGames.length - 2];
+          var game = toJoin[index - inRoomGames.length - 2];
           return JoinGame(
-            gamesProvider: gamesProvider,
             game: game,
           );
         },

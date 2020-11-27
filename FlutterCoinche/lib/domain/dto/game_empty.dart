@@ -1,4 +1,5 @@
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
+//@dart=2.9
+import 'package:coinche/domain/dto/table_state.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'game_empty.g.dart';
@@ -25,7 +26,7 @@ class GameEmpty {
       this.name,
       this.nicknameCreator,
       this.inRoom,
-      this.state = TableState.JOINING})
+      this.state = TableState.joining})
       : hasBots = name.contains(automatedString);
 
   factory GameEmpty.fromJson(Map<String, dynamic> json) =>

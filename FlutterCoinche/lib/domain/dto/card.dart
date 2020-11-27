@@ -1,6 +1,8 @@
-import 'package:FlutterCoinche/domain/dto/belote.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
+//@dart=2.9
+import 'package:coinche/domain/dto/belote.dart';
+import 'package:coinche/domain/dto/player_position.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'card.g.dart';
@@ -31,40 +33,40 @@ class CardModel extends Equatable {
 
 enum CardValue {
   @JsonValue(1)
-  ACE,
+  ace,
   @JsonValue(13)
-  KING,
+  king,
   @JsonValue(12)
-  QUEEN,
+  queen,
   @JsonValue(11)
-  JACK,
+  jack,
   @JsonValue(10)
-  TEN,
+  ten,
   @JsonValue(9)
-  NINE,
+  nine,
   @JsonValue(8)
-  EIGHT,
+  eight,
   @JsonValue(7)
-  SEVEN
+  seven
 }
 
 int getDominanceColor(CardValue cardValue) {
   switch (cardValue) {
-    case CardValue.ACE:
+    case CardValue.ace:
       return 7;
-    case CardValue.TEN:
+    case CardValue.ten:
       return 6;
-    case CardValue.KING:
+    case CardValue.king:
       return 5;
-    case CardValue.QUEEN:
+    case CardValue.queen:
       return 4;
-    case CardValue.JACK:
+    case CardValue.jack:
       return 3;
-    case CardValue.NINE:
+    case CardValue.nine:
       return 2;
-    case CardValue.EIGHT:
+    case CardValue.eight:
       return 1;
-    case CardValue.SEVEN:
+    case CardValue.seven:
       return 0;
   }
   return -1;
@@ -72,40 +74,40 @@ int getDominanceColor(CardValue cardValue) {
 
 int getDominanceTrump(CardValue cardValue) {
   switch (cardValue) {
-    case CardValue.JACK:
+    case CardValue.jack:
       return 7;
-    case CardValue.NINE:
+    case CardValue.nine:
       return 6;
-    case CardValue.ACE:
+    case CardValue.ace:
       return 5;
-    case CardValue.TEN:
+    case CardValue.ten:
       return 4;
-    case CardValue.KING:
+    case CardValue.king:
       return 3;
-    case CardValue.QUEEN:
+    case CardValue.queen:
       return 2;
-    case CardValue.EIGHT:
+    case CardValue.eight:
       return 1;
-    case CardValue.SEVEN:
+    case CardValue.seven:
       return 0;
   }
   return -1;
 }
 
-int compareValue(CardValue value, CardValue value2, bool isTrump) {
+int compareValue(CardValue value, CardValue value2, {@required bool isTrump}) {
   if (isTrump) return getDominanceTrump(value) - getDominanceTrump(value2);
   return getDominanceColor(value) - getDominanceColor(value2);
 }
 
 enum CardColor {
   @JsonValue("SPADE")
-  SPADE,
+  spade,
   @JsonValue("HEART")
-  HEART,
+  heart,
   @JsonValue("CLUB")
-  CLUB,
+  club,
   @JsonValue("DIAMOND")
-  DIAMOND,
+  diamond,
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -133,16 +135,16 @@ class CardPlayed extends Equatable {
 String getAssetImageFromColor(CardColor e) {
   var file = "heart.png";
   switch (e) {
-    case CardColor.DIAMOND:
+    case CardColor.diamond:
       file = "diamond.png";
       break;
-    case CardColor.SPADE:
+    case CardColor.spade:
       file = "spade.png";
       break;
-    case CardColor.CLUB:
+    case CardColor.club:
       file = "club.png";
       break;
-    case CardColor.HEART:
+    case CardColor.heart:
       file = "heart.png";
       break;
   }
@@ -151,21 +153,21 @@ String getAssetImageFromColor(CardColor e) {
 
 String getLetterFromValue(CardValue v) {
   switch (v) {
-    case CardValue.ACE:
+    case CardValue.ace:
       return "A";
-    case CardValue.KING:
+    case CardValue.king:
       return "K";
-    case CardValue.QUEEN:
+    case CardValue.queen:
       return 'Q';
-    case CardValue.JACK:
+    case CardValue.jack:
       return "J";
-    case CardValue.TEN:
+    case CardValue.ten:
       return "10";
-    case CardValue.NINE:
+    case CardValue.nine:
       return "9";
-    case CardValue.EIGHT:
+    case CardValue.eight:
       return "8";
-    case CardValue.SEVEN:
+    case CardValue.seven:
       return "7";
   }
   return "";

@@ -14,5 +14,6 @@ Future<void> main() async {
   };
 
   final filename = 'lib/.env.dart';
-  File(filename).writeAsString('final Map<String, String> environment = ${json.encode(config)};');
+  await File(filename).writeAsString(
+      'final Map<String, String?> environment = ${json.encode(config)};');
 }

@@ -1,4 +1,4 @@
-import 'package:FlutterCoinche/domain/dto/pos_table_to_colors.dart';
+import 'package:coinche/domain/dto/pos_table_to_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,13 +6,13 @@ import 'package:tuple/tuple.dart';
 
 enum PlayerPosition {
   @JsonValue("NORTH")
-  NORTH,
+  north,
   @JsonValue("SOUTH")
-  SOUTH,
+  south,
   @JsonValue("EAST")
-  EAST,
+  east,
   @JsonValue("WEST")
-  WEST
+  west
 }
 
 extension TablePosition on AxisDirection {
@@ -21,7 +21,7 @@ extension TablePosition on AxisDirection {
   String get avatar => "avatar-${toString()}";
 
   Color _getColor(SharedPreferences preferences) {
-    final int colorPref = preferences.getInt(prefColor) ?? -1;
+    final colorPref = preferences.getInt(prefColor) ?? -1;
     if (colorPref == -1) {
       var col = Colors.black;
       switch (this) {
@@ -44,13 +44,14 @@ extension TablePosition on AxisDirection {
     return Color(colorPref);
   }
 
-  setColor(Color color) async {
+  Future<void> setColor(Color color) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setInt(prefColor, color.value);
+    await preferences.setInt(prefColor, color.value);
   }
 
   String _getAvatar(SharedPreferences preferences) {
-    var file = preferences.getString(avatar) ?? null;
+    String? file = preferences.getString(avatar);
+    // ignore: unnecessary_null_comparison
     if (file == null) {
       final prefix = "images";
       file = "$prefix/chicken.svg";
@@ -69,13 +70,12 @@ extension TablePosition on AxisDirection {
           break;
       }
     }
-    print("getAvatar: $file");
     return file;
   }
 
-  setAvatar(String file) async {
+  Future<void> setAvatar(String file) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setString(avatar, file);
+    await preferences.setString(avatar, file);
   }
 
   String simpleName() {
@@ -85,10 +85,10 @@ extension TablePosition on AxisDirection {
 
 Future<PosTableToColor> getPosTableToColors() async {
   var preferences = await SharedPreferences.getInstance();
-  Map<AxisDirection, Tuple2<Color, String>> res = {};
-  AxisDirection.values.forEach((element) {
+  var res = <AxisDirection, Tuple2<Color, String>>{};
+  for (var element in AxisDirection.values) {
     res[element] =
         Tuple2(element._getColor(preferences), element._getAvatar(preferences));
-  });
+  }
   return PosTableToColor(res);
 }

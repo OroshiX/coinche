@@ -1,4 +1,4 @@
-name: FlutterCoinche
+name: coinche
 description: A flutter client for coinche
 
 # The following defines the version and build number for your application.
@@ -14,45 +14,51 @@ description: A flutter client for coinche
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: ">=2.12.0-29.10.beta <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   fb_auth: ^1.1.1
-  google_sign_in: ^4.0.7 #for mobile google signin
-  firebase_auth: ^0.15.5+2 #user auth
-  firebase_analytics: ^5.0.2
-  firebase_storage: ^3.1.0 # for firebase storage
-  cloud_firestore: ^0.13.4+2 # Firestore
-  firebase_core: ^0.4.0
-  flutter_signin_button: ^1.0.0 # for sign in buttons
-  flushbar: ^1.10.0
-  http: ^0.12.0+4
-  requests: ^3.1.0 # For cookie-aware http requests
-  json_annotation: ^3.0.0 # for json
-  rxdart: ^0.23.1
-  bloc_provider: ^0.7.0
-  audioplayers: ^0.15.1
-  flutter_login: ^1.0.14 # animations and visuals for login
-  flutter_svg: ^0.17.4
+  google_sign_in: ^4.5.4 #for mobile google signin
+  firebase_auth: ^0.15.5+3 #user auth
+  firebase_analytics: ^5.0.16
+  firebase_storage: ^3.1.6 # for firebase storage
+  cloud_firestore: ^0.13.7 # Firestore
+  firebase_core: ^0.4.5
+  # UI
+  flutter_signin_button: ^1.1.0 # for sign in buttons
+  flash: ^1.3.1 # for alerting UI (snackbar, toast, dialogs)
+  flutter_svg: ^0.19.0
   auto_size_text: ^2.1.0
-  shared_preferences: ^0.5.7
+  # HTTP
+  http: ^0.12.2
+  requests: ^3.3.0 # For cookie-aware http requests
+  json_annotation: ^3.1.0 # for json
+
+  audioplayers: ^0.17.0
+  shared_preferences: ^0.5.12
+  universal_platform: ^0.1.3 # working with web too (instead of dart:io)
   tuple: ^1.0.3
-  equatable: ^0.6.0 # for simple .equals()
+  equatable: ^1.2.5 # for simple .equals()
   quiver: ^2.1.3 # For hash2 function, and other utilities
-  states_rebuilder: ^1.15.0 # For state management improved
-  animator: ^2.0.0 # For simpler explicit animations
+  provider: ^4.3.2+2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.0
 
 dev_dependencies:
   # For json
-  build_runner: ^1.0.0
-  json_serializable: ^3.2.0
+  build_runner: ^1.10.3
+  json_serializable: ^3.5.0
+  flutter_launcher_icons: ^0.8.0
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: launcher_icon
+  ios: true
+  image_path: images/icon.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

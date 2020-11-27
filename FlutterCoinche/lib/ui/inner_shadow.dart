@@ -1,29 +1,30 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:coinche/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class InnerShadow extends SingleChildRenderObjectWidget {
   const InnerShadow({
-    Key key,
+    Key? key,
     this.color,
     this.blur,
-    @required this.offset,
+    required this.offset,
     this.showIos = true,
-    Widget child,
+    required Widget child,
   }) : super(key: key, child: child);
 
-  final Color color;
-  final double blur;
+  final Color? color;
+  final double? blur;
   final Offset offset;
   final bool showIos;
 
   @override
   RenderInnerShadow createRenderObject(BuildContext context) {
     return RenderInnerShadow()
-      ..color = color
-      ..blur = blur
+      ..color = color ?? kColorDark
+      ..blur = blur ?? 0
       ..showIos = showIos
       ..offset = offset;
   }
@@ -32,8 +33,8 @@ class InnerShadow extends SingleChildRenderObjectWidget {
   void updateRenderObject(
       BuildContext context, RenderInnerShadow renderObject) {
     renderObject
-      ..color = color
-      ..blur = blur
+      ..color = color ?? kColorDark
+      ..blur = blur ?? 0
       ..showIos = showIos
       ..offset = offset;
   }
@@ -41,16 +42,16 @@ class InnerShadow extends SingleChildRenderObjectWidget {
 
 class RenderInnerShadow extends RenderProxyBox {
   RenderInnerShadow({
-    RenderBox child,
+    RenderBox? child,
   }) : super(child);
 
   @override
   bool get alwaysNeedsCompositing => child != null;
 
-  Color _color;
-  double _blur;
-  Offset _offset;
-  bool _showIos;
+  Color _color = kColorDark;
+  double _blur = 0;
+  Offset _offset = Offset.zero;
+  bool _showIos = false;
 
   Color get color => _color;
 
@@ -87,16 +88,16 @@ class RenderInnerShadow extends RenderProxyBox {
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null) {
-      if (Platform.isIOS && !showIos) {
+      if (UniversalPlatform.isIOS && !showIos) {
         // Don'use inner shadow on iOS
-        context.paintChild(child, offset);
+        context.paintChild(child!, offset);
         return;
       }
       var layerPaint = Paint()..color = Colors.white;
 
       var canvas = context.canvas;
       canvas.saveLayer(offset & size, layerPaint);
-      context.paintChild(child, offset);
+      context.paintChild(child!, offset);
       var shadowPaint = Paint()
         ..blendMode = ui.BlendMode.srcATop
         ..imageFilter = ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur)
@@ -129,7 +130,7 @@ class RenderInnerShadow extends RenderProxyBox {
         ]);
       canvas.saveLayer(offset & size, invertPaint);
       canvas.translate(_offset.dx, _offset.dy);
-      context.paintChild(child, offset);
+      context.paintChild(child!, offset);
       context.canvas.restore();
       context.canvas.restore();
       context.canvas.restore();
@@ -138,6 +139,6 @@ class RenderInnerShadow extends RenderProxyBox {
 
   @override
   void visitChildrenForSemantics(RenderObjectVisitor visitor) {
-    if (child != null) visitor(child);
+    if (child != null) visitor(child!);
   }
 }

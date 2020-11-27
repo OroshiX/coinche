@@ -1,9 +1,10 @@
-import 'package:FlutterCoinche/domain/dto/bid.dart';
-import 'package:FlutterCoinche/domain/dto/card.dart';
-import 'package:FlutterCoinche/domain/dto/nicknames.dart';
-import 'package:FlutterCoinche/domain/dto/player_position.dart';
-import 'package:FlutterCoinche/domain/dto/score.dart';
-import 'package:FlutterCoinche/domain/dto/table_state.dart';
+//@dart=2.9
+import 'package:coinche/domain/dto/bid.dart';
+import 'package:coinche/domain/dto/card.dart';
+import 'package:coinche/domain/dto/nicknames.dart';
+import 'package:coinche/domain/dto/player_position.dart';
+import 'package:coinche/domain/dto/score.dart';
+import 'package:coinche/domain/dto/table_state.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -25,14 +26,14 @@ class Game extends Equatable {
   final PlayerPosition winnerLastTrick;
   final List<CardPlayed> lastTrick;
 
-  Game(
+  const Game(
       {this.id,
       this.nicknames = const Nicknames(),
       this.cards = const [],
       this.onTable = const [],
-      this.state = TableState.JOINING,
-      this.nextPlayer = PlayerPosition.NORTH,
-      this.myPosition = PlayerPosition.NORTH,
+      this.state = TableState.joining,
+      this.nextPlayer = PlayerPosition.north,
+      this.myPosition = PlayerPosition.north,
       this.bids = const [],
       this.currentBid,
       this.score = const Score(),
@@ -65,8 +66,6 @@ class Game extends Equatable {
         lastTrick
       ];
 
-
-
   Game copy({
     String withId,
     Nicknames withNicknames,
@@ -82,19 +81,18 @@ class Game extends Equatable {
     List<CardPlayed> withLastTrick,
   }) {
     return Game(
-      id: withId != null ? withId : id,
-      nicknames: withNicknames != null ? withNicknames : nicknames,
-      cards: withCards != null ? withCards : cards,
-      onTable: withOnTable != null ? withOnTable : onTable,
-      state: withState != null ? withState : state,
-      nextPlayer: withNextPlayer != null ? withNextPlayer : nextPlayer,
-      myPosition: withMyPosition != null ? withMyPosition : myPosition,
-      bids: withBids != null ? withBids : bids,
-      currentBid: withCurrentBid != null ? withCurrentBid : currentBid,
-      score: withScore != null ? withScore : score,
-      winnerLastTrick:
-          withWinnerLastTrick != null ? withWinnerLastTrick : winnerLastTrick,
-      lastTrick: withLastTrick != null ? withLastTrick : lastTrick,
+      id: withId ?? id,
+      nicknames: withNicknames ?? nicknames,
+      cards: withCards ?? cards,
+      onTable: withOnTable ?? onTable,
+      state: withState ?? state,
+      nextPlayer: withNextPlayer ?? nextPlayer,
+      myPosition: withMyPosition ?? myPosition,
+      bids: withBids ?? bids,
+      currentBid: withCurrentBid ?? currentBid,
+      score: withScore ?? score,
+      winnerLastTrick: withWinnerLastTrick ?? winnerLastTrick,
+      lastTrick: withLastTrick ?? lastTrick,
     );
   }
 }
