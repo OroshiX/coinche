@@ -20,4 +20,19 @@ extension ListExtension<T> on List<T> {
     if (i == -1) return null;
     return this[i];
   }
+
+  List<IndexedValue<T>> indexedValues() {
+    var res = <IndexedValue<T>>[];
+    for (var i = 0; i < length; i++) {
+      res.add(IndexedValue(i, this[i]));
+    }
+    return res;
+  }
+}
+
+class IndexedValue<T> {
+  final int i;
+  final T value;
+
+  IndexedValue(this.i, this.value);
 }
