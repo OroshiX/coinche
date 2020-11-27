@@ -191,9 +191,6 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
   }
 
   void _loginSuccess(BuildContext context, MyAuthUser user) {
-    _showSuccess(context,
-        "You are now signed in as ${user.displayName ?? user.email}, and we set user!");
-
     context.read<LoginModel>().setUser(user);
 
     Navigator.of(context)?.popUntil((route) => route.isFirst);
@@ -204,9 +201,5 @@ class _LoginManualScreenState extends State<LoginManualScreen> {
   void _showError(BuildContext context, String error) {
     print(error);
     FlushUtil.showError(context, error);
-  }
-
-  void _showSuccess(BuildContext context, String message) {
-    FlushUtil.showSuccess(context, message);
   }
 }
