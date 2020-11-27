@@ -44,7 +44,7 @@ class FlushUtil {
     showFlash(
       context: context,
       persistent: true,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(seconds: 2),
       builder: (context, controller) {
         return Flash(
             controller: controller,
