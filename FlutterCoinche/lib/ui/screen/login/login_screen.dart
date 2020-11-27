@@ -1,10 +1,13 @@
 import 'package:coinche/error/exceptions.dart';
 import 'package:coinche/service/network/fire_auth_service.dart';
 import 'package:coinche/service/network/my_auth_user.dart';
+import 'package:coinche/theme/colors.dart';
 import 'package:coinche/theme/text_styles.dart';
 import 'package:coinche/ui/screen/login/text_field_round.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/util/flush_util.dart';
+import 'package:coinche/util/formats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -31,6 +34,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   bool _hiddenPassword = true;
+  late FocusScopeNode _nodeFocusScope;
+
+  final _keyButtonSignIn = GlobalKey<NeumorphicWidgetState>();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _nodeFocusScope = FocusScope.of(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value == null) {
                               return "Please fill your email";
                             }
-                            var regex = RegExp(
-                                r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
-                            if (!regex.hasMatch(value)) {
+                            if (!regExpEmail.hasMatch(value)) {
                               return "Email format invalid";
                             }
                             return null;
                           },
+                          autofillHints: [AutofillHints.email],
+                          onEditingComplete: () => _nodeFocusScope.nextFocus(),
                           iconData: Icons.email_outlined,
                           hint: "Email",
                           controller: widget.controllerEmail,
@@ -83,6 +95,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                               return null;
                             },
+                            autofillHints: [AutofillHints.password],
+                            onEditingComplete: () => _nodeFocusScope.unfocus(),
                             onPressedSuffix: () {
                               setState(() {
                                 _hiddenPassword = !_hiddenPassword;
@@ -101,6 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   left: 0,
                   child: Center(
                     child: NeumorphicWidget(
+                        key: _keyButtonSignIn,
                         sizeShadow: SizeShadow.medium,
                         borderRadius: 60,
                         onTap: _pressedSignIn,
@@ -118,7 +133,68 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(height: 30),
           InkWell(
             onTap: () {
-              // todo
+              var emailInit = widget.controllerEmail.text;
+              // show a dialog asking for an email address to fill, then send
+              showDialog(
+                context: context,
+                builder: (ctx) {
+                  final controller = TextEditingController(text: emailInit);
+                  final keyResetPasswordForm = GlobalKey<FormState>();
+                  return StatefulBuilder(
+                    builder: (ctx, setState) => AlertDialog(
+                      backgroundColor: kColorBlue3,
+                      title: Text(
+                          "Fill your email in order to reset your password"),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      content: Container(
+                        color: kColorPastelPink,
+                        child: Form(
+                          key: keyResetPasswordForm,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFieldRound(
+                                hint: "Email",
+                                controller: controller,
+                                iconData: Icons.email_outlined,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please fill your email address in order to reset your password.";
+                                  }
+                                  if (!regExpEmail.hasMatch(value)) {
+                                    return "Email format invalid";
+                                  }
+                                  return null;
+                                },
+                              ),
+                              NeumorphicWidget(
+                                child: Text("Reset"),
+                                onTap: () {
+                                  if (keyResetPasswordForm.currentState
+                                          ?.validate() ==
+                                      true) {
+                                    widget.userRepository.resetPassword(
+                                      controller.text,
+                                      onError: (message) =>
+                                          FlushUtil.showError(ctx, message),
+                                      onSuccess: () {
+                                        Navigator.of(ctx)?.pop();
+                                        FlushUtil.showSuccess(context,
+                                            "An email has been sent to you in order to reset your password.");
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
             },
             child: Text("Forgot password?"),
           ),
@@ -160,6 +236,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<String?> _signInWithCredentials(
       BuildContext context, String email, String password) async {
+    setState(() {
+      _keyButtonSignIn.currentState?.isInteractable = false;
+    });
     MyAuthUser myAuthUser;
     try {
       myAuthUser = await widget.userRepository
@@ -168,8 +247,15 @@ class _LoginScreenState extends State<LoginScreen> {
       return null;
     } on ServerErrors catch (e) {
       widget.onError(e.cause);
+      setState(() {
+        _keyButtonSignIn.currentState?.isInteractable = true;
+      });
       return null;
     } catch (e) {
+      widget.onError(e.toString());
+      setState(() {
+        _keyButtonSignIn.currentState?.isInteractable = true;
+      });
       return "Unknown error";
     }
   }

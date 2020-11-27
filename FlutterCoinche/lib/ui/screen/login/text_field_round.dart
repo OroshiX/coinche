@@ -8,6 +8,11 @@ class TextFieldRound extends StatelessWidget {
   final bool hidden;
   final IconData? suffixIcon;
   final void Function()? onPressedSuffix;
+  final void Function()? onEditingComplete;
+
+  final TextInputType? textInputType;
+
+  final List<String>? autofillHints;
 
   const TextFieldRound(
       {Key? key,
@@ -17,7 +22,10 @@ class TextFieldRound extends StatelessWidget {
       this.controller,
       this.hidden = false,
       this.suffixIcon,
-      this.onPressedSuffix})
+      this.onPressedSuffix,
+      this.onEditingComplete,
+      this.textInputType,
+      this.autofillHints})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -28,6 +36,9 @@ class TextFieldRound extends StatelessWidget {
       child: TextFormField(
         validator: validator,
         obscureText: hidden,
+        keyboardType: textInputType,
+        autofillHints: autofillHints,
+        onEditingComplete: onEditingComplete,
         decoration: InputDecoration(
           border: InputBorder.none,
           isCollapsed: true,

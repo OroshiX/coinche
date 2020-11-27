@@ -31,8 +31,29 @@ class FireAuthService extends ChangeNotifier {
         : null;
   }
 
-  Future<dynamic> resetPassword(String email) {
-    return _auth.sendPasswordResetEmail(email: email);
+  Future<void> resetPassword(
+    String email, {
+    required void Function(String message) onError,
+    required void Function() onSuccess,
+  }) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      onSuccess();
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        case "ERROR_INVALID_EMAIL":
+          onError("You entered an invalid email");
+          break;
+        case "ERROR_USER_NOT_FOUND":
+          onError("You do not have an account, please register first");
+          break;
+        default:
+          onError("Unknown error code: $e");
+          break;
+      }
+    } catch (e) {
+      onError("Unknown error, please try again");
+    }
   }
 
   Future<void> sendEmailVerification(BuildContext context, String email) async {
@@ -62,8 +83,7 @@ class FireAuthService extends ChangeNotifier {
   Future<void> _logoutFromServer(
       {required void Function() onSuccess,
       required void Function(String message) onError}) {
-    return ServerCommunication.logout(
-        onSuccess: onSuccess, onError: onError);
+    return ServerCommunication.logout(onSuccess: onSuccess, onError: onError);
   }
 
   Future<MyAuthUser> signInWithCredentials(

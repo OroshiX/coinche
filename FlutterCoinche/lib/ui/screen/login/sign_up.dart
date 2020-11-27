@@ -5,6 +5,7 @@ import 'package:coinche/theme/text_styles.dart';
 import 'package:coinche/ui/screen/login/text_field_round.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
+import 'package:coinche/util/formats.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -37,6 +38,13 @@ class _SignUpState extends State<SignUp> {
   var _hiddenPassword1 = true;
 
   var _hiddenPassword2 = true;
+  late FocusScopeNode _nodeFocusScope;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _nodeFocusScope = FocusScope.of(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,13 +72,13 @@ class _SignUpState extends State<SignUp> {
                               if (value == null) {
                                 return "Please fill your email";
                               }
-                              var regex = RegExp(
-                                  r"^[\w^@]+(\.[\w^@]+)*(\+[\w^@]+(\.[\w^@]+)*)?@\w+(\.\w+)+$");
-                              if (!regex.hasMatch(value)) {
+                              if (!regExpEmail.hasMatch(value)) {
                                 return "Email format invalid";
                               }
                               return null;
                             },
+                            onEditingComplete: () => _nodeFocusScope.nextFocus(),
+                            autofillHints: [AutofillHints.email],
                             iconData: Icons.email_outlined,
                             hint: "Email",
                             controller: widget.controllerEmail,
@@ -78,8 +86,11 @@ class _SignUpState extends State<SignUp> {
                           SizedBox(height: 16),
                           TextFieldRound(
                               hint: "Password",
+                              onEditingComplete: () =>
+                                  _nodeFocusScope.nextFocus(),
                               hidden: _hiddenPassword1,
                               iconData: Icons.lock_outlined,
+                              autofillHints: [AutofillHints.newPassword],
                               validator: (String? value) {
                                 if (value == null || value.isEmpty) {
                                   return "Please fill your password";
@@ -98,9 +109,11 @@ class _SignUpState extends State<SignUp> {
                               controller: widget.controllerPassword),
                           SizedBox(height: 16),
                           TextFieldRound(
-                              hint: "Password",
+                              hint: "Confirm password",
                               hidden: _hiddenPassword2,
                               iconData: Icons.lock_outlined,
+                              autofillHints: [AutofillHints.password],
+                              onEditingComplete: () => _nodeFocusScope.unfocus(),
                               validator: (String? value) {
                                 if (value != widget.controllerPassword.text) {
                                   return "The passwords don't match";
