@@ -363,12 +363,9 @@ class _CardsOnTableState extends State<_CardsOnTable> {
     currentCardsOnTable = cardsOnTable;
     firstRender = false;
     if (!fromInit) {
-//                 cardsOnTableModel.setState((g) =>
-      // TODO idem ordered cards
       setState(() {
         orderedCards = tmpOrderedCards;
       });
-      // );
     } else {
       orderedCards = tmpOrderedCards;
     }
