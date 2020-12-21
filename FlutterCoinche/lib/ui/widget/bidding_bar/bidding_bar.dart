@@ -6,6 +6,7 @@ import 'package:coinche/domain/extensions/bid_extension.dart';
 import 'package:coinche/state/game_model.dart';
 import 'package:coinche/theme/colors.dart';
 import 'package:coinche/theme/dimens.dart';
+import 'package:coinche/ui/widget/card_layout.dart';
 import 'package:coinche/ui/widget/neumorphic_container.dart';
 import 'package:coinche/ui/widget/neumorphic_no_state.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,7 +80,7 @@ class BiddingBarState extends State<BiddingBar> {
                   child: Container(
                     width: isLargeScreen(screenSize) ? 50 : 30,
                     child: Image.asset(
-                      getAssetImageFromColor(e),
+                      e.getAssetImageFromColor(),
                       fit: BoxFit.contain,
                     ),
                   )))

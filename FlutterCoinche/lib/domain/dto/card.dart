@@ -50,53 +50,55 @@ enum CardValue {
   seven
 }
 
-int getDominanceColor(CardValue cardValue) {
-  switch (cardValue) {
-    case CardValue.ace:
-      return 7;
-    case CardValue.ten:
-      return 6;
-    case CardValue.king:
-      return 5;
-    case CardValue.queen:
-      return 4;
-    case CardValue.jack:
-      return 3;
-    case CardValue.nine:
-      return 2;
-    case CardValue.eight:
-      return 1;
-    case CardValue.seven:
-      return 0;
+extension CardValueExtension on CardValue {
+  int getDominanceColor() {
+    switch (this) {
+      case CardValue.ace:
+        return 7;
+      case CardValue.ten:
+        return 6;
+      case CardValue.king:
+        return 5;
+      case CardValue.queen:
+        return 4;
+      case CardValue.jack:
+        return 3;
+      case CardValue.nine:
+        return 2;
+      case CardValue.eight:
+        return 1;
+      case CardValue.seven:
+        return 0;
+    }
+    return -1;
   }
-  return -1;
-}
 
-int getDominanceTrump(CardValue cardValue) {
-  switch (cardValue) {
-    case CardValue.jack:
-      return 7;
-    case CardValue.nine:
-      return 6;
-    case CardValue.ace:
-      return 5;
-    case CardValue.ten:
-      return 4;
-    case CardValue.king:
-      return 3;
-    case CardValue.queen:
-      return 2;
-    case CardValue.eight:
-      return 1;
-    case CardValue.seven:
-      return 0;
+  int getDominanceTrump() {
+    switch (this) {
+      case CardValue.jack:
+        return 7;
+      case CardValue.nine:
+        return 6;
+      case CardValue.ace:
+        return 5;
+      case CardValue.ten:
+        return 4;
+      case CardValue.king:
+        return 3;
+      case CardValue.queen:
+        return 2;
+      case CardValue.eight:
+        return 1;
+      case CardValue.seven:
+        return 0;
+    }
+    return -1;
   }
-  return -1;
 }
 
 int compareValue(CardValue value, CardValue value2, {@required bool isTrump}) {
-  if (isTrump) return getDominanceTrump(value) - getDominanceTrump(value2);
-  return getDominanceColor(value) - getDominanceColor(value2);
+  if (isTrump) return value.getDominanceTrump() - value2.getDominanceTrump();
+  return value.getDominanceColor() - value2.getDominanceColor();
 }
 
 enum CardColor {
@@ -130,45 +132,4 @@ class CardPlayed extends Equatable {
   String toString() {
     return "card: $card, by $position";
   }
-}
-
-String getAssetImageFromColor(CardColor e) {
-  var file = "heart.png";
-  switch (e) {
-    case CardColor.diamond:
-      file = "diamond.png";
-      break;
-    case CardColor.spade:
-      file = "spade.png";
-      break;
-    case CardColor.club:
-      file = "club.png";
-      break;
-    case CardColor.heart:
-      file = "heart.png";
-      break;
-  }
-  return "images/$file";
-}
-
-String getLetterFromValue(CardValue v) {
-  switch (v) {
-    case CardValue.ace:
-      return "A";
-    case CardValue.king:
-      return "K";
-    case CardValue.queen:
-      return 'Q';
-    case CardValue.jack:
-      return "J";
-    case CardValue.ten:
-      return "10";
-    case CardValue.nine:
-      return "9";
-    case CardValue.eight:
-      return "8";
-    case CardValue.seven:
-      return "7";
-  }
-  return "";
 }

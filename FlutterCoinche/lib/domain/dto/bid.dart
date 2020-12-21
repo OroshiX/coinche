@@ -2,6 +2,7 @@
 import 'package:coinche/domain/dto/card.dart';
 import 'package:coinche/domain/dto/player_position.dart';
 import 'package:coinche/theme/colors.dart';
+import 'package:coinche/ui/widget/card_layout.dart';
 import 'package:coinche/ui/widget/dot_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class Bid {
         ),
         if (this is! Pass)
           Image.asset(
-            getAssetImageFromColor(cardColor()),
+            cardColor().getAssetImageFromColor(),
             width: fontSize,
             height: fontSize,
           ),

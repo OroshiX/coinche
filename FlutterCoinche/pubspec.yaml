@@ -81,6 +81,9 @@ flutter:
     - images/face.svg
     - images/penguin.svg
     - images/vampire.svg
+    - images/jack.svg
+    - images/king.svg
+    - images/queen.svg
     - assets/sounds/
 
   # An image asset can refer to one or more resolution-specific "variants", see
